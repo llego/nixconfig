@@ -9,11 +9,10 @@
     shellAliases = {
       ls="ls --color";
       ll = "ls -laFh --color";
-      update = "sudo nixos-rebuild switch";
-      nixosconfig = "sudo nano ~/nixos/hosts/default/configuration.nix";
+      fastfetch = "fastfetch -c paleofetch.jsonc";
       nixosswitch = "sudo nixos-rebuild switch --flake ~/nixos#default";
-      hmconfig = "nano ~/nixos/hosts/default/home.nix";
       hmswitch = "home-manager switch --flake ~/nixos#default";
+      collect-garbage = "nix-collect-garbage -d";
     };
 
     history = {
@@ -26,7 +25,6 @@
 
     initExtra = '' 
       source ~/.p10k.zsh
-      fastfetch -c paleofetch.jsonc
       bindkey -e
       bindkey "''${key[Up]}" up-line-or-search
       bindkey '^[[1;5C' emacs-forward-word

@@ -14,6 +14,7 @@
 	  tidal-dl
 	  dig
 	  tree
+	  neofetch
 	  (writeShellScriptBin "bandcamp" (builtins.readFile ./bandcamp-collection/bandcamp-collection.sh))
   ];
   
