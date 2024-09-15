@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# Set variables
+BANDCAMP_HOME="${XDG_DATA_HOME:-${HOME}/nixos/hm-modules/bandcamp-collection-downloader}"
+JAR_PATH="$BANDCAMP_HOME/bandcamp-collection-downloader.jar"
+URL="https://framagit.org/Ezwen/bandcamp-collection-downloader/-/jobs/1515933/artifacts/raw/build/libs/bandcamp-collection-downloader.jar?inline=false"
+CACHE="$BANDCAMP_HOME/bandcamp-collection-downloader.cache"
+#COOKIE="$BANDCAMP_HOME/bandcamp.com_cookies.txt"
+COOKIE="$BANDCAMP_HOME/bandcamp.com_cookies.txt"
+
+MUSIC_PATH="${XDG_DATA_HOME:-${HOME}/Music/bandcamp}"
+
+REMOTE_HOST="llego@docker.home"
+REMOTE_HOST_PATH="$REMOTE_HOST:/mnt/beets-import"
+DOCKER_COMMAND="DOCKER_HOST=tcp://$REMOTE_HOST docker exec -it beets bash -c 'beet import /import'"
+
+
+# Download bandcamp-collection-downloader, if it's not there yet
+if [ ! -d "$BANDCAMP_HOME" ]; then
+   echo -e "Directory does not exist. Creating directory \n " "$BANDCAMP_HOME"
+   mkdir -p "$(dirname $BANDCAMP_HOME)"
+fi
+
+if [ ! -f "$JAR_PATH" ]; then
+   echo -e "JAR_PATH does not exist. Downloading from: \n " "$URL" "\n"
+   wget -O "$JAR_PATH" "$URL"
+fi
+
+
+# Download bandcamp collection
+echo -e "\nDownload new bandcamp albums? \n"
+read -p "[y/n] " -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  
+  # Create music folder if it does not exist
+  if [ ! -d "$MUSIC_PATH" ]; then
+     echo -e "Directory does not exist. Creating directory \n " "$MUSIC_PATH" " and copying over cache file"
+     mkdir -p "$MUSIC_PATH"
+     cp "$CACHE" "$MUSIC_PATH"
+  fi
+
+  SECONDS=0
+  echo -e "\nDownloading new albums from bandcamp \n" 
+  
+  #java -jar "$JAR_PATH" --audio-format=flac --skip-hidden --download-folder="$MUSIC_PATH" --cookies-file="$COOKIE" llego202
+  
+  nix run github:ovyerus/bandsnatch -- run --format flac --output-folder "$MUSIC_PATH" --cookies "$COOKIE" llego202
+  
+  ELAPSED="$(($SECONDS / 3600))hrs $((($SECONDS / 60) % 60))min $(($SECONDS % 60))sec"
+  echo -e "\nFinished in $ELAPSED"
+  
+  echo -e "\nBacking up cache file \n"
+  rsync "$MUSIC_PATH/bandcamp-collection-downloader.cache" "$BANDCAMP_HOME/"
+  
+fi
+
+
+# Rsync music to truenas
+echo -e "Rsync music to the server? \n From: $MUSIC_PATH/ \n To: $REMOTE_HOST_PATH \n" 
+read -p "[y/n] " -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  echo -e "\nRsyncing to server \n"
+  eval rsync -r --info=progress2 "$MUSIC_PATH"/ "$REMOTE_HOST_PATH"
+fi
+
+
+# Run beets on remote host
+echo -e "Connect to beets container on remote host? \n Command to run: $DOCKER_COMMAND \n" 
+read -p "[y/n] " -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  echo -e "\nConnecting to docker container on remote host \n"
+  eval "$DOCKER_COMMAND"
+fi
+

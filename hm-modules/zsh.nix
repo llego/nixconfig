@@ -1,0 +1,48 @@
+{config, lib, pkgs, ...}:
+{
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+
+    shellAliases = {
+      ls="ls --color";
+      ll = "ls -laFh --color";
+      update = "sudo nixos-rebuild switch";
+      nixosconfig = "sudo nano ~/nixos/hosts/default/configuration.nix";
+      nixosswitch = "sudo nixos-rebuild switch --flake ~/nixos#default";
+      hmconfig = "nano ~/nixos/hosts/default/home.nix";
+      hmswitch = "home-manager switch --flake ~/nixos#default";
+    };
+
+    history = {
+      size = 10000;
+      path = "${config.xdg.dataHome}/zsh/history";
+      ignoreSpace = true;
+      ignoreDups = true;
+      share = true;              
+    };
+
+    initExtra = '' 
+      source ~/.p10k.zsh
+      fastfetch -c paleofetch.jsonc
+      bindkey -e
+      bindkey "''${key[Up]}" up-line-or-search
+      bindkey '^[[1;5C' emacs-forward-word
+      bindkey '^[[1;5D' emacs-backward-word
+      bindkey '^p' history-search-backward
+      bindkey '^n' history-search-forward
+      bindkey '^[w' kill-region
+      bindkey '^[[3~'  delete-char
+      '';
+
+    plugins = [
+       {
+         name = "powerlevel10k";                                                           
+         src = pkgs.zsh-powerlevel10k;                                                     
+         file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+       } 
+    ];
+  };
+}

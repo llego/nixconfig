@@ -1,0 +1,21 @@
+{config,lib, pkgs,...}:
+{
+  # Install packages for everyone
+  programs.firefox.enable = true;
+  programs.zsh.enable = true;
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+    vim
+    nano
+    home-manager
+  ];
+
+  # nano settings
+  programs.nano.nanorc = ''
+      set nowrap
+      set tabstospaces
+      set tabsize 2
+  '';
+}

@@ -1,0 +1,13 @@
+{config, lib, pkgs, ...}:
+{
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
+    daemon.settings.userland-proxy = false;
+  };
+  
+}
