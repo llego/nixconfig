@@ -12,4 +12,7 @@
       }
     ];
   };
+  
+  programs.firefox.enable = true;
+  
 }

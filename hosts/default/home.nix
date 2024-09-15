@@ -11,6 +11,7 @@
       ../../hm-modules/cli-utils.nix
       ../../hm-modules/chromium.nix
       ../../hm-modules/gnome.nix
+      #../../shellscripts/bandcamp/shellscripts.nix
     ];
     
   home.username = "llego";

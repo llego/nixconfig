@@ -1,20 +1,20 @@
 {config, lib, pkgs, ...}:
 {
 	# Packages
-	home.packages = [ 
-	  pkgs.atool
-	  pkgs.fzf
-	  pkgs.ncdu
-	  pkgs.htop
-	  pkgs.wget
-	  pkgs.curl
-	  pkgs.lf
-	  pkgs.yle-dl
-	  pkgs.svtplay-dl
-	  pkgs.tidal-dl
-	  pkgs.dig
-	  pkgs.tree
-	  (pkgs.writeShellScriptBin "bandcamp-collection-downloader" (builtins.readFile ./bandcamp-collection-downloader/bandcamp-collection-downloader.sh))
+	home.packages = with pkgs; [ 
+	  atool
+	  ncdu
+	  htop
+	  btop
+	  wget
+	  curl
+	  lf
+	  yle-dl
+	  svtplay-dl
+	  tidal-dl
+	  dig
+	  tree
+	  (writeShellScriptBin "bandcamp" (builtins.readFile ./bandcamp-collection/bandcamp-collection.sh))
   ];
   
   programs.fastfetch = { enable = true; settings = { }; };
