@@ -8,7 +8,9 @@
 
     shellAliases = {
       ls="ls --color";
-      ll = "ls -laFh --color";
+      #ll = "ls -laFh --color";
+      ll = "lsd -al"
+      tree = "lsd --tree"
       fastfetch = "fastfetch -c paleofetch.jsonc";
       nixosswitch = "sudo nixos-rebuild switch --flake ~/nixos#default";
       hmswitch = "home-manager switch --flake ~/nixos#default";
