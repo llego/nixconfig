@@ -21,6 +21,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+  
     users.users.${cfg.userName} = {
       isNormalUser = true;
       initialPassword = "12345";
@@ -28,5 +29,22 @@ in
 		  extraGroups = cfg.extraGroups;
       shell = pkgs.zsh;
     };
+    
+		# Allow passwordless sudo for llego
+		security.sudo.extraRules = [
+		  {
+		    users = [ "${cfg.userName}" ];
+		    commands = [
+		      {
+		        command = "ALL";
+		        options = [ "SETENV" "NOPASSWD" ];
+		      }
+		    ];
+		  }
+		];
+		
   };
+  
+
+  
 }

@@ -26,14 +26,6 @@
   # Import main-user llego
   main-user.enable = true;
   
-  #home-manager = {
-  #  # also pass inputs to home-manager modules
-  #  extraSpecialArgs = {inherit inputs;};
-  #  users = {
-  #    "llego" = import ./home.nix;
-  #  };
-  #};  
-  
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
