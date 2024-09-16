@@ -13,7 +13,6 @@ MUSIC_PATH="${XDG_DATA_HOME:-${HOME}/Music/bandcamp}"
 
 REMOTE_HOST="llego@docker.home"
 REMOTE_HOST_PATH="$REMOTE_HOST:/mnt/beets-import"
-DOCKER_COMMAND="DOCKER_HOST=tcp://$REMOTE_HOST docker exec -it beets bash -c 'beet import /import'"
 
 SECONDS=0
 
@@ -68,6 +67,8 @@ fi
 ELAPSED="$(($SECONDS / 3600))hrs $((($SECONDS / 60) % 60))min $(($SECONDS % 60))sec"
 echo -e "\nFinished in $ELAPSED"
 
+
+
 # Run beets on remote host
 echo -e "Connect to beets container on remote host? \n Command to run: $DOCKER_COMMAND \n" 
 read -p "[y/n] " -r
@@ -75,6 +76,6 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
   echo -e "\nConnecting to docker container on remote host \n"
-  eval "$DOCKER_COMMAND"
+  DOCKER_HOST=tcp://$REMOTE_HOST docker exec -it beets bash -c 'beet import /import'
 fi
 
