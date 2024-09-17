@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{config, pkgs, ...}:
 {
   networking = {
     hostName = "laptop"; # Define your hostname.

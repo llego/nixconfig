@@ -1,4 +1,4 @@
-{config,lib, pkgs,...}:
+{config, pkgs,...}:
 {
   # Install packages for everyone
   programs.zsh.enable = true;

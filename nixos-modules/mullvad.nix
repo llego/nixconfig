@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{config, pkgs, ...}:
 {
   # Mullvad VPN
   services.mullvad-vpn = {

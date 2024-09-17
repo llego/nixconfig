@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{config, pkgs, ...}:
 {
   # Application icons to Gnome menu
   targets.genericLinux.enable = true;

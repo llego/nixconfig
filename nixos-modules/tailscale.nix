@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{config, pkgs, ...}:
 {
   # Tailscale
   services.tailscale = {

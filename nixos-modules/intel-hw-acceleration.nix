@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{config, pkgs, ...}:
 {
   # Hardware acceleration
   nixpkgs.config.packageOverrides = pkgs: {

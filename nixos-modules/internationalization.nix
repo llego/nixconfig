@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{config, pkgs, ...}:
 {
   # Set your time zone.
   time.timeZone = "Europe/Helsinki";
