@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{config, pkgs, inputs, ...}:
 {
 	# Packages
 	home.packages = with pkgs; [
@@ -17,7 +17,8 @@
 		neofetch
 		bat
 		lsd
-		(writeShellScriptBin "bandcamp" (builtins.readFile ./bandcamp-collection/bandcamp-collection.sh))
+#		(writeShellScriptBin "bandcamp" (builtins.readFile ./bandcamp-collection/bandcamp-collection.sh))
+    inputs.bandsnatch.packages."${pkgs.system}".default
 	];
   
   programs.fastfetch = { enable = true; settings = { }; };
