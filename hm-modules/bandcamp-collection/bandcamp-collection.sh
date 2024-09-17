@@ -46,7 +46,8 @@ then
   
   #java -jar "$JAR_PATH" --audio-format=flac --skip-hidden --download-folder="$MUSIC_PATH" --cookies-file="$COOKIE" llego202
   
-  nix run github:ovyerus/bandsnatch -- run --format flac --output-folder "$MUSIC_PATH" --cookies "$COOKIE" llego202
+  #nix run github:ovyerus/bandsnatch -- run --format flac --output-folder "$MUSIC_PATH" --cookies "$COOKIE" llego202
+  bandsnatch run --format flac --output-folder "$MUSIC_PATH" --cookies "$COOKIE" llego202
   
   echo -e "\nBacking up cache file \n"
   rsync "$MUSIC_PATH/bandcamp-collection-downloader.cache" "$BANDCAMP_HOME/"
