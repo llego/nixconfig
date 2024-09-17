@@ -4,6 +4,14 @@
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
   xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+
+  xdg.mimeApps.defaultApplications = {
+      "x-scheme-handler/mailto" = "proton-mail.desktop";
+      "text/html" = "chromium-browser.desktop";
+      "application/xhtml+xml" = "chromium-browser.desktop";
+      "x-scheme-handler/https" = "chromium-browser.desktop";
+  };
+
   xdg.desktopEntries = {
     ssh-docker = {
       name = "docker.home";
