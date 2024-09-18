@@ -12,7 +12,7 @@
       ../../hm-modules/chromium.nix
       ../../hm-modules/gnome.nix
       ../../hm-modules/lf.nix
-      #../../shellscripts/bandcamp/shellscripts.nix
+      ../../hm-modules/bandcamp-collection.nix
     ];
     
   home.username = "llego";
