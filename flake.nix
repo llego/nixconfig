@@ -22,9 +22,9 @@
       pkgs = import nixpkgs { inherit system; };
     in {
    
-   		# default home-manager configuration for laptop
+      # default home-manager configuration for laptop
       homeConfigurations.default = inputs.home-manager.lib.homeManagerConfiguration {
-      	inherit pkgs;
+        inherit pkgs;
         modules = [ ./hosts/default/home.nix ];
         extraSpecialArgs = { inherit inputs; };
       };
@@ -36,11 +36,11 @@
         extraSpecialArgs = { inherit inputs; };
       };
 
-    	# NixOS configuration
-    	nixosConfigurations.default = nixpkgs.lib.nixosSystem {
-      	specialArgs = { inherit inputs;};
-      	modules = [	./hosts/default/configuration.nix ];
-    	};
+      # NixOS configuration
+      nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs;};
+        modules = [ ./hosts/default/configuration.nix ];
+      };
 
-  	};
+    };
 }
