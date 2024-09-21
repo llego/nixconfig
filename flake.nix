@@ -44,11 +44,7 @@
       # NixOS configuration
       nixosConfigurations.default = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs;};
-        modules = [ 
-          stylix.nixosModules.stylix 
-          ./hosts/default/configuration.nix
-        ];
-
+        modules = [ stylix.nixosModules.stylix ./hosts/default/configuration.nix ];
       };
 
     };

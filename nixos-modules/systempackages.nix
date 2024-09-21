@@ -9,6 +9,7 @@
     vim
     nano
     home-manager
+    base16-schemes
   ];
 
   # nano settings
