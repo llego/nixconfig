@@ -90,7 +90,8 @@
     text = ''
       sftp://admin@truenas.home/mnt truenas
       sftp://llego@docker.home/mnt docker
-      sftp://christiansandberg.fi/opt christiansandberg.fi
+      sftp://llego@christiansandberg.fi/opt christiansandberg.fi
+      sftp://root@homeassistant.home/config homeassistant
     '';
   };
   
