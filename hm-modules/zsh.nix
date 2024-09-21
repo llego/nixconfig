@@ -10,13 +10,11 @@
       l="lsd";
       ll = "lsd -al";
       tree = "lsd --tree";
-
       fastfetch = "fastfetch -c paleofetch.jsonc";
-
-      # Append with either #default or "jail
-      nixosswitch = "sudo nixos-rebuild switch --flake ~/nixconfig";
-      hmswitch = "home-manager switch --flake ~/nixconfig";
-
+      nixosswitch-default = "sudo nixos-rebuild switch --flake ~/nixconfig#default";
+      hmswitch-default = "home-manager switch --flake ~/nixconfig#default";
+      nixosswitch-jail = "sudo nixos-rebuild switch --flake ~/nixconfig#jail";
+      hmswitch-jail = "home-manager switch --flake ~/nixconfig#jail";
       collect-garbage = "nix-collect-garbage -d";
     };
 
