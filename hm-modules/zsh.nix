@@ -8,12 +8,15 @@
 
     shellAliases = {
       l="lsd";
-      #ll = "ls -laFh --color";
       ll = "lsd -al";
       tree = "lsd --tree";
+
       fastfetch = "fastfetch -c paleofetch.jsonc";
-      nixosswitch = "sudo nixos-rebuild switch --flake ~/nixos#default";
-      hmswitch = "home-manager switch --flake ~/nixos#default";
+
+      # Append with either #default or "jail
+      nixosswitch = "sudo nixos-rebuild switch --flake ~/nixconfig";
+      hmswitch = "home-manager switch --flake ~/nixconfig";
+
       collect-garbage = "nix-collect-garbage -d";
     };
 
