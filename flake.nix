@@ -13,10 +13,15 @@
       url = "github:ovyerus/bandsnatch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
- outputs = { self, nixpkgs, ... }@inputs:
+ outputs = { self, nixpkgs, stylix, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
@@ -39,7 +44,11 @@
       # NixOS configuration
       nixosConfigurations.default = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs;};
-        modules = [ ./hosts/default/configuration.nix ];
+        modules = [ 
+          stylix.nixosModules.stylix 
+          ./hosts/default/configuration.nix
+        ];
+
       };
 
     };

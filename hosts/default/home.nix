@@ -13,6 +13,7 @@
       ../../hm-modules/gnome.nix
       ../../hm-modules/lf.nix
       ../../hm-modules/bandcamp-collection.nix
+      ../../stylix.nix
     ];
     
   home.username = "llego";
