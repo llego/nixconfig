@@ -18,7 +18,7 @@
       ../../nixos-modules/intel-hw-acceleration.nix
       ../../nixos-modules/internationalization.nix
       ../../nixos-modules/xserver.nix
-      ../../nixos-modules/stylix.nix
+     # ../../nixos-modules/stylix.nix
     ];
     
   # Nix Flakes

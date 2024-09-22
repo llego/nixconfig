@@ -1,4 +1,4 @@
-{ config, pkgs, stylix, inputs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   # Let Home Manager install and manage itself
@@ -13,6 +13,7 @@
       ../../hm-modules/gnome.nix
       ../../hm-modules/lf.nix
       ../../hm-modules/bandcamp-collection.nix
+      ../../hm-modules/stylix.nix
     ];
     
   home.username = "llego";

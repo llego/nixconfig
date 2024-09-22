@@ -16,38 +16,38 @@
     ssh-docker = {
       name = "docker.home";
       genericName = "ssh into llego@docker.home";
-      exec = "kgx -- ssh llego@docker.home";
+      exec = "gnome-terminal -- ssh llego@docker.home";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-truenas = {
       name = "truenas.home";
       genericName = "ssh into admin@truenas.home";
-      exec = "kgx -- ssh admin@truenas.home";
+      exec = "gnome-terminal -- ssh admin@truenas.home";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-christiansandberg = {
       name = "christiansandberg.fi";
-      exec = "kgx -- ssh llego@christiansandberg.fi";
+      exec = "gnome-terminal -- ssh llego@christiansandberg.fi";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-rpi3 = {
       name = "rpi3.home";
-      exec = "kgx -- ssh pi@rpi3.home";
+      exec = "gnome-terminal -- ssh pi@rpi3.home";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-rpi4 = {
       name = "rpi4.home";
-      exec = "kgx -- ssh pi@rpi4.home";
+      exec = "gnome-terminal -- ssh pi@rpi4.home";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-rpizero = {
       name = "rpizero.home";
-      exec = "kgx -- ssh pi@rpizero.home";
+      exec = "gnome-terminal -- ssh pi@rpizero.home";
       terminal = false;
       icon = "utilities-terminal";
     };
@@ -57,9 +57,12 @@
   dconf = {
     enable = true;
     settings = {
+      "org/gnome/desktop/wm/keybindings" = {
+        show-desktop = [ "<Super>d" ];
+      };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-        name = "Console";
-        command = "kgx";
+        name = "Terminal";
+        command = "gnome-terminal";
         binding = "<Super>t";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
@@ -74,12 +77,15 @@
           gsconnect.extensionUuid
         ];
       };
+     # "org/gnome/desktop/interface" = {
+     #   monospace-font-name = "JetBrainsMono Nerd Font 10";
+     # };
+      "org/gnome/Console" = {
+        custom-font = "JetBrainsMono Nerd Font 10";
+      };
       "org/gnome/shell/extensions/blur-my-shell" = {
         brightness = 0.75;
         noise-amount = 0;
-      };
-      "org/gnome/Console" = {
-        custom-font = "JetBrainsMono Nerd Font 10";
       };
     };
   };

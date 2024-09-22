@@ -21,7 +21,7 @@
 
   };
 
- outputs = { self, nixpkgs, stylix, ... }@inputs:
+ outputs = { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
@@ -30,7 +30,10 @@
       # default home-manager configuration for laptop
       homeConfigurations.default = inputs.home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./hosts/default/home.nix ];
+        modules = [ 
+          inputs.stylix.homeManagerModules.stylix
+          ./hosts/default/home.nix 
+        ];
         extraSpecialArgs = { inherit inputs; };
       };
         
@@ -43,8 +46,11 @@
 
       # NixOS configuration
       nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+        modules = [ 
+         # inputs.stylix.nixosModules.stylix 
+          ./hosts/default/configuration.nix
+        ];
         specialArgs = { inherit inputs;};
-        modules = [ stylix.nixosModules.stylix ./hosts/default/configuration.nix ];
       };
 
     };
