@@ -9,6 +9,7 @@
     vim
     nano
     home-manager
+    nh
   ];
 
   # nano settings
@@ -17,4 +18,7 @@
       set tabstospaces
       set tabsize 2
   '';
+
+  programs.gnome-terminal.enable = true;
+
 }

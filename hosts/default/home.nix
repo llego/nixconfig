@@ -22,7 +22,7 @@
   	EDITOR = "nano";
   };
   
-  fonts.fontconfig.enable = true;
+#  fonts.fontconfig.enable = true;
   
   home.stateVersion = "24.05";
   

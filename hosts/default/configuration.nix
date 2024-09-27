@@ -18,7 +18,7 @@
       ../../nixos-modules/intel-hw-acceleration.nix
       ../../nixos-modules/internationalization.nix
       ../../nixos-modules/xserver.nix
-     # ../../nixos-modules/stylix.nix
+      ../../nixos-modules/stylix.nix
     ];
     
   # Nix Flakes
@@ -26,6 +26,13 @@
   
   # Import main-user llego
   main-user.enable = true;
+
+  # Session variable for nh (not another nix helper)
+  environment.sessionVariables = {
+    FLAKE = "/home/llego/nixconfig";
+  };
+
+  networking.hostName = "laptop";
   
   # Bootloader
   boot.loader.systemd-boot.enable = true;

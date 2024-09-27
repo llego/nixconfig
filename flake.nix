@@ -27,30 +27,32 @@
       pkgs = import nixpkgs { inherit system; };
     in {
    
-      # default home-manager configuration for laptop
-      homeConfigurations.default = inputs.home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ 
-          inputs.stylix.homeManagerModules.stylix
-          ./hosts/default/home.nix 
-        ];
-        extraSpecialArgs = { inherit inputs; };
-      };
-        
-      # home-manager configuration for jail on truenas
-      homeConfigurations."jail" = inputs.home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ ./hosts/jail/home.nix ];
-        extraSpecialArgs = { inherit inputs; };
+      # home-manager configurations
+      homeConfigurations = {
+        "llego@laptop" = inputs.home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ 
+            inputs.stylix.homeManagerModules.stylix 
+            ./hosts/default/home.nix 
+          ];
+          extraSpecialArgs = { inherit inputs; };
+        };
+#        jail = inputs.home-manager.lib.homeManagerConfiguration {
+#          inherit pkgs;
+#          modules = [ ./hosts/jail/home.nix ];
+#          extraSpecialArgs = { inherit inputs; };
+#        };
       };
 
-      # NixOS configuration
-      nixosConfigurations.default = nixpkgs.lib.nixosSystem {
-        modules = [ 
-         # inputs.stylix.nixosModules.stylix 
-          ./hosts/default/configuration.nix
-        ];
-        specialArgs = { inherit inputs;};
+      # NixOS configurations
+      nixosConfigurations = {
+        laptop = nixpkgs.lib.nixosSystem {
+          modules = [ 
+            inputs.stylix.nixosModules.stylix
+            ./hosts/default/configuration.nix 
+          ];
+          specialArgs = { inherit inputs;};
+        };
       };
 
     };

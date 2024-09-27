@@ -6,9 +6,11 @@
     protonmail-desktop
     trayscale
     vlc
-    (nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; })
-    gnome-terminal
+#    (nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; })
     gnome-tweaks
     gnomeExtensions.blur-my-shell
   ];
+
+#  programs.gnome-terminal.enable = true;
+
 }

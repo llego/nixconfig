@@ -16,38 +16,38 @@
     ssh-docker = {
       name = "docker.home";
       genericName = "ssh into llego@docker.home";
-      exec = "gnome-terminal -- ssh llego@docker.home";
+      exec = "kitty -- ssh llego@docker.home";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-truenas = {
       name = "truenas.home";
       genericName = "ssh into admin@truenas.home";
-      exec = "gnome-terminal -- ssh admin@truenas.home";
+      exec = "kitty -- ssh admin@truenas.home";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-christiansandberg = {
       name = "christiansandberg.fi";
-      exec = "gnome-terminal -- ssh llego@christiansandberg.fi";
+      exec = "kitty -- ssh llego@christiansandberg.fi";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-rpi3 = {
       name = "rpi3.home";
-      exec = "gnome-terminal -- ssh pi@rpi3.home";
+      exec = "kitty -- ssh pi@rpi3.home";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-rpi4 = {
       name = "rpi4.home";
-      exec = "gnome-terminal -- ssh pi@rpi4.home";
+      exec = "kitty -- ssh pi@rpi4.home";
       terminal = false;
       icon = "utilities-terminal";
     };
   ssh-rpizero = {
       name = "rpizero.home";
-      exec = "gnome-terminal -- ssh pi@rpizero.home";
+      exec = "kitty -- ssh pi@rpizero.home";
       terminal = false;
       icon = "utilities-terminal";
     };
@@ -59,10 +59,16 @@
     settings = {
       "org/gnome/desktop/wm/keybindings" = {
         show-desktop = [ "<Super>d" ];
+        move-to-workspace-left = [ "<Shift><Super>Left" ];
+        move-to-workspace-right = [ "<Shift><Super>Right" ];
+        switch-to-workspace-1 = [ "<Super>1" ];
+        switch-to-workspace-2 = [ "<Super>2" ];
+        switch-to-workspace-3 = [ "<Super>3" ];
+        switch-to-workspace-4 = [ "<Super>4" ];
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-        name = "Terminal";
-        command = "gnome-terminal";
+        name = "Kitty";
+        command = "kitty";
         binding = "<Super>t";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
@@ -80,9 +86,9 @@
      # "org/gnome/desktop/interface" = {
      #   monospace-font-name = "JetBrainsMono Nerd Font 10";
      # };
-      "org/gnome/Console" = {
-        custom-font = "JetBrainsMono Nerd Font 10";
-      };
+#      "org/gnome/Console" = {
+#        custom-font = "JetBrainsMono Nerd Font 10";
+#      };
       "org/gnome/shell/extensions/blur-my-shell" = {
         brightness = 0.75;
         noise-amount = 0;

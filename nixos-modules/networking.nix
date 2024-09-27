@@ -1,7 +1,7 @@
 {config, pkgs, ...}:
 {
   networking = {
-    hostName = "laptop"; # Define your hostname.
+#    hostName = "laptop"; # Moved to configuration.nix
     networkmanager = {
       enable = true;
       ensureProfiles = {

@@ -17,11 +17,18 @@
 		neofetch
 		bat
 		lsd
+    nitch
+    kitty
 	];
   
   programs.fastfetch = { enable = true; settings = { }; };
 
   programs.fzf = { enable = true; enableZshIntegration = true; };
+
+  programs.kitty = {
+    enable = true;
+  };
+
 
   programs.git = {
     enable = true;
