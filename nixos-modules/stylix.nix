@@ -13,7 +13,7 @@
 #  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
 
-#  stylix.image = ./wallpaper_2.jpg;
+  stylix.image = ./wallpaper_2.jpg;
    
   stylix.fonts = {
     monospace = {
