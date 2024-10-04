@@ -57,6 +57,9 @@
   dconf = {
     enable = true;
     settings = {
+#       "org/gnome/desktop/interface" = {
+#         color-scheme = "prefer-dark";
+#       };
       "org/gnome/desktop/wm/keybindings" = {
         show-desktop = [ "<Super>d" ];
         move-to-workspace-left = [ "<Shift><Super>Left" ];
