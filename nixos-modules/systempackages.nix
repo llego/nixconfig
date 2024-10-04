@@ -10,6 +10,7 @@
     nano
     home-manager
     nh
+    firefox
   ];
 
   # nano settings

@@ -7,15 +7,10 @@
     syntaxHighlighting.enable = true;
 
     shellAliases = {
-      l="lsd";
-      ll = "lsd -al";
-      tree = "lsd --tree";
-      fastfetch = "fastfetch -c paleofetch.jsonc";
-      nixosswitch-default = "sudo nixos-rebuild switch --flake ~/nixconfig#default";
-      hmswitch-default = "home-manager switch --flake ~/nixconfig#default";
-      nixosswitch-jail = "sudo nixos-rebuild switch --flake ~/nixconfig#jail";
-      hmswitch-jail = "home-manager switch --flake ~/nixconfig#jail";
-      collect-garbage = "nix-collect-garbage -d";
+      l="${pkgs.lsd}/bin/lsd";
+      ll = "${pkgs.lsd}/bin/lsd -al";
+      tree = "${pkgs.lsd}/bin/lsd --tree";
+      fastfetch = "${pkgs.fastfetch}/bin/fastfetch -c paleofetch.jsonc";
     };
 
     history = {
@@ -28,7 +23,7 @@
 
     initExtra = '' 
       source ~/.p10k.zsh
-      nitch
+      ${pkgs.nitch}/bin/nitch
       [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
       bindkey -e
       bindkey "''${key[Up]}" up-line-or-search

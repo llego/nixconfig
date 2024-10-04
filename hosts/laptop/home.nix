@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, username, ... }:
 
 {
   # Let Home Manager install and manage itself
@@ -6,18 +6,15 @@
 
   imports =
     [ 
-      ../../hm-modules/desktop-apps.nix
+      ../../hm-modules/user-apps.nix
       ../../hm-modules/zsh.nix
-      ../../hm-modules/cli-utils.nix
-      ../../hm-modules/chromium.nix
       ../../hm-modules/gnome.nix
       ../../hm-modules/lf.nix
       ../../hm-modules/bandcamp-collection.nix
-#      ../../hm-modules/stylix.nix
     ];
     
-  home.username = "llego";
-	home.homeDirectory = "/home/llego";
+  home.username = "${username}";
+	home.homeDirectory = "/home/${username}";
   home.sessionVariables = {
   	EDITOR = "nano";
   };

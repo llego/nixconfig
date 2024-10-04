@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, username, host, ... }:
 
 {
   imports =
@@ -29,10 +29,10 @@
 
   # Session variable for nh (not another nix helper)
   environment.sessionVariables = {
-    FLAKE = "/home/llego/nixconfig";
+    FLAKE = "/home/${username}/nixconfig";
   };
 
-  networking.hostName = "laptop";
+  networking.hostName = "${host}";
   
   # Bootloader
   boot.loader.systemd-boot.enable = true;
