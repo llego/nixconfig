@@ -8,31 +8,66 @@
   imports =
     [ 
       ./hardware-configuration.nix
-      ../../nixos-modules/main-user.nix
-      ../../nixos-modules/networking.nix
+      ../../nixos-modules/wifi-networks.nix
       ../../nixos-modules/systempackages.nix
-      ../../nixos-modules/tailscale.nix
-      ../../nixos-modules/mullvad.nix
-      ../../nixos-modules/docker.nix
       ../../nixos-modules/sand.berg-certificates.nix
       ../../nixos-modules/intel-hw-acceleration.nix
-      ../../nixos-modules/internationalization.nix
       ../../nixos-modules/xserver.nix
       ../../nixos-modules/stylix.nix
     ];
     
   # Nix Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  
-  # Import main-user llego
-  main-user.enable = true;
 
   # Session variable for nh (not another nix helper)
-  environment.sessionVariables = {
-    FLAKE = "/home/${username}/nixconfig";
+  #environment.sessionVariables = {
+  #  FLAKE = "/home/${username}/nixconfig";
+  #};
+  
+  users.users.${username} = {
+    isNormalUser = true;
+    initialPassword = "12345";
+	  description = "Christian Sandberg";
+	  extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
   };
+  
+	# Allow passwordless sudo for llego
+	security.sudo.extraRules = [
+	  {
+	    users = [ "${username}" ];
+	    commands = [
+	      {
+	        command = "ALL";
+	        options = [ "SETENV" "NOPASSWD" ];
+	      }
+	    ];
+	  }
+	];
 
+  # Hostname
   networking.hostName = "${host}";
+  
+  # Set your time zone.
+  time.timeZone = "Europe/Helsinki";
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "fi_FI.UTF-8";
+    LC_IDENTIFICATION = "fi_FI.UTF-8";
+    LC_MEASUREMENT = "fi_FI.UTF-8";
+    LC_MONETARY = "fi_FI.UTF-8";
+    LC_NAME = "fi_FI.UTF-8";
+    LC_NUMERIC = "fi_FI.UTF-8";
+    LC_PAPER = "fi_FI.UTF-8";
+    LC_TELEPHONE = "fi_FI.UTF-8";
+    LC_TIME = "fi_FI.UTF-8";
+  };
+  
+  # Configure console keymap
+  console.keyMap = "sv-latin1";
   
   # Bootloader
   boot.loader.systemd-boot.enable = true;
@@ -62,14 +97,6 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
 
   system.stateVersion = "24.05";
 

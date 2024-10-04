@@ -16,7 +16,8 @@
   home.username = "${username}";
 	home.homeDirectory = "/home/${username}";
   home.sessionVariables = {
-  	EDITOR = "nano";
+  	  EDITOR = "nano";
+  	  FLAKE = "/home/${username}/nixconfig";  # Needed by nh to work from any dir
   };
   
 #  fonts.fontconfig.enable = true;

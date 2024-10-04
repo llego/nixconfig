@@ -1,25 +1,64 @@
-{config, pkgs,...}:
+{config, pkgs, username, ...}:
 {
-  # Install packages for everyone
-  programs.zsh.enable = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # System packages  
   environment.systemPackages = with pkgs; [
     vim
-    nano
     home-manager
     nh
     firefox
+    wget
+		curl
+		htop
   ];
+  
+  # Zsh
+  programs.zsh.enable = true;
 
-  # nano settings
-  programs.nano.nanorc = ''
+  # Nano settings
+  programs.nano = {
+    enable = true;
+    nanorc = ''
       set nowrap
       set tabstospaces
       set tabsize 2
-  '';
-
+    '';
+  }; 
+  
+  # Gnome Terminal
   programs.gnome-terminal.enable = true;
+  
+  # Tailscale
+  services.tailscale = {
+    enable = true;
+    extraSetFlags = [ "--operator=${username}" ];
+  };
+  
+  # Mullvad VPN
+  services.mullvad-vpn = {
+    enable = true;
+    package = pkgs.mullvad-vpn;
+  };
+  
+  # This is required in order for Mullvad to work
+  services.resolved.enable = true;
+  
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
+    daemon.settings.userland-proxy = false;
+  };
+  
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
 }

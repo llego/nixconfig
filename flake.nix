@@ -19,6 +19,7 @@
       pkgs = import nixpkgs { inherit system; };
       host = "laptop";
       username = "llego";
+      git-email = "github.login@cri.su";
     in {
    
 #      # home-manager configurations
@@ -51,6 +52,7 @@
                 inherit username;
                 inherit inputs;
                 inherit host;
+                inherit git-email;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;

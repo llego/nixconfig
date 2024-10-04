@@ -1,7 +1,8 @@
-{config, pkgs, ...}:
+{config, pkgs, username, git-email, ...}:
 {
   # Packages
   home.packages = with pkgs; [ 
+  
     # Desktop apps
     bitwarden-desktop
     protonmail-desktop
@@ -13,10 +14,7 @@
     # cli
 		atool
 		ncdu
-		htop
 		btop
-		wget
-		curl
 		lf
 		yle-dl
 		svtplay-dl
@@ -32,8 +30,8 @@
 	
   programs.git = {
     enable = true;
-    userEmail = "github.login@cri.su";
-    userName = "llego";
+    userEmail = "${git-email}";
+    userName = "${username}";
   };
 	
   programs.chromium = {
