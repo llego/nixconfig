@@ -57,9 +57,6 @@
   dconf = {
     enable = true;
     settings = {
-#       "org/gnome/desktop/interface" = {
-#         color-scheme = "prefer-dark";
-#       };
       "org/gnome/desktop/wm/keybindings" = {
         show-desktop = [ "<Super>d" ];
         move-to-workspace-left = [ "<Shift><Super>Left" ];
@@ -72,12 +69,22 @@
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         name = "Kitty";
         command = "kitty";
-        binding = "<Super>t";
+        binding = "<Super>Return";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+        name = "Kitty";
+        command = "kitty";
+        binding = "<Super>t";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
         name = "Nautilus";
         command = "nautilus";
         binding = "<Super>f";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3" = {
+        name = "Chromium";
+        command = "chromium";
+        binding = "<Super>w";
       };
       "org/gnome/shell" = {
         disable-user-extensions = false;
@@ -86,9 +93,12 @@
           gsconnect.extensionUuid
         ];
       };
-     # "org/gnome/desktop/interface" = {
-     #   monospace-font-name = "JetBrainsMono Nerd Font 10";
-     # };
+#      "org/gnome/desktop/interface" = {
+#        color-scheme = "prefer-dark";
+#      };
+#      "org/gnome/desktop/interface" = {
+#        monospace-font-name = "JetBrainsMono Nerd Font 10";
+#      };
 #      "org/gnome/Console" = {
 #        custom-font = "JetBrainsMono Nerd Font 10";
 #      };
@@ -110,4 +120,11 @@
     '';
   };
   
+  # GTK
+  gtk = {
+    gtk3 = {
+      extraConfig.gtk-application-prefer-dark-theme = true;
+    };
+  };
+
 }

@@ -15,7 +15,9 @@
 
   #stylix.image = ./wallpaper_2.jpg;
   stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";  
- 
+
+  stylix.polarity = "dark"; 
+
   stylix.fonts = {
     monospace = {
       package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; });
