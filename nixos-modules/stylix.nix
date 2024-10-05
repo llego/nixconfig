@@ -4,14 +4,13 @@
 
   stylix.enable = true;
 
-#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
-#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
 #  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/default-dark.yaml";
 #  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/lime.yaml";
 #  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/horizon-dark.yaml";
 #  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
 #  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
+#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
 
   #stylix.image = ./wallpaper_2.jpg;
   stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";  
@@ -40,5 +39,6 @@
     };
   };
 
+  stylix.opacity.terminal = 0.95;
 
 }
