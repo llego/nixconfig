@@ -66,6 +66,17 @@
         switch-to-workspace-3 = [ "<Super>3" ];
         switch-to-workspace-4 = [ "<Super>4" ];
       };
+      "org/gnome/settings-daemon/plugins/media-keys" = {
+        next = [ "<Shift><Control>n" ];
+        previous = [ "<Shift><Control>p" ];
+        play = [ "<Shift><Control>space" ];
+        custom-keybindings = [
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/"
+        ];
+      };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         name = "Kitty";
         command = "kitty";
@@ -91,6 +102,7 @@
         enabled-extensions = with pkgs.gnomeExtensions; [
           blur-my-shell.extensionUuid
           gsconnect.extensionUuid
+	  useless-gaps.extensionUuid
         ];
       };
 #      "org/gnome/desktop/interface" = {
