@@ -5,7 +5,6 @@
   environment.systemPackages = with pkgs; [
     vim
     home-manager
-    nh
     firefox
     wget
 		curl
@@ -25,6 +24,14 @@
     '';
   }; 
   
+  # not another nix helper
+  programs.nh = {
+    enable = true;
+    flake = "/home/${username}/nixconfig";
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+  };
+
   # Gnome Terminal
   programs.gnome-terminal.enable = true;
   

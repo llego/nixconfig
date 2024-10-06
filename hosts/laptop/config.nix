@@ -13,23 +13,21 @@
       ../../nixos-modules/sand.berg-certificates.nix
       ../../nixos-modules/intel-hw-acceleration.nix
       ../../nixos-modules/xserver.nix
+      #../../nixos-modules/hyprland-pkgs.nix
       ../../nixos-modules/stylix.nix
     ];
     
   # Nix Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  # Session variable for nh (not another nix helper)
-  #environment.sessionVariables = {
-  #  FLAKE = "/home/${username}/nixconfig";
-  #};
+  
+  users.defaultUserShell = pkgs.zsh;
   
   users.users.${username} = {
     isNormalUser = true;
     initialPassword = "12345";
 	  description = "Christian Sandberg";
 	  extraGroups = [ "networkmanager" "wheel" ];
-    shell = pkgs.zsh;
+    useDefaultShell = true;
   };
   
 	# Allow passwordless sudo for llego

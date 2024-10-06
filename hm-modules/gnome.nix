@@ -1,6 +1,81 @@
 {config, pkgs, ...}:
 {
-  # Application icons to Gnome menu
+  home.packages = with pkgs; [
+    gnome-tweaks
+    gnomeExtensions.blur-my-shell
+    gnomeExtensions.useless-gaps
+    gnomeExtensions.paperwm
+  ];
+
+  # Gnome settings
+  dconf = {
+    enable = true;
+    settings = {
+      "org/gnome/shell" = {
+        disable-user-extensions = false;
+        enabled-extensions = with pkgs.gnomeExtensions; [
+          blur-my-shell.extensionUuid
+          useless-gaps.extensionUuid
+          paperwm.extensionUuid
+        ];
+      };
+      "org/gnome/shell/extensions/blur-my-shell" = {
+        brightness = 0.75;
+        noise-amount = 0;
+      };
+      "org/gnome/desktop/wm/keybindings" = {
+        show-desktop = [ "<Super>d" ];
+        move-to-workspace-left = [ "<Shift><Super>Left" ];
+        move-to-workspace-right = [ "<Shift><Super>Right" ];
+        switch-to-workspace-1 = [ "<Super>1" ];
+        switch-to-workspace-2 = [ "<Super>2" ];
+        switch-to-workspace-3 = [ "<Super>3" ];
+        switch-to-workspace-4 = [ "<Super>4" ];
+      };
+      "org/gnome/settings-daemon/plugins/media-keys" = {
+        next = [ "<Shift><Control>n" ];
+        previous = [ "<Shift><Control>p" ];
+        play = [ "<Shift><Control>space" ];
+        custom-keybindings = [
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/"
+        ];
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+        name = "Kitty";
+        command = "kitty";
+        binding = "<Super>Return";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+        name = "Text editor";
+        command = "gnome-text-editor";
+        binding = "<Super>t";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
+        name = "Nautilus";
+        command = "nautilus";
+        binding = "<Super>f";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3" = {
+        name = "Chromium";
+        command = "chromium";
+        binding = "<Super>w";
+      };
+#      "org/gnome/desktop/interface" = {
+#        color-scheme = "prefer-dark";
+#      };
+#      "org/gnome/desktop/interface" = {
+#        monospace-font-name = "JetBrainsMono Nerd Font 10";
+#      };
+#      "org/gnome/Console" = {
+#        custom-font = "JetBrainsMono Nerd Font 10";
+#      };
+    };
+  };
+  
+    # Application icons to Gnome menu
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
   xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
@@ -52,90 +127,28 @@
       icon = "utilities-terminal";
     };
   };
-
-  # Gnome settings
-  dconf = {
-    enable = true;
-    settings = {
-      "org/gnome/desktop/wm/keybindings" = {
-        show-desktop = [ "<Super>d" ];
-        move-to-workspace-left = [ "<Shift><Super>Left" ];
-        move-to-workspace-right = [ "<Shift><Super>Right" ];
-        switch-to-workspace-1 = [ "<Super>1" ];
-        switch-to-workspace-2 = [ "<Super>2" ];
-        switch-to-workspace-3 = [ "<Super>3" ];
-        switch-to-workspace-4 = [ "<Super>4" ];
-      };
-      "org/gnome/settings-daemon/plugins/media-keys" = {
-        next = [ "<Shift><Control>n" ];
-        previous = [ "<Shift><Control>p" ];
-        play = [ "<Shift><Control>space" ];
-        custom-keybindings = [
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/"
-        ];
-      };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-        name = "Kitty";
-        command = "kitty";
-        binding = "<Super>Return";
-      };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-        name = "Kitty";
-        command = "kitty";
-        binding = "<Super>t";
-      };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
-        name = "Nautilus";
-        command = "nautilus";
-        binding = "<Super>f";
-      };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3" = {
-        name = "Chromium";
-        command = "chromium";
-        binding = "<Super>w";
-      };
-      "org/gnome/shell" = {
-        disable-user-extensions = false;
-        enabled-extensions = with pkgs.gnomeExtensions; [
-          blur-my-shell.extensionUuid
-          gsconnect.extensionUuid
-	  useless-gaps.extensionUuid
-        ];
-      };
-#      "org/gnome/desktop/interface" = {
-#        color-scheme = "prefer-dark";
-#      };
-#      "org/gnome/desktop/interface" = {
-#        monospace-font-name = "JetBrainsMono Nerd Font 10";
-#      };
-#      "org/gnome/Console" = {
-#        custom-font = "JetBrainsMono Nerd Font 10";
-#      };
-      "org/gnome/shell/extensions/blur-my-shell" = {
-        brightness = 0.75;
-        noise-amount = 0;
-      };
-    };
-  };
   
   # Nautilus bookmarks
-  xdg.configFile."gtk-3.0/bookmarks" = {
-    enable = true;
-    text = ''
-      sftp://admin@truenas.home/mnt truenas
-      sftp://llego@docker.home/mnt docker
-      sftp://llego@christiansandberg.fi/opt christiansandberg.fi
-      sftp://root@homeassistant.home/config homeassistant
-    '';
-  };
+#  xdg.configFile."gtk-3.0/bookmarks" = {
+#    enable = true;
+#    text = ''
+#      sftp://admin@truenas.home/mnt truenas
+#      sftp://llego@docker.home/mnt docker
+#      sftp://llego@christiansandberg.fi/opt christiansandberg.fi
+#      sftp://root@homeassistant.home/config homeassistant
+#    '';
+#  };
   
   # GTK
   gtk = {
     gtk3 = {
       extraConfig.gtk-application-prefer-dark-theme = true;
+      bookmarks = [
+        "sftp://admin@truenas.home/mnt truenas"
+        "sftp://llego@docker.home/mnt docker"
+        "sftp://llego@christiansandberg.fi/opt christiansandberg.fi"
+        "sftp://root@homeassistant.home/config homeassistant"
+      ];
     };
   };
 

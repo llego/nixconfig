@@ -9,9 +9,9 @@
     protonmail-desktop
     trayscale
     vlc
-    gnome-tweaks
-    gnomeExtensions.blur-my-shell
-    gnomeExtensions.useless-gaps
+    #gnome-tweaks
+    #gnomeExtensions.blur-my-shell
+    #gnomeExtensions.useless-gaps
     
     # cli
 		atool
@@ -27,6 +27,10 @@
 		bat
 		lsd
     nitch
+    
+    # hyprland
+    waybar
+    
 	];
 	
   programs.git = {

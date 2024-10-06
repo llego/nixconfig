@@ -9,6 +9,7 @@
       ../../hm-modules/user-apps.nix
       ../../hm-modules/zsh.nix
       ../../hm-modules/gnome.nix
+      #../../hm-modules/hyprland.nix
       ../../hm-modules/lf.nix
       ../../hm-modules/bandcamp-collection.nix
     ];
