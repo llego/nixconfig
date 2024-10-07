@@ -1,4 +1,4 @@
-{config, pkgs, username, git-email, ...}:
+{ config, pkgs, ...}:
 {
   # Packages
   home.packages = with pkgs; [ 
@@ -13,32 +13,11 @@
     #gnomeExtensions.blur-my-shell
     #gnomeExtensions.useless-gaps
     
-    # cli
-		atool
-		ncdu
-		btop
-		lf
-		yle-dl
-		svtplay-dl
-		tidal-dl
-		dig
-		tree
-		neofetch
-		bat
-		lsd
-    nitch
-    
     # hyprland
-    waybar
+    # waybar
     
 	];
-	
-  programs.git = {
-    enable = true;
-    userEmail = "${git-email}";
-    userName = "${username}";
-  };
-	
+		
   programs.chromium = {
     enable = true;
     extensions = [
@@ -52,10 +31,6 @@
     ];
   };
   
-  programs.fastfetch = { enable = true; settings = { }; };
-
-  programs.fzf = { enable = true; enableZshIntegration = true; };
-
   programs.kitty = {
     enable = true;
     settings = {

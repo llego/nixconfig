@@ -6,6 +6,7 @@
 
   imports =
     [ 
+      ../../hm-modules/cli.nix
       ../../hm-modules/user-apps.nix
       ../../hm-modules/zsh.nix
       ../../hm-modules/gnome.nix
