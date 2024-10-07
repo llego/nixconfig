@@ -27,18 +27,6 @@
       git-email = "github.login@cri.su";
     in {
    
-#      # home-manager configurations
-#      homeConfigurations = {
-#        "llego@laptop" = inputs.home-manager.lib.homeManagerConfiguration {
-#          inherit pkgs;
-#          modules = [ 
-#            inputs.stylix.homeManagerModules.stylix 
-#            ./hosts/default/home.nix 
-#          ];
-#          extraSpecialArgs = { inherit inputs; };
-#        };
-#      };
-
       # NixOS configurations
       nixosConfigurations = {
         "${host}" = nixpkgs.lib.nixosSystem {
