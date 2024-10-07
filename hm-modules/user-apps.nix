@@ -69,6 +69,7 @@
 #      draw_minimal_borders = true;
       hide_window_decorations = true;
       window_margin_width = 5;
+      tab_bar_style = "slant";
     };
   };
   

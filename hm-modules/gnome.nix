@@ -15,7 +15,7 @@
         disable-user-extensions = false;
         enabled-extensions = with pkgs.gnomeExtensions; [
           blur-my-shell.extensionUuid
-          useless-gaps.extensionUuid
+          #useless-gaps.extensionUuid
           paperwm.extensionUuid
         ];
       };
@@ -46,22 +46,22 @@
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         name = "Kitty";
         command = "kitty";
-        binding = "<Super>Return";
+        binding = "<Alt>Return";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
         name = "Text editor";
         command = "gnome-text-editor";
-        binding = "<Super>t";
+        binding = "<Alt>t";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
         name = "Nautilus";
         command = "nautilus";
-        binding = "<Super>f";
+        binding = "<Alt>f";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3" = {
         name = "Chromium";
         command = "chromium";
-        binding = "<Super>w";
+        binding = "<Alt>w";
       };
 #      "org/gnome/desktop/interface" = {
 #        color-scheme = "prefer-dark";
