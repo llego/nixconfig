@@ -40,11 +40,12 @@
       mouse_hide_wait = "-1.0";
       window_padding_width = 10;
 #      background_opacity = "0.5";
-      background_blur = 10;
+      background_blur = 10;   # this is not working
 #      draw_minimal_borders = true;
       hide_window_decorations = true;
       window_margin_width = 5;
       tab_bar_style = "slant";
+      linux_display_server = "X11";  # try to get rounded corners
     };
   };
   
