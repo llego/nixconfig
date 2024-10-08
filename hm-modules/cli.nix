@@ -25,8 +25,6 @@
 
   programs.fastfetch = { enable = true; settings = { }; };
 
-  programs.fzf = { enable = true; enableZshIntegration = true; };
-
 
   # Loooong lf configuration
   xdg.configFile."lf/icons".source = ../assets/icons;

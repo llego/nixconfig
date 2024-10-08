@@ -10,7 +10,6 @@
       l="${pkgs.lsd}/bin/lsd";
       ll = "${pkgs.lsd}/bin/lsd -al";
       tree = "${pkgs.lsd}/bin/lsd --tree";
-      fastfetch = "${pkgs.fastfetch}/bin/fastfetch -c paleofetch.jsonc";
     };
 
     history = {
@@ -18,12 +17,14 @@
       path = "${config.xdg.dataHome}/zsh/history";
       ignoreSpace = true;
       ignoreDups = true;
-      share = true;              
+      share = true;
+      append = true;
+         
     };
 
     initExtra = '' 
-      source ~/.p10k.zsh
       ${pkgs.nitch}/bin/nitch
+      #source ~/.p10k.zsh
       [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
       bindkey -e
       bindkey "''${key[Up]}" up-line-or-search
@@ -32,15 +33,30 @@
       bindkey '^p' history-search-backward
       bindkey '^n' history-search-forward
       bindkey '^[w' kill-region
-      bindkey '^[[3~'  delete-char
+      bindkey '^[[3~' delete-char
       '';
 
-    plugins = [
-       {
-         name = "powerlevel10k";                                                           
-         src = pkgs.zsh-powerlevel10k;                                                     
-         file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-       } 
-    ];
+#    plugins = [
+#      {
+#        name = "powerlevel10k";                                                           
+#        src = pkgs.zsh-powerlevel10k;                                                     
+#        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+#      }
+#    ];
   };
+
+  programs.oh-my-posh = {
+    enable = true;
+    enableZshIntegration = true;
+    #useTheme = "tokyonight_storm";
+    #useTheme = "pure";
+    useTheme = "bubbles";
+  };
+
+  programs.fzf = { 
+    enable = true; 
+    enableZshIntegration = true; 
+  };
+
+
 }
