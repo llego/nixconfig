@@ -4,14 +4,18 @@
 
   stylix.enable = true;
 
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
-#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/default-dark.yaml";
-#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/lime.yaml";
-#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/horizon-dark.yaml";
-#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
-#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
-#  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
+  # Color theme, see https://tinted-theming.github.io/base16-gallery/
 
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/default-dark.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/lime.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/horizon-dark.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-city-dark.yaml";
+  
+  # Wallapaper
   stylix.image = ./../assets/wallpaper-blue.jpg;
   #stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";  
 
