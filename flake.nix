@@ -31,7 +31,7 @@
       nixosConfigurations = {
         "${host}" = nixpkgs.lib.nixosSystem {
           specialArgs = {
-       	    inherit system;
+            inherit system;
             inherit inputs;
             inherit username;
             inherit host;
@@ -56,5 +56,19 @@
         };
       };
 
-    };
+      # home-manager configurations
+      homeConfigurations = {
+        "llego@docker" = inputs.home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./hosts/jail-docker/home.nix ];
+          extraSpecialArgs = { 
+	    inherit username;
+            inherit inputs;
+            host = "docker";
+            inherit git-email;
+	  };
+        };
+      };
+      
+  };
 }
