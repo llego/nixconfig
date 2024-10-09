@@ -14,17 +14,23 @@
     neofetch
     bat
     lsd
-    nitch    
+    nitch
+    fastfetch
   ];
   
+  # git
   programs.git = {
     enable = true;
     userEmail = "${git-email}";
     userName = "${username}";
   };
 
-  programs.fastfetch = { enable = true; settings = { }; };
-
+  # tidal-dl configuration
+  home.file.tidal-dl-conf = {
+    enable = true;
+    source = ../assets/.tidal-dl.json;
+    target = ".tidal-dl.json";
+  };
 
   # Loooong lf configuration
   xdg.configFile."lf/icons".source = ../assets/icons;
