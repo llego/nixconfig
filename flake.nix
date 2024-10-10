@@ -18,7 +18,7 @@
 
   };
 
- outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
@@ -62,11 +62,11 @@
           inherit pkgs;
           modules = [ ./hosts/jail-docker/home.nix ];
           extraSpecialArgs = { 
-	    inherit username;
+            inherit username;
             inherit inputs;
             host = "docker";
             inherit git-email;
-	  };
+          };
         };
       };
       

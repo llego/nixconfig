@@ -12,6 +12,7 @@
       ../../hm-modules/gnome.nix
       #../../hm-modules/hyprland.nix
       ../../hm-modules/bandcamp-collection.nix
+      ../../hm-modules/lf.nix
     ];
     
   home.username = "${username}";
