@@ -16,6 +16,7 @@
       ../../nixos-modules/printer.nix
       #../../nixos-modules/hyprland-pkgs.nix
       ../../nixos-modules/stylix.nix
+      ../../nixos-modules/niri.nix
     ];
     
   # Nix Flakes

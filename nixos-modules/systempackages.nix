@@ -8,6 +8,7 @@
     wget
     curl
     htop
+    cachix
   ];
   
   # Zsh

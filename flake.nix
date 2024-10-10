@@ -16,6 +16,7 @@
     hyprland-plugins.url = "github:hyprwm/hyprland-plugins";
     hyprland-plugins.inputs.hyprland.follows = "hyprland";
 
+    niri.url = "github:sodiboo/niri-flake";
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
@@ -39,8 +40,8 @@
           modules = [ 
             ./hosts/${host}/config.nix
             inputs.stylix.nixosModules.stylix
-            home-manager.nixosModules.home-manager
-            {
+            inputs.niri.nixosModules.niri
+            home-manager.nixosModules.home-manager {
               home-manager.extraSpecialArgs = {
                 inherit username;
                 inherit inputs;
@@ -50,8 +51,8 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.${username} = import ./hosts/${host}/home.nix;
-            } 
+              home-manager.users.${username} = import ./hosts/${host}/home.nix;   
+            }
           ];
         };
       };
