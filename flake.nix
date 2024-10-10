@@ -58,7 +58,7 @@
 
       # home-manager configurations
       homeConfigurations = {
-        "llego@docker" = inputs.home-manager.lib.homeManagerConfiguration {
+        "${username}@docker" = inputs.home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./hosts/jail-docker/home.nix ];
           extraSpecialArgs = { 

@@ -3,12 +3,11 @@
 
   # System packages  
   environment.systemPackages = with pkgs; [
-    vim
     home-manager
     firefox
     wget
-		curl
-		htop
+    curl
+    htop
   ];
   
   # Zsh
