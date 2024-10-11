@@ -2,8 +2,6 @@
 {
   # Packages
   home.packages = with pkgs; [ 
-  
-    # Desktop apps
     #(nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; })
     bitwarden-desktop
     protonmail-desktop
@@ -12,10 +10,8 @@
     #gnome-tweaks
     #gnomeExtensions.blur-my-shell
     #gnomeExtensions.useless-gaps
-    
-    # hyprland
-    # waybar
-    
+    #kanshi
+    #hyprpaper
 	];
 		
   programs.chromium = {

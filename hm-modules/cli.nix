@@ -27,6 +27,8 @@
       set expandtab
       set shiftwidth=2 smarttab
       set autoindent
+      set cursorcolumn
+      set cursorline
     '';
   };
 

@@ -9,6 +9,7 @@
     curl
     htop
     cachix
+    pavucontrol
   ];
   
   # Zsh

@@ -14,11 +14,14 @@
       ../../nixos-modules/intel-hw-acceleration.nix
       ../../nixos-modules/xserver.nix
       ../../nixos-modules/printer.nix
-      #../../nixos-modules/hyprland-pkgs.nix
       ../../nixos-modules/stylix.nix
-      ../../nixos-modules/niri.nix
+      #../../nixos-modules/niri.nix
     ];
     
+  # Niri
+  #programs.niri.enable = true;
+  #programs.waybar.enable = true;
+
   # Nix Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   
