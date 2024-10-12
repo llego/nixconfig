@@ -22,22 +22,9 @@
    
     # Gnome config
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
+      #modules = [ ./hosts/${host}/config.nix ];
       modules = [ 
-        ./hosts/${host}/config.nix
-        /*
-        home-manager.nixosModules.home-manager {
-          home-manager.extraSpecialArgs = {
-            inherit username;
-            inherit inputs;
-            inherit host;
-            inherit git-email;
-          };
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "backup";
-          home-manager.users.${username} = import ./hosts/${host}/home.nix;   
-        }
-        */
+        ./desktop 
       ];
       specialArgs = {
         inherit system;

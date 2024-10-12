@@ -1,0 +1,48 @@
+{ pkgs, inputs, config, ... }: 
+
+{
+
+  stylix.enable = true;
+
+  # Color theme, see https://tinted-theming.github.io/base16-gallery/
+
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/default-dark.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/lime.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/horizon-dark.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+  #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-city-dark.yaml";
+  
+  # Wallapaper
+  stylix.image = ./wallpaper-blue.jpg;
+  #stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";  
+
+  stylix.polarity = "dark"; 
+
+  stylix.fonts = {
+    monospace = {
+      package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; });
+      name = "JetBrainsMono Nerd Font";
+    };
+    serif = {
+      package = pkgs.cantarell-fonts;
+      name = "Cantarell Regular";
+    };
+    sansSerif = config.stylix.fonts.serif;
+    emoji = {
+      package = pkgs.noto-fonts-emoji;
+      name = "Noto Color Emoji";
+    };
+    sizes = {
+      terminal = 10;
+      popups = 10;
+      applications = 10;
+      desktop = 10;
+    };
+  };
+
+  stylix.opacity.terminal = 0.95;
+
+}
