@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, username, host, ... }:
+{ config, pkgs, inputs, username, host, git-email, ... }:
 
 {
   imports =
@@ -16,6 +16,9 @@
       ../../nixos-modules/printer.nix
       ../../nixos-modules/stylix.nix
       #../../nixos-modules/niri.nix
+      inputs.stylix.nixosModules.stylix
+      inputs.home-manager.nixosModules.home-manager
+      ../../home-manager
     ];
     
   # Niri

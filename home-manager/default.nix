@@ -1,3 +1,4 @@
+{ inputs, username, host, git-email, ... }:
 {
   home-manager = {
     useGlobalPkgs = true;

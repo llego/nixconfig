@@ -12,13 +12,13 @@
       ../../hm-modules/gnome.nix
       ../../hm-modules/bandcamp-collection.nix
       ../../hm-modules/lf.nix
-      ../../hm-modules/niri.nix
+      #../../hm-modules/niri.nix
     ];
     
   home.username = "${username}";
 	home.homeDirectory = "/home/${username}";
   home.sessionVariables = {
-  	  EDITOR = "nano";
+  	  EDITOR = "vim";
   	  FLAKE = "/home/${username}/nixconfig";  # Needed by nh to work from any dir
   };
   

@@ -80,7 +80,9 @@
   xdg.mime.enable = true;
   xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
 
+  xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
+      "text/plain" = "gnome-text-editor.desktop";
       "x-scheme-handler/mailto" = "proton-mail.desktop";
       "text/html" = "chromium-browser.desktop";
       "application/xhtml+xml" = "chromium-browser.desktop";
