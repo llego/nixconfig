@@ -3,12 +3,10 @@
 
   # System packages  
   environment.systemPackages = with pkgs; [
-    home-manager
     firefox
     wget
     curl
     htop
-    cachix
     pavucontrol
   ];
   

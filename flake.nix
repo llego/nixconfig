@@ -11,7 +11,7 @@
     niri.url = "github:sodiboo/niri-flake";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
@@ -22,9 +22,9 @@
    
     # Gnome config
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-      #modules = [ ./hosts/${host}/config.nix ];
       modules = [ 
-        ./desktop 
+        ./laptop
+        ./hardware-configuration/laptop.nix
       ];
       specialArgs = {
         inherit system;
@@ -34,33 +34,8 @@
         inherit git-email;
       };        
     };
-    
-    # Niri config
-    nixosConfigurations.niri = nixpkgs.lib.nixosSystem {
-      modules = [ 
-        ./hosts/${host}/config.nix
-        inputs.stylix.nixosModules.stylix
-        inputs.niri.nixosModules.niri
-        home-manager.nixosModules.home-manager {
-          home-manager.extraSpecialArgs = {
-            inherit username;
-            inherit inputs;
-            inherit host;
-            inherit git-email;
-          };
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "backup";
-          home-manager.users.${username} = import ./hosts/${host}-niri/home.nix;   
-        }
-      ];
-      specialArgs = {
-        inherit system;
-        inherit inputs;
-        inherit username;
-        inherit host;
-      };        
-    };
+
+
 
     # docker jail on TrueNAS
     homeConfigurations = {
