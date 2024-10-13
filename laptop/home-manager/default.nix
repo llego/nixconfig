@@ -1,13 +1,13 @@
-{ inputs, username, host, git-email, ... }:
+{ inputs, username, hostname, git-email, ... }:
 {
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
     extraSpecialArgs = {
-      inherit username;
       inherit inputs;
-      inherit host;
+      inherit username;
+      inherit hostname;
       inherit git-email;
     };
   };

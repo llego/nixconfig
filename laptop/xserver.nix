@@ -4,9 +4,9 @@
   services.xserver = {
     enable = true;
     displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
+    #desktopManager.gnome.enable = true;
     xkb = {
-      layout = "se";
+      layout = "fi";
       variant = "";
     };
   };

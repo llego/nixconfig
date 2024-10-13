@@ -1,4 +1,4 @@
-{ pkgs, inputs, username, ... }:
+{ pkgs, inputs, username, hostname, git-email, ... }:
 
 {
   # Let Home Manager install and manage itself
@@ -8,6 +8,7 @@
     ./bandcamp-collection.nix
     ./cli.nix
     ./desktop-apps.nix
+    ./gtk.nix
     ./lf.nix
     ./zsh.nix
   ];

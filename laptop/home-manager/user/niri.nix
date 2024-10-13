@@ -62,7 +62,7 @@
 
     input = {
       keyboard.xkb.layout = "fi";
-      touchpad.natural-scroll = false;
+      #touchpad.natural-scroll = false;
     };
 
     spawn-at-startup = [
@@ -102,6 +102,7 @@
       "Mod+D".action.spawn = "fuzzel";
       "Mod+Return".action.spawn = "fuzzel";
       "Alt+W".action.spawn = "chromium";
+      "Alt+F".action.spawn = "nautilus";
 
       "Mod+Left".action = focus-column-left;
       "Mod+Right".action = focus-column-right;

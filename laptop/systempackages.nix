@@ -4,6 +4,8 @@
   # System packages  
   environment.systemPackages = with pkgs; [
     firefox
+    nautilus
+    gnome-text-editor
     wget
     curl
     htop

@@ -75,7 +75,7 @@
     };
   };
   
-    # Application icons to Gnome menu
+  # Application icons to Gnome menu
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
   xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
@@ -127,30 +127,6 @@
       exec = "kitty -- ssh pi@rpizero.home";
       terminal = false;
       icon = "utilities-terminal";
-    };
-  };
-  
-  # Nautilus bookmarks
-#  xdg.configFile."gtk-3.0/bookmarks" = {
-#    enable = true;
-#    text = ''
-#      sftp://admin@truenas.home/mnt truenas
-#      sftp://llego@docker.home/mnt docker
-#      sftp://llego@christiansandberg.fi/opt christiansandberg.fi
-#      sftp://root@homeassistant.home/config homeassistant
-#    '';
-#  };
-  
-  # GTK
-  gtk = {
-    gtk3 = {
-      extraConfig.gtk-application-prefer-dark-theme = true;
-      bookmarks = [
-        "sftp://admin@truenas.home/mnt truenas"
-        "sftp://llego@docker.home/mnt docker"
-        "sftp://llego@christiansandberg.fi/opt christiansandberg.fi"
-        "sftp://root@homeassistant.home/config homeassistant"
-      ];
     };
   };
 

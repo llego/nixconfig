@@ -1,12 +1,9 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { pkgs, inputs, username, hostname, ... }:
 
 {
   imports = [ 
     ./../hardware-configuration/laptop.nix
+    ./home-manager
     ./hardware.nix
     ./locale.nix
     ./nix.nix
@@ -23,19 +20,35 @@
   specialisation = {
     gnome.configuration = {
       environment.etc."specialisation".text = "gnome";
-      imports = [ ./home-manager/default-gnome.nix ];
+      
+      services.xserver.desktopManager.gnome.enable = true;
+      
+      home-manager.users.${username}.imports = [ 
+        ./home-manager/user/common.nix
+        ./home-manager/user/gnome.nix
+      ]; 
     };
     
     niri.configuration = {
       environment.etc."specialisation".text = "niri";
-      imports = [ ./home-manager/default-niri.nix inputs.niri.nixosModules.niri ];
-
+      
+      imports = [ inputs.niri.nixosModules.niri ];
+      
+      home-manager.users.${username}.imports = [ 
+        ./home-manager/user/common.nix
+        ./home-manager/user/niri.nix
+        ./home-manager/user/waybar.nix
+        ./home-manager/user/kanshi.nix
+        ./home-manager/user/xwayland-satellite.nix
+      ]; 
+      
       niri-flake.cache.enable = true;
       programs.niri.enable = true;
+      services.blueman.enable = true;
       environment.variables.NIXOS_OZONE_WL = "1";
-      #programs.waybar.enable = true;
     };
   };
+  
   
   networking.hostName = "${hostname}";
   
