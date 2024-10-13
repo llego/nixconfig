@@ -1,4 +1,3 @@
-{config, pkgs, ...}:
 {
   networking = {
 #    hostName = "laptop"; # Moved to configuration.nix

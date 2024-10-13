@@ -1,4 +1,4 @@
-{ config, pkgs, username, git-email, ...}:
+{ pkgs, username, git-email, ...}:
 {
   # Packages
   home.packages = with pkgs; [ 

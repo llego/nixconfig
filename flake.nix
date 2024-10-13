@@ -23,16 +23,35 @@
     # Gnome config
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
       modules = [ 
+        { networking.hostName = "laptop"; }
         ./laptop
         ./hardware-configuration/laptop.nix
       ];
       specialArgs = {
-        inherit system;
+        #inherit system;
         inherit inputs;
         inherit username;
         inherit host;
         inherit git-email;
-      };        
+      };
+      #specialArgs = inputs;
+    };
+    
+    # Niri config
+    nixosConfigurations."laptop-niri" = nixpkgs.lib.nixosSystem {
+      modules = [ 
+        { networking.hostName = "laptop-niri"; }
+        ./laptop/default-niri.nix
+        ./hardware-configuration/laptop.nix
+      ];
+      specialArgs = {
+        #inherit system;
+        inherit inputs;
+        inherit username;
+        inherit host;
+        inherit git-email;
+      };
+      #specialArgs = inputs;
     };
 
 

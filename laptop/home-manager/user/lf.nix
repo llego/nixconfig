@@ -1,5 +1,5 @@
 
-{ config, pkgs, username, git-email, ...}:
+{ pkgs, ...}:
 {
   # Loooong lf configuration
   xdg.configFile."lf/icons".source = ../assets/icons;

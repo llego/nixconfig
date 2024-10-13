@@ -8,20 +8,19 @@
   imports = [ 
     ./hardware.nix
     ./locale.nix
-    #./niri.nix
+    ./niri.nix
     ./nix.nix
     ./sand.berg-certificates.nix
     ./systempackages.nix
     ./wifi-networks.nix
     ./xserver.nix
 
-    ./home-manager
+    ./home-manager/default-niri.nix
     inputs.home-manager.nixosModules.home-manager
+    inputs.niri.nixosModules.niri
     
     ./stylix
     inputs.stylix.nixosModules.stylix
-    
-    #inputs.niri.nixosModules.niri
   ];
   
   #networking.hostName = "${host}";

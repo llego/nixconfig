@@ -10,6 +10,6 @@
       inherit host;
       inherit git-email;
     };
-    users.${username}.imports = [ ./user ];
+    users.${username}.imports = [ ./user/default-niri.nix ];
   };
 }
