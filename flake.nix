@@ -16,41 +16,20 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
     username = "llego";
+    hostname = "laptop";
     git-email = "github.login@cri.su";
   in {
    
-    # Gnome config
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-      modules = [ 
-        { networking.hostName = "laptop"; }
-        ./laptop/default-gnome.nix
-        ./hardware-configuration/laptop.nix
-      ];
+      modules = [ ./laptop ];
       specialArgs = {
         #inherit system;
         inherit inputs;
         inherit username;
+        inherit hostname;
         inherit git-email;
       };
-      #specialArgs = inputs;
     };
-    
-    # Niri config
-    nixosConfigurations."laptop-niri" = nixpkgs.lib.nixosSystem {
-      modules = [ 
-        { networking.hostName = "laptop-niri"; }
-        ./laptop/default-niri.nix
-        ./hardware-configuration/laptop.nix
-      ];
-      specialArgs = {
-        #inherit system;
-        inherit inputs;
-        inherit username;
-        inherit git-email;
-      };
-      #specialArgs = inputs;
-    };
-
 
 
     # docker jail on TrueNAS
