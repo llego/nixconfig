@@ -1,15 +1,5 @@
-{ inputs, username, host, git-email, ... }:
+{ inputs, username, ... }:
 {
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "backup";
-    extraSpecialArgs = {
-      inherit username;
-      inherit inputs;
-      inherit host;
-      inherit git-email;
-    };
-    users.${username}.imports = [ ./user/default-niri.nix ];
-  };
+  imports = [ ./common.nix ];
+  home-manager.users.${username}.imports = [ ./user/default-niri.nix ]; 
 }

@@ -2,26 +2,20 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, inputs, username, host, ... }:
+{ pkgs, inputs, username, ... }:
 
 {
   imports = [ 
     ./hardware.nix
     ./locale.nix
-    #./niri.nix
-    ./nix.nix
     ./sand.berg-certificates.nix
     ./systempackages.nix
     ./wifi-networks.nix
+    ./stylix
     ./xserver.nix
 
-    ./home-manager
     inputs.home-manager.nixosModules.home-manager
-    
-    ./stylix
     inputs.stylix.nixosModules.stylix
-    
-    #inputs.niri.nixosModules.niri
   ];
   
   #networking.hostName = "${host}";

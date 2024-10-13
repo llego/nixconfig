@@ -15,7 +15,6 @@
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
-    host = "laptop";
     username = "llego";
     git-email = "github.login@cri.su";
   in {
@@ -24,14 +23,13 @@
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
       modules = [ 
         { networking.hostName = "laptop"; }
-        ./laptop
+        ./laptop/default-gnome.nix
         ./hardware-configuration/laptop.nix
       ];
       specialArgs = {
         #inherit system;
         inherit inputs;
         inherit username;
-        inherit host;
         inherit git-email;
       };
       #specialArgs = inputs;
@@ -48,7 +46,6 @@
         #inherit system;
         inherit inputs;
         inherit username;
-        inherit host;
         inherit git-email;
       };
       #specialArgs = inputs;

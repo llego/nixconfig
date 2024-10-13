@@ -10,6 +10,5 @@
       inherit host;
       inherit git-email;
     };
-    users.${username}.imports = [ ./user ];
   };
 }
