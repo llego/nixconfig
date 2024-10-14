@@ -13,7 +13,7 @@
       spacing = 0;
       modules-left = [ "niri/workspaces" "wlr/taskbar" ];
       modules-center = [ "clock" ];
-      modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray"];
+      modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray" "custom/exit"];
 
       "niri/workspaces" = {
         format = "{icon}";
@@ -32,30 +32,37 @@
           "^(.{16}).+$" = "$1…";
         };
       };
+      
+     "custom/exit" = {
+        tooltip = false;
+        format = " ";
+        on-click = "sleep 0.1 && wlogout";
+      };
 
-      "tray".spacing = 10;
+
+      "tray".spacing = 15;
       "clock".format-alt = "{:%Y-%m-%d}";
-      "cpu".format = "{usage}% ";
-      "memory".format = "{}% ";
+      "cpu".format = "  {usage}%";
+      "memory".format = "  {}%";
       "battery" = {
         bat = "BAT0";
-        format = "{capacity}% {icon}";
+        format = "{icon}  {capacity}%";
         format-icons = ["" "" "" "" ""];
         format-plugged = "{capacity}% ";
       };
       "network" = {
-        format-wifi = "{essid} ({signalStrength}%) ";
-        format-ethernet = "{ifname}: {ipaddr}/{cidr} ";
-        format-disconnected =  "Disconnected ⚠";
+        format-wifi = "   {essid} ({signalStrength}%)";
+        format-ethernet = "   {ifname}: {ipaddr}/{cidr}";
+        format-disconnected =  "⚠  Disconnected";
         format-alt = "{ifname}: {ipaddr}/{cidr}";
-        on-click = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
+        #on-click = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
       };
       "pulseaudio" = {
-        format = "{volume}% {icon}";
-        format-bluetooth = "{volume}% {icon}";
-        format-muted = "";
+        format = "{icon}  {volume}%";
+        format-bluetooth = "{icon}  {volume}%";
+        format-muted = " ";
         format-icons = {
-            headphones = "";
+            headphones = " ";
             default = ["" ""];
         };
         on-click = "${pkgs.pavucontrol}/bin/pavucontrol";

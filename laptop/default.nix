@@ -36,9 +36,11 @@
       
       home-manager.users.${username}.imports = [ 
         ./home-manager/user
+        ./home-manager/user/fuzzel.nix
+        ./home-manager/user/kanshi.nix
         ./home-manager/user/niri.nix
         ./home-manager/user/waybar.nix
-        ./home-manager/user/kanshi.nix
+        ./home-manager/user/wlogout.nix
         ./home-manager/user/xwayland-satellite.nix
       ]; 
       
