@@ -69,7 +69,6 @@
         "exec sleep 5; systemctl --user reset-failed waybar.service" 
         #"exec sleep 3; systemctl --user start waybar.service"
         #"exec sleep 5; ${pkgs.waybar}/bin/waybar -c ${config.home.homeDirectory}/.config/waybar/config"
-        "exec sleep 5; systemctl --user start hyprpaper.service"
         "exec sleep 5; systemctl --user start kanshi.service"
         "exec sleep 7; ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
         #"exec sleep 3; systemctl --user start network-manager-applet.service"
@@ -162,8 +161,8 @@
         allow-when-locked = true;
       };
 
-      "XF86MonBrightnessDown".action.spawn = [ "brightnessctl" "set" "5%-"];
-      "XF86MonBrightnessUp".action.spawn = [ "brightnessctl" "set" "5%+"];
+      "XF86MonBrightnessDown".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "10%-"];
+      "XF86MonBrightnessUp".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "10%+"];
 
       "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
         "systemctl --user restart waybar.service"
