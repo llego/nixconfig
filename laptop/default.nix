@@ -21,6 +21,7 @@
   home-manager.users.${username}.imports = [ 
     ./home-manager/user
     ./home-manager/user/desktop-apps.nix
+    ./home-manager/user/desktopEntries.nix
     ./home-manager/user/gtk.nix
   ];
   
