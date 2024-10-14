@@ -167,7 +167,6 @@
 
       "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
         "systemctl --user restart waybar.service"
-        "systemctl --user restart hyprpaper.service"
       ]);
     };
 
