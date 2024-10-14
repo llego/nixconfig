@@ -24,7 +24,7 @@
       services.xserver.desktopManager.gnome.enable = true;
       
       home-manager.users.${username}.imports = [ 
-        ./home-manager/user/common.nix
+        ./home-manager/user
         ./home-manager/user/gnome.nix
       ]; 
     };
@@ -35,7 +35,7 @@
       imports = [ inputs.niri.nixosModules.niri ];
       
       home-manager.users.${username}.imports = [ 
-        ./home-manager/user/common.nix
+        ./home-manager/user
         ./home-manager/user/niri.nix
         ./home-manager/user/waybar.nix
         ./home-manager/user/kanshi.nix
@@ -44,7 +44,8 @@
       
       niri-flake.cache.enable = true;
       programs.niri.enable = true;
-      services.blueman.enable = true;
+      services.blueman.enable = true;   # Bluetooth
+      services.gvfs.enable = true;      # Nautilus sftp
       environment.variables.NIXOS_OZONE_WL = "1";
     };
   };

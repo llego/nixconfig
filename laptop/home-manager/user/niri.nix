@@ -62,7 +62,6 @@
 
     input = {
       keyboard.xkb.layout = "fi";
-      #touchpad.natural-scroll = false;
     };
 
     spawn-at-startup = [
@@ -81,6 +80,11 @@
       {
         matches = [ { app-id = "^org[.]pulseaudio[.]pavucontrol$"; } ];
         default-column-width.fixed = 762;
+      }
+      {
+        matches = [ { app-id = "kitty"; } ];
+        opacity = 0.90;
+        draw-border-with-background = false;
       }
     ];
     
@@ -140,26 +144,23 @@
       Print.action = screenshot;
       "Ctrl+Print".action = screenshot-screen;
       "Alt+Print".action = screenshot-window;
-
-      #"XF86AudioRaiseVolume".action.spawn = ["wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+"];
-      #"XF86AudioLowerVolume".action.spawn = ["wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"];
       
-        XF86AudioRaiseVolume = {
-          action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+";
-          allow-when-locked = true;
-        };
-        XF86AudioLowerVolume = {
-          action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-";
-          allow-when-locked = true;
-        };
-        XF86AudioMute = {
-          action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle";
-          allow-when-locked = true;
-        };
-        XF86AudioMicMute = {
-          action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle";
-          allow-when-locked = true;
-        };
+      XF86AudioRaiseVolume = {
+        action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+";
+        allow-when-locked = true;
+      };
+      XF86AudioLowerVolume = {
+        action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-";
+        allow-when-locked = true;
+      };
+      XF86AudioMute = {
+        action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle";
+        allow-when-locked = true;
+      };
+      XF86AudioMicMute = {
+        action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle";
+        allow-when-locked = true;
+      };
 
       "XF86MonBrightnessDown".action.spawn = [ "brightnessctl" "set" "5%-"];
       "XF86MonBrightnessUp".action.spawn = [ "brightnessctl" "set" "5%+"];

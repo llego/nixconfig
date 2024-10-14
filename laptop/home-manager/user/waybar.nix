@@ -22,7 +22,7 @@
       };
 
       "wlr/taskbar" = {
-        format = "{icon} {title}";
+        format = "{icon}";
         tooltip-format = "{title} | {app_id}";
         on-click = "activate";
         on-click-middle = "close";

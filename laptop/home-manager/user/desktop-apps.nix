@@ -2,16 +2,10 @@
 {
   # Packages
   home.packages = with pkgs; [ 
-    #(nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; })
     bitwarden-desktop
     protonmail-desktop
     trayscale
     vlc
-    #gnome-tweaks
-    #gnomeExtensions.blur-my-shell
-    #gnomeExtensions.useless-gaps
-    #kanshi
-    #hyprpaper
 	];
 		
   programs.chromium = {

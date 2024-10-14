@@ -4,6 +4,7 @@
     gtk3 = {
       #extraConfig.gtk-application-prefer-dark-theme = true;
       bookmarks = [
+        "file:///home/llego/nixconfig nixconfig"
         "sftp://admin@truenas.home/mnt truenas"
         "sftp://llego@docker.home/mnt docker"
         "sftp://llego@christiansandberg.fi/opt christiansandberg.fi"
