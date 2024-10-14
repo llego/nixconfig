@@ -7,8 +7,6 @@
   imports = [ 
     ./bandcamp-collection.nix
     ./cli.nix
-    ./desktop-apps.nix
-    ./gtk.nix
     ./lf.nix
     ./zsh.nix
   ];

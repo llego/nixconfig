@@ -17,6 +17,13 @@
     inputs.stylix.nixosModules.stylix
   ];
   
+  # Default home-manager user config for laptop
+  home-manager.users.${username}.imports = [ 
+    ./home-manager/user
+    ./home-manager/user/desktop-apps.nix
+    ./home-manager/user/gtk.nix
+  ];
+  
   specialisation = {
     gnome.configuration = {
       environment.etc."specialisation".text = "gnome";
@@ -24,7 +31,6 @@
       services.xserver.desktopManager.gnome.enable = true;
       
       home-manager.users.${username}.imports = [ 
-        ./home-manager/user
         ./home-manager/user/gnome.nix
       ]; 
     };
@@ -35,7 +41,6 @@
       imports = [ inputs.niri.nixosModules.niri ];
       
       home-manager.users.${username}.imports = [ 
-        ./home-manager/user
         ./home-manager/user/fuzzel.nix
         ./home-manager/user/kanshi.nix
         ./home-manager/user/niri.nix

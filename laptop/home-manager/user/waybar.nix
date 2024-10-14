@@ -10,7 +10,7 @@
       margin-top = 4;
       margin-left = 4;
       margin-right = 4;
-      spacing = 0;
+      spacing = 5;
       modules-left = [ "niri/workspaces" "wlr/taskbar" ];
       modules-center = [ "clock" ];
       modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray" "custom/exit"];
