@@ -36,7 +36,10 @@
     homeConfigurations = {
       "${username}@docker" = inputs.home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./hosts/jail-docker/home.nix ];
+        modules = [ ./laptop/home-manager/user ];
+        programs.home-manager.enable = true;
+        home.username = "${username}";
+	      home.homeDirectory = "/home/${username}";
         extraSpecialArgs = { 
           inherit username;
           inherit inputs;
