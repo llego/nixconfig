@@ -32,18 +32,23 @@
     };
 
 
-    # docker jail on TrueNAS
+    # Docker jail on TrueNAS
+    # Activate: home-manager switch --flake ~/nixconfig#llego@docker
     homeConfigurations = {
       "${username}@docker" = inputs.home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./laptop/home-manager/user ];
-        programs.home-manager.enable = true;
-        home.username = "${username}";
-	      home.homeDirectory = "/home/${username}";
+        modules = [ 
+	  ./laptop/home-manager/user
+          { 
+	    programs.home-manager.enable = true;
+            home.username = "${username}";
+	    home.homeDirectory = "/home/${username}"; 
+	  }
+	];
         extraSpecialArgs = { 
           inherit username;
           inherit inputs;
-          host = "docker";
+          hostname = "docker";
           inherit git-email;
         };
       };
