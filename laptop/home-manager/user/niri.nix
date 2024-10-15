@@ -123,16 +123,16 @@
 
       "Mod+Left".action = focus-column-left;
       "Mod+Right".action = focus-column-right;
-      "Mod+Up".action = focus-window-up;
-      "Mod+Down".action = focus-window-down;
+      "Mod+Up".action = focus-window-or-workspace-up;
+      "Mod+Down".action = focus-window-or-workspace-down;
 
       "Mod+Ctrl+Left".action = move-column-left;
       "Mod+Ctrl+Right".action = move-column-right;
       "Mod+Ctrl+Up".action = move-window-up-or-to-workspace-up;
       "Mod+Ctrl+Down".action = move-window-down-or-to-workspace-down;
 
-      "Mod+Page_Down".action = focus-workspace-down;
-      "Mod+Page_Up".action = focus-workspace-up;
+      "Mod+Page_Down".action = focus-window-or-workspace-down;
+      "Mod+Page_Up".action = focus-window-or-workspace-up;
       "Mod+U".action = focus-workspace-down;
       "Mod+I".action = focus-workspace-up;
 
