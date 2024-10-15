@@ -1,6 +1,7 @@
 * {
     /* `otf-font-awesome` is required to be installed for icons 
     font-family: Cantarell, 'Font Awesome 6 Free'; */
+    font-family: monospace;
     font-size: 14px;
     font-feature-settings: "tnum";
 }
@@ -95,6 +96,8 @@ button:hover {
 #mode,
 #idle_inhibitor,
 #scratchpad,
+#custom-notification,
+#custom-exit,
 #mpd {
     padding: 0 10px;
     color: #f0f0ff;
@@ -338,3 +341,9 @@ label:focus {
 #scratchpad.empty {
 	background-color: transparent;
 }
+
+/*
+#custom-notification {
+  font-family: "JetBrainsMono";
+}
+*/

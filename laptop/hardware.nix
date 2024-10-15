@@ -6,6 +6,7 @@
   services.printing.drivers = [ pkgs.cnijfilter_4_00 ];
 
   # Comment this block to avoid error message on rebuild if printer is not connected
+  /*
   hardware.printers = {
     ensurePrinters = [
       {
@@ -19,6 +20,7 @@
       }
     ];
   };
+  */
 
   # BLuetooth
   hardware.bluetooth.enable = true;

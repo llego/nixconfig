@@ -13,7 +13,7 @@
       spacing = 5;
       modules-left = [ "niri/workspaces" "wlr/taskbar" ];
       modules-center = [ "clock" ];
-      modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray" "custom/exit"];
+      modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray" "custom/notification" "custom/exit"];
 
       "niri/workspaces" = {
         format = "{icon}";
@@ -32,6 +32,28 @@
           "^(.{16}).+$" = "$1…";
         };
       };
+      
+      "custom/notification" = {
+        tooltip = false;
+        format = "{icon}";
+        format-icons = {
+          notification = "<span foreground='red'><sup></sup></span>";
+          none = "";
+          dnd-notification = "<span foreground='red'><sup></sup></span>";
+          dnd-none = "";
+          inhibited-notification = "<span foreground='red'><sup></sup></span>";
+          inhibited-none = "";
+          dnd-inhibited-notification = "<span foreground='red'><sup></sup></span>";
+          dnd-inhibited-none = "";
+        };
+        return-type = "json";
+        exec-if = "which swaync-client";
+        exec = "swaync-client -swb";
+        on-click = "swaync-client -t -sw";
+        on-click-right = "swaync-client -d -sw";
+        escape = true;
+      };
+  
       
      "custom/exit" = {
         tooltip = false;

@@ -2,6 +2,7 @@
 {
   services = {
     swaync.enable = true;
+    #mako.enable = true;
     network-manager-applet.enable = true;
     swayidle = {
       enable = true;
@@ -51,7 +52,7 @@
   
   programs.swaylock.enable = true;
     
-  home.packages = [ pkgs.brightnessctl ];
+  home.packages = [ pkgs.brightnessctl pkgs.libnotify ];
 
   
   programs.niri.settings = {
@@ -115,8 +116,7 @@
       
       "Mod+L".action.spawn = "swaylock";
       "Alt+Return".action.spawn = "kitty";
-      "Mod+D".action.spawn = "fuzzel";
-      "Mod+Return".action.spawn = "fuzzel";
+      "Alt+Space".action.spawn = "fuzzel";
       "Alt+W".action.spawn = "chromium";
       "Alt+F".action.spawn = "nautilus";
       "Alt+T".action.spawn = "gnome-text-editor";
