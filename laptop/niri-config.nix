@@ -8,11 +8,11 @@
     ./home-manager/user/niri.nix
     ./home-manager/user/waybar.nix
     ./home-manager/user/wlogout.nix
-    #./home-manager/user/xwayland-satellite.nix
+    ./home-manager/user/xwayland-satellite.nix
   ]; 
   
   environment.systemPackages = [ 
-    #pkgs.greetd.tuigreet
+    pkgs.greetd.tuigreet
     pkgs.xwayland-satellite
     pkgs.wayland-utils
   ];
@@ -41,14 +41,14 @@
     blueman.enable = true;   # Bluetooth
     gvfs.enable = true;      # Nautilus sftp
     xserver = {
-      enable = true;
-      displayManager.gdm.enable = true;
+      enable = false;
+      displayManager.gdm.enable = false;
       xkb = {
         layout = "fi";
         variant = "";
       };
     };
-    /*greetd = {
+    greetd = {
       enable = true;
       vt = 3;
       settings = {
@@ -61,7 +61,7 @@
           command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session"; # start niri with a TUI login manager
         };
       };
-    }; */
+    }; 
   };
 
 }

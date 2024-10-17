@@ -51,7 +51,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
-  #boot.plymouth.enable = true;
+  boot.plymouth.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

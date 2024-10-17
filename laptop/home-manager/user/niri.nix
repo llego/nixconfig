@@ -76,7 +76,7 @@
         { command = ["${pkgs.networkmanagerapplet}/bin/nm-applet" "--indicator"]; }
         { command = ["${pkgs.swaybg}/bin/swaybg" "-i" "${config.stylix.image}" "-m" "fill"]; }
         #"exec sleep 5; systemctl --user reset-failed waybar.service" 
-        #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
+        #{ command = ["sleep" "5" ";" "systemctl" "--user" "restart" "waybar.service"]; }
         #"exec sleep 3; systemctl --user start waybar.service"
         #"exec sleep 5; ${pkgs.waybar}/bin/waybar -c ${config.home.homeDirectory}/.config/waybar/config"
         #"exec sleep 5; systemctl --user start kanshi.service"
@@ -100,8 +100,13 @@
       }
       {
         matches = [ { app-id = "kitty"; } ];
-        opacity = 0.90;
+        opacity = 0.9;
         draw-border-with-background = false;
+      }
+      # Make non-active windows semi-transparent
+      {
+        matches = [{is-active = false;}];
+        opacity = 0.9;
       }
     ];
     
@@ -183,9 +188,9 @@
       "XF86MonBrightnessDown".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "10%-"];
       "XF86MonBrightnessUp".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "10%+"];
 
-    #  "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
-    #    "systemctl --user restart waybar.service"
-    #  ]);
+      #"Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
+      #  "systemctl --user restart waybar.service"
+      #]);
       "Mod+Shift+W".action = sh ("pkill waybar; ${lib.getExe pkgs.waybar}" );
     };
 
