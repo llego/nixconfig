@@ -14,8 +14,10 @@
       spacing = 5;
       modules-left = [ "niri/workspaces" "wlr/taskbar" ];
       modules-center = [ "clock" ];
-      modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray" "custom/notification" "custom/exit"];
-
+      modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray"  "custom/exit"];
+      
+      # removed "custom/notification" from modules-right
+      
       "niri/workspaces" = {
         format = "{icon}";
         active = "";

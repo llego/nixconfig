@@ -4,7 +4,6 @@
   home.packages = with pkgs; [ 
     bitwarden-desktop
     protonmail-desktop
-    trayscale
     vlc
 	];
 		

@@ -9,28 +9,21 @@
     pkgs.swaybg
   ];
   
+  # Apparently this needs to be created manually since it's not provided by niri...
+  systemd.user.targets.tray = {
+		Unit = {
+			Description = "Home Manager System Tray";
+			Requires = [ "graphical-session-pre.target" ];
+		};
+	};
+
   services = {
-    swaync = {
+    mako = {
       enable = true;
-      settings = {
-        positionX = "right";
-        positionY = "top";
-        layer = "overlay";
-        control-center-layer = "top";
-        layer-shell = true;
-        cssPriority = "application";
-        control-center-margin-top = 0;
-        control-center-margin-bottom = 0;
-        control-center-margin-right = 0;
-        control-center-margin-left = 0;
-        notification-2fa-action = true;
-        notification-inline-replies = false;
-        notification-icon-size = 64;
-        notification-body-image-height = 100;
-        notification-body-image-width = 200;
-      };
+      defaultTimeout = 10000;
+      borderRadius = 4;
+      borderSize = 1;
     };
-    #mako.enable = true;
     network-manager-applet.enable = true;
     swayidle = {
       enable = true;
@@ -58,10 +51,7 @@
   };
   
   programs.niri.settings = {
-    #outputs."DP-2".scale = 2;
-    #outputs."eDP-1".scale = 1.6;
-    #outputs."eDP-1".enable = true;
-
+  
     input = {
       keyboard.xkb.layout = "fi";
       focus-follows-mouse.enable = true;
@@ -70,18 +60,8 @@
 
     spawn-at-startup = [
         { command = ["${lib.getExe pkgs.waybar}"]; }
-        #{ command = ["${pkgs.waybar}/bin/waybar"]; }
-        #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
-        #{ command = ["systemctl" "--user" "restart" "kanshi.service"]; }
         { command = ["${pkgs.networkmanagerapplet}/bin/nm-applet" "--indicator"]; }
         { command = ["${pkgs.swaybg}/bin/swaybg" "-i" "${config.stylix.image}" "-m" "fill"]; }
-        #"exec sleep 5; systemctl --user reset-failed waybar.service" 
-        #{ command = ["sleep" "5" ";" "systemctl" "--user" "restart" "waybar.service"]; }
-        #"exec sleep 3; systemctl --user start waybar.service"
-        #"exec sleep 5; ${pkgs.waybar}/bin/waybar -c ${config.home.homeDirectory}/.config/waybar/config"
-        #"exec sleep 5; systemctl --user start kanshi.service"
-        #"exec sleep 3; systemctl --user start network-manager-applet.service"
-      #]; }
     ];
     
     window-rules = [
@@ -107,16 +87,15 @@
       {
         matches = [{is-active = false;}];
         opacity = 0.9;
+        draw-border-with-background = false;
       }
     ];
     
-    #window-rules."active-window" = {
-      #matches.is-active = true;
-      #geometry-corner-radius = 8;
-    #};
-    
     # ask the applications to omit their client-side decorations.
     prefer-no-csd = true;
+    
+    # skip hotkey overlay
+    hotkey-overlay.skip-at-startup = true;
 
     binds = with config.lib.niri.actions; let
       sh = spawn "sh" "-c";
