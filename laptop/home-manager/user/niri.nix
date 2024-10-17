@@ -186,6 +186,7 @@
     #  "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
     #    "systemctl --user restart waybar.service"
     #  ]);
+      "Mod+Shift+W".action = sh ("pkill waybar; ${lib.getExe pkgs.waybar}" );
     };
 
   };
