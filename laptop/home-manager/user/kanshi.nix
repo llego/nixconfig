@@ -3,7 +3,8 @@
 
   services.kanshi = {
     enable = true;
-    systemdTarget = "niri.service";
+    #systemdTarget = "niri.service";
+    systemdTarget = "graphical-session.target";
 
     settings = [
       { profile.name = "undocked";

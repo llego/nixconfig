@@ -21,9 +21,11 @@
   in {
    
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-      modules = [ ./laptop ];
+      modules = [ 
+        ./laptop 
+        ./laptop/niri-config.nix 
+      ];
       specialArgs = {
-        #inherit system;
         inherit inputs;
         inherit username;
         inherit hostname;
@@ -38,13 +40,13 @@
       "${username}@docker" = inputs.home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [ 
-	  ./laptop/home-manager/user
+	        ./laptop/home-manager/user
           { 
-	    programs.home-manager.enable = true;
+	          programs.home-manager.enable = true;
             home.username = "${username}";
-	    home.homeDirectory = "/home/${username}"; 
-	  }
-	];
+	          home.homeDirectory = "/home/${username}"; 
+	        }
+	      ];
         extraSpecialArgs = { 
           inherit username;
           inherit inputs;

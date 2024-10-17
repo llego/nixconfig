@@ -2,7 +2,8 @@
 { 
   programs.waybar = {
     enable = true;
-    systemd.enable = true;
+    #systemd.enable = true;
+    #systemd.target = "graphical-session.target";
     settings.mainBar = {
       layer = "top";
       position = "top";
@@ -57,30 +58,30 @@
       
      "custom/exit" = {
         tooltip = false;
-        format = " ";
+        format = "";
         on-click = "sleep 0.1 && wlogout";
       };
 
 
       "tray".spacing = 15;
       "clock".format-alt = "{:%Y-%m-%d}";
-      "cpu".format = "  {usage}%";
-      "memory".format = "  {}%";
+      "cpu".format = " {usage}%";
+      "memory".format = " {}%";
       "battery" = {
         bat = "BAT0";
-        format = "{icon}  {capacity}%";
+        format = "{icon} {capacity}%";
         format-icons = ["" "" "" "" ""];
         format-plugged = "{capacity}% ";
       };
       "network" = {
-        format-wifi = "   {essid} ({signalStrength}%)";
-        format-ethernet = "   {ifname}: {ipaddr}/{cidr}";
-        format-disconnected =  "⚠  Disconnected";
+        format-wifi = "  {essid} ({signalStrength}%)";
+        format-ethernet = "  {ifname}: {ipaddr}/{cidr}";
+        format-disconnected =  "⚠ Disconnected";
         format-alt = "{ifname}: {ipaddr}/{cidr}";
         #on-click = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
       };
       "pulseaudio" = {
-        format = "{icon}  {volume}%";
+        format = "{icon} {volume}%";
         format-bluetooth = "{icon}  {volume}%";
         format-muted = " ";
         format-icons = {

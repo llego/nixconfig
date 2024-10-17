@@ -1,7 +1,35 @@
 { config, lib, pkgs,  ... }:
 {
+
+  programs.swaylock.enable = true;
+
+  home.packages = [ 
+    pkgs.brightnessctl
+    pkgs.libnotify
+    pkgs.swaybg
+  ];
+  
   services = {
-    swaync.enable = true;
+    swaync = {
+      enable = true;
+      settings = {
+        positionX = "right";
+        positionY = "top";
+        layer = "overlay";
+        control-center-layer = "top";
+        layer-shell = true;
+        cssPriority = "application";
+        control-center-margin-top = 0;
+        control-center-margin-bottom = 0;
+        control-center-margin-right = 0;
+        control-center-margin-left = 0;
+        notification-2fa-action = true;
+        notification-inline-replies = false;
+        notification-icon-size = 64;
+        notification-body-image-height = 100;
+        notification-body-image-width = 200;
+      };
+    };
     #mako.enable = true;
     network-manager-applet.enable = true;
     swayidle = {
@@ -28,32 +56,6 @@
       ];
     };
   };
-
-  systemd.user.services = {
-    swayidle.Unit = {
-      After = [ "niri.service" ];
-      Requires = [ "niri.service" ];
-    };
-    swaybg = {
-      Unit = {
-        After = [ "niri.service" ];
-        Requires = [ "niri.service" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
-      Service = {
-        ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} -m fill";
-        Restart = "on-failure";
-      };
-    };
-  };
-  
-  programs.swaylock.enable = true;
-    
-  home.packages = [ pkgs.brightnessctl pkgs.libnotify ];
-
   
   programs.niri.settings = {
     #outputs."DP-2".scale = 2;
@@ -67,18 +69,20 @@
     };
 
     spawn-at-startup = [
-        { command = ["${lib.getExe pkgs.waybar}"]; } 
-        { command = ["systemctl" "--user" "restart" "kanshi.service"]; }
+        { command = ["${lib.getExe pkgs.waybar}"]; }
+        #{ command = ["${pkgs.waybar}/bin/waybar"]; }
+        #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
+        #{ command = ["systemctl" "--user" "restart" "kanshi.service"]; }
         { command = ["${pkgs.networkmanagerapplet}/bin/nm-applet" "--indicator"]; }
-    ];
+        { command = ["${pkgs.swaybg}/bin/swaybg" "-i" "${config.stylix.image}" "-m" "fill"]; }
         #"exec sleep 5; systemctl --user reset-failed waybar.service" 
+        #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
         #"exec sleep 3; systemctl --user start waybar.service"
         #"exec sleep 5; ${pkgs.waybar}/bin/waybar -c ${config.home.homeDirectory}/.config/waybar/config"
         #"exec sleep 5; systemctl --user start kanshi.service"
-        #"exec sleep 7; ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
         #"exec sleep 3; systemctl --user start network-manager-applet.service"
       #]; }
-    #];
+    ];
     
     window-rules = [
       {
