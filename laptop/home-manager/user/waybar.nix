@@ -2,8 +2,8 @@
 { 
   programs.waybar = {
     enable = true;
-    #systemd.enable = true;
-    #systemd.target = "graphical-session.target";
+    systemd.enable = true;
+    systemd.target = "graphical-session.target";
     settings.mainBar = {
       layer = "top";
       position = "top";
@@ -60,14 +60,14 @@
       
      "custom/exit" = {
         tooltip = false;
-        format = "";
+        format = " ";
         on-click = "sleep 0.1 && wlogout";
       };
 
 
       "tray".spacing = 15;
       "clock".format-alt = "{:%Y-%m-%d}";
-      "cpu".format = " {usage}%";
+      "cpu".format = " {usage}% ";
       "memory".format = " {}%";
       "battery" = {
         bat = "BAT0";

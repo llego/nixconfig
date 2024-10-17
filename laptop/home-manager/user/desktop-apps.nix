@@ -6,6 +6,8 @@
     protonmail-desktop
     vlc
 	];
+	
+	services.trayscale.enable = true;
 		
   programs.chromium = {
     enable = true;

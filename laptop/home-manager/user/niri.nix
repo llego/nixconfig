@@ -7,15 +7,36 @@
     pkgs.brightnessctl
     pkgs.libnotify
     pkgs.swaybg
+    #pkgs.networkmanagerapplet
   ];
   
-  # Apparently this needs to be created manually since it's not provided by niri...
+  # Apparently this needs to be created manually since it's not provided by niri
+  # It seems waybar.service needs this
   systemd.user.targets.tray = {
 		Unit = {
 			Description = "Home Manager System Tray";
 			Requires = [ "graphical-session-pre.target" ];
 		};
 	};
+	
+  systemd.user.services =
+	{
+    "swaybg" = {
+      Install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
+      Unit = {
+        Description = "swaybg service for background";
+        PartOf = "graphical-session.target";
+        After = "graphical-session.target";
+        Requisite = "graphical-session.target";
+      };
+      Service = {
+        ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} -m fill";
+        Restart = "on-failure";
+      };
+    };
+  };
 
   services = {
     mako = {
@@ -24,9 +45,10 @@
       borderRadius = 4;
       borderSize = 1;
     };
-    network-manager-applet.enable = true;
+    network-manager-applet.enable = true;  # service not working, installing package instead
     swayidle = {
       enable = true;
+      systemdTarget = "graphical-session.target";
       events = [
         {
           event = "before-sleep";
@@ -59,9 +81,11 @@
     };
 
     spawn-at-startup = [
-        { command = ["${lib.getExe pkgs.waybar}"]; }
-        { command = ["${pkgs.networkmanagerapplet}/bin/nm-applet" "--indicator"]; }
-        { command = ["${pkgs.swaybg}/bin/swaybg" "-i" "${config.stylix.image}" "-m" "fill"]; }
+        #{ command = ["${lib.getExe pkgs.waybar}"]; }
+        { command = ["systemctl" "--user" "reset-failed" "waybar.service"]; }
+        { command = ["systemctl" "--user" "reset-failed" "network-manager-applet.service"]; }
+        #{ command = ["${pkgs.networkmanagerapplet}/bin/nm-applet" "--indicator"]; }
+        #{ command = ["${pkgs.swaybg}/bin/swaybg" "-i" "${config.stylix.image}" "-m" "fill"]; }
     ];
     
     window-rules = [
