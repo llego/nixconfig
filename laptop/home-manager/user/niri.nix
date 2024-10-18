@@ -7,7 +7,6 @@
     pkgs.brightnessctl
     pkgs.libnotify
     pkgs.swaybg
-    #pkgs.networkmanagerapplet
   ];
   
   # Apparently this needs to be created manually since it's not provided by niri
@@ -21,7 +20,7 @@
 	
   systemd.user.services =
 	{
-    "swaybg" = {
+    swaybg = {
       Install = {
         WantedBy = [ "graphical-session.target" ];
       };
@@ -45,7 +44,7 @@
       borderRadius = 4;
       borderSize = 1;
     };
-    network-manager-applet.enable = true;  # service not working, installing package instead
+    network-manager-applet.enable = true;
     swayidle = {
       enable = true;
       systemdTarget = "graphical-session.target";
@@ -81,11 +80,8 @@
     };
 
     spawn-at-startup = [
-        #{ command = ["${lib.getExe pkgs.waybar}"]; }
         { command = ["systemctl" "--user" "reset-failed" "waybar.service"]; }
         { command = ["systemctl" "--user" "reset-failed" "network-manager-applet.service"]; }
-        #{ command = ["${pkgs.networkmanagerapplet}/bin/nm-applet" "--indicator"]; }
-        #{ command = ["${pkgs.swaybg}/bin/swaybg" "-i" "${config.stylix.image}" "-m" "fill"]; }
     ];
     
     window-rules = [
@@ -191,10 +187,10 @@
       "XF86MonBrightnessDown".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "10%-"];
       "XF86MonBrightnessUp".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "10%+"];
 
-      #"Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
-      #  "systemctl --user restart waybar.service"
-      #]);
-      "Mod+Shift+W".action = sh ("pkill waybar; ${lib.getExe pkgs.waybar}" );
+      "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
+        "systemctl --user restart waybar.service"
+      ]);
+      #"Mod+Shift+W".action = sh ("pkill waybar; ${lib.getExe pkgs.waybar}" );
     };
 
   };
