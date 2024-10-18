@@ -37,10 +37,10 @@
   programs.gnome-terminal.enable = true;
   
   # Tailscale
-  /*services.tailscale = {
+  services.tailscale = {
     enable = true;
     extraSetFlags = [ "--operator=${username}" ];
-  };*/
+  };
   
   # Mullvad VPN
   services.mullvad-vpn = {
@@ -60,6 +60,7 @@
     };
     daemon.settings.userland-proxy = false;
   };*/
+  
   
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
