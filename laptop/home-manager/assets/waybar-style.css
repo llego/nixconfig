@@ -164,7 +164,7 @@ label:focus {
 #cpu {
     /* background-color: #f38ba8; */
     /* color: #000000; */
-    border-radius: 99px 0px 0px 99px;
+    /* border-radius: 99px 0px 0px 99px; */
     padding: 0 0 0 10px;
     margin-left: 4px;
 }
@@ -172,7 +172,7 @@ label:focus {
 #memory {
     /* background-color: #fab387; */
     /* color: #000000; */
-    border-radius: 0px 99px 99px 0px;
+    /* border-radius: 0px 99px 99px 0px; */
     /* padding: 0 10px 0 0; */
 }
 

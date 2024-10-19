@@ -12,11 +12,13 @@
   # Apparently this needs to be created manually since it's not provided by niri
   # It seems waybar.service needs this
   systemd.user.targets.tray = {
-		Unit = {
-			Description = "Home Manager System Tray";
-			Requires = [ "graphical-session-pre.target" ];
-		};
-	};
+    Unit = {
+      Description = "Home Manager System Tray";
+      Requires = [ "graphical-session-pre.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 	
   systemd.user.services =
 	{
@@ -76,12 +78,13 @@
     input = {
       keyboard.xkb.layout = "fi";
       focus-follows-mouse.enable = true;
-      warp-mouse-to-focus = false;
+      #warp-mouse-to-focus = false;
     };
 
     spawn-at-startup = [
-        { command = ["systemctl" "--user" "reset-failed" "waybar.service"]; }
-        { command = ["systemctl" "--user" "reset-failed" "network-manager-applet.service"]; }
+        { command = ["exec" "sleep" "3;" "systemctl" "--user" "reset-failed" "waybar.service"]; }
+        #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
+        { command = ["systemctl" "--user" "restart" "network-manager-applet.service"]; }
     ];
     
     window-rules = [

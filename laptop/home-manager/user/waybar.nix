@@ -1,9 +1,21 @@
-{ pkgs,  ... }:
+{ lib, pkgs,  ... }:
 { 
+
+  systemd.user.services.waybar = {
+    Unit = {
+      # BindsTo = [ "tray.target" ];
+      After = lib.mkForce [ "graphical-session.target" ];
+      Requisite = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStartPost = "${pkgs.coreutils}/bin/sleep 2";
+    };
+  };
+
   programs.waybar = {
     enable = true;
     systemd.enable = true;
-    systemd.target = "graphical-session.target";
+    systemd.target = "tray.target";
     settings.mainBar = {
       layer = "top";
       position = "top";
