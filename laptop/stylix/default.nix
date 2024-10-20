@@ -20,6 +20,8 @@
   #stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";  
 
   stylix.polarity = "dark"; 
+  
+  stylix.opacity.popups = 0.8;
 
   stylix.fonts = {
     monospace = {
