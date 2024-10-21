@@ -1,5 +1,11 @@
-{ config, lib, pkgs,  ... }:
+{ config, lib, pkgs, username, ... }:
 {
+
+  home.sessionVariables = {
+    EDITOR = "gnome-text-editor";
+    FLAKE = "/home/${username}/nixconfig";  # Needed by nh to work from any dir
+    TERMINAL = "kitty";
+  };
 
   programs.swaylock.enable = true;
 
@@ -9,8 +15,6 @@
     pkgs.swaybg
   ];
   
-  # Apparently this needs to be created manually since it's not provided by niri
-  # It seems waybar.service needs this
   systemd.user.targets.tray = {
     Unit = {
       Description = "Home Manager System Tray";
@@ -193,7 +197,6 @@
       "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
         "systemctl --user restart waybar.service"
       ]);
-      #"Mod+Shift+W".action = sh ("pkill waybar; ${lib.getExe pkgs.waybar}" );
     };
 
   };

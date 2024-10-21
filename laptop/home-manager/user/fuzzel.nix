@@ -1,9 +1,10 @@
-{ config, ... }:
+{ config, lib, ... }:
 { 
   programs.fuzzel = {
     enable = true;
     settings = 	
       {
+        main.font = lib.mkForce "monospace";
         main.prompt = "  ";
         main.terminal = "kitty";
         main."icon-theme" = "${config.gtk.iconTheme.name}";
