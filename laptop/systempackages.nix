@@ -11,6 +11,7 @@
     htop
     pavucontrol
     gparted
+    baobab
   ];
   
   # Zsh
