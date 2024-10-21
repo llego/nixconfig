@@ -10,6 +10,7 @@
     hunspell
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
+    brave
 	];
 		
   programs.chromium = {
@@ -22,6 +23,19 @@
         id = "dcpihecpambacapedldabdbpakmachpb";
         updateUrl = "https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/updates.xml";
       }
+    ];
+  };
+  
+  programs.brave = {
+    enable = true;
+    package = pkgs.brave;
+
+    extensions = [
+      # Bitwarden
+      "nngceckbapebfimnlniiiahkandclblb"
+
+      # Floccus bookmarks sync
+      "fnaicdffflnofjppbagibeoednhnbjhg"
     ];
   };
   

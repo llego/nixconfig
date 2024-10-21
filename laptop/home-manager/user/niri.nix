@@ -132,7 +132,7 @@
       "Mod+L".action.spawn = "swaylock";
       "Alt+Return".action.spawn = "kitty";
       "Alt+Space".action.spawn = "fuzzel";
-      "Alt+W".action.spawn = "chromium";
+      "Alt+W".action.spawn = "brave";
       "Alt+F".action.spawn = "nautilus";
       "Alt+T".action.spawn = "gnome-text-editor";
 
