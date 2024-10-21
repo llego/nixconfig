@@ -5,6 +5,11 @@
     bitwarden-desktop
     protonmail-desktop
     vlc
+    libreoffice
+    libvoikko
+    hunspell
+    hunspellDicts.sv-fi
+    hunspellDicts.en-gb-ize
 	];
 		
   programs.chromium = {

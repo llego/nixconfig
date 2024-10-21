@@ -10,6 +10,7 @@
     curl
     htop
     pavucontrol
+    gparted
   ];
   
   # Zsh
