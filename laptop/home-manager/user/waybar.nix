@@ -37,7 +37,8 @@
       };
 
       "wlr/taskbar" = {
-        format = "{icon}";
+        #format = "{icon}";
+        format = "{icon} {title}";
         tooltip-format = "{title} | {app_id}";
         on-click = "activate";
         on-click-middle = "close";
@@ -68,14 +69,12 @@
         on-click-right = "swaync-client -d -sw";
         escape = true;
       };
-  
-      
+        
      "custom/exit" = {
         tooltip = false;
         format = " ";
         on-click = "sleep 0.1 && wlogout";
       };
-
 
       "tray".spacing = 15;
       "clock".format-alt = "{:%Y-%m-%d}";
@@ -88,7 +87,8 @@
         format-plugged = "{capacity}% ";
       };
       "network" = {
-        format-wifi = "  {essid} ({signalStrength}%)";
+        #format-wifi = "  {essid} ({signalStrength}%)";
+        format-wifi = " ({signalStrength}%)";
         format-ethernet = "  {ifname}: {ipaddr}/{cidr}";
         format-disconnected =  "⚠ Disconnected";
         format-alt = "{ifname}: {ipaddr}/{cidr}";

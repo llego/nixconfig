@@ -89,6 +89,7 @@
         { command = ["exec" "sleep" "3;" "systemctl" "--user" "reset-failed" "waybar.service"]; }
         #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
         { command = ["systemctl" "--user" "restart" "network-manager-applet.service"]; }
+        { command = ["systemctl" "--user" "restart" "swayidle.service"]; }
     ];
     
     window-rules = [
