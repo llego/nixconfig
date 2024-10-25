@@ -100,8 +100,8 @@
   "final_space": true,
   "transient_prompt": {
     "background": "transparent",
-    "foreground": "#ffffff",
-    "template": "{{ .Shell }}> "
-  }
+    "foreground": "#7FD5EA",
+    "template": "\u276f"
+  },
   "version": 2
 }
