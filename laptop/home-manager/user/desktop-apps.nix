@@ -54,5 +54,34 @@
       tab_bar_style = "slant";
     };
   };
-  
+
+  programs.vscode = {
+    enable = true;
+    extensions = with pkgs.vscode-extensions; [
+      #dracula-theme.theme-dracula
+      #vscodevim.vim
+      yzhang.markdown-all-in-one
+      jnoortheen.nix-ide
+      kamadorueda.alejandra
+    ];
+    userSettings = {
+      "nix.serverPath" = "nixd";
+      "nix.enableLanguageServer" = true;
+      "nix.serverSettings" = {
+        "nixd" = {
+          "formatting" = {
+            "command" = [ "alejandra" ];
+          };
+          /*"options": {
+          //    "nixos": {
+          //      "expr": "(builtins.getFlake \"/PATH/TO/FLAKE\").nixosConfigurations.CONFIGNAME.options"
+          //    },
+          //    "home_manager": {
+          //      "expr": "(builtins.getFlake \"/PATH/TO/FLAKE\").homeConfigurations.CONFIGNAME.options"
+          //    },
+          // }, */
+        };
+      };
+    };
+  };
 }
