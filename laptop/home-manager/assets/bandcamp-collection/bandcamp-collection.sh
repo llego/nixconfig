@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set variables
-BANDCAMP_HOME="${XDG_DATA_HOME:-${HOME}/nixos/hm-modules/bandcamp-collection}"
+BANDCAMP_HOME="${XDG_DATA_HOME:-${HOME}/nixconfig/laptop/home-manager/assets/bandcamp-collection}"
 CACHE="$BANDCAMP_HOME/bandcamp-collection-downloader.cache"
 
 COOKIE="$BANDCAMP_HOME/bandcamp.com_cookies.txt"

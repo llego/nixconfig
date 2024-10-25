@@ -36,7 +36,7 @@
   };
 
   # Gnome Terminal
-  programs.gnome-terminal.enable = true;
+  #programs.gnome-terminal.enable = true;
   
   # Tailscale
   services.tailscale = {
@@ -54,14 +54,14 @@
   services.resolved.enable = true;
   
   # Docker
-  /*virtualisation.docker = {
+  virtualisation.docker = {
     enable = true;
     rootless = {
       enable = true;
       setSocketVariable = true;
     };
     daemon.settings.userland-proxy = false;
-  };*/
+  };
   
   
   # Some programs need SUID wrappers, can be configured further or are

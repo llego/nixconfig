@@ -25,7 +25,7 @@
       margin-right = 4;
       spacing = 5;
       modules-left = [ "niri/workspaces" "wlr/taskbar" ];
-      modules-center = [ "clock" ];
+      #modules-center = [ "clock" ];
       modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray"  "custom/exit"];
       
       # removed "custom/notification" from modules-right
@@ -88,7 +88,7 @@
       };
       "network" = {
         #format-wifi = "  {essid} ({signalStrength}%)";
-        format-wifi = " ({signalStrength}%)";
+        format-wifi = " {signalStrength}%";
         format-ethernet = "  {ifname}: {ipaddr}/{cidr}";
         format-disconnected =  "⚠ Disconnected";
         format-alt = "{ifname}: {ipaddr}/{cidr}";

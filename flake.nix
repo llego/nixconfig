@@ -33,7 +33,6 @@
       };
     };
 
-
     # Docker jail on TrueNAS
     # Activate: home-manager switch --flake ~/nixconfig#llego@docker
     homeConfigurations = {

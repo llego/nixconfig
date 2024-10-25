@@ -81,7 +81,7 @@
   
     input = {
       keyboard.xkb.layout = "fi";
-      focus-follows-mouse.enable = true;
+      #focus-follows-mouse.enable = true;
       #warp-mouse-to-focus = false;
     };
 
@@ -91,6 +91,8 @@
         { command = ["systemctl" "--user" "restart" "network-manager-applet.service"]; }
         { command = ["systemctl" "--user" "restart" "swayidle.service"]; }
     ];
+    
+    layout.struts.top = -8.0;
     
     window-rules = [
       {
