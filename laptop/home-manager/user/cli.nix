@@ -29,6 +29,43 @@
       set autoindent
       set cursorcolumn
       set cursorline
+
+      require("lspconfig").nixd.setup({
+        cmd = { "nixd" },
+        settings = {
+          nixd = {
+            nixpkgs = {
+              expr = "import <nixpkgs> { }",
+            },
+            formatting = {
+              command = { "alejandra" }, -- or nixfmt or nixpkgs-fmt
+            },
+            -- options = {
+            --   nixos = {
+            --       expr = '(builtins.getFlake "/PATH/TO/FLAKE").nixosConfigurations.CONFIGNAME.options',
+            --   },
+            --   home_manager = {
+            --       expr = '(builtins.getFlake "/PATH/TO/FLAKE").homeConfigurations.CONFIGNAME.options',
+            --   },
+            -- },
+          },
+        },
+      })
+    '';
+  };
+    
+  # neovim
+  programs.neovim = {
+    enable = true;
+    extraConfig = ''
+      set clipboard+=unnamedplus
+      set number relativenumber
+      set tabstop=2
+      set expandtab
+      set shiftwidth=2 smarttab 
+      set autoindent
+      set cursorcolumn
+      set cursorline
     '';
   };
 
