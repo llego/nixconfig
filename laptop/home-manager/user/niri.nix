@@ -194,8 +194,8 @@
         allow-when-locked = true;
       };
 
-      "XF86MonBrightnessDown".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "10%-"];
-      "XF86MonBrightnessUp".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "10%+"];
+      "XF86MonBrightnessDown".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%-"];
+      "XF86MonBrightnessUp".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%+"];
 
       "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
         "systemctl --user restart waybar.service"
