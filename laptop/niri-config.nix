@@ -11,6 +11,7 @@
     ./home-manager/user/fuzzel.nix
     ./home-manager/user/kanshi.nix
     ./home-manager/user/niri.nix
+    ./home-manager/user/sessionVariables.nix
     ./home-manager/user/waybar.nix
     ./home-manager/user/wlogout.nix
     ./home-manager/user/xwayland-satellite.nix

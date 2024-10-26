@@ -87,6 +87,7 @@
         };
       };
       "git.confirmSync" = false;
+      "explorer.confirmDelete" = false;
     };
   };
 }
