@@ -6,9 +6,10 @@
   ...
 }: {
   # Packages
-  home.packages = with pkgs; [
+  home.packages = [
     (writeShellScriptBin "bandcamp-collection" (builtins.readFile ../../../assets/bandcamp-collection/bandcamp-collection.sh))
     inputs.bandsnatch.packages."${pkgs.system}".default
+    pkgs.tidal-dl
   ];
 
   # vim
@@ -76,7 +77,7 @@
     target = ".tidal-dl.json";
   };
 
-  # Loooong lf configuration
+  # lf file manager
   xdg.configFile."lf/icons".source = ../../../assets/icons;
   programs.lf = {
     enable = true;
@@ -96,8 +97,6 @@
       c = "mkdir";
       "." = "set hidden!";
       "<enter>" = "open";
-
-      ee = "editor-open";
     };
 
     settings = {
