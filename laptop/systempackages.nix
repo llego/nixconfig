@@ -24,7 +24,7 @@
   # Nano settings
   programs.nano = {
     enable = true;
-    nanorc = builtins.readFile ./home-manager/assets/nix.nanorc;
+    nanorc = builtins.readFile ../assets/nix.nanorc;
   };
 
   # not another nix helper

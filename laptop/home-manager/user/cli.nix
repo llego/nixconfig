@@ -83,7 +83,7 @@
   # tidal-dl configuration
   home.file.tidal-dl-conf = {
     enable = true;
-    source = ../assets/.tidal-dl.json;
+    source = ../../../assets/.tidal-dl.json;
     target = ".tidal-dl.json";
   };
 }

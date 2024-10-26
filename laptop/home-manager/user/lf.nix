@@ -1,8 +1,6 @@
-
-{ pkgs, ...}:
-{
+{pkgs, ...}: {
   # Loooong lf configuration
-  xdg.configFile."lf/icons".source = ../assets/icons;
+  xdg.configFile."lf/icons".source = ../../../assets/icons;
 
   programs.lf = {
     enable = true;
@@ -10,16 +8,15 @@
       dragon-out = ''%${pkgs.xdragon}/bin/xdragon -a -x "$fx"'';
       editor-open = ''$$EDITOR $f'';
       mkdir = ''
-      ''${{
-        printf "Directory Name: "
-        read DIR
-        mkdir $DIR
-      }}
+        ''${{
+          printf "Directory Name: "
+          read DIR
+          mkdir $DIR
+        }}
       '';
     };
 
     keybindings = {
-
       "\\\"" = "";
       o = "";
       c = "mkdir";
@@ -27,9 +24,9 @@
       "`" = "mark-load";
       "\\'" = "mark-load";
       "<enter>" = "open";
-      
+
       do = "dragon-out";
-      
+
       "g~" = "cd";
       gh = "cd";
       "g/" = "/";
@@ -46,48 +43,44 @@
       drawbox = true;
       icons = true;
       ignorecase = true;
-#      previewer = "${pkgs.ctpv}/bin/ctpv";
-#      cleaner = "${pkgs.ctpv}/bin/ctpvclear";
+      #      previewer = "${pkgs.ctpv}/bin/ctpv";
+      #      cleaner = "${pkgs.ctpv}/bin/ctpvclear";
     };
 
-#    previewer = {
-#      keybinding = "i";
-#      source = "${pkgs.ctpv}/bin/ctpv";
-#    };
+    #    previewer = {
+    #      keybinding = "i";
+    #      source = "${pkgs.ctpv}/bin/ctpv";
+    #    };
 
-#    extraConfig = 
-#      ''
-#      &${pkgs.ctpv}/bin/ctpv -s $id
-#      cmd on-quit %${pkgs.ctpv}/bin/ctpv -e $id
-#      set cleaner ${pkgs.ctpv}/bin/ctpvclear
-#      ''
-#    ;
+    #    extraConfig =
+    #      ''
+    #      &${pkgs.ctpv}/bin/ctpv -s $id
+    #      cmd on-quit %${pkgs.ctpv}/bin/ctpv -e $id
+    #      set cleaner ${pkgs.ctpv}/bin/ctpvclear
+    #      ''
+    #    ;
 
-    extraConfig = 
-    let 
-      previewer = 
-        pkgs.writeShellScriptBin "pv.sh" ''
+    extraConfig = let
+      previewer = pkgs.writeShellScriptBin "pv.sh" ''
         file=$1
         w=$2
         h=$3
         x=$4
         y=$5
-        
+
         if [[ "$( ${pkgs.file}/bin/file -Lb --mime-type "$file")" =~ ^image ]]; then
             ${pkgs.kitty}/bin/kitty +kitten icat --silent --stdin no --transfer-mode file --place "''${w}x''${h}@''${x}x''${y}" "$file" < /dev/null > /dev/tty
             exit 1
         fi
-        
+
         ${pkgs.pistol}/bin/pistol "$file"
       '';
       cleaner = pkgs.writeShellScriptBin "clean.sh" ''
         ${pkgs.kitty}/bin/kitty +kitten icat --clear --stdin no --silent --transfer-mode file < /dev/null > /dev/tty
       '';
-    in
-    ''
+    in ''
       set cleaner ${cleaner}/bin/clean.sh
       set previewer ${previewer}/bin/pv.sh
     '';
-  
   };
 }

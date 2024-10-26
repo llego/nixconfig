@@ -53,7 +53,7 @@
     #useTheme = "tokyonight_storm";
     #useTheme = "pure";
     #useTheme = "bubbles";
-    settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile ../assets/ohmyposh-bubbles2.json));
+    settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile ../../../assets/ohmyposh-bubbles2.json));
   };
 
   programs.fzf = {
