@@ -6,10 +6,23 @@
   ...
 }: {
   # Packages
-  home.packages = [
-    (pkgs.writeShellScriptBin "bandcamp-collection" (builtins.readFile ../../../assets/bandcamp-collection/bandcamp-collection.sh))
+  home.packages = with pkgs; [
+    (writeShellScriptBin "bandcamp-collection" (builtins.readFile ../../../assets/bandcamp-collection/bandcamp-collection.sh))
     inputs.bandsnatch.packages."${pkgs.system}".default
-    pkgs.tidal-dl
+    tidal-dl
+    atool
+    ncdu
+    btop
+    yle-dl
+    svtplay-dl
+    tidal-dl
+    dig
+    tree
+    neofetch
+    bat
+    lsd
+    nitch
+    fastfetch
   ];
 
   # vim
