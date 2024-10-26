@@ -1,6 +1,5 @@
 {
   pkgs,
-  inputs,
   username,
   ...
 }: {
@@ -18,9 +17,6 @@
     nixd
     alejandra
   ];
-
-  # Required by nixd (LSP) when using flakes
-  nix.nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 
   # Zsh
   programs.zsh.enable = true;

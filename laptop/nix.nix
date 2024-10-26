@@ -1,4 +1,4 @@
-{
+{inputs, ...}: {
   nix.settings = {
     auto-optimise-store = true;
     experimental-features = [
@@ -6,4 +6,7 @@
       "flakes"
     ];
   };
+
+  # Required by nixd (LSP) when using flakes
+  nix.nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 }

@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  username,
+  hostname,
+  ...
+}: {
   # Packages
   home.packages = with pkgs; [
     bitwarden-desktop
@@ -69,16 +74,16 @@
           "formatting" = {
             "command" = ["alejandra"];
           };
-          /*
-            "options": {
-          //    "nixos": {
-          //      "expr": "(builtins.getFlake \"/PATH/TO/FLAKE\").nixosConfigurations.CONFIGNAME.options"
-          //    },
-          //    "home_manager": {
-          //      "expr": "(builtins.getFlake \"/PATH/TO/FLAKE\").homeConfigurations.CONFIGNAME.options"
-          //    },
-          // },
-          */
+          "options" = {
+            /*
+            By default, this entry will be read from `import <nixpkgs> { }`.
+            You can write arbitrary Nix expressions here, to produce valid "options" declaration result.
+            Tip: for flake-based configuration, utilize `builtins.getFlake`
+            */
+            "nixos" = {
+              "expr" = "(builtins.getFlake \"/home/${username}/nixconfig/flake.nix\").nixosConfigurations.${hostname}.options";
+            };
+          };
         };
       };
       "git.confirmSync" = false;

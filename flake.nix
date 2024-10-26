@@ -22,7 +22,7 @@
     hostname = "laptop";
     git-email = "github.login@cri.su";
   in {
-    nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
       modules = [
         ./laptop
         ./laptop/niri-config.nix
