@@ -1,7 +1,10 @@
-{ pkgs, inputs, username, ...}:
 {
-
-  # System packages  
+  pkgs,
+  inputs,
+  username,
+  ...
+}: {
+  # System packages
   environment.systemPackages = with pkgs; [
     firefox
     nautilus
@@ -15,9 +18,9 @@
     nixd
     alejandra
   ];
-  
+
   # Required by nixd (LSP) when using flakes
-  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+  nix.nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 
   # Zsh
   programs.zsh.enable = true;
@@ -25,13 +28,9 @@
   # Nano settings
   programs.nano = {
     enable = true;
-    nanorc = ''
-      set nowrap
-      set tabstospaces
-      set tabsize 2
-    '';
-  }; 
-  
+    nanorc = builtins.readFile ./home-manager/assets/nix.nanorc;
+  };
+
   # not another nix helper
   programs.nh = {
     enable = true;
@@ -42,22 +41,22 @@
 
   # Gnome Terminal
   #programs.gnome-terminal.enable = true;
-  
+
   # Tailscale
   services.tailscale = {
     enable = true;
-    extraSetFlags = [ "--operator=${username}" ];
+    extraSetFlags = ["--operator=${username}"];
   };
-  
+
   # Mullvad VPN
   services.mullvad-vpn = {
     enable = true;
     package = pkgs.mullvad-vpn;
   };
-  
+
   # This is required in order for Mullvad to work
   services.resolved.enable = true;
-  
+
   # Docker
   virtualisation.docker = {
     enable = true;
@@ -67,8 +66,7 @@
     };
     daemon.settings.userland-proxy = false;
   };
-  
-  
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -76,5 +74,4 @@
     enable = true;
     enableSSHSupport = true;
   };
-
 }
