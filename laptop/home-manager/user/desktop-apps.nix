@@ -1,7 +1,6 @@
-{ pkgs, ...}:
-{
+{pkgs, ...}: {
   # Packages
-  home.packages = with pkgs; [ 
+  home.packages = with pkgs; [
     bitwarden-desktop
     protonmail-desktop
     vlc
@@ -11,21 +10,21 @@
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
     brave
-	];
-		
+  ];
+
   programs.chromium = {
     enable = true;
     extensions = [
-      { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
-      { id = "fnaicdffflnofjppbagibeoednhnbjhg"; } # Floccus bookmarks sync
-      { id = "cclelndahbckbenkjhflpdbgdldlbecc"; } # get cookies locally
+      {id = "nngceckbapebfimnlniiiahkandclblb";} # Bitwarden
+      {id = "fnaicdffflnofjppbagibeoednhnbjhg";} # Floccus bookmarks sync
+      {id = "cclelndahbckbenkjhflpdbgdldlbecc";} # get cookies locally
       {
         id = "dcpihecpambacapedldabdbpakmachpb";
         updateUrl = "https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/updates.xml";
       }
     ];
   };
-  
+
   programs.brave = {
     enable = true;
     package = pkgs.brave;
@@ -38,7 +37,7 @@
       "fnaicdffflnofjppbagibeoednhnbjhg"
     ];
   };
-  
+
   programs.kitty = {
     enable = true;
     settings = {
@@ -58,8 +57,6 @@
   programs.vscode = {
     enable = true;
     extensions = with pkgs.vscode-extensions; [
-      #dracula-theme.theme-dracula
-      #vscodevim.vim
       yzhang.markdown-all-in-one
       jnoortheen.nix-ide
       kamadorueda.alejandra
@@ -70,18 +67,21 @@
       "nix.serverSettings" = {
         "nixd" = {
           "formatting" = {
-            "command" = [ "alejandra" ];
+            "command" = ["alejandra"];
           };
-          /*"options": {
+          /*
+            "options": {
           //    "nixos": {
           //      "expr": "(builtins.getFlake \"/PATH/TO/FLAKE\").nixosConfigurations.CONFIGNAME.options"
           //    },
           //    "home_manager": {
           //      "expr": "(builtins.getFlake \"/PATH/TO/FLAKE\").homeConfigurations.CONFIGNAME.options"
           //    },
-          // }, */
+          // },
+          */
         };
       };
+      "git.confirmSync" = false;
     };
   };
 }

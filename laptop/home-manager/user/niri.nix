@@ -1,34 +1,36 @@
-{ config, lib, pkgs, username, ... }:
 {
-
+  config,
+  pkgs,
+  username,
+  ...
+}: {
   home.sessionVariables = {
     EDITOR = "gnome-text-editor";
-    FLAKE = "/home/${username}/nixconfig";  # Needed by nh to work from any dir
+    FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
     TERMINAL = "kitty";
   };
 
   programs.swaylock.enable = true;
 
-  home.packages = [ 
+  home.packages = [
     pkgs.brightnessctl
     pkgs.libnotify
     pkgs.swaybg
   ];
-  
+
   systemd.user.targets.tray = {
     Unit = {
       Description = "Home Manager System Tray";
-      Requires = [ "graphical-session-pre.target" ];
-      After = [ "graphical-session.target" ];
+      Requires = ["graphical-session-pre.target"];
+      After = ["graphical-session.target"];
     };
-    Install.WantedBy = [ "graphical-session.target" ];
+    Install.WantedBy = ["graphical-session.target"];
   };
-	
-  systemd.user.services =
-	{
+
+  systemd.user.services = {
     swaybg = {
       Install = {
-        WantedBy = [ "graphical-session.target" ];
+        WantedBy = ["graphical-session.target"];
       };
       Unit = {
         Description = "swaybg service for background";
@@ -76,9 +78,8 @@
       ];
     };
   };
-  
+
   programs.niri.settings = {
-  
     input = {
       keyboard.xkb.layout = "fi";
       #focus-follows-mouse.enable = true;
@@ -86,30 +87,36 @@
     };
 
     spawn-at-startup = [
-        { command = ["exec" "sleep" "3;" "systemctl" "--user" "reset-failed" "waybar.service"]; }
-        #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
-        { command = ["systemctl" "--user" "restart" "network-manager-applet.service"]; }
-        { command = ["systemctl" "--user" "restart" "swayidle.service"]; }
+      {command = ["exec" "sleep" "3;" "systemctl" "--user" "reset-failed" "waybar.service"];}
+      #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
+      {command = ["systemctl" "--user" "restart" "network-manager-applet.service"];}
+      {command = ["systemctl" "--user" "restart" "swayidle.service"];}
     ];
-    
+
     layout.struts.top = -8.0;
-    
+
+    layout.border.active.gradient = {
+      from = "${config.lib.stylix.colors.withHashtag.base09}";
+      to = "${config.lib.stylix.colors.withHashtag.base0E}";
+      angle = 45;
+    };
+
     window-rules = [
       {
         geometry-corner-radius = {
-          bottom-left = 12.0;
-          bottom-right = 12.0;
-          top-left = 12.0;
-          top-right = 12.0;
+          bottom-left = 4.0;
+          bottom-right = 4.0;
+          top-left = 4.0;
+          top-right = 4.0;
         };
         clip-to-geometry = true;
       }
       {
-        matches = [ { app-id = "^org[.]pulseaudio[.]pavucontrol$"; } ];
+        matches = [{app-id = "^org[.]pulseaudio[.]pavucontrol$";}];
         default-column-width.fixed = 762;
       }
       {
-        matches = [ { app-id = "kitty"; } ];
+        matches = [{app-id = "kitty";}];
         opacity = 0.9;
         draw-border-with-background = false;
       }
@@ -120,10 +127,10 @@
         draw-border-with-background = false;
       }
     ];
-    
+
     # ask the applications to omit their client-side decorations.
     prefer-no-csd = true;
-    
+
     # skip hotkey overlay
     hotkey-overlay.skip-at-startup = true;
 
@@ -131,7 +138,7 @@
       sh = spawn "sh" "-c";
     in {
       "Mod+Shift+7".action = show-hotkey-overlay;
-      
+
       "Mod+L".action.spawn = "swaylock";
       "Alt+Return".action.spawn = "kitty";
       "Alt+Space".action.spawn = "fuzzel";
@@ -155,10 +162,9 @@
       "Mod+I".action = focus-workspace-up;
 
       "Mod+Q".action = close-window;
-      
+
       "Mod+Comma".action = consume-window-into-column;
       "Mod+Period".action = expel-window-from-column;
-
 
       "Mod+Shift+P".action = power-off-monitors;
       "Mod+P".action.spawn = "${pkgs.kanshi}/bin/kanshi -c ${config.home.homeDirectory}/.config/kanshi/config";
@@ -172,11 +178,11 @@
 
       "Mod+R".action = switch-preset-column-width;
       "Mod+F".action = fullscreen-window;
-      
+
       Print.action = screenshot;
       "Ctrl+Print".action = screenshot-screen;
       "Alt+Print".action = screenshot-window;
-      
+
       XF86AudioRaiseVolume = {
         action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+";
         allow-when-locked = true;
@@ -194,15 +200,12 @@
         allow-when-locked = true;
       };
 
-      "XF86MonBrightnessDown".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%-"];
-      "XF86MonBrightnessUp".action.spawn = [ "${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%+"];
+      "XF86MonBrightnessDown".action.spawn = ["${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%-"];
+      "XF86MonBrightnessUp".action.spawn = ["${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%+"];
 
       "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
         "systemctl --user restart waybar.service"
       ]);
     };
-
   };
-
-
 }
