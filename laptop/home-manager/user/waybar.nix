@@ -1,11 +1,13 @@
-{ lib, pkgs,  ... }:
-{ 
-
+{
+  lib,
+  pkgs,
+  ...
+}: {
   systemd.user.services.waybar = {
     Unit = {
       # BindsTo = [ "tray.target" ];
-      After = lib.mkForce [ "graphical-session.target" ];
-      Requisite = [ "graphical-session.target" ];
+      After = lib.mkForce ["graphical-session.target"];
+      Requisite = ["graphical-session.target"];
     };
     Service = {
       ExecStartPost = "${pkgs.coreutils}/bin/sleep 2";
@@ -24,16 +26,16 @@
       margin-left = 4;
       margin-right = 4;
       spacing = 5;
-      modules-left = [ "niri/workspaces" "wlr/taskbar" ];
+      modules-left = ["niri/workspaces" "wlr/taskbar"];
       #modules-center = [ "clock" ];
-      modules-right = [ "pulseaudio" "network" "cpu" "memory" "battery" "tray" "clock" "custom/exit" ];
-      
+      modules-right = ["pulseaudio" "network" "cpu" "memory" "battery" "tray" "clock" "custom/exit"];
+
       # removed "custom/notification" from modules-right
-      
+
       "niri/workspaces" = {
         format = "{icon}";
         active = "";
-  		  default = "";
+        default = "";
       };
 
       "wlr/taskbar" = {
@@ -48,7 +50,7 @@
           "^(.{16}).+$" = "$1…";
         };
       };
-      
+
       "custom/notification" = {
         tooltip = false;
         format = "{icon}";
@@ -69,8 +71,8 @@
         on-click-right = "swaync-client -d -sw";
         escape = true;
       };
-        
-     "custom/exit" = {
+
+      "custom/exit" = {
         tooltip = false;
         format = " ";
         on-click = "sleep 0.1 && wlogout";
@@ -90,7 +92,7 @@
         #format-wifi = "  {essid} ({signalStrength}%)";
         format-wifi = " {signalStrength}%";
         format-ethernet = "  {ifname}: {ipaddr}/{cidr}";
-        format-disconnected =  "⚠ Disconnected";
+        format-disconnected = "⚠ Disconnected";
         format-alt = "{ifname}: {ipaddr}/{cidr}";
         #on-click = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
       };
@@ -99,15 +101,13 @@
         format-bluetooth = "{icon}  {volume}%";
         format-muted = " ";
         format-icons = {
-            headphones = " ";
-            default = ["" ""];
+          headphones = " ";
+          default = ["" ""];
         };
         on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
       };
     };
 
     style = builtins.readFile ../assets/waybar-style.css;
-
   };
-
 }

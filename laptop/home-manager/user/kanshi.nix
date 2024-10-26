@@ -1,13 +1,12 @@
-{ pkgs,  ... }:
-{
-
+{pkgs, ...}: {
   services.kanshi = {
     enable = true;
     #systemdTarget = "niri.service";
     systemdTarget = "graphical-session.target";
 
     settings = [
-      { profile.name = "undocked";
+      {
+        profile.name = "undocked";
         profile.outputs = [
           {
             criteria = "eDP-1";
@@ -16,7 +15,8 @@
           }
         ];
       }
-      { profile.name = "home_office_1";
+      {
+        profile.name = "home_office_1";
         profile.outputs = [
           {
             criteria = "DP-1";
@@ -29,7 +29,8 @@
           }
         ];
       }
-      { profile.name = "home_office_2";
+      {
+        profile.name = "home_office_2";
         profile.outputs = [
           {
             criteria = "DP-2";
@@ -44,5 +45,4 @@
       }
     ];
   };
-
 }

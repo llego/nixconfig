@@ -1,5 +1,4 @@
-{ pkgs,  ... }:
-{ 
+{pkgs, ...}: {
   programs.wlogout = {
     enable = true;
     layout = [
@@ -41,5 +40,4 @@
       }
     ];
   };
-
 }

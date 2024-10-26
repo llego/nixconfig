@@ -1,5 +1,8 @@
-{config, pkgs, ...}:
 {
+  config,
+  pkgs,
+  ...
+}: {
   home.packages = with pkgs; [
     gnome-tweaks
     gnomeExtensions.blur-my-shell
@@ -24,18 +27,18 @@
         noise-amount = 0;
       };
       "org/gnome/desktop/wm/keybindings" = {
-        show-desktop = [ "<Super>d" ];
-        move-to-workspace-left = [ "<Shift><Super>Left" ];
-        move-to-workspace-right = [ "<Shift><Super>Right" ];
-        switch-to-workspace-1 = [ "<Super>1" ];
-        switch-to-workspace-2 = [ "<Super>2" ];
-        switch-to-workspace-3 = [ "<Super>3" ];
-        switch-to-workspace-4 = [ "<Super>4" ];
+        show-desktop = ["<Super>d"];
+        move-to-workspace-left = ["<Shift><Super>Left"];
+        move-to-workspace-right = ["<Shift><Super>Right"];
+        switch-to-workspace-1 = ["<Super>1"];
+        switch-to-workspace-2 = ["<Super>2"];
+        switch-to-workspace-3 = ["<Super>3"];
+        switch-to-workspace-4 = ["<Super>4"];
       };
       "org/gnome/settings-daemon/plugins/media-keys" = {
-        next = [ "<Shift><Control>n" ];
-        previous = [ "<Shift><Control>p" ];
-        play = [ "<Shift><Control>space" ];
+        next = ["<Shift><Control>n"];
+        previous = ["<Shift><Control>p"];
+        play = ["<Shift><Control>space"];
         custom-keybindings = [
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
@@ -63,30 +66,29 @@
         command = "chromium";
         binding = "<Alt>w";
       };
-#      "org/gnome/desktop/interface" = {
-#        color-scheme = "prefer-dark";
-#      };
-#      "org/gnome/desktop/interface" = {
-#        monospace-font-name = "JetBrainsMono Nerd Font 10";
-#      };
-#      "org/gnome/Console" = {
-#        custom-font = "JetBrainsMono Nerd Font 10";
-#      };
+      #      "org/gnome/desktop/interface" = {
+      #        color-scheme = "prefer-dark";
+      #      };
+      #      "org/gnome/desktop/interface" = {
+      #        monospace-font-name = "JetBrainsMono Nerd Font 10";
+      #      };
+      #      "org/gnome/Console" = {
+      #        custom-font = "JetBrainsMono Nerd Font 10";
+      #      };
     };
   };
-  
+
   # Application icons to Gnome menu
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
-  xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+  xdg.systemDirs.data = ["${config.home.homeDirectory}/.nix-profile/share/applications"];
 
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
-      "text/plain" = "gnome-text-editor.desktop";
-      "x-scheme-handler/mailto" = "proton-mail.desktop";
-      "text/html" = "chromium-browser.desktop";
-      "application/xhtml+xml" = "chromium-browser.desktop";
-      "x-scheme-handler/https" = "chromium-browser.desktop";
+    "text/plain" = "gnome-text-editor.desktop";
+    "x-scheme-handler/mailto" = "proton-mail.desktop";
+    "text/html" = "chromium-browser.desktop";
+    "application/xhtml+xml" = "chromium-browser.desktop";
+    "x-scheme-handler/https" = "chromium-browser.desktop";
   };
-
 }

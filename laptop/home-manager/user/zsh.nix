@@ -1,5 +1,8 @@
-{config, pkgs, ...}:
 {
+  config,
+  pkgs,
+  ...
+}: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -7,7 +10,7 @@
     syntaxHighlighting.enable = true;
 
     shellAliases = {
-      l="${pkgs.lsd}/bin/lsd";
+      l = "${pkgs.lsd}/bin/lsd";
       ll = "${pkgs.lsd}/bin/lsd -al";
       tree = "${pkgs.lsd}/bin/lsd --tree";
     };
@@ -19,10 +22,9 @@
       ignoreDups = true;
       share = true;
       append = true;
-         
     };
 
-    initExtra = '' 
+    initExtra = ''
       ${pkgs.nitch}/bin/nitch
       #source ~/.p10k.zsh
       [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
@@ -34,15 +36,15 @@
       bindkey '^n' history-search-forward
       bindkey '^[w' kill-region
       bindkey '^[[3~' delete-char
-      '';
+    '';
 
-#    plugins = [
-#      {
-#        name = "powerlevel10k";                                                           
-#        src = pkgs.zsh-powerlevel10k;                                                     
-#        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-#      }
-#    ];
+    #    plugins = [
+    #      {
+    #        name = "powerlevel10k";
+    #        src = pkgs.zsh-powerlevel10k;
+    #        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+    #      }
+    #    ];
   };
 
   programs.oh-my-posh = {
@@ -54,10 +56,8 @@
     settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile ../assets/ohmyposh-bubbles2.json));
   };
 
-  programs.fzf = { 
-    enable = true; 
-    enableZshIntegration = true; 
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
   };
-
-
 }

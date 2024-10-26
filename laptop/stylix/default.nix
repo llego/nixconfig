@@ -1,7 +1,8 @@
-{ pkgs, inputs, config, ... }: 
-
 {
-
+  pkgs,
+  config,
+  ...
+}: {
   stylix.enable = true;
 
   # Color theme, see https://tinted-theming.github.io/base16-gallery/
@@ -14,18 +15,18 @@
   #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
   #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-city-dark.yaml";
-  
+
   # Wallapaper
   stylix.image = ./wallpaper-blue.jpg;
-  #stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";  
+  #stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";
 
-  stylix.polarity = "dark"; 
-  
+  stylix.polarity = "dark";
+
   stylix.opacity.popups = 0.8;
 
   stylix.fonts = {
     monospace = {
-      package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; });
+      package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "DroidSansMono"];};
       name = "JetBrainsMono Nerd Font";
     };
     serif = {
@@ -46,5 +47,4 @@
   };
 
   #stylix.opacity.terminal = 0.95;
-
 }

@@ -1,5 +1,10 @@
-{ inputs, username, hostname, git-email, ... }:
 {
+  inputs,
+  username,
+  hostname,
+  git-email,
+  ...
+}: {
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

@@ -1,7 +1,11 @@
-{ pkgs, username, git-email, ...}:
 {
+  pkgs,
+  username,
+  git-email,
+  ...
+}: {
   # Packages
-  home.packages = with pkgs; [ 
+  home.packages = with pkgs; [
     atool
     ncdu
     btop
@@ -17,7 +21,7 @@
     nitch
     fastfetch
   ];
- 
+
   # vim
   programs.vim = {
     enable = true;
@@ -53,7 +57,7 @@
       })
     '';
   };
-    
+
   # neovim
   programs.neovim = {
     enable = true;
@@ -62,7 +66,7 @@
       set number relativenumber
       set tabstop=2
       set expandtab
-      set shiftwidth=2 smarttab 
+      set shiftwidth=2 smarttab
       set autoindent
       set cursorcolumn
       set cursorline
@@ -82,5 +86,4 @@
     source = ../assets/.tidal-dl.json;
     target = ".tidal-dl.json";
   };
-
 }

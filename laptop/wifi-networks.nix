@@ -1,6 +1,6 @@
 {
   networking = {
-#    hostName = "laptop"; # Moved to configuration.nix
+    #hostName = "laptop"; # Moved to configuration.nix
     networkmanager = {
       enable = true;
       ensureProfiles = {
@@ -27,7 +27,7 @@
             };
           };
         };
-      };      
+      };
     };
   };
 }

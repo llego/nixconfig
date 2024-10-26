@@ -11,19 +11,21 @@
     niri.url = "github:sodiboo/niri-flake";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs:
-  let
+  outputs = {
+    self,
+    nixpkgs,
+    ...
+  } @ inputs: let
     system = "x86_64-linux";
-    pkgs = import nixpkgs { inherit system; };
+    pkgs = import nixpkgs {inherit system;};
     username = "llego";
     hostname = "laptop";
     git-email = "github.login@cri.su";
   in {
-   
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-      modules = [ 
-        ./laptop 
-        ./laptop/niri-config.nix 
+      modules = [
+        ./laptop
+        ./laptop/niri-config.nix
       ];
       specialArgs = {
         inherit inputs;
@@ -38,15 +40,15 @@
     homeConfigurations = {
       "${username}@docker" = inputs.home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ 
-	        ./laptop/home-manager/user
-          { 
-	          programs.home-manager.enable = true;
+        modules = [
+          ./laptop/home-manager/user
+          {
+            programs.home-manager.enable = true;
             home.username = "${username}";
-	          home.homeDirectory = "/home/${username}"; 
-	        }
-	      ];
-        extraSpecialArgs = { 
+            home.homeDirectory = "/home/${username}";
+          }
+        ];
+        extraSpecialArgs = {
           inherit username;
           inherit inputs;
           hostname = "docker";
@@ -54,6 +56,5 @@
         };
       };
     };
-      
   };
 }

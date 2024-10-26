@@ -1,6 +1,4 @@
-{ inputs, pkgs, username, ...}:
-{
-
+{username, ...}: {
   # Enable the X11 windowing system, GNOME Desktop Environment, and configure keymap
   services.xserver = {
     enable = true;
@@ -12,8 +10,7 @@
     };
   };
 
-  home-manager.users.${username}.imports = [ 
+  home-manager.users.${username}.imports = [
     ./home-manager/user/gnome.nix
-  ]; 
-  
+  ];
 }

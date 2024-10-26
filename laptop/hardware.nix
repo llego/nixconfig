@@ -1,9 +1,7 @@
-{ pkgs, ...}:
-{
-
+{pkgs, ...}: {
   # Enable CUPS to print documents
   services.printing.enable = true;
-  services.printing.drivers = [ pkgs.cnijfilter_4_00 ];
+  services.printing.drivers = [pkgs.cnijfilter_4_00];
 
   # Comment this block to avoid error message on rebuild if printer is not connected
   /*
@@ -41,9 +39,10 @@
 
   # Hardware acceleration
   nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
+    intel-vaapi-driver = pkgs.intel-vaapi-driver.override {enableHybridCodec = true;};
   };
-  hardware.graphics = { # hardware.graphics on unstable
+  hardware.graphics = {
+    # hardware.graphics on unstable
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver # LIBVA_DRIVER_NAME=iHD
@@ -51,5 +50,5 @@
       libvdpau-va-gl
     ];
   };
-  environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
+  environment.sessionVariables = {LIBVA_DRIVER_NAME = "iHD";}; # Force intel-media-driver
 }
