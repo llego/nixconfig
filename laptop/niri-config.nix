@@ -29,8 +29,9 @@
   programs.niri.enable = true;
 
   # Extra Portal Configuration
-  /*
-    xdg.portal = {
+  # xdg-desktop-portal provides a portal frontend service for
+  # Flatpak, Snap, and possibly other desktop containment/sandboxing frameworks.
+  xdg.portal = {
     enable = true;
     wlr.enable = true;
     extraPortals = [
@@ -43,7 +44,6 @@
       pkgs.xdg-desktop-portal
     ];
   };
-  */
 
   services = {
     blueman.enable = true; # Bluetooth
