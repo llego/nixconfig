@@ -34,7 +34,7 @@
     };
     ssh-rpizero = {
       name = "rpizero.home";
-      exec = "kitty -- ssh pi@rpizero.home";
+      exec = "kitty -- ssh llego@rpizero.home";
       terminal = false;
       icon = "utilities-terminal";
     };
