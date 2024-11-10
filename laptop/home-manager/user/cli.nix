@@ -23,6 +23,7 @@
     lsd
     nitch
     fastfetch
+    xorg.xrandr
   ];
 
   # vim
