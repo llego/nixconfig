@@ -53,7 +53,7 @@
       window_padding_width = 10;
       #background_opacity = "0.5";
       #draw_minimal_borders = true;
-      hide_window_decorations = true;
+      hide_window_decorations = false;
       window_margin_width = 5;
       tab_bar_style = "slant";
     };
@@ -88,6 +88,8 @@
       };
       "git.confirmSync" = false;
       "explorer.confirmDelete" = false;
+      "update.mode" = "none";
+      "extensions.autoCheckUpdates" = false;
     };
   };
 }

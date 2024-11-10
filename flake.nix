@@ -26,6 +26,7 @@
       modules = [
         ./laptop
         ./laptop/niri-config.nix
+        #./laptop/gnome-config.nix
       ];
       specialArgs = {
         inherit inputs;
