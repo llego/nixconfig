@@ -37,6 +37,10 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  # Thunderbolt
+  # https://nixos.wiki/wiki/Thunderbolt
+  services.hardware.bolt.enable = true;
+
   # Hardware acceleration
   nixpkgs.config.packageOverrides = pkgs: {
     intel-vaapi-driver = pkgs.intel-vaapi-driver.override {enableHybridCodec = true;};
