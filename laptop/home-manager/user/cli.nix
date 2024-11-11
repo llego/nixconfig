@@ -24,6 +24,7 @@
     nitch
     fastfetch
     xorg.xrandr
+    screen
   ];
 
   # vim
