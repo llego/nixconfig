@@ -18,7 +18,7 @@
 
   # Wallapaper
   #stylix.image = ../../assets/wallpaper-blue.jpg;
-  stylix.image = ../../assets/mountains.png;
+  stylix.image = ../../assets/mountains4k.jpg;
   #stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";
 
   stylix.polarity = "dark";
