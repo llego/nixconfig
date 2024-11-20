@@ -25,6 +25,7 @@
     fastfetch
     xorg.xrandr
     screen
+    jq
   ];
 
   # vim
