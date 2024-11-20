@@ -8,7 +8,7 @@
     settings = {
       main.font = lib.mkForce "monospace";
       main.prompt = "  ";
-      main.terminal = "kitty";
+      main.terminal = "alacritty";
       main."icon-theme" = "${config.gtk.iconTheme.name}";
       main."icons-enabled" = true;
       main."image-size-ratio" = 0.2;

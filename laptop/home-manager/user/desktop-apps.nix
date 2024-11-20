@@ -43,19 +43,25 @@
     ];
   };
 
-  programs.kitty = {
+  programs.alacritty = {
     enable = true;
     settings = {
-      confirm_os_window_close = 0;
-      #dynamic_background_opacity = true;
-      enable_audio_bell = false;
-      mouse_hide_wait = "-1.0";
-      window_padding_width = 10;
-      #background_opacity = "0.5";
-      #draw_minimal_borders = true;
-      hide_window_decorations = false;
-      window_margin_width = 5;
-      tab_bar_style = "slant";
+      window.padding = {
+        x = 10;
+        y = 10;
+      };
+      window.dynamic_padding = true;
+      #window.dimensions = {
+      #  lines = 3;
+      #  columns = 200;
+      #};
+      #keyboard.bindings = [
+      #  {
+      #    key = "K";
+      #    mods = "Control";
+      #    chars = "\\u000c";
+      #  }
+      #];
     };
   };
 

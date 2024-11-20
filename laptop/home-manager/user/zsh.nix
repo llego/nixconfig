@@ -26,8 +26,6 @@
 
     initExtra = ''
       ${pkgs.nitch}/bin/nitch
-      #source ~/.p10k.zsh
-      [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
       bindkey -e
       bindkey "''${key[Up]}" up-line-or-search
       bindkey '^[[1;5C' emacs-forward-word

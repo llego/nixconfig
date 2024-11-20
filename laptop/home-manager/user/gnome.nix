@@ -50,8 +50,8 @@
         ];
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-        name = "Kitty";
-        command = "kitty";
+        name = "Alacritty";
+        command = "alacritty";
         binding = "<Alt>Return";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {

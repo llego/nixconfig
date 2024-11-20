@@ -108,11 +108,6 @@
         matches = [{app-id = "^org[.]pulseaudio[.]pavucontrol$";}];
         default-column-width.fixed = 762;
       }
-      {
-        matches = [{app-id = "kitty";}];
-        opacity = 0.9;
-        draw-border-with-background = false;
-      }
       # Make non-active windows semi-transparent
       {
         matches = [{is-active = false;}];
@@ -133,7 +128,7 @@
       "Mod+Shift+7".action = show-hotkey-overlay;
 
       "Mod+L".action.spawn = "swaylock";
-      "Alt+Return".action.spawn = "kitty";
+      "Alt+Return".action.spawn = "alacritty";
       "Alt+Space".action.spawn = "fuzzel";
       "Alt+W".action.spawn = "brave";
       "Alt+F".action.spawn = "nautilus";
