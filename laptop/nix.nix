@@ -7,13 +7,6 @@
     ];
   };
 
-  # Perform garbage collection weekly to maintain low disk usage
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d";
-  };
-
   # Required by nixd (LSP) when using flakes
   nix.nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 
