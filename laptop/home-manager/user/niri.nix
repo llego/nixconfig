@@ -57,7 +57,7 @@
       ];
       timeouts = [
         {
-          timeout = 120;
+          timeout = 300;
           command = "${pkgs.niri}/bin/niri msg action power-off-monitors";
         }
         {
@@ -85,6 +85,8 @@
       {command = ["systemctl" "--user" "restart" "network-manager-applet.service"];}
       {command = ["systemctl" "--user" "restart" "swayidle.service"];}
     ];
+
+    layout.always-center-single-column = true;
 
     layout.struts.top = -8.0;
 
