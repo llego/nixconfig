@@ -16,6 +16,12 @@
     baobab
     nixd
     alejandra
+    xorg.xrandr
+    screen
+    jq
+    dig
+    tree
+    ncdu
   ];
 
   # Zsh

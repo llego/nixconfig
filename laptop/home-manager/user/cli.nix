@@ -11,21 +11,17 @@
     inputs.bandsnatch.packages."${pkgs.system}".default
     tidal-dl
     atool
-    ncdu
     btop
     yle-dl
     svtplay-dl
     tidal-dl
-    dig
-    tree
     neofetch
     bat
     lsd
     nitch
     fastfetch
-    xorg.xrandr
-    screen
-    jq
+    wlr-randr
+    wdisplays
   ];
 
   # vim
