@@ -21,10 +21,10 @@
           {
             criteria = "DP-1";
             status = "enable";
-            #mode = "5120x2160@30Hz"; # not working
+            #mode = "5120x2160"; # not working
             #mode = "4320x1800"; # not quite working. laptop monitor stays on. has black bars on the sides
             #mode = "2560x1080"; # working, no black bars, but everything is too big
-            mode = "3840x2160"; # workin, but has black bars on the sides
+            mode = "3840x2160"; # working, but has black bars on the sides
             scale = 1.6;
           }
           {
