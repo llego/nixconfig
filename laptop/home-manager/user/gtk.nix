@@ -8,6 +8,7 @@
         "sftp://llego@docker.home/mnt docker"
         "sftp://llego@christiansandberg.fi/opt christiansandberg.fi"
         "sftp://root@homeassistant.home/config homeassistant"
+        "sftp://llego@debian.home debian"
         "davs://dav.cri.su/ dav.cri.su"
       ];
     };

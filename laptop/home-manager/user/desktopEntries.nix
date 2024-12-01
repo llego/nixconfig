@@ -38,5 +38,11 @@
       terminal = false;
       icon = "utilities-terminal";
     };
+    ssh-debian = {
+      name = "debian.home";
+      exec = "alacritty -e ssh llego@debian.home";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
   };
 }
