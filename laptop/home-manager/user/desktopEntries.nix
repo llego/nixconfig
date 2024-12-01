@@ -9,8 +9,8 @@
     };
     ssh-truenas = {
       name = "truenas.home";
-      genericName = "ssh into admin@truenas.home";
-      exec = "alacritty -e ssh admin@truenas.home";
+      genericName = "ssh into llego@truenas.home";
+      exec = "alacritty -e ssh llego@truenas.home";
       terminal = false;
       icon = "utilities-terminal";
     };
