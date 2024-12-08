@@ -4,21 +4,19 @@
   #services.printing.drivers = [pkgs.cnijfilter_4_00];
 
   # Comment this block to avoid error message on rebuild if printer is not connected
-  /*
   hardware.printers = {
     ensurePrinters = [
       {
-        name = "Canon_MG2400";
+        name = "HP_Smart_Tank";
         location = "Home";
-        deviceUri = "usb://Canon/MG2400%20series?serial=2F0738&interface=1";
-        model = "canonmg2400.ppd Canon MG2400 series Ver.4.00";
+        deviceUri = "http://192.168.3.125:631/ipp/print";
+        model = "drv:///cupsfilters.drv/pwgrast.ppd";
         ppdOptions = {
           PageSize = "A4";
         };
       }
     ];
   };
-  */
 
   # Enable autodiscovery of network printers
   services.avahi = {

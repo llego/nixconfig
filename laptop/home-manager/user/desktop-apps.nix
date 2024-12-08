@@ -15,6 +15,7 @@
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
     brave
+    system-config-printer
   ];
 
   programs.chromium = {
