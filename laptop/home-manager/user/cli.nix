@@ -22,6 +22,7 @@
     fastfetch
     wlr-randr
     wdisplays
+    mediainfo
   ];
 
   # vim
