@@ -23,6 +23,7 @@
     wlr-randr
     wdisplays
     mediainfo
+    unzip
   ];
 
   # vim
