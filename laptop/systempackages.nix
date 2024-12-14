@@ -7,6 +7,7 @@
   environment.systemPackages = with pkgs; [
     firefox
     nautilus
+    nautilus-python
     gnome-text-editor
     wget
     curl
@@ -43,6 +44,19 @@
 
   # Gnome Terminal
   #programs.gnome-terminal.enable = true;
+
+  # nautilus-open-any-terminal
+  # https://github.com/Stunkymonkey/nautilus-open-any-terminal
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "alacritty";
+  };
+  environment = {
+    sessionVariables.NAUTILUS_4_EXTENSION_DIR = "${pkgs.nautilus-python}/lib/nautilus/extensions-4";
+    pathsToLink = [
+      "/share/nautilus-python/extensions"
+    ];
+  };
 
   # Tailscale
   services.tailscale = {
