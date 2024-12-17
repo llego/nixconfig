@@ -16,6 +16,7 @@
     hunspellDicts.en-gb-ize
     brave
     system-config-printer
+    mqtt-explorer
   ];
 
   programs.chromium = {
