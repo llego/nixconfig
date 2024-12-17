@@ -45,6 +45,7 @@
     enable = true;
     userEmail = "${git-email}";
     userName = "${username}";
+    extraConfig.init.defaultBranch = "main";
   };
 
   # tidal-dl configuration
