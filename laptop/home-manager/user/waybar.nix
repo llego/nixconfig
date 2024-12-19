@@ -22,9 +22,9 @@
       layer = "top";
       position = "top";
       height = 32;
-      margin-top = 4;
-      margin-left = 4;
-      margin-right = 4;
+      margin-top = 0;
+      margin-left = 0;
+      margin-right = 0;
       spacing = 5;
       modules-left = ["niri/workspaces" "wlr/taskbar"];
       #modules-center = [ "clock" ];
@@ -40,7 +40,7 @@
 
       "wlr/taskbar" = {
         #format = "{icon}";
-        format = "{icon} {title}";
+        format = "{icon}";
         tooltip-format = "{title} | {app_id}";
         on-click = "activate";
         on-click-middle = "close";
@@ -74,7 +74,7 @@
 
       "custom/exit" = {
         tooltip = false;
-        format = " ";
+        format = "";
         on-click = "sleep 0.1 && wlogout";
       };
 
