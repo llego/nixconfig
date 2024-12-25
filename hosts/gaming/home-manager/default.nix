@@ -1,6 +1,5 @@
 {username, ...}: {
   home-manager.users.${username} = {
-    home.stateVersion = "24.11";
     imports = [
       ./swayidle.nix
     ];
@@ -15,5 +14,7 @@
       };
       variable-refresh-rate = true;
     };
+
+    home.stateVersion = "24.11";
   };
 }

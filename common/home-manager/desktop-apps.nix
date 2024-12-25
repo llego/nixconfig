@@ -31,6 +31,7 @@
     ];
   };
 
+  /*
   programs.brave = {
     enable = true;
     package = pkgs.brave;
@@ -43,6 +44,7 @@
       "fnaicdffflnofjppbagibeoednhnbjhg"
     ];
   };
+  */
 
   programs.alacritty = {
     enable = true;
