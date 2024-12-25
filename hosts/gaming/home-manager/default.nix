@@ -1,8 +1,11 @@
 {username, ...}: {
   home-manager.users.${username} = {
     home.stateVersion = "24.11";
+    imports = [
+      ./swayidle.nix
+    ];
 
-    programs.niri.settings.outputs."HDMI-A-1" = {
+    programs.niri.settings.outputs.HDMI-A-1 = {
       enable = true;
       scale = 1.6;
       mode = {
