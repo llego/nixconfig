@@ -66,10 +66,14 @@
     };
   };
 
+  stylix.targets.vscode.enable = false;
   programs.vscode = {
     enable = true;
     extensions = with pkgs.vscode-extensions; [
       yzhang.markdown-all-in-one
+      mechatroner.rainbow-csv
+      arcticicestudio.nord-visual-studio-code
+      pkief.material-icon-theme
       jnoortheen.nix-ide
       kamadorueda.alejandra
     ];
@@ -97,6 +101,11 @@
       "explorer.confirmDelete" = false;
       "update.mode" = "none";
       "extensions.autoCheckUpdates" = false;
+      "workbench.colorTheme" = "Nord";
+      "workbench.iconTheme" = "material-icon-theme";
+      "editor.fontFamily" = "'JetBrainsMono Nerd Font'";
+      "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
+      "files.enableTrash" = false;
     };
   };
 }
