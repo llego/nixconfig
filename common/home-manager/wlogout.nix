@@ -33,11 +33,19 @@
         "keybind" = "l";
       }
       {
+        "label" = "monitor-off";
+        "action" = "sleep 1; ${pkgs.niri}/bin/niri msg action power-off-monitors";
+        "text" = "Monitor off";
+        "keybind" = "m";
+      }
+      /*
+      {
         "label" = "hibernate";
         "action" = "sleep 1; systemctl hibernate";
         "text" = "Hibernate";
         "keybind" = "h";
       }
+      */
     ];
   };
 }
