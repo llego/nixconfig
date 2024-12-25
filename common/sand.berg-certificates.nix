@@ -2,6 +2,7 @@
   security.pki.certificates = [
     ''
       sand.berg
+      =========
       -----BEGIN CERTIFICATE-----
       MIID0TCCArmgAwIBAgIUBflOznOEY4qn61TrPPdeUKJRFXIwDQYJKoZIhvcNAQEL
       BQAweDELMAkGA1UEBhMCRkkxDjAMBgNVBAgMBUlsbGJ5MRUwEwYDVQQHDAxEZWZh
@@ -25,9 +26,8 @@
       2roKEhhnDNgPQLqKE9E8U9vppZ9Pf+oOPsWfUK1a4dFzBM/rnBClJqCqmEip6XG6
       zR2LGU+xnr1tsr6VqfdMFDTbI4OD
       -----END CERTIFICATE-----
-    ''
-    ''
       unifi
+      =========
       -----BEGIN CERTIFICATE-----
       MIIDNTCCAh2gAwIBAgIJXywE8r1K1BWLMA0GCSqGSIb3DQEBCwUAMBYxFDASBgNV
       BAMTC3VuaWZpLmxvY2FsMB4XDTIzMDkyNjIwMTMwNVoXDTI1MTIyOTIwMTMwNVow
