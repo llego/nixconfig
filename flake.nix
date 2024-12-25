@@ -25,7 +25,7 @@
       laptop = nixpkgs.lib.nixosSystem {
         modules = [
           ./common
-          .hosts/laptop
+          ./hosts/laptop
         ];
         specialArgs = {
           inherit inputs;
