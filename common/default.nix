@@ -2,33 +2,23 @@
   pkgs,
   inputs,
   username,
-  hostname,
   ...
 }: {
   imports = [
-    ./../hardware-configuration/laptop.nix
+    #./gnome-config.nix
     ./home-manager
-    ./stylix
-    ./hardware.nix
     ./locale.nix
+    ./niri-config.nix
     ./nix.nix
+    ./printer.nix
     ./sand.berg-certificates.nix
+    ./stylix
     ./systempackages.nix
     ./wifi-networks.nix
-
+    
     inputs.home-manager.nixosModules.home-manager
     inputs.stylix.nixosModules.stylix
   ];
-
-  # Minimum home-manager user config for laptop
-  home-manager.users.${username}.imports = [
-    ./home-manager/user
-    ./home-manager/user/desktop-apps.nix
-    ./home-manager/user/desktopEntries.nix
-    ./home-manager/user/gtk.nix
-  ];
-
-  networking.hostName = "${hostname}";
 
   users.users.${username} = {
     isNormalUser = true;
@@ -60,5 +50,4 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  system.stateVersion = "24.05";
 }

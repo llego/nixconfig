@@ -7,20 +7,26 @@
 }: {
   imports = [inputs.niri.nixosModules.niri];
 
-  home-manager.users.${username}.imports = [
-    ./home-manager/user/fuzzel.nix
-    ./home-manager/user/kanshi.nix
-    ./home-manager/user/niri.nix
-    ./home-manager/user/sessionVariables.nix
-    ./home-manager/user/waybar.nix
-    ./home-manager/user/wlogout.nix
-    ./home-manager/user/xwayland-satellite.nix
-  ];
+  home-manager.users.${username} = {
+    home.sessionVariables = {
+      EDITOR = "gnome-text-editor";
+      FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
+      TERMINAL = "alacritty";
+    };
+    imports = [
+      ./home-manager/fuzzel.nix
+      ./home-manager/niri.nix
+      #./home-manager/sessionVariables.nix
+      ./home-manager/waybar.nix
+      ./home-manager/wlogout.nix
+      ./home-manager/xwayland-satellite.nix
+    ];
+  };
 
-  environment.systemPackages = [
-    pkgs.xwayland-satellite
-    pkgs.wayland-utils
-    pkgs.networkmanager
+  environment.systemPackages = with pkgs; [
+    xwayland-satellite
+    wayland-utils
+    networkmanager
   ];
 
   environment.variables.NIXOS_OZONE_WL = "1";

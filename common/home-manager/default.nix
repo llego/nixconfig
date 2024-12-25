@@ -1,8 +1,8 @@
 {
   inputs,
   username,
-  hostname,
   git-email,
+  hostname,
   ...
 }: {
   home-manager = {
@@ -12,8 +12,16 @@
     extraSpecialArgs = {
       inherit inputs;
       inherit username;
-      inherit hostname;
       inherit git-email;
+      inherit hostname;
     };
+    # Minimum home-manager user config
+    users.${username}.imports = [
+      ./cli.nix
+      ./desktop-apps.nix
+      ./desktopEntries.nix
+      ./gtk.nix
+      ./zsh.nix
+    ];
   };
 }

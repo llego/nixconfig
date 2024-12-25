@@ -7,7 +7,7 @@
 }: {
   # Packages
   home.packages = with pkgs; [
-    (writeShellScriptBin "bandcamp-collection" (builtins.readFile ../../../assets/bandcamp-collection/bandcamp-collection.sh))
+    (writeShellScriptBin "bandcamp-collection" (builtins.readFile ../../assets/bandcamp-collection/bandcamp-collection.sh))
     inputs.bandsnatch.packages."${pkgs.system}".default
     tidal-dl
     atool
@@ -51,12 +51,12 @@
   # tidal-dl configuration
   home.file.tidal-dl-conf = {
     enable = true;
-    source = ../../../assets/.tidal-dl.json;
+    source = ../../assets/.tidal-dl.json;
     target = ".tidal-dl.json";
   };
 
   # lf file manager
-  xdg.configFile."lf/icons".source = ../../../assets/icons;
+  xdg.configFile."lf/icons".source = ../../assets/icons;
   programs.lf = {
     enable = true;
     commands = {

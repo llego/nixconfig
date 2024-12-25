@@ -19,23 +19,37 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs {inherit system;};
     username = "llego";
-    hostname = "laptop";
     git-email = "github.login@cri.su";
   in {
-    nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
-      modules = [
-        ./laptop
-        ./laptop/niri-config.nix
-        #./laptop/gnome-config.nix
-      ];
-      specialArgs = {
-        inherit inputs;
-        inherit username;
-        inherit hostname;
-        inherit git-email;
+    nixosConfigurations = {
+      laptop = nixpkgs.lib.nixosSystem {
+        modules = [
+          ./common
+          .hosts/laptop
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+          inherit git-email;
+          hostname = "laptop";
+        };
+      };
+
+      gaming = nixpkgs.lib.nixosSystem {
+        modules = [
+          ./common
+          ./hosts/gaming
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+          inherit git-email;
+          hostname = "gaming";
+        };
       };
     };
 
+    /*
     # Docker jail on TrueNAS
     # Activate: home-manager switch --flake ~/nixconfig#llego@docker
     homeConfigurations = {
@@ -57,5 +71,6 @@
         };
       };
     };
+    */
   };
 }

@@ -23,6 +23,7 @@
     dig
     tree
     ncdu
+    system-config-printer
   ];
 
   # Zsh

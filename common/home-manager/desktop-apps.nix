@@ -15,7 +15,6 @@
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
     brave
-    system-config-printer
     mqtt-explorer
   ];
 
