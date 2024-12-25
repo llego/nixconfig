@@ -15,7 +15,7 @@
     ./stylix
     ./systempackages.nix
     ./wifi-networks.nix
-    
+
     inputs.home-manager.nixosModules.home-manager
     inputs.stylix.nixosModules.stylix
   ];
@@ -49,5 +49,4 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
 }

@@ -16,8 +16,8 @@
     nixpkgs,
     ...
   } @ inputs: let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {inherit system;};
+    #system = "x86_64-linux";
+    #pkgs = import nixpkgs {inherit system;};
     username = "llego";
     git-email = "github.login@cri.su";
   in {
