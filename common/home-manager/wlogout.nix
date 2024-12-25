@@ -16,7 +16,7 @@
       }
       {
         "label" = "logout";
-        "action" = "sleep 1; niri msg action quit -s";
+        "action" = "sleep 1; ${pkgs.niri}/bin/niri msg action quit -s";
         "text" = "Exit";
         "keybind" = "e";
       }
