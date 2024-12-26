@@ -7,6 +7,7 @@
     ./hardware-configuration.nix
     ./drivers.nix
     ./home-manager
+    ./../../common/gnome-config.nix
   ];
 
   networking.hostName = hostname;

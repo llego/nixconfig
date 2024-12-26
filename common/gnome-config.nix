@@ -12,6 +12,6 @@
   };
 
   home-manager.users.${username}.imports = [
-    ./home-manager/user/gnome.nix
+    ./home-manager/gnome.nix
   ];
 }

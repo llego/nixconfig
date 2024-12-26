@@ -6,7 +6,7 @@
   # System packages
   environment.systemPackages = with pkgs; [
     nautilus
-    nautilus-python
+    #nautilus-python
     gnome-text-editor
     wget
     curl
@@ -84,12 +84,12 @@
     enable = true;
     terminal = "alacritty";
   };
-  environment = {
-    sessionVariables.NAUTILUS_4_EXTENSION_DIR = "${pkgs.nautilus-python}/lib/nautilus/extensions-4";
-    pathsToLink = [
-      "/share/nautilus-python/extensions"
-    ];
-  };
+  #environment = {
+  #  sessionVariables.NAUTILUS_4_EXTENSION_DIR = "${pkgs.nautilus-python}/lib/nautilus/extensions-4";
+  #  pathsToLink = [
+  #    "/share/nautilus-python/extensions"
+  #  ];
+  #};
 
   # Tailscale
   services.tailscale = {

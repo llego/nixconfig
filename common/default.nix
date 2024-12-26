@@ -5,10 +5,8 @@
   ...
 }: {
   imports = [
-    #./gnome-config.nix
     ./home-manager
     ./locale.nix
-    ./niri-config.nix
     ./nix.nix
     ./printer.nix
     ./sand.berg-certificates.nix
