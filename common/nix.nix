@@ -11,6 +11,6 @@
   nix.nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 
   # Limit the number of generations to keep
-  boot.loader.systemd-boot.configurationLimit = 10;
+  boot.loader.systemd-boot.configurationLimit = 20;
   # boot.loader.grub.configurationLimit = 10;
 }
