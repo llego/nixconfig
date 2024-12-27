@@ -7,8 +7,8 @@
     ./hardware-configuration.nix
     ./drivers.nix
     ./home-manager
-    #./../../common/gnome-config.nix
-    ./../../common/niri-config.nix
+    #./../../modules/gnome-config.nix
+    ./../../modules/niri-config.nix
   ];
 
   networking.hostName = hostname;
