@@ -24,7 +24,7 @@
     nixosConfigurations = {
       laptop = nixpkgs.lib.nixosSystem {
         modules = [
-          ./common
+          ./common-modules
           ./hosts/laptop
         ];
         specialArgs = {
@@ -37,7 +37,7 @@
 
       gaming = nixpkgs.lib.nixosSystem {
         modules = [
-          ./common
+          ./common-modules
           ./hosts/gaming
         ];
         specialArgs = {
