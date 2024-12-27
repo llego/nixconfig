@@ -8,7 +8,7 @@
     ./hardware-configuration.nix
     ./drivers.nix
     ./home-manager
-    ./../../modules/niri-config.nix
+    ./../../common-modules/niri-config.nix
   ];
 
   networking.hostName = hostname;
