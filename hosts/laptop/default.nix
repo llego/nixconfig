@@ -5,10 +5,10 @@
   ...
 }: {
   imports = [
-    ./hardware-configuration-laptop.nix
-    ./hardware.nix
+    ./hardware-configuration.nix
+    ./drivers.nix
     ./home-manager
-    ./../../common/niri-config.nix
+    ./../../modules/niri-config.nix
   ];
 
   networking.hostName = hostname;
