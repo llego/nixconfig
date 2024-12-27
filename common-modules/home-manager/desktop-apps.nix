@@ -103,7 +103,6 @@
       "update.mode" = "none";
       "extensions.autoCheckUpdates" = false;
       "workbench.colorTheme" = "Dark Modern";
-      "workbench.iconTheme" = "material-icon-theme";
       "editor.fontFamily" = "'JetBrainsMono Nerd Font'";
       "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
       "files.enableTrash" = false;
