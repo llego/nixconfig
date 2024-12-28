@@ -61,6 +61,9 @@
     };
   };
 
+  # SSH server
+  services.openssh.enable = true;
+
   # Nano settings
   programs.nano = {
     enable = true;
