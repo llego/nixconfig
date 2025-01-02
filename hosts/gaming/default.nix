@@ -8,12 +8,17 @@
     ./hardware-configuration.nix
     ./drivers.nix
     ./home-manager
-    #./../../modules/gnome-config.nix
     ./../../common-modules/niri-config.nix
+
     inputs.nix-flatpak.nixosModules.nix-flatpak
   ];
 
-  networking.hostName = hostname;
+  networking = {
+    hostName = hostname;
+    networkmanager.enable = true;
+    #interfaces.wlp5s0.useDHCP = false;
+    #interfaces.wlp8s0f3u3.useDHCP = true;
+  }; 
 
   # Steam
   programs.steam.enable = true;

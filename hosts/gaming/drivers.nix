@@ -64,9 +64,18 @@
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
-  # Force Feed Back for Moza wheel
-  boot.extraModulePackages = with config.boot.kernelPackages; [universal-pidff];
+  # Force Feed Back for Moza wheel and driver for wifi usb dongle
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+    universal-pidff 
+    rtl8852au
+  ];
   services.udev.extraRules = ''
-    SUBSYSTEM=="tty", KERNEL=="ttyACM*", ATTRS{idVendor}=="346e", ACTION=="add", MODE="0666", TAG+="uaccess"
+    SUBSYSTEM=="tty", KERNEL=="ttyACM*", ATTRS{idVendor}=="346e", ACTION=="add", MODE="0666", TAG+="uaccess" 
   '';
+
+  # Enable this option to support certain USB WLAN and WWAN adapters.
+  # These network adapters initial present themselves as Flash Drives containing their drivers. 
+  # This option enables automatic switching to the networking mode.
+  hardware.usb-modeswitch.enable = true;
+
 }

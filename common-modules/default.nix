@@ -12,7 +12,7 @@
     ./sand.berg-certificates.nix
     ./stylix
     ./systempackages.nix
-    ./wifi-networks.nix
+    #./wifi-networks.nix
 
     inputs.home-manager.nixosModules.home-manager
     inputs.stylix.nixosModules.stylix

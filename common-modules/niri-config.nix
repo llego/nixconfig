@@ -26,7 +26,6 @@
   environment.systemPackages = with pkgs; [
     xwayland-satellite
     wayland-utils
-    networkmanager
   ];
 
   environment.variables.NIXOS_OZONE_WL = "1";
