@@ -293,6 +293,21 @@
         "type": "github"
       }
     },
+    "nix-flatpak": {
+      "locked": {
+        "lastModified": 1735500379,
+        "narHash": "sha256-5qmX6YYjYfVYBbsmd2XxbTi7A59YuuN9IwfXU7qFquQ=",
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "rev": "c31b6cbd11707fe2c74ad805ef085d59d75116ae",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "type": "github"
+      }
+    },
     "nixlib": {
       "locked": {
         "lastModified": 1734829460,
@@ -425,6 +440,7 @@
         "bandsnatch": "bandsnatch",
         "home-manager": "home-manager",
         "niri": "niri",
+        "nix-flatpak": "nix-flatpak",
         "nixos-generators": "nixos-generators",
         "nixpkgs": "nixpkgs_4",
         "stylix": "stylix"

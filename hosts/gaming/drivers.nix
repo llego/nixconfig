@@ -63,4 +63,10 @@
     #package = config.boot.kernelPackages.nvidiaPackages.stable;
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
+
+  # Force Feed Back for Moza wheel
+  boot.extraModulePackages = with config.boot.kernelPackages; [universal-pidff];
+  services.udev.extraRules = ''
+    SUBSYSTEM=="tty", KERNEL=="ttyACM*", ATTRS{idVendor}=="346e", ACTION=="add", MODE="0666", TAG+="uaccess"
+  '';
 }
