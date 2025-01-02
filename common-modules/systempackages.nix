@@ -21,6 +21,9 @@
     tree
     ncdu
     system-config-printer
+    alejandra
+    nixd
+    usbutils
   ];
 
   # Zsh

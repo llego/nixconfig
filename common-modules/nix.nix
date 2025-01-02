@@ -9,6 +9,7 @@
       "nix-command"
       "flakes"
     ];
+    accept-flake-config = true;
   };
 
   # Required by nixd (LSP) when using flakes

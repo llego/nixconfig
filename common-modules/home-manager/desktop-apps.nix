@@ -14,8 +14,6 @@
     hunspell
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
-    alejandra
-    nixd
   ];
 
   programs.chromium = {
