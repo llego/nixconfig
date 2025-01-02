@@ -1,16 +1,12 @@
-{
-  username,
-  pkgs,
-  ...
-}: {
+{...}: {
   # niri msg outputs
-  programs.niri.settings.outputs.HDMI-A-1 = {
+  programs.niri.settings.outputs."DP-3" = {
     enable = true;
     scale = 1.6;
     mode = {
-      width = 3840; #5120;
+      width = 5120;
       height = 2160;
-      refresh = 59.997;
+      refresh = 60.0;
     };
     variable-refresh-rate = false;
   };
