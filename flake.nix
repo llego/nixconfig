@@ -67,7 +67,7 @@
         system = "x86_64-linux";
         modules = [
           ./common-modules
-          ./hosts/gaming
+          ./iso/gaming-iso.nix
         ];
         format = "iso";
         specialArgs = {
