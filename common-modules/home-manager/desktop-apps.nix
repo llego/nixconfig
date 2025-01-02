@@ -16,6 +16,8 @@
     hunspellDicts.en-gb-ize
     brave
     mqtt-explorer
+    alejandra
+    nixd
   ];
 
   programs.chromium = {
@@ -68,7 +70,6 @@
     };
   };
 
-  stylix.targets.vscode.enable = false;
   programs.vscode = {
     enable = true;
     extensions = with pkgs.vscode-extensions; [
@@ -102,9 +103,6 @@
       "explorer.confirmDelete" = false;
       "update.mode" = "none";
       "extensions.autoCheckUpdates" = false;
-      "workbench.colorTheme" = "Dark Modern";
-      "editor.fontFamily" = "'JetBrainsMono Nerd Font'";
-      "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
       "files.enableTrash" = false;
     };
   };

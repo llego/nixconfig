@@ -14,8 +14,6 @@
     pavucontrol
     gparted
     baobab
-    nixd
-    alejandra
     xorg.xrandr
     screen
     jq
