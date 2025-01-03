@@ -24,6 +24,7 @@
     alejandra
     nixd
     usbutils
+    networkmanagerapplet
   ];
 
   # Zsh
