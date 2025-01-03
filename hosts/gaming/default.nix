@@ -22,8 +22,10 @@
 
   # Steam
   programs.steam.enable = true;
-  programs.steam.gamescopeSession.enable = true;
+  #programs.steam.gamescopeSession.enable = true;
   programs.gamemode.enable = true;
+  programs.gamescope.enable = true;
+  programs.gamescope.capSysNice = true;
 
   environment.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
@@ -34,6 +36,9 @@
     mangohud
     protonup
     lutris
+    xwayland-run
+    #gamescope
+    mesa-demos
   ];
 
   # Flathub and boxflat

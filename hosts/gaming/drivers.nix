@@ -70,7 +70,7 @@
     rtl8852au
   ];
   services.udev.extraRules = ''
-    SUBSYSTEM=="tty", KERNEL=="ttyACM*", ATTRS{idVendor}=="346e", ACTION=="add", MODE="0666", TAG+="uaccess" 
+    SUBSYSTEM=="tty", KERNEL=="ttyACM*", ATTRS{idVendor}=="346e", ACTION=="add", MODE="0666", TAG+="uaccess"
   '';
 
   # Enable this option to support certain USB WLAN and WWAN adapters.
