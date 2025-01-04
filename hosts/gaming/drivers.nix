@@ -65,10 +65,7 @@
   };
 
   # Force Feed Back for Moza wheel and driver for wifi usb dongle
-  boot.extraModulePackages = with config.boot.kernelPackages; [
-    universal-pidff 
-    rtl8852au
-  ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [universal-pidff];
   services.udev.extraRules = ''
     SUBSYSTEM=="tty", KERNEL=="ttyACM*", ATTRS{idVendor}=="346e", ACTION=="add", MODE="0666", TAG+="uaccess"
   '';
