@@ -11,6 +11,9 @@
     ./../../common-modules/niri-config.nix
 
     inputs.nix-flatpak.nixosModules.nix-flatpak
+
+    #inputs.jovian.nixosModules.jovian.default
+    #inputs.jovian.nixosModules.steam.default
   ];
 
   networking = {
@@ -20,9 +23,12 @@
     #interfaces.wlp8s0f3u3.useDHCP = true;
   }; 
 
+  #jovian.steam.enable = true;
+  #jovian.steam.desktopSession = "niri-session";
+
   # Steam
   programs.steam.enable = true;
-  #programs.steam.gamescopeSession.enable = true;
+  programs.steam.gamescopeSession.enable = true;
   programs.gamemode.enable = true;
   programs.gamescope.enable = true;
   programs.gamescope.capSysNice = true;
@@ -37,14 +43,15 @@
     protonup
     lutris
     xwayland-run
-    #gamescope
     mesa-demos
   ];
 
   # Flathub and boxflat
   services.flatpak = {
     enable = true;
-    packages = ["io.github.lawstorant.boxflat"];
+    packages = [
+      "io.github.lawstorant.boxflat"
+    ];
   };
 
   system.stateVersion = "24.11";

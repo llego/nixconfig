@@ -25,6 +25,7 @@
     nixos-generators.url = "github:nix-community/nixos-generators";
     nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+    jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
   };
 
   outputs = {
