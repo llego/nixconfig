@@ -10,9 +10,8 @@
     ./nix.nix
     ./printer.nix
     ./sand.berg-certificates.nix
-    ./stylix
+    ./stylix.nix
     ./systempackages.nix
-    #./wifi-networks.nix
 
     inputs.home-manager.nixosModules.home-manager
     inputs.stylix.nixosModules.stylix
