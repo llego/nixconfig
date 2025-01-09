@@ -1,6 +1,6 @@
-{
+{hostname, ...}: {
   networking = {
-    #hostName = "laptop"; # Moved to configuration.nix
+    hostName = hostname;
     networkmanager = {
       enable = true;
       ensureProfiles = {
