@@ -16,7 +16,6 @@
     imports = [
       ./home-manager/fuzzel.nix
       ./home-manager/niri.nix
-      #./home-manager/sessionVariables.nix
       ./home-manager/waybar.nix
       ./home-manager/wlogout.nix
       ./home-manager/xwayland-satellite.nix
