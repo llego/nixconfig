@@ -5,7 +5,5 @@
       ./kanshi.nix
       ./swayidle.nix
     ];
-
-    home.packages = with pkgs; [mqtt-explorer];
   };
 }
