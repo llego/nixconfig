@@ -8,7 +8,7 @@
     ./../hosts/gaming/drivers.nix
     #./../hosts/gaming/home-manager/niri-config.nix
     #./../hosts/gaming/home-manager/swayidle.nix
-    ./../common-modules/niri-config.nix
+    ./../modules/niri-config.nix
   ];
 
   home-manager.users.${username}.home.stateVersion = "24.11";

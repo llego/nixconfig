@@ -8,7 +8,7 @@
     ./hardware-configuration.nix
     ./drivers.nix
     ./home-manager
-    ./../../common-modules/niri-config.nix
+    ./../../modules/niri-config.nix
 
     inputs.nix-flatpak.nixosModules.nix-flatpak
 
@@ -21,7 +21,7 @@
     networkmanager.enable = true;
     #interfaces.wlp5s0.useDHCP = false;
     #interfaces.wlp8s0f3u3.useDHCP = true;
-  }; 
+  };
 
   #jovian.steam.enable = true;
   #jovian.steam.desktopSession = "niri-session";

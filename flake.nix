@@ -35,7 +35,7 @@
       laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./common-modules
+          ./modules
           ./hosts/laptop
         ];
         specialArgs = {
@@ -49,7 +49,7 @@
       gaming = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./common-modules
+          ./modules
           ./hosts/gaming
         ];
         specialArgs = {
@@ -64,7 +64,7 @@
       gaming-iso = inputs.nixos-generators.nixosGenerate {
         system = "x86_64-linux";
         modules = [
-          ./common-modules
+          ./modules
           ./iso/gaming-iso.nix
         ];
         format = "iso";
