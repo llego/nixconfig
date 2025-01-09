@@ -27,19 +27,13 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    nixos-generators,
-    ...
-  } @ inputs: let
-    #system = "x86_64-linux";
-    #pkgs = import nixpkgs {inherit system;};
+  outputs = {nixpkgs, ...} @ inputs: let
     username = "llego";
     git-email = "github.login@cri.su";
   in {
     nixosConfigurations = {
       laptop = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
         modules = [
           ./common-modules
           ./hosts/laptop
@@ -53,6 +47,7 @@
       };
 
       gaming = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
         modules = [
           ./common-modules
           ./hosts/gaming
@@ -66,7 +61,7 @@
       };
     };
     packages.x86_64-linux = {
-      gaming-iso = nixos-generators.nixosGenerate {
+      gaming-iso = inputs.nixos-generators.nixosGenerate {
         system = "x86_64-linux";
         modules = [
           ./common-modules
