@@ -5,6 +5,8 @@
   hostname,
   ...
 }: {
+  imports = [inputs.home-manager.nixosModules.home-manager];
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -15,11 +17,10 @@
       inherit git-email;
       inherit hostname;
     };
+
     # Minimum home-manager user config
     users.${username}.imports = [
       ./cli.nix
-      ./desktopEntries.nix
-      ./gtk.nix
       ./zsh
     ];
   };

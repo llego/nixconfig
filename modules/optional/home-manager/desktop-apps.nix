@@ -16,6 +16,74 @@
     hunspellDicts.en-gb-ize
   ];
 
+  # File manager bookmarks and icons
+  gtk = {
+    gtk3 = {
+      bookmarks = [
+        "file:///home/llego/nixconfig nixconfig"
+        "sftp://llego@truenas.home/mnt truenas"
+        "sftp://llego@docker.home/mnt docker"
+        "sftp://llego@christiansandberg.fi/opt christiansandberg.fi"
+        "sftp://root@homeassistant.home/config homeassistant"
+        "sftp://llego@debian.home debian"
+        "davs://dav.cri.su/ dav.cri.su"
+      ];
+    };
+    iconTheme = {
+      #package = pkgs.kdePackages.breeze-icons;
+      #package = pkgs.gnome.adwaita-icon-theme;
+      package = pkgs.papirus-icon-theme;
+      name = "Papirus";
+    };
+  };
+
+  xdg.desktopEntries = {
+    ssh-docker = {
+      name = "docker.home";
+      genericName = "ssh into llego@docker.home";
+      exec = "alacritty -e ssh llego@docker.home";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
+    ssh-truenas = {
+      name = "truenas.home";
+      genericName = "ssh into llego@truenas.home";
+      exec = "alacritty -e ssh llego@truenas.home";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
+    ssh-christiansandberg = {
+      name = "christiansandberg.fi";
+      exec = "alacritty -e ssh llego@christiansandberg.fi";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
+    ssh-rpi3 = {
+      name = "rpi3.home";
+      exec = "alacritty -e ssh pi@rpi3.home";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
+    ssh-rpi4 = {
+      name = "rpi4.home";
+      exec = "alacritty -e ssh pi@rpi4.home";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
+    ssh-rpizero = {
+      name = "rpizero.home";
+      exec = "alacritty -e ssh llego@rpizero.home";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
+    ssh-debian = {
+      name = "debian.home";
+      exec = "alacritty -e ssh llego@debian.home";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
+  };
+
   programs.chromium = {
     enable = true;
     extensions = [

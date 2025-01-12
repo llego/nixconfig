@@ -1,8 +1,11 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }: {
+  imports = [inputs.stylix.nixosModules.stylix];
+
   stylix.enable = true;
 
   # Color theme, see https://tinted-theming.github.io/base16-gallery/

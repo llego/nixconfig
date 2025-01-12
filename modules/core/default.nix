@@ -1,7 +1,8 @@
 {
+  lib,
   pkgs,
-  inputs,
   username,
+  hostname,
   ...
 }: {
   imports = [
@@ -10,9 +11,6 @@
     ./nix.nix
     ./sand.berg-certificates.nix
     ./systempackages.nix
-
-    inputs.home-manager.nixosModules.home-manager
-    inputs.stylix.nixosModules.stylix
   ];
 
   users.users.${username} = {
@@ -36,14 +34,27 @@
     }
   ];
 
+  # Networking
+  networking = {
+    hostName = hostname;
+    networkmanager.enable = true;
+    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+    # (the default) this is the recommended approach. When using systemd-networkd it's
+    # still possible to use this option, but it's recommended to use it in conjunction
+    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+    useDHCP = lib.mkDefault true;
+    # networking.interfaces.wlp59s0.useDHCP = lib.mkDefault true;
+  };
+
   # SSH server
   services.openssh.enable = true;
 
   # Bootloader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.plymouth.enable = true;
+  boot = {
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    plymouth.enable = true;
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
