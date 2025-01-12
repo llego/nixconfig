@@ -8,9 +8,7 @@
     ./home-manager
     ./locale.nix
     ./nix.nix
-    ./printer.nix
     ./sand.berg-certificates.nix
-    ./stylix.nix
     ./systempackages.nix
 
     inputs.home-manager.nixosModules.home-manager
@@ -37,6 +35,9 @@
       ];
     }
   ];
+
+  # SSH server
+  services.openssh.enable = true;
 
   # Bootloader
   boot.loader.systemd-boot.enable = true;

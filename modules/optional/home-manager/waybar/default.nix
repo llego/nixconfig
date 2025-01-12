@@ -108,6 +108,6 @@
       };
     };
 
-    style = builtins.readFile ../../assets/waybar-style.css;
+    style = builtins.readFile ./waybar-style.css;
   };
 }

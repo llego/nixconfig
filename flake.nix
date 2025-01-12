@@ -34,10 +34,7 @@
     nixosConfigurations = {
       laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [
-          ./modules
-          ./hosts/laptop
-        ];
+        modules = [./hosts/laptop.nix];
         specialArgs = {
           inherit inputs;
           inherit username;

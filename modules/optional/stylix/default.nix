@@ -17,8 +17,8 @@
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-city-dark.yaml";
 
   # Wallapaper
-  #stylix.image = ./../assets/wallpaper-blue.jpg;
-  stylix.image = ./../assets/mountains4k.jpg;
+  #stylix.image = ./wallpaper-blue.jpg;
+  stylix.image = ./mountains4k.jpg;
   #stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";
 
   stylix.polarity = "dark";

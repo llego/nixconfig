@@ -100,6 +100,7 @@
       "update.mode" = "none";
       "extensions.autoCheckUpdates" = false;
       "files.enableTrash" = false;
+      "explorer.confirmDragAndDrop" = false;
     };
   };
 }

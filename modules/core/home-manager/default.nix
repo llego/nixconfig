@@ -18,10 +18,9 @@
     # Minimum home-manager user config
     users.${username}.imports = [
       ./cli.nix
-      ./desktop-apps.nix
       ./desktopEntries.nix
       ./gtk.nix
-      ./zsh.nix
+      ./zsh
     ];
   };
 }

@@ -1,4 +1,8 @@
-{pkgs, config, ...}: {
+{pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    system-config-printer
+  ];
+
   # Enable CUPS to print documents
   services.printing.enable = true;
 
@@ -23,5 +27,4 @@
     nssmdns4 = true;
     openFirewall = true;
   };
-
 }

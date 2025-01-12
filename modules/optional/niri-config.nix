@@ -16,13 +16,15 @@
     imports = [
       ./home-manager/fuzzel.nix
       ./home-manager/niri.nix
-      ./home-manager/waybar.nix
+      ./home-manager/swayidle.nix
+      ./home-manager/waybar
       ./home-manager/wlogout.nix
       ./home-manager/xwayland-satellite.nix
     ];
   };
 
   environment.systemPackages = with pkgs; [
+    pavucontrol
     xwayland-satellite
     wayland-utils
   ];
