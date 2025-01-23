@@ -1,16 +1,17 @@
 #!/bin/bash
 
 # Set variables
-BANDCAMP_HOME="${XDG_DATA_HOME:-${HOME}/nixconfig/laptop/home-manager/assets/bandcamp-collection}"
-CACHE="$BANDCAMP_HOME/bandcamp-collection-downloader.cache"
+BANDCAMP_HOME="${XDG_DATA_HOME:-${HOME}/nixconfig/modules/optional/home-manager/downloaders}"
+#BANDCAMP_HOME="${XDG_DATA_HOME:-${HOME}/bandcamp-collection}";
 
+CACHE="$BANDCAMP_HOME/bandcamp-collection-downloader.cache"
 COOKIE="$BANDCAMP_HOME/bandcamp.com_cookies.txt"
 
 BANDCAMP_MUSIC_PATH="${XDG_DATA_HOME:-${HOME}/Music/bandcamp}"
 TIDAL_MUSIC_PATH="${XDG_DATA_HOME:-${HOME}/Music/tidal}"
 
-REMOTE_HOST="llego@docker.home"
-REMOTE_HOST_PATH="$REMOTE_HOST:/mnt/beets-import"
+REMOTE_HOST="llego@truenas.home"
+REMOTE_HOST_PATH="$REMOTE_HOST:/mnt/illby/transient/beets-import"
 
 
 # Download bandcamp collection
@@ -67,6 +68,6 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
   echo -e "\nConnecting to docker container on remote host and running 'beet import /import' \n"
-  DOCKER_HOST=tcp://$REMOTE_HOST docker exec -it beets bash -c 'beet import /import'
+  DOCKER_HOST=tcp://$REMOTE_HOST sudo docker exec -it beets bash -c 'beet import /import'
 fi
 

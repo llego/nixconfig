@@ -18,4 +18,7 @@
     source = ./.tidal-dl.json;
     target = ".tidal-dl.json";
   };
+
+  #home.file."${config.home.homeDirectory}/bandcamp-downloader/bandcamp-collection-downloader.cache".source = config.lib.file.mkOutOfStoreSymlink ./bandcamp-collection-downloader.cache;
+  #home.file."${config.home.homeDirectory}/bandcamp-downloader/bandcamp.com_cookies.txt".source = config.lib.file.mkOutOfStoreSymlink ./bandcamp.com_cookies.txt;
 }
