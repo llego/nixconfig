@@ -31,6 +31,7 @@
   stylix.fonts = {
     monospace = {
       package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "DroidSansMono"];};
+      #package = pkgs.nerd-fonts.droid-sans-mono;
       name = "JetBrainsMono Nerd Font";
     };
     serif = {
