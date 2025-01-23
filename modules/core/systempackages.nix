@@ -14,6 +14,7 @@
     nixd
     usbutils
     networkmanager
+    cachix
   ];
 
   # Zsh
