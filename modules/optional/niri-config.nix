@@ -32,9 +32,9 @@
   environment.variables.NIXOS_OZONE_WL = "1";
 
   niri-flake.cache.enable = true;
-  programs.niri.enable = true;
   nixpkgs.overlays = [inputs.niri.overlays.niri];
-  programs.niri.package = pkgs.niri-unstable;
+  programs.niri.enable = true;
+  programs.niri.package = pkgs.niri-stable;
 
   # Extra Portal Configuration
   # xdg-desktop-portal provides a portal frontend service for

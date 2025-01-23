@@ -127,6 +127,9 @@
       "Mod+U".action = focus-workspace-down;
       "Mod+I".action = focus-workspace-up;
 
+      "Mod+Shift+V".action = switch-focus-between-floating-and-tiling;
+      "Mod+V".action = toggle-window-floating;
+
       "Mod+Q".action = close-window;
 
       "Mod+Comma".action = consume-window-into-column;
