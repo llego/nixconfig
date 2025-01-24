@@ -68,6 +68,6 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
   echo -e "\nConnecting to docker container on remote host and running 'beet import /import' \n"
-  DOCKER_HOST=tcp://$REMOTE_HOST sudo docker exec -it beets bash -c 'beet import /import'
+  ssh -t $REMOTE_HOST "sudo docker exec -u abc -it beets bash -c 'beet import /import'"
 fi
 
