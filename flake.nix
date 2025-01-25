@@ -24,7 +24,6 @@
     niri.url = "github:sodiboo/niri-flake";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     bandsnatch.url = "github:ovyerus/bandsnatch";
-    #bandsnatch.inputs.nixpkgs.follows = "nixpkgs";
     #nixos-generators.url = "github:nix-community/nixos-generators";
     #nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
     #nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -53,13 +52,13 @@
         system = "x86_64-linux";
         modules = [
           ./modules
-          ./hosts/gaming
+          ./hosts/gamestation.nix
         ];
         specialArgs = {
           inherit inputs;
           inherit username;
           inherit git-email;
-          hostname = "gaming";
+          hostname = "gamestation";
         };
       };
       /*
