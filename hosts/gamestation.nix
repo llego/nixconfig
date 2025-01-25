@@ -10,7 +10,7 @@
 
   imports = [
     ./../modules/core
-    ./../modules/gaming.nix
+    ./../modules/optional/gaming.nix
     ./../modules/optional/stylix
     ./../modules/optional/desktop-apps.nix
     ./../modules/optional/niri-config.nix
@@ -40,13 +40,6 @@
       };
       variable-refresh-rate = false;
     };
-  };
-
-  networking = {
-    hostName = hostname;
-    networkmanager.enable = true;
-    #interfaces.wlp5s0.useDHCP = false;
-    #interfaces.wlp8s0f3u3.useDHCP = true;
   };
 
   # Bluetooth

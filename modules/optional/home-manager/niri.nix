@@ -92,6 +92,10 @@
         opacity = 0.9;
         draw-border-with-background = false;
       }
+      {
+        matches = [{app-id = "gamescope";}];
+        open-fullscreen = true;
+      }
     ];
 
     # ask the applications to omit their client-side decorations.
