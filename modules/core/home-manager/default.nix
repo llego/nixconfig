@@ -1,7 +1,6 @@
 {
   inputs,
   username,
-  git-email,
   hostname,
   ...
 }: {
@@ -14,7 +13,6 @@
     extraSpecialArgs = {
       inherit inputs;
       inherit username;
-      inherit git-email;
       inherit hostname;
     };
 

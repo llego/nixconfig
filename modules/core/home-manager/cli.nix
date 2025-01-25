@@ -1,7 +1,6 @@
 {
   pkgs,
   username,
-  git-email,
   ...
 }: {
   # Packages
@@ -35,7 +34,7 @@
   # git
   programs.git = {
     enable = true;
-    userEmail = "${git-email}";
+    userEmail = "github.login@cri.su";
     userName = "${username}";
     extraConfig.init.defaultBranch = "main";
   };

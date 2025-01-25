@@ -32,7 +32,6 @@
 
   outputs = {nixpkgs, ...} @ inputs: let
     username = "llego";
-    git-email = "github.login@cri.su";
   in {
     nixosConfigurations = {
       laptop = nixpkgs.lib.nixosSystem {
@@ -43,7 +42,6 @@
         specialArgs = {
           inherit inputs;
           inherit username;
-          inherit git-email;
           hostname = "laptop";
         };
       };
@@ -57,7 +55,6 @@
         specialArgs = {
           inherit inputs;
           inherit username;
-          inherit git-email;
           hostname = "gamestation";
         };
       };
@@ -72,7 +69,6 @@
         specialArgs = {
           inherit inputs;
           inherit username;
-          inherit git-email;
           hostname = "rpi4";
         };
       };
@@ -91,7 +87,6 @@
         specialArgs = {
           inherit inputs;
           inherit username;
-          inherit git-email;
           hostname = "gaming";
         };
       };
@@ -114,7 +109,6 @@
           inherit username;
           inherit inputs;
           hostname = "docker";
-          inherit git-email;
         };
       };
     };
