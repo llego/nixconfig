@@ -1,9 +1,49 @@
 {
   pkgs,
+  username,
+  hostname,
+  inputs,
   config,
+  modulesPath,
   ...
 }: {
-  # BLuetooth
+  system.stateVersion = "24.11";
+
+  imports = [
+    ./../modules/gaming.nix
+
+    # hardware-configuration.nix
+    (modulesPath + "/installer/scan/not-detected.nix")
+  ];
+
+  #######
+  # Home Manager
+  #######
+  home-manager.users.${username} = {
+    home.stateVersion = "24.11";
+
+    imports = [    ];
+  
+    programs.niri.settings.outputs."DP-3" = {
+      enable = true;
+      scale = 1.6;
+      mode = {
+        width = 5120;
+        height = 2160;
+        refresh = 60.0;
+      };
+      variable-refresh-rate = false;
+    };
+  };
+
+  networking = {
+    hostName = hostname;
+    networkmanager.enable = true;
+    #interfaces.wlp5s0.useDHCP = false;
+    #interfaces.wlp8s0f3u3.useDHCP = true;
+  };
+
+  # Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
 
@@ -16,13 +56,6 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Thunderbolt
-  # https://nixos.wiki/wiki/Thunderbolt
-  #services.hardware.bolt.enable = true;
 
   # Enable OpenGL
   hardware.graphics = {
@@ -71,8 +104,44 @@
   '';
 
   # Enable this option to support certain USB WLAN and WWAN adapters.
-  # These network adapters initial present themselves as Flash Drives containing their drivers. 
+  # These network adapters initial present themselves as Flash Drives containing their drivers.
   # This option enables automatic switching to the networking mode.
   hardware.usb-modeswitch.enable = true;
+
+
+
+  #######
+  # hardware-configuration.nix
+  #######
+  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
+
+  fileSystems."/" =
+    { device = "/dev/disk/by-uuid/2cd4578a-252e-4836-93d6-f28aed4eae96";
+      fsType = "ext4";
+    };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/22F9-04F0";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+
+  swapDevices = [ ];
+
+  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+  # (the default) this is the recommended approach. When using systemd-networkd it's
+  # still possible to use this option, but it's recommended to use it in conjunction
+  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+  networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp4s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp8s0f3u1u1.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp5s0.useDHCP = lib.mkDefault true;
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+}
+
 
 }

@@ -1,30 +1,13 @@
 {
   pkgs,
-  hostname,
   inputs,
   ...
 }: {
   imports = [
-    ./hardware-configuration.nix
-    ./drivers.nix
-    ./home-manager
-    ./../../modules/niri-config.nix
-
     inputs.nix-flatpak.nixosModules.nix-flatpak
-
     #inputs.jovian.nixosModules.jovian.default
     #inputs.jovian.nixosModules.steam.default
   ];
-
-  networking = {
-    hostName = hostname;
-    networkmanager.enable = true;
-    #interfaces.wlp5s0.useDHCP = false;
-    #interfaces.wlp8s0f3u3.useDHCP = true;
-  };
-
-  #jovian.steam.enable = true;
-  #jovian.steam.desktopSession = "niri-session";
 
   # Steam
   programs.steam.enable = true;
@@ -36,6 +19,9 @@
   environment.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
   };
+
+  #jovian.steam.enable = true;
+  #jovian.steam.desktopSession = "niri-session";
 
   # Game related packages
   environment.systemPackages = with pkgs; [
@@ -53,6 +39,4 @@
       "io.github.lawstorant.boxflat"
     ];
   };
-
-  system.stateVersion = "24.11";
 }
