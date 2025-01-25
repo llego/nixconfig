@@ -46,10 +46,9 @@
         };
       };
 
-      gaming = nixpkgs.lib.nixosSystem {
+      gamestation = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./modules
           ./hosts/gamestation.nix
         ];
         specialArgs = {

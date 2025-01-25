@@ -1,16 +1,22 @@
 {
-  pkgs,
   username,
   hostname,
-  inputs,
   config,
   modulesPath,
+  lib,
   ...
 }: {
   system.stateVersion = "24.11";
 
   imports = [
+    ./../modules/core
     ./../modules/gaming.nix
+    ./../modules/optional/stylix
+    ./../modules/optional/desktop-apps.nix
+    ./../modules/optional/niri-config.nix
+    ./../modules/optional/printer.nix
+    ./../modules/optional/wifi-networks.nix
+    ./../modules/optional/vpn.nix
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -22,8 +28,8 @@
   home-manager.users.${username} = {
     home.stateVersion = "24.11";
 
-    imports = [    ];
-  
+    imports = [];
+
     programs.niri.settings.outputs."DP-3" = {
       enable = true;
       scale = 1.6;
@@ -108,27 +114,25 @@
   # This option enables automatic switching to the networking mode.
   hardware.usb-modeswitch.enable = true;
 
-
-
   #######
   # hardware-configuration.nix
   #######
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
+  boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
+  boot.initrd.kernelModules = [];
+  boot.kernelModules = ["kvm-amd"];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/2cd4578a-252e-4836-93d6-f28aed4eae96";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/2cd4578a-252e-4836-93d6-f28aed4eae96";
+    fsType = "ext4";
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/22F9-04F0";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/22F9-04F0";
+    fsType = "vfat";
+    options = ["fmask=0077" "dmask=0077"];
+  };
 
-  swapDevices = [ ];
+  swapDevices = [];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -141,7 +145,4 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-}
-
-
 }
