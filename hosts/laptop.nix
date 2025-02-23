@@ -31,6 +31,7 @@
     imports = [
       # tidal-dl, svtplay-dl, yle-dl, bandcamp collection downloader
       ./../modules/optional/home-manager/downloaders
+      ./../modules/optional/home-manager/ai.nix
     ];
 
     # Kanshi display settings for laptop display and external display

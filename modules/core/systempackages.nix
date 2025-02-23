@@ -15,6 +15,7 @@
     usbutils
     networkmanager
     cachix
+    wl-clipboard
   ];
 
   # Zsh
