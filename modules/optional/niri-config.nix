@@ -13,6 +13,18 @@
       FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
       TERMINAL = "alacritty";
     };
+    xdg.mimeApps.enable = true;
+    xdg.mimeApps.defaultApplications = {
+      "default-web-browser" = "firefox.desktop";
+      "text/plain" = "org.gnome.TextEditor.desktop";
+      "text/html" = "firefox.desktop";
+      "x-scheme-handler/http" = "firefox.desktop";
+      "x-scheme-handler/https" = "firefox.desktop";
+      "x-scheme-handler/about" = "firefox.desktop";
+      "x-scheme-handler/unknown" = "firefox.desktop";
+      "x-scheme-handler/mailto" = "proton-mail.desktop";
+      "application/xhtml+xml" = "firefox.desktop";
+    };
     imports = [
       ./home-manager/fuzzel.nix
       ./home-manager/niri.nix
@@ -31,10 +43,11 @@
 
   environment.variables.NIXOS_OZONE_WL = "1";
 
+  programs.niri.enable = true;
   niri-flake.cache.enable = true;
   nixpkgs.overlays = [inputs.niri.overlays.niri];
-  programs.niri.enable = true;
   programs.niri.package = pkgs.niri-stable;
+  #programs.niri.package = pkgs.niri;
 
   # Extra Portal Configuration
   # xdg-desktop-portal provides a portal frontend service for
