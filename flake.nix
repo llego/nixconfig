@@ -3,10 +3,10 @@
 
   nixConfig = {
     extra-substituters = [
-      "https://nix-community.cachix.org"
-      "https://cuda-maintainers.cachix.org"
-      "https://niri.cachix.org"
-      "https://llego.cachix.org"
+      "https://nix-community.cachix.org?priority=2"
+      "https://cuda-maintainers.cachix.org?priority=1"
+      "https://niri.cachix.org?priority=1"
+      "https://llego.cachix.org?priority=1"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -24,8 +24,8 @@
     niri.url = "github:sodiboo/niri-flake";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     bandsnatch.url = "github:ovyerus/bandsnatch";
-    #nixos-generators.url = "github:nix-community/nixos-generators";
-    #nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-generators.url = "github:nix-community/nixos-generators";
+    nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
     #nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     #raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
   };
@@ -57,40 +57,24 @@
           hostname = "gamestation";
         };
       };
-      /*
-      rpi-example = nixpkgs.lib.nixosSystem {
-        system = "aarch64-linux";
-        modules = [
-          inputs.raspberry-pi-nix.nixosModules.raspberry-pi
-          ./basic-rpi4-config.nix
-          ./modules/core
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "rpi4";
-        };
-      };
-      */
     };
 
-    /*
     packages.x86_64-linux = {
-      gaming-iso = inputs.nixos-generators.nixosGenerate {
+      test-iso = inputs.nixos-generators.nixosGenerate {
         system = "x86_64-linux";
         modules = [
-          ./modules
-          ./iso/gaming-iso.nix
+          ./hosts/laptop.nix
         ];
         format = "iso";
         specialArgs = {
           inherit inputs;
           inherit username;
-          hostname = "gaming";
+          hostname = "testhost";
         };
       };
     };
 
+    /*
     # Docker jail on TrueNAS
     # Activate: home-manager switch --flake ~/nixconfig#llego@docker
     homeConfigurations = {

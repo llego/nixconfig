@@ -3,7 +3,15 @@
   pkgs,
   ...
 }: {
-  programs.swaylock.enable = true;
+  programs.swaylock = {
+    enable = true;
+    settings = {
+      font-size = 24;
+      indicator-idle-visible = true;
+      indicator-radius = 100;
+      show-failed-attempts = true;
+    };
+  };
 
   home.packages = [
     pkgs.brightnessctl
@@ -62,14 +70,15 @@
       {command = ["systemctl" "--user" "restart" "swayidle.service"];}
     ];
 
-    layout.always-center-single-column = true;
-
-    layout.struts.top = -8.0;
-
-    layout.border.active.gradient = {
-      from = "${config.lib.stylix.colors.withHashtag.base09}";
-      to = "${config.lib.stylix.colors.withHashtag.base0E}";
-      angle = 45;
+    layout = {
+      always-center-single-column = true;
+      struts.top = -8.0;
+      border.active.gradient = {
+        from = "${config.lib.stylix.colors.withHashtag.base09}";
+        to = "${config.lib.stylix.colors.withHashtag.base0B}";
+        angle = 45;
+      };
+      shadow.enable = true;
     };
 
     window-rules = [
@@ -152,9 +161,9 @@
       "Mod+R".action = switch-preset-column-width;
       "Mod+F".action = fullscreen-window;
 
-      Print.action = screenshot;
-      "Ctrl+Print".action = screenshot-screen;
-      "Alt+Print".action = screenshot-window;
+      "Print".action = screenshot;
+      #"Ctrl+Print".action = screenshot-screen;
+      #"Alt+Print".action = screenshot-window;
 
       XF86AudioRaiseVolume = {
         action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+";

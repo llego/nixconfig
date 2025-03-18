@@ -8,7 +8,7 @@
 
   stylix.enable = true;
 
-  # Color theme, see https://tinted-theming.github.io/base16-gallery/
+  # Color theme, see https://tinted-theming.github.io/tinted-gallery/
 
   #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
   #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/default-dark.yaml";
