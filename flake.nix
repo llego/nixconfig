@@ -4,13 +4,13 @@
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org?priority=2"
-      "https://cuda-maintainers.cachix.org?priority=1"
+      #"https://cuda-maintainers.cachix.org?priority=1"
       "https://niri.cachix.org?priority=1"
       "https://llego.cachix.org?priority=1"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+      #"cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
       "llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ="
     ];
@@ -24,8 +24,9 @@
     niri.url = "github:sodiboo/niri-flake";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     bandsnatch.url = "github:ovyerus/bandsnatch";
-    nixos-generators.url = "github:nix-community/nixos-generators";
-    nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
+    raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
+    #nixos-generators.url = "github:nix-community/nixos-generators";
+    #nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
     #nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     #raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
   };
@@ -55,6 +56,19 @@
           inherit inputs;
           inherit username;
           hostname = "gamestation";
+        };
+      };
+
+      # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
+      rpi5 = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        modules = [
+          ./hosts/rpi5.nix
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+          hostname = "rpi5";
         };
       };
     };

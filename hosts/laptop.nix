@@ -84,6 +84,14 @@
     };
   };
 
+  # Bootloader
+  boot = {
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    plymouth.enable = true;
+    binfmt.emulatedSystems = ["aarch64-linux"]; # Needed to create ISO image for rpi5
+  };
+
   # Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
