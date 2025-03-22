@@ -14,6 +14,17 @@
     ./../modules/optional/wifi-networks.nix
   ];
 
+  # System packages
+  environment.systemPackages = with pkgs; [
+    chromium
+  ];
+
+  services.cage = {
+    enable = true;
+    user = username;
+    program = "${pkgs.chromium}/bin/chromium --app=http://192.168.1.103:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
+  };
+
   #######
   # Home Manager
   #######
@@ -25,7 +36,7 @@
   };
 
   # Thunderbolt
-  services.hardware.bolt.enable = true;
+  # services.hardware.bolt.enable = true;
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
@@ -47,7 +58,7 @@
           };
           dt-overlays = {
             disable-bt = {
-              enable = true;
+              enable = false;
               params = {};
             };
           };
