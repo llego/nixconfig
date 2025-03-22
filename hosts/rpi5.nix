@@ -41,8 +41,14 @@
     name = "Kökets Wyoming Satellite";
     user = username;
     uri = "tcp://0.0.0.0:10700";
-    sounds.awake = builtins.fetchurl "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/awake.wav";
-    sounds.done = builtins.fetchurl "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/done.wav";
+    sounds.awake = builtins.fetchurl {
+      url = "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/awake.wav";
+      sha256 = "6b25dd2abaf7537865222ca9fd6e14fbf723458526fb79bbe29d8261d1320724";
+    };
+    sounds.done = builtins.fetchurl {
+      url = "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/done.wav";
+      sha256 = "bc5c914bfa860a77fa9d88ac2d96601adfede578cf146637ec98b5688911a951";
+    };
     extraArgs = [
       "--debug"
       "--wake-word-name=ok_nabu"
