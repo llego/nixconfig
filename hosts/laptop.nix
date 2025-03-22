@@ -17,6 +17,7 @@
     ./../modules/optional/printer.nix
     ./../modules/optional/wifi-networks.nix
     ./../modules/optional/vpn.nix
+    #./../modules/optional/ruuvi
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
