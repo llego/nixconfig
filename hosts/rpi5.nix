@@ -24,6 +24,9 @@
     ];
   };
 
+  # Thunderbolt
+  services.hardware.bolt.enable = true;
+
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
     enable = false; # set to false (enabled by default)
