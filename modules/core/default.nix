@@ -9,7 +9,6 @@
     ./home-manager
     ./locale.nix
     ./nix.nix
-    ./sand.berg-certificates.nix
     ./systempackages.nix
   ];
 
@@ -48,13 +47,6 @@
 
   # SSH server
   services.openssh.enable = true;
-
-  # Bootloader
-  boot = {
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
-    plymouth.enable = true;
-  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
