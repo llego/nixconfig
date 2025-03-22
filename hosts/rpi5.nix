@@ -36,8 +36,36 @@
     ];
   };
 
-  # Thunderbolt
-  # services.hardware.bolt.enable = true;
+  services.wyoming.satellite = {
+    enable = true;
+    name = "Kökets Wyoming Satellite";
+    user = username;
+    uri = "tcp://0.0.0.0:10700";
+    sounds.awake = builtins.fetchurl "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/awake.wav";
+    sounds.done = builtins.fetchurl "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/done.wav";
+    extraArgs = [
+      "--debug"
+      "--wake-word-name=ok_nabu"
+      "--wake-uri=tcp://127.0.0.1:10400"
+      "--name 'Kökets Wyoming Satellite'"
+      "--mic-command 'arecord -D plughw:CARD=ArrayUAC10,DEV=0 -r 16000 -c 1 -f S16_LE -t raw'"
+      "--snd-command 'aplay -D sysdefault:CARD=vc4hdmi0 -r 22050 -c 1 -f S16_LE -t raw'"
+      "--wake-uri 'tcp://127.0.0.1:10400'"
+      "--wake-word-name 'ok_nabu'"
+      "--event-uri 'tcp://127.0.0.1:10500'"
+      "--timer-finished-wav /home/pi/wyoming-satellite/sounds/timer_finished.wav"
+      "--vad-threshold=0.5"
+    ];
+  };
+
+  services.wyoming.openwakeword = {
+    enable = true;
+    preloadModels = [
+      "ok_nabu"
+    ];
+    uri = "tcp://0.0.0:10400";
+    extraArgs = ["--debug"];
+  };
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
