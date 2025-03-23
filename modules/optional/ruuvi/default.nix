@@ -39,7 +39,7 @@
           Description = "RuuviCollector Service";
         };
         Service = {
-          ExecStart = "/usr/bin/java -jar /home/${username}/ruuvi/ruuvi-collector-0.2.jar";
+          ExecStart = "${pkgs.jdk21_headless}/bin/java -jar /home/${username}/ruuvi/ruuvi-collector-0.2.jar";
           Restart = "on-failure";
         };
       };
