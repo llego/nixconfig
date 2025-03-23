@@ -12,13 +12,13 @@
     inputs.raspberry-pi-nix.nixosModules.sd-image
     ./../modules/core
     ./../modules/optional/wifi-networks.nix
-    ./../modules/optional/ruuvi
+    #./../modules/optional/ruuvi
   ];
 
   # System packages
   environment.systemPackages = with pkgs; [
     chromium
-    bluez5-experimental 
+    bluez5-experimental
     bluez-tools
     bluez-alsa
     bluetuith
@@ -27,8 +27,35 @@
   services.cage = {
     enable = true;
     user = username;
-    program = "${pkgs.chromium}/bin/chromium --app=http://192.168.1.103:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
+    program = "${pkgs.chromium}/bin/chromium --app=http://homeassistant.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
   };
+
+  services.kanshi = {
+    enable = true;
+    systemdTarget = "graphical-session.target";
+    settings = [
+      {
+        profile.name = "undocked";
+        profile.outputs = [
+          {
+            criteria = "HDMI-A-2";
+            status = "enable";
+            scale = 1.5;
+          }
+        ];
+      }
+    ];
+  };
+
+  /*
+  # Enable cron service
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+      "*\/5 * * * *      llego    export WAYLAND_DISPLAY=wayland-1 && export XDG_RUNTIME_DIR=/run/user/1000 && /usr/bin/wlr-randr --output 'HDMI-A-2' --scale 1.5"
+    ];
+  };
+  */
 
   #######
   # Home Manager
@@ -40,7 +67,7 @@
     ];
   };
 
-/*
+  /*
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
@@ -77,7 +104,7 @@
     uri = "tcp://0.0.0:10400";
     extraArgs = ["--debug"];
   };
-*/
+  */
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
@@ -123,6 +150,4 @@
     settings.Policy.AutoEnable = "true";
     settings.General.Enable = "Source,Sink,Media,Socket";
   };
-
-
 }
