@@ -6,8 +6,26 @@
 }: {
   environment.systemPackages = [pkgs.jdk21_headless];
 
+  security.wrappers = {
+    hcitool = {
+      owner = "root";
+      group = "bleuser";
+      capabilities = "cap_net_raw,cap_net_admin+eip"; #"cap_net_admin,cap_net_raw=ep";
+      source = "/run/current-system/sw/bin/hcitool";
+    };
+    hcidump = {
+      owner = "root";
+      group = "bleuser";
+      capabilities = "cap_net_raw,cap_net_admin+eip";
+      source = "/run/current-system/sw/bin/hcidump";
+    };
+  };
+
+  users.groups.bleuser = {};
+  users.users.${username}.extraGroups = ["bleuser"];
+
   home-manager.users.${username} = {
-    #/*
+    /*
     home.file.ruuvi-binary = {
       enable = true;
       source = builtins.fetchurl {
@@ -16,7 +34,7 @@
       };
       target = "ruuvi/ruuvi-collector-0.2.jar";
     };
-    #*/
+    */
     home.file.ruuvi-names = {
       enable = true;
       source = ./ruuvi-names.properties;
