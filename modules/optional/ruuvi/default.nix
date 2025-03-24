@@ -6,7 +6,7 @@
 }: {
   systemd.services.ruuvi-gateway-docker = {
     script = ''
-      ${pkgs.docker-compose}/bin/docker-compose -f ${config.home.file.ruuvi-compose}
+      ${pkgs.docker-compose}/bin/docker-compose -f /home/${username}/ruuvi/docker-compose.yml up
     '';
     wantedBy = ["multi-user.target"];
     after = ["docker.service" "docker.socket"];

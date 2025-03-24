@@ -10,12 +10,12 @@ hci_index: 0
 # Publish the data to MQTT in Ruuvi Gateway format
 mqtt:
   # Flag to enable or disable publishing the data to a MQTT server
-  enabled: false
+  enabled: true
   # MQTT broker url, including scheme (tcp, ssl or ws), hostname or IP address, and port
-  broker_url: tcp://ip.or.hostname:1883
+  broker_url: tcp://192.168.1.103:1883
   client_id: ruuvi-go-gateway
-  username: ruuvigogateway
-  password: ruuvipassword
+  username: mqtt_user
+  password: mqtt_user
   # Topic prefix where to publish, in format <topic_prefix>/<mac>
   topic_prefix: ruuvi
   # Topic where to publish LWT "status messages" on connect/disconnect. Empty means disabled.
@@ -29,7 +29,7 @@ mqtt:
 # Publish the data by sending HTTP POSTs in Ruuvi Gateway format
 http:
   # Flag to enable or disable publishing the data to a MQTT server
-  enabled: true
+  enabled: false
   # URL including scheme and hostname or ip, and optionally a port and a subpath
   url: http://192.168.1.101:8086
   # Interval for sending measurements. Accepts values in go duration format ( https://pkg.go.dev/time#ParseDuration ), for example 1m30s
