@@ -32,6 +32,16 @@
 
   services.unclutter.enable = true;
 
+systemd.user.services.scalekiosk = {
+  description = "Scale screen to 1.5";
+  #serviceConfig.PassEnvironment = "DISPLAY";
+  script = ''
+    sleep 8
+    WAYLAND_DISPLAY="wayland-0" XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output "HDMI-A-2" --scale 1.5
+  '';
+  wantedBy = [ "basic.target" ];
+};
+
   /*
   # Enable cron service
   services.cron = {
@@ -47,7 +57,8 @@
   #######
   home-manager.users.${username} = {
     home.stateVersion = "24.11";
-
+  };
+/*
   services.kanshi = {
     enable = true;
     systemdTarget = "graphical-session.target";
@@ -69,7 +80,6 @@
     ];
   };
 
-  /*
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
