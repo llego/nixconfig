@@ -12,7 +12,6 @@
     inputs.raspberry-pi-nix.nixosModules.sd-image
     ./../modules/core
     ./../modules/optional/wifi-networks.nix
-    ./../modules/optional/ruuvi
   ];
 
   # System packages
@@ -22,7 +21,6 @@
     bluez-tools
     bluez-alsa
     bluetuith
-    docker-compose
   ];
 
   services.cage = {
@@ -49,9 +47,6 @@
       "* 6 * * *      llego    WAYLAND_DISPLAY='wayland-0' XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output 'HDMI-A-2' --on"
     ];
   };
-
-  virtualisation.docker.enable = true;
-  users.users.${username}.extraGroups = ["docker"];
 
   #######
   # Home Manager
