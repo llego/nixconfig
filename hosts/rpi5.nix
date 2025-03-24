@@ -12,7 +12,7 @@
     inputs.raspberry-pi-nix.nixosModules.sd-image
     ./../modules/core
     ./../modules/optional/wifi-networks.nix
-    #./../modules/optional/ruuvi
+    ./../modules/optional/ruuvi
   ];
 
   # System packages

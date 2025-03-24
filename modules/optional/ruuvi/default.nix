@@ -4,7 +4,31 @@
   username,
   ...
 }: {
+  systemd.services.ruuvi-gateway-docker = {
+    script = ''
+      ${pkgs.docker-compose}/bin/docker-compose -f ${config.home.file.ruuvi-compose}
+    '';
+    wantedBy = ["multi-user.target"];
+    after = ["docker.service" "docker.socket"];
+  };
+
+  home-manager.users.${username} = {
+    home.file.ruuvi-config = {
+      enable = true;
+      source = ./config.yml;
+      target = "ruuvi/config.yml";
+    };
+
+    home.file.ruuvi-compose = {
+      enable = true;
+      source = ./docker-compose.yml;
+      target = "ruuvi/docker-compose.yml";
+    };
+  };
+  /*
   environment.systemPackages = [pkgs.jdk21_headless];
+
+
 
   security.wrappers = {
     hcitool = {
@@ -25,7 +49,6 @@
   users.users.${username}.extraGroups = ["bleuser"];
 
   home-manager.users.${username} = {
-    /*
     home.file.ruuvi-binary = {
       enable = true;
       source = builtins.fetchurl {
@@ -34,7 +57,7 @@
       };
       target = "ruuvi/ruuvi-collector-0.2.jar";
     };
-    */
+
     home.file.ruuvi-names = {
       enable = true;
       source = ./ruuvi-names.properties;
@@ -63,4 +86,5 @@
       };
     };
   };
+  */
 }

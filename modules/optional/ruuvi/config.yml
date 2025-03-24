@@ -29,13 +29,13 @@ mqtt:
 # Publish the data by sending HTTP POSTs in Ruuvi Gateway format
 http:
   # Flag to enable or disable publishing the data to a MQTT server
-  enabled: false
+  enabled: true
   # URL including scheme and hostname or ip, and optionally a port and a subpath
-  url: http://ip.or.hostname:8080/record
+  url: http://192.168.1.101:8086
   # Interval for sending measurements. Accepts values in go duration format ( https://pkg.go.dev/time#ParseDuration ), for example 1m30s
   interval: 10s
-  username: ruuvigogateway
-  password: ruuvipassword
+  #username: ruuvigogateway
+  #password: ruuvipassword
 
 # Logging options for ruuvi-go-gateway itself
 logging:
