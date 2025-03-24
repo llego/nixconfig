@@ -32,54 +32,34 @@
 
   services.unclutter.enable = true;
 
-systemd.user.services.scalekiosk = {
-  description = "Scale screen to 1.5";
-  #serviceConfig.PassEnvironment = "DISPLAY";
-  script = ''
-    sleep 8
-    WAYLAND_DISPLAY="wayland-0" XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output "HDMI-A-2" --scale 1.5
-  '';
-  wantedBy = [ "basic.target" ];
-};
+  systemd.user.services.scalekiosk = {
+    description = "Scale screen to 1.5";
+    script = ''
+      sleep 8
+      WAYLAND_DISPLAY="wayland-0" XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output "HDMI-A-2" --scale 1.5
+    '';
+    wantedBy = ["basic.target"];
+  };
 
-  /*
-  # Enable cron service
   services.cron = {
     enable = true;
     systemCronJobs = [
-      "*\/5 * * * *      llego    export WAYLAND_DISPLAY=wayland-1 && export XDG_RUNTIME_DIR=/run/user/1000 && /usr/bin/wlr-randr --output 'HDMI-A-2' --scale 1.5"
+      "* 1 * * *      llego    WAYLAND_DISPLAY='wayland-0' XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output 'HDMI-A-2' --off"
+      "* 6 * * *      llego    WAYLAND_DISPLAY='wayland-0' XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output 'HDMI-A-2' --on"
     ];
   };
-  */
 
   #######
   # Home Manager
   #######
   home-manager.users.${username} = {
     home.stateVersion = "24.11";
-  };
-/*
-  services.kanshi = {
-    enable = true;
-    systemdTarget = "graphical-session.target";
-    settings = [
-      {
-        profile.name = "undocked";
-        profile.outputs = [
-          {
-            criteria = "HDMI-A-2";
-            status = "enable";
-            scale = 1.5;
-          }
-        ];
-      }
-    ];
-  };
 
     imports = [
     ];
   };
 
+  /*
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
