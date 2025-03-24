@@ -30,22 +30,7 @@
     program = "${pkgs.chromium}/bin/chromium --app=http://homeassistant.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
   };
 
-  services.kanshi = {
-    enable = true;
-    systemdTarget = "graphical-session.target";
-    settings = [
-      {
-        profile.name = "undocked";
-        profile.outputs = [
-          {
-            criteria = "HDMI-A-2";
-            status = "enable";
-            scale = 1.5;
-          }
-        ];
-      }
-    ];
-  };
+  services.unclutter.enable = true;
 
   /*
   # Enable cron service
@@ -62,6 +47,23 @@
   #######
   home-manager.users.${username} = {
     home.stateVersion = "24.11";
+
+  services.kanshi = {
+    enable = true;
+    systemdTarget = "graphical-session.target";
+    settings = [
+      {
+        profile.name = "undocked";
+        profile.outputs = [
+          {
+            criteria = "HDMI-A-2";
+            status = "enable";
+            scale = 1.5;
+          }
+        ];
+      }
+    ];
+  };
 
     imports = [
     ];
