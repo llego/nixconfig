@@ -4,14 +4,11 @@
     wget
     curl
     htop
-    xorg.xrandr
     screen
     jq
     dig
     tree
     ncdu
-    alejandra
-    nixd
     usbutils
     networkmanager
     cachix

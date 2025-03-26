@@ -14,6 +14,8 @@
     gnome-text-editor
     gparted
     baobab
+    nixd
+    alejandra
   ];
 
   # Firefox
