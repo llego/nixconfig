@@ -17,10 +17,11 @@
   # System packages
   environment.systemPackages = with pkgs; [
     chromium
-    bluez5-experimental
-    bluez-tools
-    bluez-alsa
-    bluetuith
+    #bluez5-experimental
+    #bluez-tools
+    #bluez-alsa
+    #bluetuith
+    alsa-utils
   ];
 
   services.cage = {
@@ -58,7 +59,7 @@
     ];
   };
 
-  /*
+/*  
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
@@ -78,14 +79,15 @@
       "--wake-uri=tcp://127.0.0.1:10400"
       "--name 'Kökets Wyoming Satellite'"
       "--mic-command 'arecord -D plughw:CARD=ArrayUAC10,DEV=0 -r 16000 -c 1 -f S16_LE -t raw'"
-      "--snd-command 'aplay -D sysdefault:CARD=vc4hdmi0 -r 22050 -c 1 -f S16_LE -t raw'"
+      "--snd-command 'aplay -D sysdefault:CARD=vc4hdmi1 -r 22050 -c 1 -f S16_LE -t raw'"
       "--wake-uri 'tcp://127.0.0.1:10400'"
       "--wake-word-name 'ok_nabu'"
       "--event-uri 'tcp://127.0.0.1:10500'"
-      "--timer-finished-wav /home/pi/wyoming-satellite/sounds/timer_finished.wav"
       "--vad-threshold=0.5"
     ];
   };
+      #"--timer-finished-wav /home/pi/wyoming-satellite/sounds/timer_finished.wav"
+
 
   services.wyoming.openwakeword = {
     enable = true;
@@ -95,7 +97,7 @@
     uri = "tcp://0.0.0:10400";
     extraArgs = ["--debug"];
   };
-  */
+*/
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
@@ -117,7 +119,7 @@
           };
           dt-overlays = {
             disable-bt = {
-              enable = false;
+              enable = true;
               params = {};
             };
           };
@@ -133,12 +135,12 @@
     pulse.enable = true;
   };
 
-  # Bluetooth
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    package = pkgs.bluez5-experimental;
-    settings.Policy.AutoEnable = "true";
-    settings.General.Enable = "Source,Sink,Media,Socket";
-  };
+#  # Bluetooth
+#  hardware.bluetooth = {
+#    enable = true;
+#    powerOnBoot = true;
+#    package = pkgs.bluez5-experimental;
+#    settings.Policy.AutoEnable = "true";
+#    settings.General.Enable = "Source,Sink,Media,Socket";
+#  };
 }

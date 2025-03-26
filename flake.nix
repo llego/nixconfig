@@ -17,10 +17,10 @@
   };
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    stylix.url = "github:danth/stylix/release-24.11";
+    stylix.url = "github:danth/stylix";
     niri.url = "github:sodiboo/niri-flake";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     bandsnatch.url = "github:ovyerus/bandsnatch";
