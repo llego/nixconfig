@@ -17,6 +17,7 @@
     unzip
   ];
 
+  /*
   # vim
   programs.vim = {
     enable = true;
@@ -30,7 +31,7 @@
       set cursorline
     '';
   };
-
+  */
   # git
   programs.git = {
     enable = true;
