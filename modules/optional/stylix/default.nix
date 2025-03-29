@@ -35,6 +35,15 @@
     size = 24;
   };
 
+  /*
+  stylix.iconTheme = {
+    enable = true;
+    package = pkgs.papirus-icon-theme;
+    dark = "Papirus-Dark";
+    light = "Papirus-Light";
+  };
+  */
+
   stylix.fonts = {
     monospace = {
       #package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "DroidSansMono"];};

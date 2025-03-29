@@ -33,7 +33,7 @@
       #package = pkgs.kdePackages.breeze-icons;
       #package = pkgs.gnome.adwaita-icon-theme;
       package = pkgs.papirus-icon-theme;
-      name = "Papirus";
+      name = "Papirus-Dark";
     };
   };
 
