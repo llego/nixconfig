@@ -57,6 +57,8 @@
   };
 
   programs.niri.settings = {
+    cursor.theme = "default";
+    cursor.size = 24;
     input = {
       keyboard.xkb.layout = "fi";
       #focus-follows-mouse.enable = true;

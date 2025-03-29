@@ -6,10 +6,11 @@
 }: {
   imports = [inputs.stylix.nixosModules.stylix];
 
+  disabledModules = ["${inputs.stylix}/modules/niri/nixos.nix"];
+
   stylix.enable = true;
 
   # Color theme, see https://tinted-theming.github.io/tinted-gallery/
-
   #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
   #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/default-dark.yaml";
   #stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/lime.yaml";
@@ -21,18 +22,25 @@
 
   # Wallapaper
   #stylix.image = ./wallpaper-blue.jpg;
-  stylix.image = ./mountains4k.jpg;
   #stylix.image = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";
+  stylix.image = ./mountains4k.jpg;
 
   stylix.polarity = "dark";
 
   stylix.opacity.popups = 0.8;
 
+  stylix.cursor = {
+    package = pkgs.numix-cursor-theme;
+    name = "Numix-Cursor-Light";
+    size = 24;
+  };
+
   stylix.fonts = {
     monospace = {
-      package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "DroidSansMono"];};
-      #package = pkgs.nerd-fonts.droid-sans-mono;
-      name = "JetBrainsMono Nerd Font";
+      #package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "DroidSansMono"];};
+      #name = "JetBrainsMono Nerd Font";
+      package = pkgs.nerd-fonts.droid-sans-mono;
+      name = "DroidSansM Nerd Font Mono";
     };
     serif = {
       package = pkgs.cantarell-fonts;
