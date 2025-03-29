@@ -38,13 +38,6 @@
   };
 
   xdg.desktopEntries = {
-    ssh-docker = {
-      name = "docker.home";
-      genericName = "ssh into llego@docker.home";
-      exec = "alacritty -e ssh llego@docker.home";
-      terminal = false;
-      icon = "utilities-terminal";
-    };
     ssh-truenas = {
       name = "truenas.home";
       genericName = "ssh into llego@truenas.home";
@@ -76,9 +69,9 @@
       terminal = false;
       icon = "utilities-terminal";
     };
-    ssh-debian = {
-      name = "debian.home";
-      exec = "alacritty -e ssh llego@debian.home";
+    ssh-rpizero2 = {
+      name = "rpizero2.home";
+      exec = "alacritty -e ssh llego@rpizero2.home";
       terminal = false;
       icon = "utilities-terminal";
     };
