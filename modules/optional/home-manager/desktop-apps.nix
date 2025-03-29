@@ -136,14 +136,14 @@
 
   programs.vscode = {
     enable = true;
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       yzhang.markdown-all-in-one
       mechatroner.rainbow-csv
       pkief.material-icon-theme
       jnoortheen.nix-ide
       kamadorueda.alejandra
     ];
-    userSettings = {
+    profiles.default.userSettings = {
       "nix.serverPath" = "nixd";
       "nix.enableLanguageServer" = true;
       "nix.serverSettings" = {
