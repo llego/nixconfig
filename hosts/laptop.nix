@@ -17,7 +17,6 @@
     ./../modules/optional/printer.nix
     ./../modules/optional/wifi-networks.nix
     ./../modules/optional/vpn.nix
-    #./../modules/optional/ruuvi
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -33,6 +32,7 @@
       # tidal-dl, svtplay-dl, yle-dl, bandcamp collection downloader
       ./../modules/optional/home-manager/downloaders
       ./../modules/optional/home-manager/ai.nix
+      ./../modules/optional/home-manager/rclone.nix
     ];
 
     # Kanshi display settings for laptop display and external display
