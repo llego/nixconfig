@@ -24,7 +24,9 @@
       "x-scheme-handler/unknown" = "firefox.desktop";
       "x-scheme-handler/mailto" = "proton-mail.desktop";
       "application/xhtml+xml" = "firefox.desktop";
+      "application/octet-stream" = "vlc.desktop";
     };
+    xdg.configFile."mimeapps.list".force = true;
     imports = [
       ./home-manager/fuzzel.nix
       ./home-manager/niri.nix
