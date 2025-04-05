@@ -75,6 +75,12 @@
       terminal = false;
       icon = "utilities-terminal";
     };
+    ssh-rpi5 = {
+      name = "rpi5.home";
+      exec = "alacritty -e ssh llego@rpi5.home";
+      terminal = false;
+      icon = "utilities-terminal";
+    };
   };
 
   programs.chromium = {
