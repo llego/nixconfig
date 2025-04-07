@@ -25,10 +25,6 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     bandsnatch.url = "github:ovyerus/bandsnatch";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
-    #nixos-generators.url = "github:nix-community/nixos-generators";
-    #nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
-    #nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    #raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
   };
 
   outputs = {nixpkgs, ...} @ inputs: let
