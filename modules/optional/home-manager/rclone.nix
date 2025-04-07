@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }: {
   home.packages = [
@@ -8,7 +9,7 @@
     pkgs.storj-uplink
   ];
 
-  xdg.configFile."rclone/rclone.conf".source = config.lib.file.mkOutOfStoreSymlink "/home/llego/rclone-secret.txt";
+  xdg.configFile."rclone/rclone.conf".source = config.lib.file.mkOutOfStoreSymlink "/home/${username}/rclone-secret.txt";
 
   /*
   xdg.configFile."rclone/rclone.conf".text = ''
