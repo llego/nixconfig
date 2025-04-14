@@ -46,10 +46,11 @@
 
   stylix.fonts = {
     monospace = {
-      #package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "DroidSansMono"];};
-      #name = "JetBrainsMono Nerd Font";
-      package = pkgs.nerd-fonts.droid-sans-mono;
-      name = "DroidSansM Nerd Font Mono";
+      package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "DroidSansMono"];};
+      name = "JetBrainsMono Nerd Font";
+      # New syntax for v. 25
+      #package = pkgs.nerd-fonts.droid-sans-mono;
+      #name = "DroidSansM Nerd Font Mono";
     };
     serif = {
       package = pkgs.cantarell-fonts;

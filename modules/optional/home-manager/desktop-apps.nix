@@ -14,6 +14,7 @@
     hunspell
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
+    rpi-imager
   ];
 
   # File manager bookmarks and icons
@@ -119,6 +120,9 @@
         y = 10;
       };
       window.dynamic_padding = true;
+      env.TERM = "xterm-256color";
+      scrolling.multiplier = 5;
+      selection.save_to_clipboard = true;
       #window.dimensions = {
       #  lines = 3;
       #  columns = 200;
@@ -135,14 +139,17 @@
 
   programs.vscode = {
     enable = true;
-    profiles.default.extensions = with pkgs.vscode-extensions; [
+    # New syntax in v. 25
+    #profiles.default.extensions = with pkgs.vscode-extensions; [
+    extensions = with pkgs.vscode-extensions; [
       yzhang.markdown-all-in-one
       mechatroner.rainbow-csv
       pkief.material-icon-theme
       jnoortheen.nix-ide
       kamadorueda.alejandra
     ];
-    profiles.default.userSettings = {
+    #profiles.default.userSettings = {
+    userSettings = {
       "nix.serverPath" = "nixd";
       "nix.enableLanguageServer" = true;
       "nix.serverSettings" = {

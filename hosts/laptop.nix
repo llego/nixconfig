@@ -98,7 +98,9 @@
   hardware.bluetooth.powerOnBoot = true;
 
   # Enable sound with pipewire
-  services.pulseaudio.enable = false;
+  hardware.pulseaudio.enable = false;
+  # New syntax for v. 25
+  #services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -114,16 +116,16 @@
   services.hardware.bolt.enable = true;
 
   # Hardware acceleration
-  nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override {enableHybridCodec = true;};
-  };
+  #nixpkgs.config.packageOverrides = pkgs: {
+  #  intel-vaapi-driver = pkgs.intel-vaapi-driver.override {enableHybridCodec = true;};
+  #};
   hardware.graphics = {
     # hardware.graphics on unstable
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver # LIBVA_DRIVER_NAME=iHD
       intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      libvdpau-va-gl
+      #libvdpau-va-gl
     ];
   };
   environment.sessionVariables = {LIBVA_DRIVER_NAME = "iHD";}; # Force intel-media-driver
