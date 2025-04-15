@@ -60,7 +60,7 @@
     };
     ssh-rpi4 = {
       name = "rpi4.home";
-      exec = "alacritty -e ssh pi@rpi4.home";
+      exec = "alacritty -e ssh llego@rpi4.home";
       terminal = false;
       icon = "utilities-terminal";
     };
@@ -139,6 +139,7 @@
 
   programs.vscode = {
     enable = true;
+    package = pkgs.vscodium;
     # New syntax in v. 25
     #profiles.default.extensions = with pkgs.vscode-extensions; [
     extensions = with pkgs.vscode-extensions; [
