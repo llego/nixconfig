@@ -12,6 +12,7 @@
   environment.systemPackages = with pkgs; [
     nautilus
     gnome-text-editor
+    parted
     gparted
     baobab
     nixd
