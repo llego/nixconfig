@@ -60,7 +60,11 @@
     ];
   };
 
+<<<<<<< HEAD
   /*
+=======
+/*
+>>>>>>> d9d393f (i don't know what happened here)
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
@@ -98,7 +102,12 @@
     uri = "tcp://0.0.0:10400";
     extraArgs = ["--debug"];
   };
+<<<<<<< HEAD
   */
+=======
+*/
+
+>>>>>>> d9d393f (i don't know what happened here)
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
