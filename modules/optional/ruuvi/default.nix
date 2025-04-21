@@ -4,6 +4,7 @@
   username,
   ...
 }: {
+  /*
   systemd.services.ruuvi-gateway-docker = {
     script = ''
       ${pkgs.docker-compose}/bin/docker-compose -f /home/${username}/ruuvi/docker-compose.yml up
@@ -25,10 +26,9 @@
       target = "ruuvi/docker-compose.yml";
     };
   };
-  /*
+  */
+
   environment.systemPackages = [pkgs.jdk21_headless];
-
-
 
   security.wrappers = {
     hcitool = {
@@ -80,11 +80,11 @@
           Description = "RuuviCollector Service";
         };
         Service = {
+          WorkingDirectory = "/home/${username}/ruuvi";
           ExecStart = "${pkgs.jdk21_headless}/bin/java -jar /home/${username}/ruuvi/ruuvi-collector-0.2.jar";
           Restart = "on-failure";
         };
       };
     };
   };
-  */
 }

@@ -56,10 +56,11 @@
     home.stateVersion = "24.11";
 
     imports = [
+      ./../modules/optional/ruuvi
     ];
   };
 
-/*  
+  /*
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
@@ -97,7 +98,7 @@
     uri = "tcp://0.0.0:10400";
     extraArgs = ["--debug"];
   };
-*/
+  */
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
@@ -135,12 +136,12 @@
     pulse.enable = true;
   };
 
-#  # Bluetooth
-#  hardware.bluetooth = {
-#    enable = true;
-#    powerOnBoot = true;
-#    package = pkgs.bluez5-experimental;
-#    settings.Policy.AutoEnable = "true";
-#    settings.General.Enable = "Source,Sink,Media,Socket";
-#  };
+  #  # Bluetooth
+  #  hardware.bluetooth = {
+  #    enable = true;
+  #    powerOnBoot = true;
+  #    package = pkgs.bluez5-experimental;
+  #    settings.Policy.AutoEnable = "true";
+  #    settings.General.Enable = "Source,Sink,Media,Socket";
+  #  };
 }
