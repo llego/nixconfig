@@ -37,7 +37,7 @@
       # Valid strings for installation_mode are "allowed", "blocked",
       # "force_installed" and "normal_installed".
       ExtensionSettings = {
-        "*".installation_mode = "blocked"; # blocks all addons except the ones specified below
+        #"*".installation_mode = "blocked"; # blocks all addons except the ones specified below
         # Bitwarden Password Manager:
         "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
@@ -46,6 +46,11 @@
         # floccus:
         "floccus@handmadeideas.org" = {
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/floccus/latest.xpi";
+          installation_mode = "force_installed";
+        };
+        # wallabagger:
+        "{7a7b1d36-d7a4-481b-92c6-9f5427cb9eb1}" = {
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/wallabagger/latest.xpi";
           installation_mode = "force_installed";
         };
       };
