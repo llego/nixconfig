@@ -12,15 +12,16 @@
     inputs.raspberry-pi-nix.nixosModules.sd-image
     ./../modules/core
     ./../modules/optional/wifi-networks.nix
+    ./../modules/optional/ruuvi
   ];
 
   # System packages
   environment.systemPackages = with pkgs; [
     chromium
-    #bluez5-experimental
-    #bluez-tools
-    #bluez-alsa
-    #bluetuith
+    bluez5-experimental
+    bluez-tools
+    bluez-alsa
+    bluetuith
     alsa-utils
   ];
 
@@ -29,8 +30,6 @@
     user = username;
     program = "${pkgs.chromium}/bin/chromium --app=http://homeassistant.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
   };
-
-  services.unclutter.enable = true;
 
   systemd.user.services.scalekiosk = {
     description = "Scale screen to 1.5";
@@ -56,15 +55,10 @@
     home.stateVersion = "24.11";
 
     imports = [
-      ./../modules/optional/ruuvi
     ];
   };
 
-<<<<<<< HEAD
-  /*
-=======
 /*
->>>>>>> d9d393f (i don't know what happened here)
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
@@ -88,10 +82,8 @@
       "--wake-uri 'tcp://127.0.0.1:10400'"
       "--wake-word-name 'ok_nabu'"
       "--event-uri 'tcp://127.0.0.1:10500'"
-      "--vad-threshold=0.5"
     ];
   };
-      #"--timer-finished-wav /home/pi/wyoming-satellite/sounds/timer_finished.wav"
 
 
   services.wyoming.openwakeword = {
@@ -102,12 +94,7 @@
     uri = "tcp://0.0.0:10400";
     extraArgs = ["--debug"];
   };
-<<<<<<< HEAD
-  */
-=======
 */
-
->>>>>>> d9d393f (i don't know what happened here)
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
@@ -129,7 +116,7 @@
           };
           dt-overlays = {
             disable-bt = {
-              enable = true;
+              enable = false;
               params = {};
             };
           };
@@ -145,12 +132,12 @@
     pulse.enable = true;
   };
 
-  #  # Bluetooth
-  #  hardware.bluetooth = {
-  #    enable = true;
-  #    powerOnBoot = true;
-  #    package = pkgs.bluez5-experimental;
-  #    settings.Policy.AutoEnable = "true";
-  #    settings.General.Enable = "Source,Sink,Media,Socket";
-  #  };
+    # Bluetooth
+    hardware.bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+      #package = pkgs.bluez5-experimental;
+      #settings.Policy.AutoEnable = "true";
+      #settings.General.Enable = "Source,Sink,Media,Socket";
+    };
 }

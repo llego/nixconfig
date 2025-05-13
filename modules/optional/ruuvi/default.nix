@@ -70,21 +70,34 @@
       target = "ruuvi/ruuvi-collector.properties";
     };
 
-    systemd.user.services = {
-      ruuvi-collector = {
-        Install = {
-          WantedBy = ["multi-user.target"];
-        };
-        Unit = {
-          After = "network.target";
-          Description = "RuuviCollector Service";
-        };
-        Service = {
-          WorkingDirectory = "/home/${username}/ruuvi";
-          ExecStart = "${pkgs.jdk21_headless}/bin/java -jar /home/${username}/ruuvi/ruuvi-collector-0.2.jar";
-          Restart = "on-failure";
-        };
+#    systemd.user.services = {
+#      ruuvi-collector = {
+#        Install = {
+#          WantedBy = ["multi-user.target"];
+#        };
+#        Unit = {
+#          After = "network.target";
+#          Description = "RuuviCollector Service";
+#        };
+#        Service = {
+#          WorkingDirectory = "/home/${username}/ruuvi";
+#          ExecStart = "${pkgs.jdk21_headless}/bin/java -jar /home/${username}/ruuvi/ruuvi-collector-0.2.jar";
+#          Restart = "on-failure";
+#        };
+#      };
+#    };
+  };
+    systemd.user.services.ruuvi-collector = {
+      description = "Ruuvi Collector java program";
+      wantedBy = ["default.target"];
+      after = ["network.target"];
+      serviceConfig = {
+        Type = "simple";
+        WorkingDirectory = "/home/${username}/nixconfig/modules/optional/ruuvi";
+        ExecStart = "${pkgs.jdk21_headless}/bin/java -jar /home/${username}/ruuvi/ruuvi-collector-0.2.jar";
+        #ExecStart  = "${pkgs.jdk21_headless}/bin/java -jar ${home.file.ruuvi-binary.target}";
+        Restart = "on-failure";
       };
     };
-  };
+
 }
