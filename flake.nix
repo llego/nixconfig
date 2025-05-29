@@ -17,10 +17,6 @@
   };
 
   inputs = {
-    #nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    #home-manager.url = "github:nix-community/home-manager";
-    #stylix.url = "github:danth/stylix";
-
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -33,6 +29,16 @@
 
   outputs = {nixpkgs, ...} @ inputs: let
     username = "llego";
+    my-python-overlay = final: prev: {
+      python312 = prev.python312.override {
+        packageOverrides = python-final: python-prev: {
+          pysilero-vad = python-prev.pysilero-vad.overridePythonAttrs (_: {
+            doCheck = prev.stdenv.buildPlatform.system != "aarch64-linux";
+            dontUsePythonImportsCheck = prev.stdenv.buildPlatform.system == "aarch64-linux";
+          });
+        };
+      };
+    };
   in {
     nixosConfigurations = {
       laptop = nixpkgs.lib.nixosSystem {
@@ -60,6 +66,7 @@
       };
 
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
+/*
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
@@ -72,6 +79,23 @@
         };
       };
     };
+*/
+
+    rpi5 = let
+      system = "aarch64-linux";
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [my-python-overlay];
+      };
+    in
+      nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [./hosts/rpi5.nix];
+        specialArgs = {
+          inherit inputs username pkgs;
+          hostname = "rpi5";
+        };
+      };
 
     packages.x86_64-linux = {
       test-iso = inputs.nixos-generators.nixosGenerate {
