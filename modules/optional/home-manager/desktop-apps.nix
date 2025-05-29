@@ -6,7 +6,7 @@
 }: {
   # Packages
   home.packages = with pkgs; [
-    bitwarden-desktop
+    #bitwarden-desktop
     protonmail-desktop
     vlc
     libreoffice
@@ -84,6 +84,7 @@
     };
   };
 
+  /*
   programs.chromium = {
     enable = true;
     extensions = [
@@ -97,7 +98,7 @@
     ];
   };
 
-  /*
+
   programs.brave = {
     enable = true;
     package = pkgs.brave;
@@ -142,7 +143,7 @@
     package = pkgs.vscodium;
     # New syntax in v. 25
     #profiles.default.extensions = with pkgs.vscode-extensions; [
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       yzhang.markdown-all-in-one
       mechatroner.rainbow-csv
       pkief.material-icon-theme
@@ -150,7 +151,7 @@
       kamadorueda.alejandra
     ];
     #profiles.default.userSettings = {
-    userSettings = {
+    profiles.default.userSettings = {
       "nix.serverPath" = "nixd";
       "nix.enableLanguageServer" = true;
       "nix.serverSettings" = {
