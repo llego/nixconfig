@@ -66,73 +66,51 @@
       };
 
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
-/*
-      rpi5 = nixpkgs.lib.nixosSystem {
+      /*
+        rpi5 = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          modules = [
+            ./hosts/rpi5.nix
+          ];
+          specialArgs = {
+            inherit inputs;
+            inherit username;
+            hostname = "rpi5";
+          };
+        };
+      };
+      */
+
+      rpi5 = let
         system = "aarch64-linux";
-        modules = [
-          ./hosts/rpi5.nix
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "rpi5";
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [my-python-overlay];
+        };
+      in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [./hosts/rpi5.nix];
+          specialArgs = {
+            inherit inputs username pkgs;
+            hostname = "rpi5";
+          };
+        };
+
+      packages.x86_64-linux = {
+        test-iso = inputs.nixos-generators.nixosGenerate {
+          system = "x86_64-linux";
+          modules = [
+            ./hosts/laptop.nix
+          ];
+          format = "iso";
+          specialArgs = {
+            inherit inputs;
+            inherit username;
+            hostname = "testhost";
+          };
         };
       };
     };
-*/
-
-    rpi5 = let
-      system = "aarch64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [my-python-overlay];
-      };
-    in
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [./hosts/rpi5.nix];
-        specialArgs = {
-          inherit inputs username pkgs;
-          hostname = "rpi5";
-        };
-      };
-
-    packages.x86_64-linux = {
-      test-iso = inputs.nixos-generators.nixosGenerate {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/laptop.nix
-        ];
-        format = "iso";
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "testhost";
-        };
-      };
-    };
-
-    /*
-    # Docker jail on TrueNAS
-    # Activate: home-manager switch --flake ~/nixconfig#llego@docker
-    homeConfigurations = {
-      "${username}@docker" = inputs.home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [
-          ./laptop/home-manager/user
-          {
-            programs.home-manager.enable = true;
-            home.username = "${username}";
-            home.homeDirectory = "/home/${username}";
-          }
-        ];
-        extraSpecialArgs = {
-          inherit username;
-          inherit inputs;
-          hostname = "docker";
-        };
-      };
-    };
-    */
   };
 }
