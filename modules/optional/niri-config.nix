@@ -48,8 +48,8 @@
   programs.niri.enable = true;
   niri-flake.cache.enable = true;
   nixpkgs.overlays = [inputs.niri.overlays.niri];
-  programs.niri.package = pkgs.niri-stable;
-  #programs.niri.package = pkgs.niri;
+  #programs.niri.package = pkgs.niri-stable;
+  programs.niri.package = pkgs.niri-unstable;
 
   # Extra Portal Configuration
   # xdg-desktop-portal provides a portal frontend service for

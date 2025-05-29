@@ -98,9 +98,7 @@
   hardware.bluetooth.powerOnBoot = true;
 
   # Enable sound with pipewire
-  hardware.pulseaudio.enable = false;
-  # New syntax for v. 25
-  #services.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

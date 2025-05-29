@@ -49,9 +49,11 @@
   services = {
     mako = {
       enable = true;
-      defaultTimeout = 10000;
-      borderRadius = 4;
-      borderSize = 1;
+      settings = {
+        defaultTimeout = 10000;
+        borderRadius = 4;
+        borderSize = 1;
+      };
     };
     network-manager-applet.enable = true;
   };
@@ -82,6 +84,13 @@
       };
       shadow.enable = true;
     };
+
+    layer-rules = [
+      {
+        matches = [{namespace = "^wallpaper$";}];
+        #place-within-backdrop = true;
+      }
+    ];
 
     window-rules = [
       {

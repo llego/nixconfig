@@ -24,7 +24,7 @@
       append = true;
     };
 
-    initExtra = ''
+    initContent = ''
       ${pkgs.nitch}/bin/nitch
       bindkey -e
       bindkey "''${key[Up]}" up-line-or-search
