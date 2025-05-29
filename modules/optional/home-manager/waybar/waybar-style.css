@@ -38,6 +38,7 @@ tooltip {
     border-bottom: 1px solid @bg;
 }
 
+/*
 #workspaces button:nth-child(1) {color: @red;}
 #workspaces button:nth-child(2) {color: @green;}
 #workspaces button:nth-child(3) {color: @yellow;}
@@ -48,9 +49,14 @@ tooltip {
 #workspaces button:nth-child(8) {color: @green;}
 #workspaces button:nth-child(9) {color: @yellow;}
 #workspaces button:nth-child(10) {color: @blue;}
+*/
 
 #workspaces button.active {
     color: @fg;
+}
+
+#workspaces button.visible {
+    color: @bg2;
 }
 
 #workspaces button.empty {
@@ -87,11 +93,13 @@ tooltip {
 }
 
 #pulseaudio {
-  color: @blue;
+  /*color: @blue;*/
+  color: @fg;
 }
 
 #battery {
-  color: @green;
+  /* color: @green; */
+  color: @fg;
 }
 
 #mpd {
