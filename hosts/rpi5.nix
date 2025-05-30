@@ -12,7 +12,7 @@
     inputs.raspberry-pi-nix.nixosModules.sd-image
     ./../modules/core
     ./../modules/optional/wifi-networks.nix
-    ./../modules/optional/ruuvi
+    #./../modules/optional/ruuvi
   ];
 
   # System packages
@@ -58,6 +58,8 @@
     ];
   };
 
+
+
 /*
   services.wyoming.satellite = {
     enable = true;
@@ -95,6 +97,8 @@
     extraArgs = ["--debug"];
   };
 */
+
+
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
