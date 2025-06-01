@@ -56,76 +56,71 @@
       };
 
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
-/*
-        rpi5 = nixpkgs.lib.nixosSystem {
-          system = "aarch64-linux";
+      # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
+      # NIXPKGS_ALLOW_BROKEN=1 nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config --impure
+      /*
+      rpi5 = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        modules = [
+          ./hosts/rpi5.nix
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+          hostname = "rpi5";
+        };
+      };
+      */
+
+      rpi5 = let
+        system = "aarch64-linux";
+
+        # Custom overlay to override pysilero-vad in python312
+        my-python-overlay = final: prev: {
+          python312 = prev.python312.override {
+            packageOverrides = python-final: python-prev: {
+              pysilero-vad = python-prev.pysilero-vad.overridePythonAttrs (_: {
+                doCheck = prev.stdenv.buildPlatform.system != "aarch64-linux";
+                dontUsePythonImportsCheck = prev.stdenv.buildPlatform.system == "aarch64-linux";
+              });
+            };
+          };
+        };
+
+        # Combine overlays from raspberry-pi-nix with our custom overlay
+        combinedOverlays = builtins.attrValues inputs.raspberry-pi-nix.overlays ++ [my-python-overlay];
+
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = combinedOverlays;
+        };
+      in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
           modules = [
+            {nixpkgs.pkgs = pkgs;}
             ./hosts/rpi5.nix
           ];
           specialArgs = {
-            inherit inputs;
-            inherit username;
+            inherit inputs username;
             hostname = "rpi5";
           };
         };
-*/
-
-rpi5 = let
-  system = "aarch64-linux";
-
-  # Custom overlay to override pysilero-vad in python312
-  my-python-overlay = (final: prev: {
-    python312 = prev.python312.override {
-      packageOverrides = python-final: python-prev: {
-        pysilero-vad = python-prev.pysilero-vad.overridePythonAttrs (_: {
-          doCheck = prev.stdenv.buildPlatform.system != "aarch64-linux";
-          dontUsePythonImportsCheck = prev.stdenv.buildPlatform.system == "aarch64-linux";
-        });
-      };
     };
-  });
 
-  # Combine overlays from raspberry-pi-nix with our custom overlay
-  combinedOverlays = builtins.attrValues inputs.raspberry-pi-nix.overlays ++ [ my-python-overlay ];
-
-  pkgs = import nixpkgs {
-    inherit system;
-    overlays = combinedOverlays;
-  };
-
-in nixpkgs.lib.nixosSystem {
-  inherit system;
-
-  modules = [
-    {
-      nixpkgs.pkgs = pkgs;
-    }
-
-    ./hosts/rpi5.nix
-  ];
-
-  specialArgs = {
-    inherit inputs username;
-    hostname = "rpi5";
-  };
-};
-
-
-
-};
-      packages.x86_64-linux = {
-        test-iso = inputs.nixos-generators.nixosGenerate {
-          system = "x86_64-linux";
-          modules = [
-            ./hosts/laptop.nix
-          ];
-          format = "iso";
-          specialArgs = {
-            inherit inputs;
-            inherit username;
-            hostname = "testhost";
-          };
+    packages.x86_64-linux = {
+      test-iso = inputs.nixos-generators.nixosGenerate {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/laptop.nix
+        ];
+        format = "iso";
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+          hostname = "testhost";
         };
       };
     };
+  };
 }

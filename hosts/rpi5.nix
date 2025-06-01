@@ -10,6 +10,7 @@
   imports = [
     inputs.raspberry-pi-nix.nixosModules.raspberry-pi
     inputs.raspberry-pi-nix.nixosModules.sd-image
+    inputs.home-manager24.nixosModules.home-manager
     ./../modules/core
     ./../modules/optional/wifi-networks.nix
     #./../modules/optional/ruuvi
@@ -18,10 +19,10 @@
   # System packages
   environment.systemPackages = with pkgs; [
     chromium
-    bluez5-experimental
-    bluez-tools
-    bluez-alsa
-    bluetuith
+    #bluez5-experimental
+    #bluez-tools
+    #bluez-alsa
+    #bluetuith
     alsa-utils
   ];
 
@@ -58,9 +59,6 @@
     ];
   };
 
-
-
-/*
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
@@ -87,7 +85,6 @@
     ];
   };
 
-
   services.wyoming.openwakeword = {
     enable = true;
     preloadModels = [
@@ -96,9 +93,6 @@
     uri = "tcp://0.0.0:10400";
     extraArgs = ["--debug"];
   };
-*/
-
-
 
   raspberry-pi-nix.board = "bcm2712";
   raspberry-pi-nix.libcamera-overlay = {
@@ -120,7 +114,7 @@
           };
           dt-overlays = {
             disable-bt = {
-              enable = false;
+              enable = true;
               params = {};
             };
           };
@@ -136,12 +130,12 @@
     pulse.enable = true;
   };
 
-    # Bluetooth
-    hardware.bluetooth = {
-      enable = true;
-      powerOnBoot = true;
-      #package = pkgs.bluez5-experimental;
-      #settings.Policy.AutoEnable = "true";
-      #settings.General.Enable = "Source,Sink,Media,Socket";
-    };
+  # Bluetooth
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    #package = pkgs.bluez5-experimental;
+    #settings.Policy.AutoEnable = "true";
+    #settings.General.Enable = "Source,Sink,Media,Socket";
+  };
 }
