@@ -4,11 +4,13 @@
   pkgs,
   modulesPath,
   username,
+  inputs,
   ...
 }: {
   system.stateVersion = "24.05";
 
   imports = [
+    inputs.home-manager.nixosModules.home-manager
     ./../modules/core
     ./../modules/optional/stylix
     ./../modules/optional/desktop-apps.nix
@@ -98,7 +100,7 @@
   hardware.bluetooth.powerOnBoot = true;
 
   # Enable sound with pipewire
-  services.pulseaudio.enable = false;
+  #services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

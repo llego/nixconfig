@@ -4,7 +4,7 @@
   hostname,
   ...
 }: {
-  imports = [inputs.home-manager.nixosModules.home-manager];
+  imports = [];
 
   home-manager = {
     useGlobalPkgs = true;

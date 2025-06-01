@@ -4,11 +4,13 @@
   config,
   modulesPath,
   lib,
+  inputs,
   ...
 }: {
   system.stateVersion = "24.11";
 
   imports = [
+    inputs.home-manager.nixosModules.home-manager
     ./../modules/core
     ./../modules/optional/gaming.nix
     ./../modules/optional/stylix
