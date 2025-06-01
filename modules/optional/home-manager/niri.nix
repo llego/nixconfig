@@ -79,7 +79,7 @@
       struts.top = -8.0;
       border.active.gradient = {
         from = "${config.lib.stylix.colors.withHashtag.base09}";
-        to = "${config.lib.stylix.colors.withHashtag.base0B}";
+        to = "${config.lib.stylix.colors.withHashtag.base08}";
         angle = 45;
       };
       shadow.enable = true;
