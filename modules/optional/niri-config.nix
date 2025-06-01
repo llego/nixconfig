@@ -31,7 +31,7 @@
       ./home-manager/fuzzel.nix
       ./home-manager/niri.nix
       ./home-manager/swayidle.nix
-      ./home-manager/waybar
+      ./home-manager/waybar.nix
       ./home-manager/wlogout.nix
       ./home-manager/xwayland-satellite.nix
     ];
