@@ -27,8 +27,8 @@
       margin-left = 0;
       margin-right = 0;
       #spacing = 4;
-      modules-left = ["niri/workspaces" "network" "cpu" "memory" "battery" "backlight/slider"];
-      modules-center = ["clock"];
+      modules-left = ["niri/workspaces" "network" "cpu" "memory" "battery" "backlight/slider" "clock"];
+      #modules-center = ["clock"];
       modules-right = ["wlr/taskbar" "tray" "pulseaudio"];
 
       "niri/workspaces" = {
@@ -97,9 +97,10 @@
       "network" = {
         #format-wifi = "  {essid} ({signalStrength}%)";
         format-wifi = " {signalStrength}%";
-        format-ethernet = "  {ifname}: {ipaddr}/{cidr}";
+        format-ethernet = "";
         format-disconnected = "⚠ Disconnected";
-        format-alt = "{ifname}: {ipaddr}/{cidr}";
+        format-alt = "{ipaddr}/{cidr}";
+        tooltip-format = "{ifname} | {essid} | {ipaddr}/{cidr}";
         #on-click = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
       };
       "pulseaudio" = {
