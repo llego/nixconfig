@@ -70,18 +70,18 @@
         };
       };
 
-
-    packages.x86_64-linux = {
-      test-iso = inputs.nixos-generators.nixosGenerate {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/laptop.nix
-        ];
-        format = "iso";
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "testhost";
+      packages.x86_64-linux = {
+        test-iso = inputs.nixos-generators.nixosGenerate {
+          system = "x86_64-linux";
+          modules = [
+            ./hosts/laptop.nix
+          ];
+          format = "iso";
+          specialArgs = {
+            inherit inputs;
+            inherit username;
+            hostname = "testhost";
+          };
         };
       };
     };
