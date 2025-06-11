@@ -7,14 +7,11 @@
   home.packages = with pkgs; [
     atool
     btop
-    neofetch
     bat
     lsd
     nitch
-    fastfetch
     wlr-randr
     wdisplays
-    unzip
   ];
 
   /*

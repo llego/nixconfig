@@ -5,13 +5,7 @@
     curl
     htop
     screen
-    jq
-    dig
-    tree
-    ncdu
     usbutils
-    networkmanager
-    cachix
     wl-clipboard
   ];
 
