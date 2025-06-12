@@ -43,18 +43,6 @@
         };
       };
 
-      gamestation = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/gamestation.nix
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "gamestation";
-        };
-      };
-
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
       # NIXPKGS_ALLOW_BROKEN=1 nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config --impure
@@ -70,18 +58,15 @@
         };
       };
 
-      packages.x86_64-linux = {
-        test-iso = inputs.nixos-generators.nixosGenerate {
-          system = "x86_64-linux";
-          modules = [
-            ./hosts/laptop.nix
-          ];
-          format = "iso";
-          specialArgs = {
-            inherit inputs;
-            inherit username;
-            hostname = "testhost";
-          };
+      gamestation = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/gamestation.nix
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+          hostname = "gamestation";
         };
       };
     };
