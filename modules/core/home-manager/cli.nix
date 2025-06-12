@@ -14,21 +14,6 @@
     wdisplays
   ];
 
-  /*
-  # vim
-  programs.vim = {
-    enable = true;
-    extraConfig = ''
-      set clipboard+=unnamedplus
-      set tabstop=2
-      set expandtab
-      set shiftwidth=2 smarttab
-      set autoindent
-      set cursorcolumn
-      set cursorline
-    '';
-  };
-  */
   # git
   programs.git = {
     enable = true;
