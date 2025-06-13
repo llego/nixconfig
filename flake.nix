@@ -44,8 +44,8 @@
       };
 
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
+      # zstd -dc ..linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
-      # NIXPKGS_ALLOW_BROKEN=1 nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config --impure
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
