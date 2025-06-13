@@ -77,24 +77,31 @@ in {
     wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "simple";
-      User = username;
+      User = "wyoming";
       ExecStart = ''
-        ${pkgs.python3}/bin/python3 ${pkgs.wyoming-satellite}/bin/wyoming-satellite \
+        ${pkgs.python3}/bin/python3.12 ${pkgs.wyoming-satellite}/bin/.wyoming-satellite-wrapped \
           --uri tcp://0.0.0.0:10700 \
-          --sound-awake ${soundAwake} \
-          --sound-done ${soundDone} \
           --debug \
+          --awake-wav ${soundAwake} \
+          --done-wav ${soundDone} \
           --wake-word-name ok_nabu \
           --name 'Kökets Wyoming Satellite' \
-          --mic-command 'arecord -D plughw:CARD=ArrayUAC10,DEV=0 -r 16000 -c 1 -f S16_LE -t raw' \
-          --snd-command 'aplay -D sysdefault:CARD=vc4hdmi1 -r 22050 -c 1 -f S16_LE -t raw' \
-          --wake-uri tcp://127.0.0.1:10400 \
-          --event-uri tcp://127.0.0.1:10500
+          --mic-command '${pkgs.alsa-utils}/bin/arecord -D sysdefault:CARD=ArrayUAC10 -r 16000 -c 1 -f S16_LE -t raw' \
+          --snd-command '${pkgs.pipewire}/bin/pw-play --target hdmi:CARD=vc4hdmi1,DEV=0 -'
+          --wake-uri tcp://127.0.0.1:10400
       '';
       Restart = "always";
     };
     path = with pkgs; [alsa-utils python3]; # Ensures `arecord`, `aplay`, etc. are in PATH
   };
+
+#          --mic-command '${pkgs.alsa-utils}/bin/arecord -D plughw:2,0 -r 16000 -c 1 -f S16_LE -t raw' \
+#          --snd-command '${pkgs.alsa-utils}/bin/aplay -D plughw:1,0 -r 22050 -c 1 -f S16_LE -t raw' \
+#          --snd-command '${pkgs.alsa-utils}/bin/aplay -D plughw:CARD=vc4hdmi1,DEV=0 -r 48000 -c 1 -f S16_LE -t raw' \
+#          --awake-wav ${soundAwake} \
+#          --done-wav ${soundDone} \
+#          --event-uri tcp://127.0.0.1:10500
+
 
   /*
   services.wyoming.satellite = {
@@ -123,12 +130,30 @@ in {
   };
   */
 
+services.avahi = {
+  enable = true;
+  nssmdns4 = true;
+  publish.enable = true;
+  publish.userServices = true;
+};
+
+networking.firewall.allowedTCPPorts = [ 10700 ];
+networking.firewall.allowedUDPPorts = [ 5353 ]; # mDNS
+
+  users.users.wyoming = {
+    isSystemUser = true;
+    group = "audio";
+  };
+
+
   security.rtkit.enable = true;
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    jack.enable = true;
   };
 
   # Bluetooth
