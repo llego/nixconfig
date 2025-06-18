@@ -23,33 +23,45 @@ in {
     inputs.home-manager.nixosModules.home-manager
     ./../modules/core
     ./../modules/optional/wifi-networks.nix
-    #./../modules/optional/ruuvi
   ];
 
   # System packages
   environment.systemPackages = with pkgs; [
     chromium
-    #bluez5-experimental
-    #bluez-tools
-    #bluez-alsa
-    #bluetuith
     python3
     alsa-utils
     wyoming-satellite
     wyoming-openwakeword
+    #squeekboard
   ];
 
   services.cage = {
     enable = true;
     user = username;
     program = "${pkgs.chromium}/bin/chromium --app=http://homeassistant.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
+    #program = "/etc/start-kiosk.sh";
   };
+
+/*
+            # Write wrapper script
+            environment.etc."start-kiosk.sh".text = ''
+              #!/bin/sh
+              
+              export XDG_RUNTIME_DIR=/run/user/$(id -u ${username})
+              export WAYLAND_DISPLAY="wayland-0"
+              ${pkgs.squeekboard}/bin/squeekboard &
+              sleep 1
+              exec ${pkgs.chromium}/bin/chromium --app=http://homeassistant.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized
+            '';
+*/
 
   systemd.user.services.scalekiosk = {
     description = "Scale screen to 1.5";
     script = ''
       sleep 8
-      WAYLAND_DISPLAY="wayland-0" XDG_RUNTIME_DIR=/run/user/$(id -u ${username}) ${pkgs.wlr-randr}/bin/wlr-randr --output "HDMI-A-2" --scale 1.5
+      export XDG_RUNTIME_DIR=/run/user/$(id -u ${username})
+      export WAYLAND_DISPLAY="wayland-0"
+      ${pkgs.wlr-randr}/bin/wlr-randr --output "HDMI-A-2" --scale 1.5
     '';
     wantedBy = ["basic.target"];
   };
@@ -71,7 +83,10 @@ in {
     extraArgs = ["--debug"];
   };
 
+
+/*
   home-manager.users.${username} = {
+    home.stateVersion = "24.11";
     systemd.user.services.wyoming-satellite = {
       Install = {
         WantedBy = ["multi-user.target"];
@@ -92,15 +107,16 @@ in {
             --wake-word-name ok_nabu \
             --name 'Kökets Wyoming Satellite' \
             --mic-command '${pkgs.alsa-utils}/bin/arecord -D sysdefault:CARD=ArrayUAC10 -r 16000 -c 1 -f S16_LE -t raw' \
-            --snd-command '${pkgs.pipewire}/bin/pw-play --target hdmi:CARD=vc4hdmi1,DEV=0 -'
+            --snd-command '${pkgs.pipewire}/bin/pw-play --target hdmi:CARD=vc4hdmi1,DEV=0 -' \
             --wake-uri tcp://127.0.0.1:10400
         '';
         Restart = "always";
       };
     };
   };
+*/
 
-  /*
+
   systemd.services.wyoming-satellite = {
     description = "Kökets Wyoming Satellite";
     after = ["network.target"];
@@ -116,23 +132,22 @@ in {
           --done-wav ${soundDone} \
           --wake-word-name ok_nabu \
           --name 'Kökets Wyoming Satellite' \
-          --mic-command '${pkgs.alsa-utils}/bin/arecord -D sysdefault:CARD=ArrayUAC10 -r 16000 -c 1 -f S16_LE -t raw' \
-          --snd-command '${pkgs.pipewire}/bin/pw-play --target hdmi:CARD=vc4hdmi1,DEV=0 -'
+          --mic-command '${pkgs.alsa-utils}/bin/arecord -D sysdefault:CARD=ArrayUAC10 -r 16000 -c 1 -t raw' \
+          --snd-command '${pkgs.alsa-utils}/bin/aplay -D plughw:CARD=vc4hdmi1,DEV=0 -r 48000 -c 1 -t raw' \
           --wake-uri tcp://127.0.0.1:10400
       '';
       Restart = "always";
     };
     path = with pkgs; [alsa-utils python3]; # Ensures `arecord`, `aplay`, etc. are in PATH
   };
-  */
+
   #          --mic-command '${pkgs.alsa-utils}/bin/arecord -D plughw:2,0 -r 16000 -c 1 -f S16_LE -t raw' \
   #          --snd-command '${pkgs.alsa-utils}/bin/aplay -D plughw:1,0 -r 22050 -c 1 -f S16_LE -t raw' \
   #          --snd-command '${pkgs.alsa-utils}/bin/aplay -D plughw:CARD=vc4hdmi1,DEV=0 -r 48000 -c 1 -f S16_LE -t raw' \
   #          --awake-wav ${soundAwake} \
   #          --done-wav ${soundDone} \
   #          --event-uri tcp://127.0.0.1:10500
-
-  /*
+/*
   services.wyoming.satellite = {
     enable = true;
     name = "Kökets Wyoming Satellite";
@@ -157,7 +172,7 @@ in {
       "--event-uri 'tcp://127.0.0.1:10500'"
     ];
   };
-  */
+*/
 
   services.avahi = {
     enable = true;
@@ -174,15 +189,17 @@ in {
     group = "audio";
   };
 
+
+  # Optional but recommended: give applications real-time audio capabilities
   security.rtkit.enable = true;
 
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
+#  services.pipewire = {
+#    enable = true;
+#    alsa.enable = true;
+#    alsa.support32Bit = true;
+#    pulse.enable = true;
+#    jack.enable = true;
+#  };
 
   # Bluetooth
   #hardware.bluetooth = {
@@ -199,6 +216,7 @@ in {
   };
 
   hardware = {
+    enableRedistributableFirmware = true;
     raspberry-pi = {
       config = {
         all = {
@@ -213,6 +231,7 @@ in {
             };
           };
           dt-overlays = {
+            vc4-kms-v3d.enable = true;
             disable-bt = {
               enable = true;
               params = {};
