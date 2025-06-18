@@ -25,6 +25,7 @@
       "x-scheme-handler/mailto" = "proton-mail.desktop";
       "application/xhtml+xml" = "firefox.desktop";
       "application/octet-stream" = "vlc.desktop";
+      "application/pdf" = "org.gnome.Evince.desktop";
     };
     xdg.configFile."mimeapps.list".force = true;
     imports = [
