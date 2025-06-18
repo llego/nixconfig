@@ -50,9 +50,9 @@
     mako = {
       enable = true;
       settings = {
-        defaultTimeout = 10000;
-        borderRadius = 4;
-        borderSize = 1;
+        default-timeout = 10000;
+        border-radius = 4;
+        border-size = 1;
       };
     };
     network-manager-applet.enable = true;
