@@ -15,6 +15,7 @@
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
     rpi-imager
+    evince
   ];
 
   # File manager bookmarks and icons
