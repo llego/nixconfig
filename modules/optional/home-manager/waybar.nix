@@ -27,9 +27,9 @@
       margin-left = 0;
       margin-right = 0;
       #spacing = 4;
-      modules-left = ["niri/workspaces" "network" "cpu" "memory" "battery" "backlight/slider" "clock"];
+      modules-left = ["niri/workspaces" "tray" "network" "cpu" "memory" "backlight/slider"];
       #modules-center = ["clock"];
-      modules-right = ["wlr/taskbar" "tray" "pulseaudio"];
+      modules-right = ["wlr/taskbar" "pulseaudio" "battery" "clock"];
 
       "niri/workspaces" = {
         format = "{icon}";
@@ -106,7 +106,7 @@
       "pulseaudio" = {
         format = "{icon} {volume}%";
         format-bluetooth = "{icon}  {volume}%";
-        format-muted = " ";
+        format-muted = "🔇";
         format-icons = {
           headphones = " ";
           default = ["" ""];
