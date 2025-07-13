@@ -24,11 +24,10 @@
       bookmarks = [
         "file:///home/llego/nixconfig nixconfig"
         "sftp://llego@truenas.home/mnt truenas"
-        "sftp://llego@docker.home/mnt docker"
+        "sftp://llego@truenas.home/mnt/illby/docker/data/homeassistant/ha-config homeassistant"
+        "davs://dav.cri.su/ webdav"
         "sftp://llego@christiansandberg.fi/opt christiansandberg.fi"
-        "sftp://root@homeassistant.home/config homeassistant"
-        "sftp://llego@debian.home debian"
-        "davs://dav.cri.su/ dav.cri.su"
+        "sftp://root@192.168.1.167/mnt/onboard/.adds/koreader koreader"
       ];
     };
     iconTheme = {
