@@ -27,19 +27,31 @@ in {
 
   # System packages
   environment.systemPackages = with pkgs; [
-    chromium
+    #chromium
     python3
-    alsa-utils
-    wyoming-satellite
-    wyoming-openwakeword
-    #squeekboard
+ #   alsa-utils
+ #   wyoming-satellite
+ #   wyoming-openwakeword
+    cage
+    squeekboard
   ];
+
+  programs.chromium = {
+    enable = true;
+    #extensions = [
+    #  "cjabmkimbcmhhepelfhjhbhonnapiipj" # simple-virtual-keyboard
+    #];
+  };
 
   services.cage = {
     enable = true;
     user = username;
     program = "${pkgs.chromium}/bin/chromium --app=http://homeassistant.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
-    #program = "/etc/start-kiosk.sh";
+    #program = "${pkgs.chromium}/bin/chromium --app=https://duckduckgo.com/ --user-data-dir=/home/llego/kiosk-profile-dir --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
+    #program = "/home/llego/start-kiosk.sh";
+    #environment = {
+      #WAYLAND_DISPLAY = "wayland-0";
+    #};
   };
 
 /*
@@ -47,20 +59,24 @@ in {
             environment.etc."start-kiosk.sh".text = ''
               #!/bin/sh
               
-              export XDG_RUNTIME_DIR=/run/user/$(id -u ${username})
-              export WAYLAND_DISPLAY="wayland-0"
               ${pkgs.squeekboard}/bin/squeekboard &
-              sleep 1
-              exec ${pkgs.chromium}/bin/chromium --app=http://homeassistant.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized
+              sleep 3
+              ${pkgs.chromium}/bin/chromium \
+                --app=http://homeassistant.home:8123/lovelace-wallmount/default_view \
+                --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland \
+                --enable-features=OverlayScrollbar --start-maximized
             '';
+
 */
 
   systemd.user.services.scalekiosk = {
     description = "Scale screen to 1.5";
+    environment = {
+      XDG_RUNTIME_DIR = "/run/user/1000";
+      WAYLAND_DISPLAY = "wayland-0";
+    };
     script = ''
       sleep 8
-      export XDG_RUNTIME_DIR=/run/user/$(id -u ${username})
-      export WAYLAND_DISPLAY="wayland-0"
       ${pkgs.wlr-randr}/bin/wlr-randr --output "HDMI-A-2" --scale 1.5
     '';
     wantedBy = ["basic.target"];
@@ -74,6 +90,7 @@ in {
     ];
   };
 
+/*
   services.wyoming.openwakeword = {
     enable = true;
     preloadModels = [
@@ -82,39 +99,6 @@ in {
     uri = "tcp://0.0.0.0:10400";
     extraArgs = ["--debug"];
   };
-
-
-/*
-  home-manager.users.${username} = {
-    home.stateVersion = "24.11";
-    systemd.user.services.wyoming-satellite = {
-      Install = {
-        WantedBy = ["multi-user.target"];
-      };
-      Unit = {
-        Description = "Kökets Wyoming Satellite";
-        PartOf = "graphical-session.target";
-        After = "network.target";
-        Requisite = "graphical-session.target";
-      };
-      Service = {
-        ExecStart = ''
-          ${pkgs.python3}/bin/python3.12 ${pkgs.wyoming-satellite}/bin/.wyoming-satellite-wrapped \
-            --uri tcp://0.0.0.0:10700 \
-            --debug \
-            --awake-wav ${soundAwake} \
-            --done-wav ${soundDone} \
-            --wake-word-name ok_nabu \
-            --name 'Kökets Wyoming Satellite' \
-            --mic-command '${pkgs.alsa-utils}/bin/arecord -D sysdefault:CARD=ArrayUAC10 -r 16000 -c 1 -f S16_LE -t raw' \
-            --snd-command '${pkgs.pipewire}/bin/pw-play --target hdmi:CARD=vc4hdmi1,DEV=0 -' \
-            --wake-uri tcp://127.0.0.1:10400
-        '';
-        Restart = "always";
-      };
-    };
-  };
-*/
 
 
   systemd.services.wyoming-satellite = {
@@ -133,7 +117,7 @@ in {
           --wake-word-name ok_nabu \
           --name 'Kökets Wyoming Satellite' \
           --mic-command '${pkgs.alsa-utils}/bin/arecord -D sysdefault:CARD=ArrayUAC10 -r 16000 -c 1 -t raw' \
-          --snd-command '${pkgs.alsa-utils}/bin/aplay -D plughw:CARD=vc4hdmi1,DEV=0 -r 48000 -c 1 -t raw' \
+          --snd-command '${pkgs.alsa-utils}/bin/aplay -D sysdefault:CARD=Audio -r 48000 -c 1 -t raw' \
           --wake-uri tcp://127.0.0.1:10400
       '';
       Restart = "always";
@@ -147,32 +131,9 @@ in {
   #          --awake-wav ${soundAwake} \
   #          --done-wav ${soundDone} \
   #          --event-uri tcp://127.0.0.1:10500
-/*
-  services.wyoming.satellite = {
-    enable = true;
-    name = "Kökets Wyoming Satellite";
-    user = username;
-    uri = "tcp://0.0.0.0:10700";
-    sounds.awake = builtins.fetchurl {
-      url = "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/awake.wav";
-      sha256 = "6b25dd2abaf7537865222ca9fd6e14fbf723458526fb79bbe29d8261d1320724";
-    };
-    sounds.done = builtins.fetchurl {
-      url = "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/done.wav";
-      sha256 = "bc5c914bfa860a77fa9d88ac2d96601adfede578cf146637ec98b5688911a951";
-    };
-    extraArgs = [
-      "--debug"
-      "--wake-word-name=ok_nabu"
-      "--wake-uri=tcp://127.0.0.1:10400"
-      "--name 'Kökets Wyoming Satellite'"
-      "--mic-command 'arecord -D plughw:CARD=ArrayUAC10,DEV=0 -r 16000 -c 1 -f S16_LE -t raw'"
-      "--snd-command 'aplay -D sysdefault:CARD=vc4hdmi1 -r 22050 -c 1 -f S16_LE -t raw'"
-      "--wake-word-name 'ok_nabu'"
-      "--event-uri 'tcp://127.0.0.1:10500'"
-    ];
-  };
+
 */
+
 
   services.avahi = {
     enable = true;
@@ -184,14 +145,9 @@ in {
   networking.firewall.allowedTCPPorts = [10700];
   networking.firewall.allowedUDPPorts = [5353]; # mDNS
 
-  users.users.wyoming = {
-    isSystemUser = true;
-    group = "audio";
-  };
-
 
   # Optional but recommended: give applications real-time audio capabilities
-  security.rtkit.enable = true;
+#  security.rtkit.enable = true;
 
 #  services.pipewire = {
 #    enable = true;
