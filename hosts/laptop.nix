@@ -16,7 +16,7 @@
     ./../modules/optional/desktop-apps.nix
     ./../modules/optional/docker.nix
     ./../modules/optional/niri-config.nix
-    #./../modules/optional/printer.nix
+    ./../modules/optional/printer.nix
     ./../modules/optional/wifi-networks.nix
     ./../modules/optional/vpn.nix
     ./../modules/optional/systempackages-optional.nix

@@ -7,6 +7,7 @@
   services.printing.enable = true;
 
   # Comment this block to avoid error message on rebuild if printer is not connected
+  /*
   hardware.printers = {
     ensurePrinters = [
       {
@@ -20,7 +21,7 @@
       }
     ];
   };
-
+  */
   # Enable autodiscovery of network printers
   services.avahi = {
     enable = true;
