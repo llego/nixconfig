@@ -26,6 +26,11 @@
       "application/xhtml+xml" = "firefox.desktop";
       "application/octet-stream" = "vlc.desktop";
       "application/pdf" = "org.gnome.Evince.desktop";
+      "image/jpeg" = "org.gnome.Loupe.desktop";
+      "image/png" = "org.gnome.Loupe.desktop";
+      "image/gif" = "org.gnome.Loupe.desktop";
+      "image/webp" = "org.gnome.Loupe.desktop";
+      "image/bmp" = "org.gnome.Loupe.desktop";
     };
     xdg.configFile."mimeapps.list".force = true;
     imports = [
