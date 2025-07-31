@@ -16,6 +16,7 @@
     hunspellDicts.en-gb-ize
     rpi-imager
     evince
+    loupe
   ];
 
   # File manager bookmarks and icons
