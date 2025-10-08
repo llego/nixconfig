@@ -10,7 +10,7 @@
     yle-dl
     svtplay-dl
     mediainfo
-    (writeShellScriptBin "bandcamp-collection" (builtins.readFile ./bandcamp-collection.sh))
+    (writeShellScriptBin "album-downloader" (builtins.readFile ./album-downloader.sh))
     inputs.bandsnatch.packages."${pkgs.system}".default
   ];
 
