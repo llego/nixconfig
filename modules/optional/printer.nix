@@ -1,10 +1,17 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     system-config-printer
+    #hplipWithPlugin
   ];
 
   # Enable CUPS to print documents
-  services.printing.enable = true;
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      cups-filters
+      cups-browsed
+    ];
+  };
 
   # Comment this block to avoid error message on rebuild if printer is not connected
   /*
