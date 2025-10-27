@@ -17,6 +17,8 @@
     rpi-imager
     evince
     loupe
+    calibre
+    yubikey-manager
   ];
 
   # File manager bookmarks and icons
@@ -85,20 +87,20 @@
     };
   };
 
-  /*
   programs.chromium = {
     enable = true;
-    extensions = [
-      {id = "nngceckbapebfimnlniiiahkandclblb";} # Bitwarden
-      {id = "fnaicdffflnofjppbagibeoednhnbjhg";} # Floccus bookmarks sync
-      {id = "cclelndahbckbenkjhflpdbgdldlbecc";} # get cookies locally
-      {
-        id = "dcpihecpambacapedldabdbpakmachpb";
-        updateUrl = "https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/updates.xml";
-      }
-    ];
+    #extensions = [
+    #{id = "nngceckbapebfimnlniiiahkandclblb";} # Bitwarden
+    #{id = "fnaicdffflnofjppbagibeoednhnbjhg";} # Floccus bookmarks sync
+    #{id = "cclelndahbckbenkjhflpdbgdldlbecc";} # get cookies locally
+    #{
+    #  id = "dcpihecpambacapedldabdbpakmachpb";
+    #  updateUrl = "https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/updates.xml";
+    #}
+    #];
   };
 
+  /*
 
   programs.brave = {
     enable = true;
