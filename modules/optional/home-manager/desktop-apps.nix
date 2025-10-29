@@ -18,7 +18,6 @@
     evince
     loupe
     calibre
-    yubikey-manager
   ];
 
   # File manager bookmarks and icons
@@ -30,7 +29,7 @@
         "sftp://llego@truenas.home/mnt/illby/docker/data/homeassistant/ha-config homeassistant"
         "davs://dav.cri.su/ webdav"
         "sftp://llego@christiansandberg.fi/opt christiansandberg.fi"
-        "sftp://root@192.168.1.167/mnt/onboard/.adds/koreader koreader"
+        #"sftp://root@192.168.1.167/mnt/onboard/.adds/koreader koreader"
       ];
     };
     iconTheme = {
