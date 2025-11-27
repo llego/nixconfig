@@ -5,18 +5,6 @@
 }: let
   noctalia = cmd: ["noctalia-shell" "ipc" "call"] ++ (pkgs.lib.splitString " " cmd);
 in {
-  /*
-  programs.swaylock = {
-    enable = true;
-    settings = {
-      font-size = 24;
-      indicator-idle-visible = true;
-      indicator-radius = 100;
-      show-failed-attempts = true;
-    };
-  };
-  */
-
   home.packages = [
     pkgs.brightnessctl
     #pkgs.libnotify
@@ -32,37 +20,6 @@ in {
     Install.WantedBy = ["graphical-session.target"];
   };
 
-  /*
-  systemd.user.services = {
-    swaybg = {
-      Install = {
-        WantedBy = ["graphical-session.target"];
-      };
-      Unit = {
-        Description = "swaybg service for background";
-        PartOf = "graphical-session.target";
-        After = "graphical-session.target";
-        Requisite = "graphical-session.target";
-      };
-      Service = {
-        ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} -m fill";
-        Restart = "on-failure";
-      };
-    };
-  };
-
-  services = {
-    mako = {
-      enable = true;
-      settings = {
-        default-timeout = 10000;
-        border-radius = 4;
-        border-size = 1;
-      };
-    };
-    network-manager-applet.enable = true;
-  };
-  */
   programs.niri.settings = {
     cursor.theme = "default";
     cursor.size = 24;
@@ -74,7 +31,7 @@ in {
 
     spawn-at-startup = [
       #{command = ["exec" "sleep" "3;" "systemctl" "--user" "reset-failed" "waybar.service"];}
-      {command = ["noctalia-shell"];}
+      #{command = ["noctalia-shell"];}
       #{command = ["systemctl" "--user" "restart" "network-manager-applet.service"];}
       {command = ["systemctl" "--user" "restart" "swayidle.service"];}
     ];
@@ -90,16 +47,20 @@ in {
       shadow.enable = true;
     };
 
+    # Noctalia config for background:
+    # Set the regular wallpaper on the backdrop
     layer-rules = [
       {
         #matches = [{namespace = "^wallpaper$";}];
-        # Set the regular wallpaper on the backdrop
+
         matches = [{namespace = "^noctalia-wallpaper*";}];
         place-within-backdrop = true;
       }
     ];
+    layout.background-color = "transparent";
+    overview.workspace-shadow.enable = false;
 
-    # Allows notification actions and window activation from Noctalia.
+    # Allows notification actions and window activation from Noctalia
     debug.honor-xdg-activation-with-invalid-serial = [];
 
     window-rules = [
@@ -221,4 +182,46 @@ in {
       #]);
     };
   };
+
+  /*
+  systemd.user.services = {
+    swaybg = {
+      Install = {
+        WantedBy = ["graphical-session.target"];
+      };
+      Unit = {
+        Description = "swaybg service for background";
+        PartOf = "graphical-session.target";
+        After = "graphical-session.target";
+        Requisite = "graphical-session.target";
+      };
+      Service = {
+        ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} -m fill";
+        Restart = "on-failure";
+      };
+    };
+  };
+
+  services = {
+    mako = {
+      enable = true;
+      settings = {
+        default-timeout = 10000;
+        border-radius = 4;
+        border-size = 1;
+      };
+    };
+    network-manager-applet.enable = true;
+  };
+
+  programs.swaylock = {
+    enable = true;
+    settings = {
+      font-size = 24;
+      indicator-idle-visible = true;
+      indicator-radius = 100;
+      show-failed-attempts = true;
+    };
+  };
+  */
 }

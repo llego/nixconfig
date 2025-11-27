@@ -3,20 +3,14 @@
     inputs.noctalia.homeModules.default
   ];
 
-  # configure options
   programs.noctalia-shell = {
     enable = true;
+    systemd.enable = true;
     settings = {
-      # configure noctalia here; defaults will
-      # be deep merged with these attributes.
-
-      # Set transparent workspace background color so you see the backdrop at all times.
-      layout = {
-        background-color = "transparent";
-      };
+      # configure noctalia here; defaults will be deep merged with these attributes.
       bar = {
-        density = "compact";
-        position = "top";
+        density = "default";
+        position = "left";
         showCapsule = false;
         widgets = {
           left = [
@@ -40,6 +34,9 @@
           ];
           right = [
             {
+              id = "SystemMonitor";
+            }
+            {
               alwaysShowPercentage = true;
               id = "Battery";
               warningThreshold = 30;
@@ -62,6 +59,10 @@
       location = {
         monthBeforeDay = true;
         name = "Helsinki, Finland";
+      };
+      wallpaper = {
+        enabled = true;
+        overviewEnabled = false;
       };
     };
     # this may also be a string or a path to a JSON file,
