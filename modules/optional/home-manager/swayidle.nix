@@ -5,7 +5,8 @@
     events = [
       {
         event = "before-sleep";
-        command = "${pkgs.swaylock}/bin/swaylock -f";
+        #command = "${pkgs.swaylock}/bin/swaylock -f";
+        command = "noctalia-shell ipc call lockScreen lock";
       }
     ];
     timeouts = [
@@ -15,7 +16,8 @@
       }
       {
         timeout = 600;
-        command = "${pkgs.swaylock}/bin/swaylock -f";
+        #command = "${pkgs.swaylock}/bin/swaylock -f";
+        command = "noctalia-shell ipc call lockScreen lock";
       }
       {
         timeout = 1200;

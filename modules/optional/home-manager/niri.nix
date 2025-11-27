@@ -2,7 +2,10 @@
   config,
   pkgs,
   ...
-}: {
+}: let
+  noctalia = cmd: ["noctalia-shell" "ipc" "call"] ++ (pkgs.lib.splitString " " cmd);
+in {
+  /*
   programs.swaylock = {
     enable = true;
     settings = {
@@ -12,11 +15,12 @@
       show-failed-attempts = true;
     };
   };
+  */
 
   home.packages = [
     pkgs.brightnessctl
-    pkgs.libnotify
-    pkgs.swaybg
+    #pkgs.libnotify
+    #pkgs.swaybg
   ];
 
   systemd.user.targets.tray = {
@@ -28,6 +32,7 @@
     Install.WantedBy = ["graphical-session.target"];
   };
 
+  /*
   systemd.user.services = {
     swaybg = {
       Install = {
@@ -57,7 +62,7 @@
     };
     network-manager-applet.enable = true;
   };
-
+  */
   programs.niri.settings = {
     cursor.theme = "default";
     cursor.size = 24;
@@ -68,9 +73,9 @@
     };
 
     spawn-at-startup = [
-      {command = ["exec" "sleep" "3;" "systemctl" "--user" "reset-failed" "waybar.service"];}
-      #{ command = ["systemctl" "--user" "restart" "waybar.service"]; }
-      {command = ["systemctl" "--user" "restart" "network-manager-applet.service"];}
+      #{command = ["exec" "sleep" "3;" "systemctl" "--user" "reset-failed" "waybar.service"];}
+      {command = ["noctalia-shell"];}
+      #{command = ["systemctl" "--user" "restart" "network-manager-applet.service"];}
       {command = ["systemctl" "--user" "restart" "swayidle.service"];}
     ];
 
@@ -87,18 +92,23 @@
 
     layer-rules = [
       {
-        matches = [{namespace = "^wallpaper$";}];
-        #place-within-backdrop = true;
+        #matches = [{namespace = "^wallpaper$";}];
+        # Set the regular wallpaper on the backdrop
+        matches = [{namespace = "^noctalia-wallpaper*";}];
+        place-within-backdrop = true;
       }
     ];
+
+    # Allows notification actions and window activation from Noctalia.
+    debug.honor-xdg-activation-with-invalid-serial = [];
 
     window-rules = [
       {
         geometry-corner-radius = {
-          bottom-left = 4.0;
-          bottom-right = 4.0;
-          top-left = 4.0;
-          top-right = 4.0;
+          bottom-left = 20.0;
+          bottom-right = 20.0;
+          top-left = 20.0;
+          top-right = 20.0;
         };
         clip-to-geometry = true;
       }
@@ -129,12 +139,15 @@
     in {
       "Mod+Shift+7".action = show-hotkey-overlay;
 
-      "Mod+L".action.spawn = "swaylock";
+      #"Mod+L".action.spawn = "swaylock";
+      "Mod+L".action.spawn = noctalia "lockScreen lock";
       "Alt+Return".action.spawn = "alacritty";
-      "Alt+Space".action.spawn = "fuzzel";
+      #"Alt+Space".action.spawn = "fuzzel";
+      "Alt+Space".action.spawn = noctalia "launcher toggle";
       "Alt+W".action.spawn = "firefox";
       "Alt+F".action.spawn = "nautilus";
       "Alt+T".action.spawn = "gnome-text-editor";
+      "Alt+C".action.spawn = "codium";
 
       "Mod+Left".action = focus-column-left;
       "Mod+Right".action = focus-column-right;
@@ -159,20 +172,27 @@
       "Mod+Comma".action = consume-window-into-column;
       "Mod+Period".action = expel-window-from-column;
 
+      # Toggle tabbed column display mode.
+      # Windows in this column will appear as vertical tabs,
+      # rather than stacked on top of each other.
+      "Mod+W".action = toggle-column-tabbed-display;
+
       "Mod+Shift+P".action = power-off-monitors;
       "Mod+P".action.spawn = "${pkgs.kanshi}/bin/kanshi -c ${config.home.homeDirectory}/.config/kanshi/config";
       "Mod+Shift+E".action = quit;
-      "Ctrl+Alt+Delete".action.spawn = "${pkgs.wlogout}/bin/wlogout";
+      #"Ctrl+Alt+Delete".action.spawn = "${pkgs.wlogout}/bin/wlogout";
+      "Ctrl+Alt+Delete".action.spawn = noctalia "sessionMenu toggle";
 
       "Mod+Plus".action = set-column-width "+10%";
       "Mod+Minus".action = set-column-width "-10%";
       "Mod+Shift+Minus".action = set-window-height "-10%";
-      "Mod+Shift+Equal".action = set-window-height "+10%";
+      "Mod+Shift+Plus".action = set-window-height "+10%";
 
       "Mod+R".action = switch-preset-column-width;
-      "Mod+F".action = fullscreen-window;
+      "Mod+F".action = maximize-column;
+      "Mod+Shift+F".action = fullscreen-window;
 
-      "Print".action = screenshot;
+      "Print".action.screenshot = [];
       #"Ctrl+Print".action = screenshot-screen;
       #"Alt+Print".action = screenshot-window;
 
@@ -196,9 +216,9 @@
       "XF86MonBrightnessDown".action.spawn = ["${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%-"];
       "XF86MonBrightnessUp".action.spawn = ["${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%+"];
 
-      "Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
-        "systemctl --user restart waybar.service"
-      ]);
+      #"Mod+Shift+W".action = sh (builtins.concatStringsSep "; " [
+      #  "systemctl --user restart waybar.service"
+      #]);
     };
   };
 }
