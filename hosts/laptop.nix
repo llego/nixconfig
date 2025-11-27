@@ -14,13 +14,13 @@
     ./../modules/core
     ./../modules/optional/stylix
     ./../modules/optional/desktop-apps.nix
-    ./../modules/optional/docker.nix
+    #./../modules/optional/docker.nix
     ./../modules/optional/niri-config.nix
     ./../modules/optional/printer.nix
     ./../modules/optional/wifi-networks.nix
     ./../modules/optional/vpn.nix
     ./../modules/optional/systempackages-optional.nix
-    ./../modules/optional/yubikey.nix
+    #./../modules/optional/yubikey.nix
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -35,8 +35,8 @@
     imports = [
       # tidal-dl, svtplay-dl, yle-dl, bandcamp collection downloader
       ./../modules/optional/home-manager/downloaders
-      ./../modules/optional/home-manager/ai.nix
-      ./../modules/optional/home-manager/rclone.nix
+      #./../modules/optional/home-manager/ai.nix
+      #./../modules/optional/home-manager/rclone.nix
     ];
 
     # Kanshi display settings for laptop display and external display
@@ -116,6 +116,9 @@
 
   # Thunderbolt
   services.hardware.bolt.enable = true;
+
+  # Battery power information
+  services.upower.enable = true;
 
   # Hardware acceleration
   #nixpkgs.config.packageOverrides = pkgs: {
