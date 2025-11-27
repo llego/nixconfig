@@ -95,6 +95,8 @@ in {
     # skip hotkey overlay
     hotkey-overlay.skip-at-startup = true;
 
+    gestures.hot-corners.enable = false;
+
     binds = with config.lib.niri.actions; let
       sh = spawn "sh" "-c";
     in {
