@@ -9,7 +9,7 @@
 
   home-manager.users.${username} = {
     home.sessionVariables = {
-      EDITOR = "gnome-text-editor";
+      EDITOR = "nano";
       FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
       TERMINAL = "alacritty";
     };
