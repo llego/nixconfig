@@ -8,6 +8,9 @@
     systemd.enable = true;
     settings = {
       # configure noctalia here; defaults will be deep merged with these attributes.
+      dock = {
+        enabled = false;
+      };
       bar = {
         density = "default";
         position = "left";
@@ -27,6 +30,17 @@
           ];
           center = [
             {
+              id = "Taskbar";
+              colorizeIcons = false;
+              hideMode = "hidden";
+              onlyActiveWorkspaces = true;
+              onlySameOutput = true;
+            }
+            {
+              id = "Spacer";
+              width = 20;
+            }
+            {
               hideUnoccupied = false;
               id = "Workspace";
               labelMode = "none";
@@ -35,10 +49,11 @@
           right = [
             {
               id = "SystemMonitor";
+              showCpuTemp = false;
             }
             {
-              alwaysShowPercentage = true;
               id = "Battery";
+              alwaysShowPercentage = true;
               warningThreshold = 30;
             }
             {
@@ -51,10 +66,11 @@
           ];
         };
       };
-      colorSchemes.predefinedScheme = "Monochrome";
+      colorSchemes.predefinedScheme = "Tokyo Night";
       general = {
         avatarImage = "/home/drfoobar/.face";
         radiusRatio = 0.2;
+        animationSpeed = 1.5;
       };
       location = {
         monthBeforeDay = true;
@@ -64,8 +80,20 @@
         enabled = true;
         overviewEnabled = false;
       };
+      calendar.cards = [
+        {
+          id = "timer-card";
+          enabled = false;
+        }
+        {
+          id = "banner-card";
+          enabled = true;
+        }
+        {
+          id = "calendar-card";
+          enabled = true;
+        }
+      ];
     };
-    # this may also be a string or a path to a JSON file,
-    # but in this case must include *all* settings.
   };
 }

@@ -17,6 +17,7 @@
       main."vertical-pad" = 20;
       main."inner-pad" = 5;
       main."line-height" = 20;
+      main."border-radius" = 20;
     };
   };
 }

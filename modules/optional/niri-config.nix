@@ -9,7 +9,7 @@
 
   home-manager.users.${username} = {
     imports = [
-      #./home-manager/fuzzel.nix
+      ./home-manager/fuzzel.nix
       ./home-manager/niri.nix
       ./home-manager/swayidle.nix
       #./home-manager/waybar.nix

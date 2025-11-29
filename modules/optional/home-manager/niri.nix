@@ -105,12 +105,13 @@ in {
       #"Mod+L".action.spawn = "swaylock";
       "Mod+L".action.spawn = noctalia "lockScreen lock";
       "Alt+Return".action.spawn = "alacritty";
-      #"Alt+Space".action.spawn = "fuzzel";
-      "Alt+Space".action.spawn = noctalia "launcher toggle";
+      "Alt+Space".action.spawn = "fuzzel";
+      #"Alt+Space".action.spawn = noctalia "launcher toggle";
       "Alt+W".action.spawn = "firefox";
       "Alt+F".action.spawn = "nautilus";
       "Alt+T".action.spawn = "gnome-text-editor";
       "Alt+C".action.spawn = "codium";
+      "Alt+N".action.spawn = noctalia "settings toggle";
 
       "Mod+Left".action = focus-column-left;
       "Mod+Right".action = focus-column-right;
