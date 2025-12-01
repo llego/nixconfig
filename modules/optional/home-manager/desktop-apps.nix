@@ -98,21 +98,7 @@
   #}
   #];
   #};
-  /*
 
-  programs.brave = {
-    enable = true;
-    package = pkgs.brave;
-
-    extensions = [
-      # Bitwarden
-      "nngceckbapebfimnlniiiahkandclblb"
-
-      # Floccus bookmarks sync
-      "fnaicdffflnofjppbagibeoednhnbjhg"
-    ];
-  };
-  */
 
   programs.alacritty = {
     enable = true;
@@ -129,21 +115,37 @@
       #  lines = 3;
       #  columns = 200;
       #};
-      #keyboard.bindings = [
-      #  {
-      #    key = "K";
-      #    mods = "Control";
-      #    chars = "\\u000c";
-      #  }
-      #];
+      keyboard.bindings = [
+        #  {
+        #    key = "K";
+        #    mods = "Control";
+        #    chars = "\\u000c";
+        #  }
+        {
+          key = "Space";
+          mods = "Control";
+          action = "ToggleViMode";
+          mode = "~Search";
+        }
+        {
+          key = "Slash";
+          mode = "Vi";
+          action = "SearchForward";
+        }
+        {
+          key = "Slash";
+          mods = "Shift";
+          mode = "Vi";
+          action = "SearchBackward";
+        }
+      ];
     };
   };
 
   programs.vscode = {
     enable = true;
     package = pkgs.vscodium;
-    # New syntax in v. 25
-    #profiles.default.extensions = with pkgs.vscode-extensions; [
+
     profiles.default.extensions = with pkgs.vscode-extensions; [
       yzhang.markdown-all-in-one
       mechatroner.rainbow-csv
@@ -151,7 +153,7 @@
       jnoortheen.nix-ide
       kamadorueda.alejandra
     ];
-    #profiles.default.userSettings = {
+
     profiles.default.userSettings = {
       "nix.serverPath" = "nixd";
       "nix.enableLanguageServer" = true;
@@ -161,11 +163,11 @@
             "command" = ["alejandra"];
           };
           "options" = {
-            /*
-            By default, this entry will be read from `import <nixpkgs> { }`.
-            You can write arbitrary Nix expressions here, to produce valid "options" declaration result.
-            Tip: for flake-based configuration, utilize `builtins.getFlake`
-            */
+
+      #      By default, this entry will be read from `import <nixpkgs> { }`.
+      #      You can write arbitrary Nix expressions here, to produce valid "options" declaration result.
+      #      Tip: for flake-based configuration, utilize `builtins.getFlake`
+
             "nixos" = {
               "expr" = "(builtins.getFlake \"/home/${username}/nixconfig/flake.nix\").nixosConfigurations.${hostname}.options";
             };

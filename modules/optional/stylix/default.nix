@@ -6,8 +6,6 @@
 }: {
   imports = [inputs.stylix.nixosModules.stylix];
 
-  disabledModules = ["${inputs.stylix}/modules/niri/nixos.nix"];
-
   stylix.enable = true;
 
   # Color theme, see https://tinted-theming.github.io/tinted-gallery/
