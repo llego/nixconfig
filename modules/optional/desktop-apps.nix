@@ -15,7 +15,7 @@
     alacritty
     vscodium
     papirus-icon-theme
-    #bitwarden-desktop
+    bitwarden-desktop
     protonmail-desktop
     vlc
     libreoffice
@@ -36,8 +36,6 @@
       DisablePocket = true;
       OfferToSaveLogins = false;
       PasswordManagerEnabled = false;
-      #DisableFirefoxAccounts = true;
-      #DisableAccounts = true;
       DisableFirefoxScreenshots = true;
       DisplayBookmarksToolbar = "always";
       SearchBar = "unified";

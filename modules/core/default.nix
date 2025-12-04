@@ -22,8 +22,6 @@
     atool
     btop
     bat
-    lsd
-    nitch
     wlr-randr
     wdisplays
   ];

@@ -4,7 +4,6 @@
   pkgs,
   modulesPath,
   username,
-  inputs,
   ...
 }: {
   system.stateVersion = "24.05";
