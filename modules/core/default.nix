@@ -3,15 +3,42 @@
   pkgs,
   username,
   hostname,
+  inputs,
   ...
 }: {
   imports = [
     ./home-manager
-    ./locale.nix
-    ./nix.nix
-    ./systempackages.nix
   ];
 
+  # System packages
+  environment.systemPackages = with pkgs; [
+    wget
+    curl
+    htop
+    screen
+    usbutils
+    wl-clipboard
+    stow
+    atool
+    btop
+    bat
+    lsd
+    nitch
+    wlr-randr
+    wdisplays
+  ];
+
+  # Zsh
+  programs.zsh.enable = true;
+
+  # Some programs need SUID wrappers, can be configured further or are started in user sessions.
+  # programs.mtr.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
+
+  # Set up user llego
   users.users.${username} = {
     isNormalUser = true;
     initialPassword = "12345";
@@ -33,6 +60,12 @@
     }
   ];
 
+  # Nano settings
+  programs.nano = {
+    enable = true;
+    nanorc = builtins.readFile ./nix.nanorc;
+  };
+
   # Networking
   networking = {
     hostName = hostname;
@@ -50,4 +83,52 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  # Locale
+  time.timeZone = "Europe/Helsinki";
+  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "fi_FI.UTF-8";
+    LC_IDENTIFICATION = "fi_FI.UTF-8";
+    LC_MEASUREMENT = "fi_FI.UTF-8";
+    LC_MONETARY = "fi_FI.UTF-8";
+    LC_NAME = "fi_FI.UTF-8";
+    LC_NUMERIC = "fi_FI.UTF-8";
+    LC_PAPER = "fi_FI.UTF-8";
+    LC_TELEPHONE = "fi_FI.UTF-8";
+    LC_TIME = "fi_FI.UTF-8";
+  };
+  console.keyMap = "sv-latin1";
+
+  # Nix settings
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      accept-flake-config = true;
+      trusted-users = ["root" "${username}" "@wheel"];
+      # Add binary cache
+      trusted-substituters = ["https://nix-community.cachix.org"];
+      trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      ];
+    };
+    # Required by nixd (LSP) when using flakes
+    nixPath = ["nixpkgs=${inputs.nixpkgs}"];
+  };
+
+  # Limit the number of generations to keep
+  boot.loader.systemd-boot.configurationLimit = 10;
+  # boot.loader.grub.configurationLimit = 10;
+
+  # not another nix helper
+  programs.nh = {
+    enable = true;
+    flake = "/home/${username}/nixconfig";
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+  };
 }

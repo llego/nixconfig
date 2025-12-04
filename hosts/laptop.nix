@@ -10,11 +10,8 @@
   system.stateVersion = "24.05";
 
   imports = [
-    inputs.home-manager.nixosModules.home-manager
     ./../modules/core
-    ./../modules/optional/stylix
     ./../modules/optional/desktop-apps.nix
-    #./../modules/optional/docker.nix
     ./../modules/optional/niri-config.nix
     ./../modules/optional/printer.nix
     ./../modules/optional/wifi-networks.nix
@@ -31,62 +28,11 @@
   #######
   home-manager.users.${username} = {
     home.stateVersion = "24.05";
-
     imports = [
-      # tidal-dl, svtplay-dl, yle-dl, bandcamp collection downloader
       ./../modules/optional/home-manager/downloaders
-      #./../modules/optional/home-manager/ai.nix
-      #./../modules/optional/home-manager/rclone.nix
+      ./../modules/optional/home-manager/swayidle.nix
+      ./../modules/optional/home-manager/kanshi.nix
     ];
-
-    # Kanshi display settings for laptop display and external display
-    services.kanshi = {
-      enable = true;
-      systemdTarget = "graphical-session.target";
-
-      settings = [
-        {
-          profile.name = "undocked";
-          profile.outputs = [
-            {
-              criteria = "eDP-1";
-              status = "enable";
-              scale = 2.0;
-            }
-          ];
-        }
-        {
-          profile.name = "home_office_1";
-          profile.outputs = [
-            {
-              criteria = "DP-1";
-              status = "enable";
-              mode = "3840x2160";
-              scale = 1.6;
-            }
-            {
-              criteria = "eDP-1";
-              status = "disable";
-            }
-          ];
-        }
-        {
-          profile.name = "home_office_2";
-          profile.outputs = [
-            {
-              criteria = "DP-2";
-              status = "enable";
-              mode = "3840x2160";
-              scale = 1.6;
-            }
-            {
-              criteria = "eDP-1";
-              status = "disable";
-            }
-          ];
-        }
-      ];
-    };
   };
 
   # Bootloader

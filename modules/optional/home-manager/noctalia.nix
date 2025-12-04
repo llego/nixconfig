@@ -5,7 +5,7 @@
 
   programs.noctalia-shell = {
     enable = true;
-    systemd.enable = true;
+    #systemd.enable = true;
     settings = {
       # configure noctalia here; defaults will be deep merged with these attributes.
       dock = {

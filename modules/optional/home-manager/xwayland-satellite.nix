@@ -4,7 +4,7 @@
   programs.niri.settings.environment = {
     DISPLAY = ":12";
   };
-  
+
   systemd.user.services.xwayland-satellite = {
     Unit = {
       After = ["niri.service"];

@@ -90,7 +90,7 @@
           "background": "transparent",
           "foreground": "#7FD5EA",
           "style": "diamond",
-          "template": "\u276f",
+          "template": "\u276f ",
           "type": "text"
         }
       ],
@@ -101,7 +101,7 @@
   "transient_prompt": {
     "background": "transparent",
     "foreground": "#7FD5EA",
-    "template": "\n\u276f"
+    "template": "\n\u276f "
   },
   "version": 2
 }
