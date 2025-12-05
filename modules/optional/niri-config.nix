@@ -67,7 +67,15 @@
           # with such a vendor-no-locking script, we can switch to another wayland compositor without modifying greetd's config here.
           #command = "$HOME/.wayland-session"; # start a wayland session directly without a login manager
           #command = "${pkgs.tuigreet}/bin/tuigreet --remember --cmd niri-session --theme 'border=${config.lib.stylix.colors.base08};text=${config.lib.stylix.colors.base09};prompt=green;time=red;action=blue;button=yellow;container=black;input=${config.lib.stylix.colors.base0F}'";
-          command = "${pkgs.tuigreet}/bin/tuigreet --remember --cmd niri-session";
+          command = ''
+            ${pkgs.tuigreet}/bin/tuigreet \
+              --time \
+              --asterisks \
+              --user-menu \
+              --remember \
+              --cmd niri-session \
+              --theme 'border=magenta;text=white;prompt=cyan;time=green;action=blue;button=yellow;container=black;input=brightmagenta'
+          '';
         };
       };
     };
@@ -91,7 +99,7 @@
       colorScheme = "dark";
       theme = {
         package = pkgs.tokyonight-gtk-theme;
-        name = "TokyoNight-Dark";
+        name = "Tokyonight-Dark";
       };
       iconTheme = {
         package = pkgs.papirus-icon-theme;
