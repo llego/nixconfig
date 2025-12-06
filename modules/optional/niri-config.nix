@@ -21,12 +21,15 @@
     wayland-utils
     fuzzel
     brightnessctl
+    wlr-randr
+    wdisplays
+    wl-clipboard
   ];
 
   # Environment variables
   environment = {
     variables = {
-      NIXOS_OZONE_WL = "1";
+      NIXOS_OZONE_WL = "1"; # For electron applications such as vscode
     };
     sessionVariables = {
       EDITOR = "nano";

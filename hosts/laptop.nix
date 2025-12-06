@@ -10,7 +10,7 @@
 
   imports = [
     ./../modules/core
-    ./../modules/optional/desktop-apps.nix
+    ./../modules/optional/apps.nix
     ./../modules/optional/niri-config.nix
     ./../modules/optional/printer.nix
     ./../modules/optional/wifi-networks.nix
@@ -32,7 +32,41 @@
       ./../modules/optional/home-manager/swayidle.nix
       ./../modules/optional/home-manager/kanshi.nix
     ];
+
+    programs.helix = {
+      enable = true;
+      extraPackages = with pkgs; [ nixd ]; # Remove this if you prefer to add nixd in your env
+      languages = {
+        language = [
+          {
+            name = "nix";
+            auto-format = true;
+          }
+        ];
+        language-server = {
+          nixd = {
+            command = "nixd";
+            args = [ "--semantic-tokens=true" ];
+            config.nixd =
+              let
+                myFlake = ''(builtins.getFlake "/home/llego/nixconfig")'';
+                # nixosOpts = "${myFlake}.nixosConfigurations.${osConfig.networking.hostName}.options";
+                nixosOpts = "${myFlake}.nixosConfigurations.laptop.options";
+              in
+              {
+                nixpkgs.expr = "import ${myFlake}.inputs.nixpkgs { }";
+                formatting.command = [ "${lib.getExe pkgs.nixfmt-rfc-style}" ];
+                options = {
+                  nixos.expr = nixosOpts;
+                  home-manager.expr = "${nixosOpts}.home-manager.users.type.getSubOptions []";
+                };
+              };
+          };
+        };
+      };
+    };
   };
+
 
   # Bootloader
   boot = {

@@ -17,13 +17,10 @@
     htop
     screen
     usbutils
-    wl-clipboard
     stow
     atool
     btop
     bat
-    wlr-randr
-    wdisplays
   ];
 
   # Zsh
