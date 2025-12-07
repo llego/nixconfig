@@ -32,41 +32,7 @@
       ./../modules/optional/home-manager/swayidle.nix
       ./../modules/optional/home-manager/kanshi.nix
     ];
-
-    programs.helix = {
-      enable = true;
-      extraPackages = with pkgs; [ nixd ]; # Remove this if you prefer to add nixd in your env
-      languages = {
-        language = [
-          {
-            name = "nix";
-            auto-format = true;
-          }
-        ];
-        language-server = {
-          nixd = {
-            command = "nixd";
-            args = [ "--semantic-tokens=true" ];
-            config.nixd =
-              let
-                myFlake = ''(builtins.getFlake "/home/llego/nixconfig")'';
-                # nixosOpts = "${myFlake}.nixosConfigurations.${osConfig.networking.hostName}.options";
-                nixosOpts = "${myFlake}.nixosConfigurations.laptop.options";
-              in
-              {
-                nixpkgs.expr = "import ${myFlake}.inputs.nixpkgs { }";
-                formatting.command = [ "${lib.getExe pkgs.nixfmt-rfc-style}" ];
-                options = {
-                  nixos.expr = nixosOpts;
-                  home-manager.expr = "${nixosOpts}.home-manager.users.type.getSubOptions []";
-                };
-              };
-          };
-        };
-      };
-    };
   };
-
 
   # Bootloader
   boot = {
@@ -112,12 +78,20 @@
       #libvdpau-va-gl
     ];
   };
-  environment.sessionVariables = {LIBVA_DRIVER_NAME = "iHD";}; # Force intel-media-driver
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";
+  }; # Force intel-media-driver
 
   #######
   # hardware-configuration.nix
   #######
-  boot.initrd.availableKernelModules = ["xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod"];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "nvme"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
@@ -130,7 +104,10 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/2BDF-106D";
     fsType = "vfat";
-    options = ["fmask=0077" "dmask=0077"];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
   swapDevices = [];

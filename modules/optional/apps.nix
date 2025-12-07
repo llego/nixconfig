@@ -2,8 +2,7 @@
   pkgs,
   username,
   ...
-}:
-{
+}: {
   # System packages
   environment.systemPackages = with pkgs; [
     nautilus
@@ -12,6 +11,7 @@
     gparted
     baobab
     nixd
+    nixfmt
     alejandra
     alacritty
     vscodium
@@ -29,6 +29,7 @@
     evince
     loupe
     calibre
+    helix
   ];
 
   # Firefox
@@ -45,17 +46,15 @@
         "identity.fxaccounts.toolbar.pxiToolbarEnabled" = false;
       };
 
-      ExtensionSettings =
-        with builtins;
-        let
-          extension = shortId: uuid: {
-            name = uuid;
-            value = {
-              install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/${shortId}/latest.xpi";
-              installation_mode = "normal_installed";
-            };
+      ExtensionSettings = with builtins; let
+        extension = shortId: uuid: {
+          name = uuid;
+          value = {
+            install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/${shortId}/latest.xpi";
+            installation_mode = "normal_installed";
           };
-        in
+        };
+      in
         listToAttrs [
           (extension "wallabagger" "{7a7b1d36-d7a4-481b-92c6-9f5427cb9eb1}")
           (extension "readeck" "readeck@readeck.com")
