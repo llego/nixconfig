@@ -11,7 +11,6 @@
     gparted
     baobab
     nixd
-    nixfmt
     alejandra
     alacritty
     vscodium
