@@ -5,30 +5,44 @@
 }: {
   # System packages
   environment.systemPackages = with pkgs; [
+    # CLI
+    helix
+    yazi
+    bitwarden-cli
+    jq
+    dig
+    ncdu
+    unzip
+    fastfetch
+    cachix
+    parted
+
+    # Graphical
     nautilus
     gnome-text-editor
-    parted
-    gparted
     baobab
-    nixd
-    alejandra
     alacritty
     vscodium
     papirus-icon-theme
-    bitwarden-cli
     #bitwarden-desktop
     #protonmail-desktop
     vlc
+    rpi-imager
+    evince
+    loupe
+    calibre
+    networkmanager
+
+    # Libre Office
     libreoffice
     libvoikko
     hunspell
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
-    rpi-imager
-    evince
-    loupe
-    calibre
-    helix
+
+    # Nix stuff
+    nixd
+    alejandra
   ];
 
   # Firefox

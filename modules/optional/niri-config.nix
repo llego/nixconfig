@@ -32,7 +32,7 @@
       NIXOS_OZONE_WL = "1"; # For electron applications such as vscode
     };
     sessionVariables = {
-      EDITOR = "nano";
+      EDITOR = "hx";
       FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
       TERMINAL = "alacritty";
       SAL_USE_VCLPLUGIN = "kf5"; # try to get dark mode working in libreoffice
@@ -51,7 +51,7 @@
     ];
     configPackages = [
       pkgs.xdg-desktop-portal-gtk
-      #pkgs.xdg-desktop-portal-hyprland
+      # pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal
     ];
   };

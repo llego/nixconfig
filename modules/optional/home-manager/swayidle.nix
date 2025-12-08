@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   services.swayidle = {
     enable = true;
     systemdTarget = "graphical-session.target";
@@ -6,7 +10,7 @@
       {
         event = "before-sleep";
         #command = "${pkgs.swaylock}/bin/swaylock -f";
-        command = "noctalia-shell ipc call lockScreen lock";
+        command = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia-shell ipc call lockScreen lock";
       }
     ];
     timeouts = [
@@ -17,7 +21,7 @@
       {
         timeout = 600;
         #command = "${pkgs.swaylock}/bin/swaylock -f";
-        command = "noctalia-shell ipc call lockScreen lock";
+        command = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia-shell ipc call lockScreen lock";
       }
       {
         timeout = 1200;

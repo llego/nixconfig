@@ -41,7 +41,7 @@
         shellAliases = {
           l = "${pkgs.lsd}/bin/lsd";
           ll = "${pkgs.lsd}/bin/lsd -al";
-          tree = "${pkgs.lsd}/bin/lsd --tree";
+          tree = "${pkgs.lsd}/bin/lsd -a --tree";
         };
 
         history = {

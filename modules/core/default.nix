@@ -21,6 +21,7 @@
     atool
     btop
     bat
+    lsd
   ];
 
   # Zsh
