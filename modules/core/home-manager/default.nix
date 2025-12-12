@@ -31,6 +31,7 @@
         };
       };
 
+      /*
       # Zsh
       programs.zsh = {
         enable = true;
@@ -81,6 +82,7 @@
         enable = true;
         enableZshIntegration = true;
       };
+      */
     };
   };
 }

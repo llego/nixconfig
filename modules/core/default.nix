@@ -21,11 +21,24 @@
     atool
     btop
     bat
+    zsh
     lsd
+    oh-my-posh
+    fzf
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+    zsh-completions
+    zoxide
   ];
 
   # Zsh
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    syntaxHighlighting.enable = true;
+    autosuggestions.enable = true;
+    enableCompletion = true;
+    enableGlobalCompInit = true;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are started in user sessions.
   # programs.mtr.enable = true;

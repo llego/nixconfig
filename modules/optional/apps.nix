@@ -16,6 +16,7 @@
     fastfetch
     cachix
     parted
+    nitch
 
     # Graphical
     nautilus
