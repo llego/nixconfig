@@ -24,6 +24,8 @@
     wlr-randr
     wdisplays
     wl-clipboard
+    kanshi
+    # swayidle
   ];
 
   # Environment variables
@@ -77,7 +79,7 @@
               --user-menu \
               --remember \
               --cmd niri-session \
-              --theme 'border=magenta;text=white;prompt=cyan;time=green;action=blue;button=yellow;container=black;input=brightmagenta'
+              --theme 'border=magenta;text=white;prompt=cyan;time=green;action=blue;button=yellow;container=black;input=#39FF14'
           '';
         };
       };
