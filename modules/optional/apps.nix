@@ -33,6 +33,7 @@
     loupe
     calibre
     networkmanager
+    # protonmail-bridge-gui
 
     # Libre Office
     libreoffice
@@ -88,4 +89,8 @@
     enable = true;
     terminal = "alacritty";
   };
+
+  # Email
+  programs.thunderbird.enable = true;
+  services.protonmail-bridge.enable = true;
 }
