@@ -28,7 +28,7 @@
     imports = [
       ./../modules/optional/home-manager/downloaders
       ./../modules/optional/home-manager/swayidle.nix
-      ./../modules/optional/home-manager/kanshi.nix
+      # ./../modules/optional/home-manager/kanshi.nix
     ];
   };
 
