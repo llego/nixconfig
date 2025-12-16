@@ -1,6 +1,7 @@
 {
   description = "llego's nix config";
 
+  /*
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org?priority=2"
@@ -15,6 +16,7 @@
       "llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ="
     ];
   };
+  */
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
@@ -22,7 +24,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     #stylix.url = "github:danth/stylix/release-25.11";
     #niri.url = "github:sodiboo/niri-flake";
-    nix-flatpak.url = "github:gmodena/nix-flatpak";
+    # nix-flatpak.url = "github:gmodena/nix-flatpak";
     bandsnatch.url = "github:ovyerus/bandsnatch";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
     noctalia.url = "github:noctalia-dev/noctalia-shell";

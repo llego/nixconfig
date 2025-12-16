@@ -25,10 +25,10 @@
     lsd
     oh-my-posh
     fzf
-    zsh-syntax-highlighting
-    zsh-autosuggestions
-    zsh-completions
-    zoxide
+    # zsh-syntax-highlighting
+    # zsh-autosuggestions
+    # zsh-completions
+    # zoxide
   ];
 
   # Zsh
