@@ -86,12 +86,24 @@
     };
   };
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.droid-sans-mono
-    nerd-fonts.fira-code
-    noto-fonts-color-emoji
-    inter
-  ];
+  fonts = {
+    packages = with pkgs; [
+      nerd-fonts.droid-sans-mono
+      nerd-fonts.fira-code
+      noto-fonts
+      noto-fonts-color-emoji
+      inter
+    ];
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        serif = ["Noto Serif"];
+        sansSerif = ["Inter Display Medium"];
+        monospace = ["FiraCode Nerd Font"];
+        emoji = ["Noto Color Emoji"];
+      };
+    };
+  };
 
   home-manager.users.${username} = {
     gtk = {
