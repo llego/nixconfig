@@ -6,12 +6,8 @@
   # System packages
   environment.systemPackages = with pkgs; [
     # CLI
-    helix
-    yazi
     bitwarden-cli
-    jq
     dig
-    ncdu
     unzip
     fastfetch
     cachix
@@ -41,10 +37,6 @@
     hunspell
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
-
-    # Nix stuff
-    nixd
-    alejandra
   ];
 
   # Firefox

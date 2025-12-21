@@ -25,10 +25,14 @@
     lsd
     oh-my-posh
     fzf
-    # zsh-syntax-highlighting
-    # zsh-autosuggestions
-    # zsh-completions
-    # zoxide
+    helix
+    yazi
+    jq
+    ncdu
+
+    # Nix stuff
+    nixd
+    alejandra
   ];
 
   # Zsh
