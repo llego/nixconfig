@@ -1,10 +1,15 @@
-{ config, lib, pkgs, modulesPath, username,... }:
-
 {
-  imports =
-    [ (modulesPath + "/profiles/qemu-guest.nix")
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  username,
+  ...
+}: {
+  imports = [
+    (modulesPath + "/profiles/qemu-guest.nix")
     ./../modules/core
-    ];
+  ];
 
   system.stateVersion = "25.11";
 
@@ -29,25 +34,25 @@
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
 
-  boot.initrd.availableKernelModules = [ "ata_piix" "xhci_pci" "ahci" "virtio_pci" "sr_mod" "virtio_blk" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+  boot.initrd.availableKernelModules = ["ata_piix" "xhci_pci" "ahci" "virtio_pci" "sr_mod" "virtio_blk"];
+  boot.initrd.kernelModules = [];
+  boot.kernelModules = ["kvm-intel"];
+  boot.extraModulePackages = [];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/c9f17c7f-4952-4b84-bd1e-9dd374dac51c";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/77327aa6-7cc3-4746-8972-7290d9367698";
+    fsType = "ext4";
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/09EB-5EE9";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/3892-F27C";
+    fsType = "vfat";
+    options = ["fmask=0077" "dmask=0077"];
+  };
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/6b0bd8c6-4b5e-4a16-b2b4-5712a77dc4a4"; }
-    ];
+  swapDevices = [
+    {device = "/dev/disk/by-uuid/2ae54f2e-dabc-4507-b8c0-b4a9ec018342";}
+  ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
