@@ -25,14 +25,8 @@
     lsd
     oh-my-posh
     fzf
-    helix
-    yazi
     jq
     ncdu
-
-    # Nix stuff
-    nixd
-    alejandra
   ];
 
   # Zsh
@@ -132,6 +126,9 @@
     # Required by nixd (LSP) when using flakes
     nixPath = ["nixpkgs=${inputs.nixpkgs}"];
   };
+
+  # Environment variables
+  environment.sessionVariables.FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
 
   # Limit the number of generations to keep
   boot.loader.systemd-boot.configurationLimit = 10;

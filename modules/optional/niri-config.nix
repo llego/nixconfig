@@ -34,8 +34,6 @@
       NIXOS_OZONE_WL = "1"; # For electron applications such as vscode
     };
     sessionVariables = {
-      EDITOR = "hx";
-      FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
       TERMINAL = "alacritty";
       SAL_USE_VCLPLUGIN = "kf5"; # try to get dark mode working in libreoffice
     };

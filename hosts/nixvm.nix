@@ -9,6 +9,7 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ./../modules/core
+    ./../modules/optional/development.nix
   ];
 
   system.stateVersion = "25.11";
@@ -28,6 +29,15 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # Needed to create ISO image for rpi5
+  boot.binfmt.emulatedSystems = ["aarch64-linux"];
+
+  # With these settings we don't need to add  "--option sandbox false --option filter-syscalls false" when build locally and deploying to rpi5
+  nix.settings = {
+    sandbox = false;
+    filter-syscalls = false;
+  };
 
   networking.hostName = "nixvm"; # Define your hostname.
 

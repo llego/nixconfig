@@ -20,7 +20,7 @@ in {
   imports = [
     inputs.raspberry-pi-nix.nixosModules.raspberry-pi
     inputs.raspberry-pi-nix.nixosModules.sd-image
-    inputs.home-manager.nixosModules.home-manager
+    # inputs.home-manager.nixosModules.home-manager
     ./../modules/core
     ./../modules/optional/wifi-networks.nix
   ];
@@ -29,9 +29,9 @@ in {
   environment.systemPackages = with pkgs; [
     #chromium
     python3
- #   alsa-utils
- #   wyoming-satellite
- #   wyoming-openwakeword
+    #   alsa-utils
+    #   wyoming-satellite
+    #   wyoming-openwakeword
     cage
     squeekboard
   ];
@@ -50,24 +50,23 @@ in {
     #program = "${pkgs.chromium}/bin/chromium --app=https://duckduckgo.com/ --user-data-dir=/home/llego/kiosk-profile-dir --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
     #program = "/home/llego/start-kiosk.sh";
     #environment = {
-      #WAYLAND_DISPLAY = "wayland-0";
+    #WAYLAND_DISPLAY = "wayland-0";
     #};
   };
 
-/*
-            # Write wrapper script
-            environment.etc."start-kiosk.sh".text = ''
-              #!/bin/sh
-              
-              ${pkgs.squeekboard}/bin/squeekboard &
-              sleep 3
-              ${pkgs.chromium}/bin/chromium \
-                --app=http://homeassistant.home:8123/lovelace-wallmount/default_view \
-                --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland \
-                --enable-features=OverlayScrollbar --start-maximized
-            '';
+  /*
+  # Write wrapper script
+  environment.etc."start-kiosk.sh".text = ''
+    #!/bin/sh
 
-*/
+    ${pkgs.squeekboard}/bin/squeekboard &
+    sleep 3
+    ${pkgs.chromium}/bin/chromium \
+      --app=http://homeassistant.home:8123/lovelace-wallmount/default_view \
+      --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland \
+      --enable-features=OverlayScrollbar --start-maximized
+  '';
+  */
 
   systemd.user.services.scalekiosk = {
     description = "Scale screen to 1.5";
@@ -90,7 +89,7 @@ in {
     ];
   };
 
-/*
+  /*
   services.wyoming.openwakeword = {
     enable = true;
     preloadModels = [
@@ -131,9 +130,7 @@ in {
   #          --awake-wav ${soundAwake} \
   #          --done-wav ${soundDone} \
   #          --event-uri tcp://127.0.0.1:10500
-
-*/
-
+  */
 
   services.avahi = {
     enable = true;
@@ -145,17 +142,16 @@ in {
   networking.firewall.allowedTCPPorts = [10700];
   networking.firewall.allowedUDPPorts = [5353]; # mDNS
 
-
   # Optional but recommended: give applications real-time audio capabilities
-#  security.rtkit.enable = true;
+  #  security.rtkit.enable = true;
 
-#  services.pipewire = {
-#    enable = true;
-#    alsa.enable = true;
-#    alsa.support32Bit = true;
-#    pulse.enable = true;
-#    jack.enable = true;
-#  };
+  #  services.pipewire = {
+  #    enable = true;
+  #    alsa.enable = true;
+  #    alsa.support32Bit = true;
+  #    pulse.enable = true;
+  #    jack.enable = true;
+  #  };
 
   # Bluetooth
   #hardware.bluetooth = {

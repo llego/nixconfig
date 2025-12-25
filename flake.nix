@@ -1,22 +1,20 @@
 {
   description = "llego's nix config";
 
-  /*
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org?priority=2"
       #"https://cuda-maintainers.cachix.org?priority=1"
-      "https://niri.cachix.org?priority=1"
-      "https://llego.cachix.org?priority=1"
+      # "https://niri.cachix.org?priority=1"
+      # "https://llego.cachix.org?priority=1"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       #"cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-      "llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ="
+      # "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
+      # "llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ="
     ];
   };
-  */
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
@@ -62,6 +60,7 @@
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
       # zstd -dc ..linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
+      # Or run sudo nixos-rebuild boot --flake .#rpi5 --target-host llego@rpi5.home --accept-flake-config --ask-sudo-password
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
