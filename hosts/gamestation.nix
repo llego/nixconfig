@@ -1,4 +1,5 @@
 {
+  pkgs,
   username,
   hostname,
   config,
@@ -10,15 +11,12 @@
   system.stateVersion = "24.11";
 
   imports = [
-    inputs.home-manager.nixosModules.home-manager
     ./../modules/core
-    ./../modules/optional/gaming.nix
-    ./../modules/optional/stylix
-    ./../modules/optional/desktop-apps.nix
+    ./../modules/optional/apps.nix
     ./../modules/optional/niri-config.nix
     ./../modules/optional/printer.nix
     ./../modules/optional/wifi-networks.nix
-    ./../modules/optional/vpn.nix
+    ./../modules/optional/development.nix
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -30,18 +28,58 @@
   home-manager.users.${username} = {
     home.stateVersion = "24.11";
 
-    imports = [];
+    imports = [
+      ./../modules/optional/home-manager/swayidle.nix
+    ];
 
-    programs.niri.settings.outputs."DP-3" = {
-      enable = true;
-      scale = 1.6;
-      mode = {
-        width = 5120;
-        height = 2160;
-        refresh = 60.0;
-      };
-      variable-refresh-rate = false;
-    };
+    # programs.niri.settings.outputs."DP-3" = {
+    #   enable = true;
+    #   scale = 1.6;
+    #   mode = {
+    #     width = 5120;
+    #     height = 2160;
+    #     refresh = 60.0;
+    #   };
+    #   variable-refresh-rate = false;
+    # };
+  };
+
+  # Game related packages
+  environment.systemPackages = with pkgs; [
+    mangohud
+    protonup
+    lutris
+    xwayland-run
+    mesa-demos
+    boxflat
+  ];
+
+  # Steam
+  programs.steam.enable = true;
+  programs.steam.gamescopeSession.enable = true;
+  programs.gamemode.enable = true;
+  programs.gamescope.enable = true;
+  programs.gamescope.capSysNice = true;
+
+  # Force Feed Back for Moza wheel and driver for wifi usb dongle
+  boot.kernelPackages = pkgs.linuxPackages_latest; # Use the latest kernel for native FFB
+  boot.extraModulePackages = with config.boot.kernelPackages; [universal-pidff];
+  services.udev.extraRules = ''
+    # Moza Wheel Base
+    KERNEL=="ttyACM*", ATTRS{idVendor}=="1af3", MODE="0666", GROUP="dialout"
+    # Moza Pedals / Accessories
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="1af3", MODE="0666", GROUP="dialout"
+  '';
+
+  programs.niri.enable = true;
+
+  # Ensure apps use the GPU correctly
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "nvidia";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    # Required for flickering-free Electron apps (Discord, VS Code) in 2025
+    NIXOS_OZONE_WL = "1";
+    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
   };
 
   # Bluetooth
@@ -61,6 +99,7 @@
   # Enable OpenGL
   hardware.graphics = {
     enable = true;
+    enable32Bit = true; # Required for Steam and many Wine games
   };
 
   # Load nvidia driver for Xorg and Wayland
@@ -82,12 +121,7 @@
 
     # Use the NVidia open source kernel module (not to be confused with the
     # independent third-party "nouveau" open source driver).
-    # Support is limited to the Turing and later architectures. Full list of
-    # supported GPUs is at:
-    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
-    # Only available from driver 515.43.04+
-    # Currently alpha-quality/buggy, so false is currently the recommended setting.
-    open = false;
+    open = true;
 
     # Enable the Nvidia settings menu,
     # accessible via `nvidia-settings`.
@@ -95,14 +129,8 @@
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
     #package = config.boot.kernelPackages.nvidiaPackages.stable;
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
-
-  # Force Feed Back for Moza wheel and driver for wifi usb dongle
-  boot.extraModulePackages = with config.boot.kernelPackages; [universal-pidff];
-  services.udev.extraRules = ''
-    SUBSYSTEM=="tty", KERNEL=="ttyACM*", ATTRS{idVendor}=="346e", ACTION=="add", MODE="0666", TAG+="uaccess"
-  '';
 
   # Enable this option to support certain USB WLAN and WWAN adapters.
   # These network adapters initial present themselves as Flash Drives containing their drivers.

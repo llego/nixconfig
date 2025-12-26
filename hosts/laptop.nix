@@ -38,7 +38,7 @@
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
     plymouth.enable = true;
-    binfmt.emulatedSystems = ["aarch64-linux"]; # Needed to create ISO image for rpi5
+    # binfmt.emulatedSystems = ["aarch64-linux"]; # Needed to create ISO image for rpi5
   };
 
   # Bluetooth
