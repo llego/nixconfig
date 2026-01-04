@@ -52,8 +52,10 @@ while true; do
             fi
             
             #nix run github:ovyerus/bandsnatch -- run --format flac --output-folder "$BANDCAMP_MUSIC_PATH" --cookies "$COOKIE" llego202
-            bandsnatch run --format flac --output-folder "$BANDCAMP_MUSIC_PATH" --cookies "$COOKIE" llego202
+            # bandsnatch run --format flac --output-folder "$BANDCAMP_MUSIC_PATH" --cookies "$COOKIE" llego202
             
+            bandcamp-collection-downloader -f flac -d "$BANDCAMP_MUSIC_PATH" -c "$COOKIE" llego202
+
             echo -e "\nBacking up cache file \n"
             rsync "$BANDCAMP_MUSIC_PATH/bandcamp-collection-downloader.cache" "$BANDCAMP_HOME/"
             ;;
