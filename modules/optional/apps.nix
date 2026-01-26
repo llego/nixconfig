@@ -20,6 +20,7 @@
     baobab
     alacritty
     vscodium
+    # chromium
     papirus-icon-theme
     #bitwarden-desktop
     #protonmail-desktop

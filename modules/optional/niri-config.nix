@@ -6,12 +6,13 @@
   ...
 }: {
   imports = [
-    # inputs.noctalia.nixosModules.default
+    inputs.noctalia.nixosModules.default
   ];
 
   # Niri window manager
   programs.niri.enable = true;
 
+  /*
   # DankMaterialShell
   programs.dms-shell = {
     enable = true;
@@ -23,14 +24,14 @@
 
     # Core features
     enableSystemMonitoring = true; # System monitoring widgets (dgop)
-    enableClipboard = true; # Clipboard history manager
     enableVPN = true; # VPN management widget
     enableDynamicTheming = true; # Wallpaper-based theming (matugen)
     enableAudioWavelength = true; # Audio visualizer (cava)
-    enableCalendarEvents = true; # Calendar integration (khal)
+    # enableCalendarEvents = true; # Calendar integration (khal)
   };
+  */
   # Noctalia shell
-  # services.noctalia-shell.enable = true;
+  services.noctalia-shell.enable = true;
 
   environment.systemPackages = with pkgs; [
     pavucontrol
@@ -129,10 +130,10 @@
         size = 10;
       };
       colorScheme = "dark";
-      theme = {
-        package = pkgs.tokyonight-gtk-theme;
-        name = "Tokyonight-Dark";
-      };
+      # theme = {
+      # package = pkgs.tokyonight-gtk-theme;
+      # name = "Tokyonight-Dark";
+      # };
       iconTheme = {
         package = pkgs.papirus-icon-theme;
         name = "Papirus-Dark";
