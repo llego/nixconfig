@@ -1,6 +1,5 @@
 {
   inputs,
-  config,
   pkgs,
   username,
   ...
@@ -59,7 +58,7 @@
     };
     sessionVariables = {
       TERMINAL = "alacritty";
-      SAL_USE_VCLPLUGIN = "kf5"; # try to get dark mode working in libreoffice
+      # SAL_USE_VCLPLUGIN = "kf5"; # try to get dark mode working in libreoffice
     };
   };
 

@@ -9,13 +9,13 @@
   system.stateVersion = "24.05";
 
   imports = [
-    ./../modules/core
-    ./../modules/optional/apps.nix
-    ./../modules/optional/niri-config.nix
-    ./../modules/optional/printer.nix
-    ./../modules/optional/wifi-networks.nix
-    ./../modules/optional/vpn.nix
-    ./../modules/optional/development.nix
+    ./../modules/core.nix
+    ./../modules/apps.nix
+    ./../modules/desktop-environment.nix
+    ./../modules/printer.nix
+    ./../modules/wifi-networks.nix
+    ./../modules/vpn.nix
+    ./../modules/development.nix
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -27,9 +27,9 @@
   home-manager.users.${username} = {
     home.stateVersion = "24.05";
     imports = [
-      ./../modules/optional/home-manager/downloaders
-      ./../modules/optional/home-manager/swayidle.nix
-      # ./../modules/optional/home-manager/kanshi.nix
+      ./../modules/home-manager/downloaders
+      ./../modules/home-manager/swayidle.nix
+      # ./../modules/home-manager/kanshi.nix
     ];
   };
 

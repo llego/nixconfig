@@ -8,8 +8,8 @@
 }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    ./../modules/core
-    ./../modules/optional/development.nix
+    ./../modules/core.nix
+    ./../modules/development.nix
   ];
 
   system.stateVersion = "25.11";
@@ -20,9 +20,9 @@
   home-manager.users.${username} = {
     home.stateVersion = "25.11";
     imports = [
-      ./../modules/optional/home-manager/downloaders
-      #./../modules/optional/home-manager/swayidle.nix
-      # ./../modules/optional/home-manager/kanshi.nix
+      ./../modules/home-manager/downloaders
+      #./../modules/home-manager/swayidle.nix
+      # ./../modules/home-manager/kanshi.nix
     ];
   };
 

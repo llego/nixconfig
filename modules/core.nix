@@ -7,7 +7,7 @@
   ...
 }: {
   imports = [
-    ./home-manager
+    ./home-manager/core.nix
   ];
 
   # System packages

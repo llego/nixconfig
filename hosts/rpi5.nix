@@ -21,8 +21,8 @@ in {
     inputs.raspberry-pi-nix.nixosModules.raspberry-pi
     inputs.raspberry-pi-nix.nixosModules.sd-image
     # inputs.home-manager.nixosModules.home-manager
-    ./../modules/core
-    ./../modules/optional/wifi-networks.nix
+    ./../modules/core.nix
+    ./../modules/wifi-networks.nix
   ];
 
   # System packages

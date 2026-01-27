@@ -11,12 +11,12 @@
   system.stateVersion = "24.11";
 
   imports = [
-    ./../modules/core
-    ./../modules/optional/apps.nix
-    ./../modules/optional/niri-config.nix
-    ./../modules/optional/printer.nix
-    ./../modules/optional/wifi-networks.nix
-    ./../modules/optional/development.nix
+    ./../modules/core.nix
+    ./../modules/apps.nix
+    ./../modules/desktop-environment.nix
+    ./../modules/printer.nix
+    ./../modules/wifi-networks.nix
+    ./../modules/development.nix
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -29,7 +29,7 @@
     home.stateVersion = "24.11";
 
     imports = [
-      ./../modules/optional/home-manager/swayidle.nix
+      ./../modules/home-manager/swayidle.nix
     ];
 
     # programs.niri.settings.outputs."DP-3" = {
