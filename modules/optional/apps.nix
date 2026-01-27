@@ -67,6 +67,7 @@
           (extension "wallabagger" "{7a7b1d36-d7a4-481b-92c6-9f5427cb9eb1}")
           (extension "readeck" "readeck@readeck.com")
           (extension "bitwarden-password-manager" "{446900e4-71c2-419f-a6a7-df9c091e268b}")
+          (extension "pywalfox" "eb25ae48-e7db-4a65-a247-f046f43446d5")
         ];
       # To add additional extensions, find it on addons.mozilla.org, find
       # the short ID in the url (like https://addons.mozilla.org/en-US/firefox/addon/!SHORT_ID!/)

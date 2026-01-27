@@ -43,6 +43,11 @@
     wdisplays
     wl-clipboard
     kanshi
+    numix-cursor-theme
+    papirus-icon-theme
+    nwg-look # Needed for setting gtk theme in Noctalia
+    adw-gtk3 # Needed for setting gtk theme in Noctalia
+    pywalfox-native # Needed by Noctalia to theme Firefox and Thunderbird
     # swayidle
   ];
 
@@ -50,6 +55,7 @@
   environment = {
     variables = {
       NIXOS_OZONE_WL = "1"; # For electron applications such as vscode
+      QT_QPA_PLATFORMTHEME = "gtk3"; # In order to get icons working in Noctalia: https://docs.noctalia.dev/getting-started/faq/
     };
     sessionVariables = {
       TERMINAL = "alacritty";
@@ -169,15 +175,15 @@
     };
   };
 
-  qt = {
-    enable = true;
-    platformTheme = "gnome";
-    style = "adwaita-dark";
-  };
+  # qt = {
+  #   enable = true;
+  #   platformTheme = "gnome";
+  #   style = "adwaita-dark";
+  # };
 
-  programs.dconf.profiles.user.databases = [
-    {
-      settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
-    }
-  ];
+  # programs.dconf.profiles.user.databases = [
+  #   {
+  #     settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+  #   }
+  # ];
 }
