@@ -19,7 +19,7 @@
     gnome-text-editor
     baobab
     alacritty
-    vscodium
+    # vscodium
     # chromium
     papirus-icon-theme
     #bitwarden-desktop
