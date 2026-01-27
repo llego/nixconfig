@@ -122,28 +122,28 @@
   };
 
   home-manager.users.${username} = {
-    gtk = {
-      enable = true;
-      font = {
-        package = pkgs.inter;
-        name = "Inter Display Regular";
-        size = 10;
-      };
-      colorScheme = "dark";
-      # theme = {
-      # package = pkgs.tokyonight-gtk-theme;
-      # name = "Tokyonight-Dark";
-      # };
-      iconTheme = {
-        package = pkgs.papirus-icon-theme;
-        name = "Papirus-Dark";
-      };
-      cursorTheme = {
-        package = pkgs.numix-cursor-theme;
-        name = "Numix-Cursor-Light";
-        size = 24;
-      };
-    };
+    # gtk = {
+    #   enable = true;
+    #   font = {
+    #     package = pkgs.inter;
+    #     name = "Inter Display Regular";
+    #     size = 10;
+    #   };
+    #   colorScheme = "dark";
+    #   # theme = {
+    #   # package = pkgs.tokyonight-gtk-theme;
+    #   # name = "Tokyonight-Dark";
+    #   # };
+    #   iconTheme = {
+    #     package = pkgs.papirus-icon-theme;
+    #     name = "Papirus-Dark";
+    #   };
+    #   cursorTheme = {
+    #     package = pkgs.numix-cursor-theme;
+    #     name = "Numix-Cursor-Light";
+    #     size = 24;
+    #   };
+    # };
 
     xdg = {
       mimeApps.enable = true;
