@@ -16,26 +16,6 @@
       },
       "parent": []
     },
-    "home-manager": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1769450270,
-        "narHash": "sha256-pdVm/zJazDUAasTyHFX/Pbrlk9Upjxi0yzgn7GjGe4g=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "a10c1e8f5ad2589414407f4851c221cb66270257",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
     "libcamera-src": {
       "flake": false,
       "locked": {
@@ -151,7 +131,6 @@
     "root": {
       "inputs": {
         "album-downloader": "album-downloader",
-        "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "noctalia": "noctalia",
         "raspberry-pi-nix": "raspberry-pi-nix"

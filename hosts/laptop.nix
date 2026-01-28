@@ -23,18 +23,6 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  #######
-  # Home Manager
-  #######
-  home-manager.users.${username} = {
-    home.stateVersion = "24.05";
-    imports = [
-      # ./../modules/home-manager/downloaders
-      # ./../modules/home-manager/swayidle.nix
-      # ./../modules/home-manager/kanshi.nix
-    ];
-  };
-
   # Bootloader
   boot = {
     loader.systemd-boot.enable = true;

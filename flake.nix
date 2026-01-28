@@ -4,7 +4,7 @@
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org?priority=2"
-      #"https://cuda-maintainers.cachix.org?priority=1"
+      # "https://cuda-maintainers.cachix.org?priority=1"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -15,10 +15,6 @@
   inputs = {
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs.url = "github:nixos/nixpkgs";
-    # home-manager.url = "github:nix-community/home-manager/release-25.11";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    # bandsnatch.url = "github:ovyerus/bandsnatch";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
     noctalia.url = "github:noctalia-dev/noctalia-shell";
     noctalia.inputs.nixpkgs.follows = "nixpkgs";

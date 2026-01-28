@@ -6,8 +6,6 @@
   inputs,
   ...
 }: {
-  imports = [inputs.home-manager.nixosModules.home-manager];
-
   # System packages
   environment.systemPackages = with pkgs; [
     wget
@@ -26,18 +24,6 @@
     jq
     ncdu
   ];
-
-  # Home Manager
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "backup";
-    extraSpecialArgs = {
-      inherit inputs;
-      inherit username;
-      inherit hostname;
-    };
-  };
 
   # Zsh
   programs.zsh = {
@@ -100,12 +86,7 @@
   networking = {
     hostName = hostname;
     networkmanager.enable = true;
-    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-    # (the default) this is the recommended approach. When using systemd-networkd it's
-    # still possible to use this option, but it's recommended to use it in conjunction
-    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
     useDHCP = lib.mkDefault true;
-    # networking.interfaces.wlp59s0.useDHCP = lib.mkDefault true;
   };
 
   # SSH server
