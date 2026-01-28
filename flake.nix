@@ -22,6 +22,8 @@
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
     noctalia.url = "github:noctalia-dev/noctalia-shell";
     noctalia.inputs.nixpkgs.follows = "nixpkgs";
+    album-downloader.url = "path:./pkgs/album-downloader";
+    album-downloader.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {nixpkgs, ...} @ inputs: let

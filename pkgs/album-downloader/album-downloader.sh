@@ -1,15 +1,11 @@
-#!bash
+#!/usr/bin/env bash
 
 # Set variables
-BANDCAMP_HOME="${HOME}/nixconfig/modules/optional/home-manager/downloaders"
-#BANDCAMP_HOME="${XDG_DATA_HOME:-${HOME}/bandcamp-collection}";
+ALBUM_DOWNLOADER_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/album-downloader"
+CACHE="$ALBUM_DOWNLOADER_HOME/bandcamp-collection-downloader.cache"
+COOKIE="$ALBUM_DOWNLOADER_HOME/bandcamp.com_cookies.txt"
 
-CACHE="$BANDCAMP_HOME/bandcamp-collection-downloader.cache"
-COOKIE="$BANDCAMP_HOME/bandcamp.com_cookies.txt"
-
-BANDCAMP_MUSIC_PATH="${HOME}/Music/bandcamp"
-TIDAL_MUSIC_PATH="${HOME}/Music/tidal"
-
+BANDCAMP_MUSIC_PATH="${XDG_MUSIC_DIR:-$HOME/Music}/bandcamp"
 REMOTE_HOST="llego@truenas.home"
 REMOTE_HOST_PATH="$REMOTE_HOST:/mnt/illby/transient/beets-import"
 
@@ -27,17 +23,18 @@ print_menu() {
     echo -e "${BOLD}${BLUE}========== Album Downloader ==========${RESET}"
     echo -e "${CYAN}1)${RESET} Download bandcamp collection"
     echo -e "${CYAN}2)${RESET} Rsync bandcamp albums to truenas"
-    echo -e "${CYAN}3)${RESET} Rsync tidal albums to truenas"
-    echo -e "${CYAN}4)${RESET} Run beets on remote host"
     echo -e "${CYAN}q)${RESET} Quit"
     echo -e "${BOLD}${BLUE}======================================${RESET}"
 }
+
+# Create config dir if it does not exist
+mkdir -p "$ALBUM_DOWNLOADER_HOME" || exit 1
 
 # Main loop
 while true; do
     print_menu
     echo
-    read -p "$(echo -e -n "${YELLOW}Enter your choice: ${RESET}")" choice
+    read -r -p "$(printf '%b' "${YELLOW}Enter your choice: ${RESET}")" choice
     echo
 
     case $choice in
@@ -51,36 +48,26 @@ while true; do
                 cp "$CACHE" "$BANDCAMP_MUSIC_PATH"
             fi
             
-            #nix run github:ovyerus/bandsnatch -- run --format flac --output-folder "$BANDCAMP_MUSIC_PATH" --cookies "$COOKIE" llego202
-            # bandsnatch run --format flac --output-folder "$BANDCAMP_MUSIC_PATH" --cookies "$COOKIE" llego202
-            
             bandcamp-collection-downloader -f flac -d "$BANDCAMP_MUSIC_PATH" -c "$COOKIE" llego202
 
-            echo -e "\nBacking up cache file \n"
-            rsync "$BANDCAMP_MUSIC_PATH/bandcamp-collection-downloader.cache" "$BANDCAMP_HOME/"
+            # Need to ensure that cache file is updated in .config/album-downloader!
+            echo -e "\nBacking up cache file to .config \n"
+            rsync "$CACHE" "$ALBUM_DOWNLOADER_HOME/"
             ;;
         2)
             echo -e "${GREEN}✔ Rsyncing bandcamp albums to the server \n From: $BANDCAMP_MUSIC_PATH/ \n To: $REMOTE_HOST_PATH${RESET}"
             eval rsync -r --info=progress2 "$BANDCAMP_MUSIC_PATH"/ "$REMOTE_HOST_PATH"
-            ;;
-        3)
-            echo -e "${GREEN}✔ Rsyncing tidal albums to the server \n From: $TIDAL_MUSIC_PATH/ \n To: $REMOTE_HOST_PATH${RESET}"
-            eval rsync -r --info=progress2 "$TIDAL_MUSIC_PATH"/ "$REMOTE_HOST_PATH"
-            ;;
-        4)
-            echo -e "${GREEN}✔ Connecting to beets container on remote host and run 'beet import /import'${RESET}"
-            ssh -t $REMOTE_HOST "sudo docker exec -u abc -it beets bash -c 'beet import /import'"
             ;;
         q|Q)
             echo -e "${BOLD}${RED}✖ Exiting. Goodbye!${RESET}"
             exit 0
             ;;
         *)
-            echo -e "${RED}⚠ Invalid option. Please choose between 1-4 or 'q' to quit.${RESET}"
+            echo -e "${RED}⚠ Invalid option.${RESET}"
             ;;
     esac
 
-    echo
-    read -p "$(echo -e -n "${YELLOW}Press Enter to continue...${RESET}")"
+    # echo
+    # read -r -p "$(printf '%b' "${YELLOW}Enter your choice: ${RESET}")" choice
     clear
 done

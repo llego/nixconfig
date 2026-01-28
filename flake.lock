@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "album-downloader": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "path": "./pkgs/album-downloader",
+        "type": "path"
+      },
+      "original": {
+        "path": "./pkgs/album-downloader",
+        "type": "path"
+      },
+      "parent": []
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -134,6 +150,7 @@
     },
     "root": {
       "inputs": {
+        "album-downloader": "album-downloader",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "noctalia": "noctalia",

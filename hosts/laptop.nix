@@ -12,10 +12,12 @@
     ./../modules/core.nix
     ./../modules/apps.nix
     ./../modules/desktop-environment.nix
+    ./../modules/swayidle.nix
     ./../modules/printer.nix
     ./../modules/wifi-networks.nix
     ./../modules/vpn.nix
     ./../modules/development.nix
+    ./../modules/downloaders.nix
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -27,8 +29,8 @@
   home-manager.users.${username} = {
     home.stateVersion = "24.05";
     imports = [
-      ./../modules/home-manager/downloaders
-      ./../modules/home-manager/swayidle.nix
+      # ./../modules/home-manager/downloaders
+      # ./../modules/home-manager/swayidle.nix
       # ./../modules/home-manager/kanshi.nix
     ];
   };

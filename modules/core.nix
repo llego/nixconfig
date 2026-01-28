@@ -6,9 +6,7 @@
   inputs,
   ...
 }: {
-  imports = [
-    ./home-manager/core.nix
-  ];
+  imports = [inputs.home-manager.nixosModules.home-manager];
 
   # System packages
   environment.systemPackages = with pkgs; [
@@ -29,6 +27,18 @@
     ncdu
   ];
 
+  # Home Manager
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    backupFileExtension = "backup";
+    extraSpecialArgs = {
+      inherit inputs;
+      inherit username;
+      inherit hostname;
+    };
+  };
+
   # Zsh
   programs.zsh = {
     enable = true;
@@ -36,6 +46,19 @@
     autosuggestions.enable = true;
     enableCompletion = true;
     enableGlobalCompInit = true;
+  };
+
+  # Git
+  programs.git = {
+    enable = true;
+    config = {
+      user = {
+        email = "github.login@cri.su";
+        name = "${username}";
+      };
+
+      init.defaultBranch = "main";
+    };
   };
 
   # Some programs need SUID wrappers, can be configured further or are started in user sessions.
@@ -127,13 +150,6 @@
     nixPath = ["nixpkgs=${inputs.nixpkgs}"];
   };
 
-  # Environment variables
-  environment.sessionVariables.FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
-
-  # Limit the number of generations to keep
-  boot.loader.systemd-boot.configurationLimit = 10;
-  # boot.loader.grub.configurationLimit = 10;
-
   # not another nix helper
   programs.nh = {
     enable = true;
@@ -141,4 +157,10 @@
     clean.enable = true;
     clean.extraArgs = "--keep-since 4d --keep 3";
   };
+
+  # Environment variables
+  environment.sessionVariables.FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
+
+  # Limit the number of generations to keep
+  boot.loader.systemd-boot.configurationLimit = 10;
 }

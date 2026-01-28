@@ -10,7 +10,7 @@
     dig
     unzip
     fastfetch
-    cachix
+    # cachix
     parted
     nitch
 
@@ -21,7 +21,6 @@
     alacritty
     # vscodium
     # chromium
-    papirus-icon-theme
     #bitwarden-desktop
     #protonmail-desktop
     vlc
