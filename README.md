@@ -2,7 +2,7 @@
 
 This is my nix config.
 
-
+```text
 .
 ├── flake.nix                      
 ├── hosts
@@ -26,6 +26,6 @@ This is my nix config.
 │   └── album-downloader
 │       └── flake.nix
 └── z_lab
-
+```
 
 Dotfiles of ~/.config are maintained here: https://github.com/llego/dotfiles
