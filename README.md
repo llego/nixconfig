@@ -17,7 +17,6 @@ This is my nix config.
 │   ├── desktop-environment.nix
 │   ├── development.nix
 │   ├── downloaders.nix
-│   ├── nix.nanorc
 │   ├── printer.nix
 │   ├── swayidle.nix
 │   ├── vpn.nix

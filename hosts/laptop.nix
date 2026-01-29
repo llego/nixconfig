@@ -12,7 +12,6 @@
     ./../modules/core.nix
     ./../modules/apps.nix
     ./../modules/desktop-environment.nix
-    ./../modules/swayidle.nix
     ./../modules/printer.nix
     ./../modules/wifi-networks.nix
     ./../modules/vpn.nix

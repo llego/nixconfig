@@ -4,7 +4,10 @@
   username,
   ...
 }: {
-  imports = [inputs.noctalia.nixosModules.default];
+  imports = [
+    inputs.noctalia.nixosModules.default
+    ./swayidle.nix
+  ];
 
   environment.systemPackages = with pkgs; [
     pavucontrol

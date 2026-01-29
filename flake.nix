@@ -16,10 +16,18 @@
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs.url = "github:nixos/nixpkgs";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
-    noctalia.url = "github:noctalia-dev/noctalia-shell";
-    noctalia.inputs.nixpkgs.follows = "nixpkgs";
-    album-downloader.url = "path:./pkgs/album-downloader";
-    album-downloader.inputs.nixpkgs.follows = "nixpkgs";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    album-downloader = {
+      url = "path:./pkgs/album-downloader";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {nixpkgs, ...} @ inputs: let
