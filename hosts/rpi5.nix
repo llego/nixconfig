@@ -15,7 +15,7 @@
   };
 in {
   system.stateVersion = "24.11";
-  home-manager.users.${username}.home.stateVersion = "24.11";
+  # home-manager.users.${username}.home.stateVersion = "24.11";
 
   imports = [
     inputs.raspberry-pi-nix.nixosModules.raspberry-pi
