@@ -89,10 +89,10 @@
           ${pkgs.tuigreet}/bin/tuigreet \
             --time \
             --asterisks \
-            --user-menu \
             --remember \
+            --remember-session \
             --cmd niri-session \
-            --theme 'border=magenta;text=white;prompt=cyan;time=green;action=blue;button=yellow;container=black;input=#39FF14'
+            --theme 'border=#c4a7e7;text=#e0def4;prompt=#9ccfd8;time=#6e6a86;action=#31748f;button=#f6c177;container=#191724;input=#eb6f92'
         '';
       };
     };
