@@ -15,6 +15,16 @@
     parted
     nitch
 
+    # Development
+    helix
+    yazi
+    lazygit
+    claude-code
+
+    # Nix stuff
+    nixd
+    alejandra
+
     # Graphical
     nautilus
     gnome-text-editor
@@ -40,6 +50,9 @@
     hunspellDicts.sv-fi
     hunspellDicts.en-gb-ize
   ];
+
+  # Set default text editor
+  environment.sessionVariables.EDITOR = "hx";
 
   # Firefox
   programs.firefox = {

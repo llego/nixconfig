@@ -3,6 +3,7 @@
     helix
     yazi
     lazygit
+    claude-code
 
     # Nix stuff
     nixd

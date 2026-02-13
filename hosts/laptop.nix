@@ -15,7 +15,6 @@
     ./../modules/printer.nix
     ./../modules/wifi-networks.nix
     ./../modules/vpn.nix
-    ./../modules/development.nix
     ./../modules/downloaders.nix
 
     # hardware-configuration.nix
@@ -52,6 +51,30 @@
 
   # Battery power information
   services.upower.enable = true;
+
+  fileSystems."/mnt/truenas-docker/data" = {
+    device = "truenas.home:/mnt/illby/docker/data";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=300"
+      "noatime"
+      "nfsvers=4.0"
+    ];
+  };
+
+  fileSystems."/mnt/truenas-docker/stacks" = {
+    device = "truenas.home:/mnt/illby/docker/stacks";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=300"
+      "noatime"
+      "nfsvers=4.0"
+    ];
+  };
 
   # Hardware acceleration
   #nixpkgs.config.packageOverrides = pkgs: {
