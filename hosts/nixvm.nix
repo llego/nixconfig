@@ -9,7 +9,7 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ./../modules/core.nix
-    ./../modules/development.nix
+    ./../modules/cli-apps.nix
   ];
 
   system.stateVersion = "25.11";
@@ -17,14 +17,14 @@
   #######
   # Home Manager
   #######
-  home-manager.users.${username} = {
-    home.stateVersion = "25.11";
-    imports = [
-      ./../modules/home-manager/downloaders
-      #./../modules/home-manager/swayidle.nix
-      # ./../modules/home-manager/kanshi.nix
-    ];
-  };
+  # home-manager.users.${username} = {
+  # home.stateVersion = "25.11";
+  # imports = [
+  # ./../modules/home-manager/downloaders
+  # ./../modules/home-manager/swayidle.nix
+  # ./../modules/home-manager/kanshi.nix
+  # ];
+  # };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;

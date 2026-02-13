@@ -61,7 +61,8 @@
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
       # zstd -dc ..linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
-      # Or run sudo nixos-rebuild boot --flake .#rpi5 --target-host llego@rpi5.home --accept-flake-config --ask-sudo-password
+      # sudo nixos-rebuild boot --flake .#rpi5 --target-host llego@rpi5.home --accept-flake-config --ask-sudo-password
+      # script -q -c "nix --extra-experimental-features 'nix-command flakes' build --print-out-paths '.#nixosConfigurations.rpi5.config.system.build.toplevel' --no-link --accept-flake-config" /dev/null
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [

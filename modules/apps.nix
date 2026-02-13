@@ -11,14 +11,10 @@
     dig
     unzip
     fastfetch
-    # cachix
     parted
     nitch
 
-    # Development
-    helix
-    yazi
-    lazygit
+    # AI assisted development
     claude-code
 
     # Nix stuff
@@ -30,7 +26,6 @@
     gnome-text-editor
     baobab
     alacritty
-    # vscodium
     # chromium
     #bitwarden-desktop
     #protonmail-desktop
@@ -51,8 +46,6 @@
     hunspellDicts.en-gb-ize
   ];
 
-  # Set default text editor
-  environment.sessionVariables.EDITOR = "hx";
 
   # Firefox
   programs.firefox = {

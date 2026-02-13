@@ -15,23 +15,17 @@
   };
 in {
   system.stateVersion = "24.11";
-  # home-manager.users.${username}.home.stateVersion = "24.11";
 
   imports = [
     inputs.raspberry-pi-nix.nixosModules.raspberry-pi
     inputs.raspberry-pi-nix.nixosModules.sd-image
-    # inputs.home-manager.nixosModules.home-manager
     ./../modules/core.nix
     ./../modules/wifi-networks.nix
   ];
 
   # System packages
   environment.systemPackages = with pkgs; [
-    #chromium
     python3
-    #   alsa-utils
-    #   wyoming-satellite
-    #   wyoming-openwakeword
     cage
     squeekboard
   ];
@@ -89,48 +83,6 @@ in {
     ];
   };
 
-  /*
-  services.wyoming.openwakeword = {
-    enable = true;
-    preloadModels = [
-      "ok_nabu"
-    ];
-    uri = "tcp://0.0.0.0:10400";
-    extraArgs = ["--debug"];
-  };
-
-
-  systemd.services.wyoming-satellite = {
-    description = "Kökets Wyoming Satellite";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
-    serviceConfig = {
-      Type = "simple";
-      User = "wyoming";
-      ExecStart = ''
-        ${pkgs.python3}/bin/python3.12 ${pkgs.wyoming-satellite}/bin/.wyoming-satellite-wrapped \
-          --uri tcp://0.0.0.0:10700 \
-          --debug \
-          --awake-wav ${soundAwake} \
-          --done-wav ${soundDone} \
-          --wake-word-name ok_nabu \
-          --name 'Kökets Wyoming Satellite' \
-          --mic-command '${pkgs.alsa-utils}/bin/arecord -D sysdefault:CARD=ArrayUAC10 -r 16000 -c 1 -t raw' \
-          --snd-command '${pkgs.alsa-utils}/bin/aplay -D sysdefault:CARD=Audio -r 48000 -c 1 -t raw' \
-          --wake-uri tcp://127.0.0.1:10400
-      '';
-      Restart = "always";
-    };
-    path = with pkgs; [alsa-utils python3]; # Ensures `arecord`, `aplay`, etc. are in PATH
-  };
-
-  #          --mic-command '${pkgs.alsa-utils}/bin/arecord -D plughw:2,0 -r 16000 -c 1 -f S16_LE -t raw' \
-  #          --snd-command '${pkgs.alsa-utils}/bin/aplay -D plughw:1,0 -r 22050 -c 1 -f S16_LE -t raw' \
-  #          --snd-command '${pkgs.alsa-utils}/bin/aplay -D plughw:CARD=vc4hdmi1,DEV=0 -r 48000 -c 1 -f S16_LE -t raw' \
-  #          --awake-wav ${soundAwake} \
-  #          --done-wav ${soundDone} \
-  #          --event-uri tcp://127.0.0.1:10500
-  */
 
   services.avahi = {
     enable = true;
@@ -141,6 +93,25 @@ in {
 
   networking.firewall.allowedTCPPorts = [10700];
   networking.firewall.allowedUDPPorts = [5353]; # mDNS
+
+  systemd.timers."nightly-reboot" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "02:00";   # pick your time
+      Persistent = true;      # reboot after missed time if machine was off
+      Unit = "nightly-reboot.service";
+    };
+  };
+
+  systemd.services."nightly-reboot" = {
+    description = "Nightly reboot";
+    serviceConfig = {
+      Type = "oneshot";
+    };
+    script = ''
+      ${pkgs.systemd}/bin/systemctl reboot
+    '';
+  };
 
   # Optional but recommended: give applications real-time audio capabilities
   #  security.rtkit.enable = true;

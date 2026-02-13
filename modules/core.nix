@@ -8,21 +8,11 @@
 }: {
   # System packages
   environment.systemPackages = with pkgs; [
-    wget
-    curl
     htop
     screen
-    usbutils
-    stow
-    atool
-    btop
-    bat
     zsh
-    lsd
     oh-my-posh
     fzf
-    jq
-    ncdu
   ];
 
   # Zsh
@@ -139,8 +129,9 @@
     clean.extraArgs = "--keep-since 4d --keep 3";
   };
 
-  # Environment variables
-  environment.sessionVariables.FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
+  environment.sessionVariables = {
+    FLAKE = "/home/${username}/nixconfig"; # Needed by nh to work from any dir
+  };
 
   # Limit the number of generations to keep
   boot.loader.systemd-boot.configurationLimit = 10;
