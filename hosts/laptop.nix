@@ -10,7 +10,7 @@
 
   imports = [
     ./../modules/core.nix
-    ./../modules/cli-apps.nix
+    ./../modules/basic-cli.nix
     ./../modules/apps.nix
     ./../modules/desktop-environment.nix
     ./../modules/printer.nix

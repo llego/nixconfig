@@ -1,9 +1,8 @@
-{
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   # System packages
   environment.systemPackages = with pkgs; [
+    oh-my-posh
+    fzf
     usbutils
     stow
     atool

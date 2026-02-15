@@ -9,7 +9,7 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ./../modules/core.nix
-    ./../modules/cli-apps.nix
+    ./../modules/basic-cli.nix
   ];
 
   system.stateVersion = "25.11";
