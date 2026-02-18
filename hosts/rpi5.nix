@@ -3,17 +3,7 @@
   username,
   pkgs,
   ...
-}: let
-  soundAwake = builtins.fetchurl {
-    url = "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/awake.wav";
-    sha256 = "6b25dd2abaf7537865222ca9fd6e14fbf723458526fb79bbe29d8261d1320724";
-  };
-
-  soundDone = builtins.fetchurl {
-    url = "https://github.com/rhasspy/wyoming-satellite/raw/master/sounds/done.wav";
-    sha256 = "bc5c914bfa860a77fa9d88ac2d96601adfede578cf146637ec98b5688911a951";
-  };
-in {
+}: {
   system.stateVersion = "24.11";
 
   imports = [
@@ -21,14 +11,26 @@ in {
     inputs.raspberry-pi-nix.nixosModules.sd-image
     ./../modules/core.nix
     ./../modules/wifi-networks.nix
+    inputs.ruuvi.nixosModules.default
   ];
 
   # System packages
   environment.systemPackages = with pkgs; [
-    python3
+    # python3
     cage
-    squeekboard
+    # squeekboard
   ];
+
+  services.ruuvi-collector = {
+    enable = true;
+    influxUrl = "http://192.168.1.101:8086";
+    influxDatabase = "ruuvi";
+    tagNames = {
+      "D4EE9FE30B24" = "Kylskåpet";
+      "FFE65BB31904" = "Vardagsrummet";
+    };
+    filterMode = "named"; # Only collect from named tags
+  };
 
   programs.chromium = {
     enable = true;
@@ -47,20 +49,6 @@ in {
     #WAYLAND_DISPLAY = "wayland-0";
     #};
   };
-
-  /*
-  # Write wrapper script
-  environment.etc."start-kiosk.sh".text = ''
-    #!/bin/sh
-
-    ${pkgs.squeekboard}/bin/squeekboard &
-    sleep 3
-    ${pkgs.chromium}/bin/chromium \
-      --app=http://homeassistant.home:8123/lovelace-wallmount/default_view \
-      --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland \
-      --enable-features=OverlayScrollbar --start-maximized
-  '';
-  */
 
   systemd.user.services.scalekiosk = {
     description = "Scale screen to 1.5";
@@ -83,7 +71,6 @@ in {
     ];
   };
 
-
   services.avahi = {
     enable = true;
     nssmdns4 = true;
@@ -95,10 +82,10 @@ in {
   networking.firewall.allowedUDPPorts = [5353]; # mDNS
 
   systemd.timers."nightly-reboot" = {
-    wantedBy = [ "timers.target" ];
+    wantedBy = ["timers.target"];
     timerConfig = {
-      OnCalendar = "02:00";   # pick your time
-      Persistent = true;      # reboot after missed time if machine was off
+      OnCalendar = "02:00"; # pick your time
+      Persistent = true; # reboot after missed time if machine was off
       Unit = "nightly-reboot.service";
     };
   };
@@ -113,25 +100,12 @@ in {
     '';
   };
 
-  # Optional but recommended: give applications real-time audio capabilities
-  #  security.rtkit.enable = true;
-
-  #  services.pipewire = {
-  #    enable = true;
-  #    alsa.enable = true;
-  #    alsa.support32Bit = true;
-  #    pulse.enable = true;
-  #    jack.enable = true;
-  #  };
-
-  # Bluetooth
-  #hardware.bluetooth = {
-  #enable = true;
-  #powerOnBoot = true;
-  #package = pkgs.bluez5-experimental;
-  #settings.Policy.AutoEnable = "true";
-  #settings.General.Enable = "Source,Sink,Media,Socket";
-  #};
+  # Bluetooth - enabled for RuuviCollector
+  # Note: Remove disable-bt overlay below for Bluetooth to work
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
 
   raspberry-pi-nix = {
     board = "bcm2712";
@@ -155,10 +129,11 @@ in {
           };
           dt-overlays = {
             vc4-kms-v3d.enable = true;
-            disable-bt = {
-              enable = true;
-              params = {};
-            };
+            # Bluetooth enabled for RuuviCollector
+            # disable-bt = {
+            #   enable = true;
+            #   params = {};
+            # };
           };
         };
       };

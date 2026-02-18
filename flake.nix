@@ -24,6 +24,10 @@
       url = "path:./pkgs/album-downloader";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ruuvi = {
+      url = "git+file:///home/llego/nixconfig/pkgs/RuuviCollector";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -61,11 +65,9 @@
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
       # zstd -dc ..linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
-      # sudo nixos-rebuild boot --flake .#rpi5 --target-host llego@rpi5.home --accept-flake-config --ask-sudo-password
-      # script -q -c "nix --extra-experimental-features 'nix-command flakes' build --print-out-paths '.#nixosConfigurations.rpi5.config.system.build.toplevel' --no-link --accept-flake-config" /dev/null
 
-      # From local machine you can run:
-      # nixos-rebuild boot --flake .#rpi5 --build-host=llego@nixvm.iot --target-host llego@rpi5.home --accept-flake-config
+      # To rebuild, run from remote machine, run
+      # nixos-rebuild boot --flake .#rpi5 --build-host=llego@nixvm.iot --target-host llego@rpi5.home --accept-flake-config --use-remote-sudo
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [

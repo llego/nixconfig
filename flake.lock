@@ -16,6 +16,24 @@
       },
       "parent": []
     },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "libcamera-src": {
       "flake": false,
       "locked": {
@@ -134,6 +152,7 @@
         "nixpkgs": "nixpkgs",
         "noctalia": "noctalia",
         "raspberry-pi-nix": "raspberry-pi-nix",
+        "ruuvi": "ruuvi",
         "zen-browser": "zen-browser"
       }
     },
@@ -253,6 +272,42 @@
         "owner": "raspberrypi",
         "ref": "v1.5.2",
         "repo": "rpicam-apps",
+        "type": "github"
+      }
+    },
+    "ruuvi": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771425621,
+        "narHash": "sha256-Qa3+4RfnMJFG3AzBsaAuB+0Wmo8frqYyc6sy78xKyNU=",
+        "ref": "refs/heads/master",
+        "rev": "3ed766221a58349a8356e3d2187b3082c9be2361",
+        "revCount": 163,
+        "type": "git",
+        "url": "file:///home/llego/nixconfig/pkgs/RuuviCollector"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/llego/nixconfig/pkgs/RuuviCollector"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
         "type": "github"
       }
     },

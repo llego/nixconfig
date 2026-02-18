@@ -4,6 +4,7 @@
   pkgs,
   modulesPath,
   username,
+  inputs,
   ...
 }: {
   system.stateVersion = "24.05";
@@ -17,10 +18,22 @@
     ./../modules/wifi-networks.nix
     ./../modules/vpn.nix
     ./../modules/downloaders.nix
+    # inputs.ruuvi.nixosModules.default
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
+
+  # services.ruuvi-collector = {
+  #   enable = true;
+  #   influxUrl = "http://192.168.1.101:8086";
+  #   influxDatabase = "ruuvi";
+  #   tagNames = {
+  #     "D4EE9FE30B24" = "Kylskåpet";
+  #     "FFE65BB31904" = "Vardagsrummet";
+  #   };
+  #   filterMode = "named"; # Only collect from named tags
+  # };
 
   # Bootloader
   boot = {
