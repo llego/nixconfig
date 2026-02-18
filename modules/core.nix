@@ -11,6 +11,8 @@
     htop
     screen
     zsh
+    oh-my-posh
+    fzf
   ];
 
   # Zsh
