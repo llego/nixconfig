@@ -93,12 +93,12 @@
     LC_ADDRESS = "fi_FI.UTF-8";
     LC_IDENTIFICATION = "fi_FI.UTF-8";
     LC_MEASUREMENT = "fi_FI.UTF-8";
-    LC_MONETARY = "fi_FI.UTF-8";
+    LC_MONETARY = "en_IE.UTF-8";  # Euro with period decimal separator
     LC_NAME = "fi_FI.UTF-8";
-    LC_NUMERIC = "fi_FI.UTF-8";
+    LC_NUMERIC = "en_SE.UTF-8";  # Period for decimal separator
     LC_PAPER = "fi_FI.UTF-8";
     LC_TELEPHONE = "fi_FI.UTF-8";
-    LC_TIME = "fi_FI.UTF-8";
+    LC_TIME = "en_SE.UTF-8";  # ISO 8601 date format (YYYY-MM-DD)
   };
   console.keyMap = "sv-latin1";
 
