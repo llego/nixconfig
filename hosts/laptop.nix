@@ -43,6 +43,12 @@
     # binfmt.emulatedSystems = ["aarch64-linux"]; # Needed to create ISO image for rpi5
   };
 
+  # Tailscale
+  services.tailscale = {
+    enable = true;
+    extraSetFlags = ["--operator=${username}"];
+  };
+
   # Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
@@ -65,6 +71,31 @@
 
   # Battery power information
   services.upower.enable = true;
+
+  # Firmware updates
+  services.fwupd.enable = true;
+
+  # SSD optimization - weekly TRIM
+  services.fstrim.enable = true;
+
+  # Reduce systemd journal writes
+  services.journald.extraConfig = ''
+    SystemMaxUse=100M
+    MaxRetentionSec=7day
+  '';
+
+  # Prevent system freeze when running out of memory
+  services.earlyoom = {
+    enable = true;
+    freeMemThreshold = 5;    # Kill processes when <5% RAM free
+    freeSwapThreshold = 10;  # Kill processes when <10% swap free
+    enableNotifications = true;
+  };
+
+  # Memory management tuning
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 80;  # Use swap proactively to prevent sudden OOM
+  };
 
   fileSystems."/mnt/truenas-docker/data" = {
     device = "truenas.home:/mnt/illby/docker/data";
@@ -124,6 +155,7 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/29aed872-9471-4d06-b42a-f6273a892c01";
     fsType = "ext4";
+    options = [ "noatime" ];
   };
 
   fileSystems."/boot" = {
@@ -135,7 +167,18 @@
     ];
   };
 
-  swapDevices = [];
+  # Swap file backup for when zram fills up
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 8192;  # 8GB
+  }];
+
+  # Zram compressed swap (primary)
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 100;  # With 2-3x compression = 200-300% effective
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
