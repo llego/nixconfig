@@ -13,6 +13,7 @@
     zsh
     oh-my-posh
     fzf
+    curl
   ];
 
   # Zsh
@@ -75,7 +76,7 @@
   # Networking
   networking = {
     hostName = hostname;
-    networkmanager.enable = true;
+    networkmanager.enable = lib.mkDefault true;
     useDHCP = lib.mkDefault true;
   };
 

@@ -32,6 +32,10 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {nixpkgs, ...} @ inputs: let
@@ -47,6 +51,19 @@
           inherit inputs;
           inherit username;
           hostname = "laptop";
+        };
+      };
+
+      # nixos-rebuild switch --flake .#christiansandberg-bitti --sudo --target-host "llego@christiansandberg.fi"
+      christiansandberg-bitti = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/christiansandberg.nix
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+          hostname = "christiansandberg";
         };
       };
 
