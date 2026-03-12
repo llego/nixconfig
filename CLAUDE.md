@@ -4,17 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a multi-host NixOS flake configuration managing 5 different systems with a modular architecture. Dotfiles for ~/.config are maintained separately at https://github.com/llego/dotfiles.
+This is a multi-host NixOS flake configuration managing 6 different systems with a modular architecture. Dotfiles for ~/.config are maintained separately at https://github.com/llego/dotfiles.
 
 ## Build & Deployment Commands
 
 ### Local builds
 ```bash
 # Laptop (main development machine)
-nixos-rebuild switch --flake .#laptop
+# IMPORTANT: Always use sudo for local rebuilds
+sudo nixos-rebuild switch --flake .#laptop
 
 # Gamestation (gaming PC)
-nixos-rebuild switch --flake .#gamestation
+sudo nixos-rebuild switch --flake .#gamestation
 ```
 
 ### Remote deployments
@@ -22,6 +23,10 @@ nixos-rebuild switch --flake .#gamestation
 # christiansandberg.fi server
 nixos-rebuild switch --flake .#christiansandberg-bitti \
   --sudo --target-host "llego@christiansandberg.fi"
+
+# crisuflix NAS (TrueNAS replacement)
+nixos-rebuild switch --flake .#crisuflix \
+  --target-host "llego@truenas.home" --use-remote-sudo
 
 # Raspberry Pi 5 (cross-compile from nixvm build host)
 nixos-rebuild boot --flake .#rpi5 \
@@ -49,6 +54,7 @@ Each host in `/hosts/` selectively imports modules based on purpose:
 
 - **laptop** - Main development machine with Niri WM, apps, desktop environment, VPN, printer
 - **christiansandberg-bitti** - Remote server at christiansandberg.fi with Docker, SSH hardening, disko disk config
+- **crisuflix** - NAS server with ZFS pools (illby, veckjarvi), NFS exports, Docker, Tailscale
 - **gamestation** - Gaming PC with NVIDIA GPU, Steam, uses home-manager for user configs
 - **rpi5** - Raspberry Pi 5 running Home Assistant Chromium kiosk + RuuviCollector BLE sensor reader
 - **nixvm** - QEMU VM build helper with aarch64 cross-compilation support (sandbox disabled)
