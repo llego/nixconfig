@@ -10,7 +10,6 @@
     inputs.disko.nixosModules.disko
     ./../modules/core.nix
     ./../modules/basic-cli.nix
-    ./../modules/vpn.nix
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -19,6 +18,12 @@
 
   virtualisation.docker.enable = true;
   users.users.${username}.extraGroups = ["docker"];
+
+  # Tailscale
+  services.tailscale = {
+    enable = true;
+    extraSetFlags = ["--operator=${username}"];
+  };
 
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already

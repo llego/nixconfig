@@ -3,12 +3,6 @@
   username,
   ...
 }: {
-  # Tailscale
-  services.tailscale = {
-    enable = true;
-    extraSetFlags = ["--operator=${username}"];
-  };
-
   # Mullvad VPN
   services.mullvad-vpn = {
     enable = true;
