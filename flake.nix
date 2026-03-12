@@ -67,18 +67,6 @@
         };
       };
 
-      nixvm = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/nixvm.nix
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "nixvm";
-        };
-      };
-
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
       # zstd -dc ..linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
@@ -106,6 +94,19 @@
           inherit inputs;
           inherit username;
           hostname = "gamestation";
+        };
+      };
+
+      # nixos-rebuild switch --flake .#crisuflix --target-host "llego@crisuflix.home" --sudo
+      crisuflix = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/crisuflix.nix
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+          hostname = "crisuflix";
         };
       };
     };
