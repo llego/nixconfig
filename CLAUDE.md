@@ -26,11 +26,10 @@ nixos-rebuild switch --flake .#christiansandberg-bitti \
 
 # crisuflix NAS (TrueNAS replacement)
 nixos-rebuild switch --flake .#crisuflix \
-  --target-host "llego@crisuflix.home" --use-remote-sudo
+  --target-host "llego@crisuflix.home" --sudo
 
-# Raspberry Pi 5 (cross-compile from nixvm build host)
+# Raspberry Pi 5
 nixos-rebuild boot --flake .#rpi5 \
-  --build-host=llego@nixvm.iot \
   --target-host llego@rpi5.home \
   --accept-flake-config \
   --use-remote-sudo
@@ -54,10 +53,9 @@ Each host in `/hosts/` selectively imports modules based on purpose:
 
 - **laptop** - Main development machine with Niri WM, apps, desktop environment, VPN, printer
 - **christiansandberg-bitti** - Remote server at christiansandberg.fi with Docker, SSH hardening, disko disk config
-- **crisuflix** - Home NAS/media server (migrated from TrueNAS SCALE) with ZFS storage, Docker services, monitoring
+- **crisuflix** - Home NAS/media server with ZFS storage, Docker services, monitoring
 - **gamestation** - Gaming PC with NVIDIA GPU, Steam, uses home-manager for user configs
 - **rpi5** - Raspberry Pi 5 running Home Assistant Chromium kiosk + RuuviCollector BLE sensor reader
-- **nixvm** - QEMU VM build helper with aarch64 cross-compilation support (sandbox disabled)
 
 ### Module Composition Pattern
 
@@ -102,7 +100,6 @@ Each host has inline hardware configuration (no shared hardware-configuration.ni
 - **rpi5** - Uses raspberry-pi-nix flake, BLE support, cage kiosk compositor, nightly reboot timer
 - **christiansandberg** - Static IPv6 (2a01:4f9:c010:803e::1), firewall ports 80/443, Tailscale
 - **crisuflix** - Intel CPU (Xeon), 8 SATA + 3 NVMe drives, ZFS pools, dual network bridges (br0/br1), UPS-backed
-- **nixvm** - aarch64 emulation, sandbox disabled for cross-compilation
 
 ### Experimental Code
 
@@ -136,11 +133,6 @@ The flake only defines `nixosConfigurations` - no package, app, or overlay outpu
 
 ## Key Patterns
 
-### Cross-Compilation
-nixvm host is the build host for aarch64 (RPi5). It has:
-- `boot.binfmt.emulatedSystems = [ "aarch64-linux" ]`
-- `nix.settings.sandbox = false` (required for seamless aarch64 builds)
-
 ### Remote Server Hardening
 christiansandberg.nix includes:
 - SSH: no root login, no password auth, no keyboard-interactive
@@ -166,7 +158,7 @@ laptop has NFS mounts to crisuflix with auto-unmount on idle (600s timeout).
 
 ### crisuflix NAS Server
 
-Home NAS/media server that replaced TrueNAS SCALE. Accessed via `llego@crisuflix.home`. Deploy from laptop: `nixos-rebuild switch --flake .#crisuflix --target-host "llego@crisuflix.home" --use-remote-sudo`
+Home NAS/media server that replaced TrueNAS SCALE. Accessed via `llego@crisuflix.home`. Deploy from laptop: `nixos-rebuild switch --flake .#crisuflix --target-host "llego@crisuflix.home" --sudo`
 
 **Storage:**
 - Two ZFS pools: `illby` (apps/docker) and `veckjarvi` (media/backups)
@@ -180,7 +172,6 @@ Home NAS/media server that replaced TrueNAS SCALE. Accessed via `llego@crisuflix
 - Beszel monitoring agent (native NixOS service, not Docker)
 - UPS monitoring (NUT) with graceful shutdown at 20% battery
 - Tailscale for remote access
-- Avahi for mDNS/Chromecast discovery
 
 **Network:**
 - Dual bridges: br0 (192.168.1.101, 192.168.1.103) and br1 (192.168.3.103)
@@ -189,15 +180,12 @@ Home NAS/media server that replaced TrueNAS SCALE. Accessed via `llego@crisuflix
 
 **Key paths:**
 - Docker: `/mnt/illby/docker/stacks/` (compose files), `/mnt/illby/docker/data/` (volumes)
-- Beszel: `/var/lib/beszel-agent/env`
-- UPS: `/run/keys/nut-password`
 
 ## Configuration Philosophy
 
 1. **Modular composition** - Hosts import only the modules they need
 2. **No system-wide home-manager** - Only gamestation uses home-manager for user configs
 3. **Self-contained packages** - Custom packages are full flakes with NixOS modules
-4. **Remote-first** - Designed for managing multiple remote systems via SSH
 5. **Hardware inline** - Each host defines its own hardware config directly
 6. **Experimental isolation** - z_lab keeps WIP features separate from production hosts
 

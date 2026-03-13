@@ -8,7 +8,6 @@ This is my nix config.
 ├── hosts
 │   ├── gamestation.nix
 │   ├── laptop.nix
-│   ├── nixvm.nix
 │   └── rpi5.nix
 ├── iso
 ├── modules

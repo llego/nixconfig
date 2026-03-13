@@ -72,7 +72,7 @@
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
 
       # To rebuild, run from remote machine, run
-      # nixos-rebuild boot --flake .#rpi5 --build-host=llego@nixvm.iot --target-host llego@rpi5.home --accept-flake-config --use-remote-sudo
+      # nixos-rebuild boot --flake .#rpi5 --target-host llego@rpi5.home --accept-flake-config --use-remote-sudo
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
