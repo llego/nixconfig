@@ -26,7 +26,7 @@ nixos-rebuild switch --flake .#christiansandberg-bitti \
 
 # crisuflix NAS (TrueNAS replacement)
 nixos-rebuild switch --flake .#crisuflix \
-  --target-host "llego@truenas.home" --use-remote-sudo
+  --target-host "llego@crisuflix.home" --use-remote-sudo
 
 # Raspberry Pi 5 (cross-compile from nixvm build host)
 nixos-rebuild boot --flake .#rpi5 \
@@ -54,7 +54,7 @@ Each host in `/hosts/` selectively imports modules based on purpose:
 
 - **laptop** - Main development machine with Niri WM, apps, desktop environment, VPN, printer
 - **christiansandberg-bitti** - Remote server at christiansandberg.fi with Docker, SSH hardening, disko disk config
-- **crisuflix** - NAS server with ZFS pools (illby, veckjarvi), NFS exports, Docker, Tailscale
+- **crisuflix** - Home NAS/media server (migrated from TrueNAS SCALE) with ZFS storage, Docker services, monitoring
 - **gamestation** - Gaming PC with NVIDIA GPU, Steam, uses home-manager for user configs
 - **rpi5** - Raspberry Pi 5 running Home Assistant Chromium kiosk + RuuviCollector BLE sensor reader
 - **nixvm** - QEMU VM build helper with aarch64 cross-compilation support (sandbox disabled)
@@ -97,10 +97,11 @@ Both are referenced as flake inputs with `inputs.nixpkgs.follows = "nixpkgs"` to
 
 Each host has inline hardware configuration (no shared hardware-configuration.nix):
 
-- **laptop** - Intel CPU/GPU, NFS mounts to TrueNAS, Tailscale
+- **laptop** - Intel CPU/GPU, NFS mounts to crisuflix, Tailscale
 - **gamestation** - NVIDIA GPU (open driver), AMD CPU, gaming stack
 - **rpi5** - Uses raspberry-pi-nix flake, BLE support, cage kiosk compositor, nightly reboot timer
 - **christiansandberg** - Static IPv6 (2a01:4f9:c010:803e::1), firewall ports 80/443, Tailscale
+- **crisuflix** - Intel CPU (Xeon), 8 SATA + 3 NVMe drives, ZFS pools, dual network bridges (br0/br1), UPS-backed
 - **nixvm** - aarch64 emulation, sandbox disabled for cross-compilation
 
 ### Experimental Code
@@ -161,7 +162,35 @@ rpi5 runs a locked-down Home Assistant kiosk:
 - No desktop environment
 
 ### NFS Mounting
-laptop has NFS mounts to TrueNAS with auto-unmount on idle (600s timeout).
+laptop has NFS mounts to crisuflix with auto-unmount on idle (600s timeout).
+
+### crisuflix NAS Server
+
+Home NAS/media server that replaced TrueNAS SCALE. Accessed via `llego@crisuflix.home`. Deploy from laptop: `nixos-rebuild switch --flake .#crisuflix --target-host "llego@crisuflix.home" --use-remote-sudo`
+
+**Storage:**
+- Two ZFS pools: `illby` (apps/docker) and `veckjarvi` (media/backups)
+- Sanoid manages automated snapshots (15min/hourly/daily/weekly/monthly)
+- Monthly scrubs, weekly TRIM
+- 11 drives total (8 SATA + 3 NVMe) with SMART monitoring
+
+**Services:**
+- Docker with containerized apps (Home Assistant, Jellyfin, Music Assistant, Frigate, Traefik)
+- NFS exports to home network (192.168.1.0/24) and specific hosts
+- Beszel monitoring agent (native NixOS service, not Docker)
+- UPS monitoring (NUT) with graceful shutdown at 20% battery
+- Tailscale for remote access
+- Avahi for mDNS/Chromecast discovery
+
+**Network:**
+- Dual bridges: br0 (192.168.1.101, 192.168.1.103) and br1 (192.168.3.103)
+- SSH hardening + fail2ban
+- Firewall ports: SSH(22), NFS(111,2049,20048), UPS(3493), Media services(8095,8096,8098,8123), Beszel(45876), mDNS(5353)
+
+**Key paths:**
+- Docker: `/mnt/illby/docker/stacks/` (compose files), `/mnt/illby/docker/data/` (volumes)
+- Beszel: `/var/lib/beszel-agent/env`
+- UPS: `/run/keys/nut-password`
 
 ## Configuration Philosophy
 
