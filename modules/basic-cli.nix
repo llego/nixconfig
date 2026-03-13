@@ -46,6 +46,9 @@
 
     # Runs for interactive shells
     interactiveShellInit = ''
+      # Ensure history directory exists
+      mkdir -p "''${HISTFILE:h}"
+
       # History options
       setopt APPEND_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
       setopt HIST_FCNTL_LOCK
