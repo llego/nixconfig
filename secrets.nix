@@ -1,6 +1,6 @@
 let
   # SSH host public keys
-  # laptop = "ssh-ed25519 AAAAC3Nza...PLACEHOLDER_GET_FROM_LAPTOP";  # TODO: Run on laptop: cat /etc/ssh/ssh_host_ed25519_key.pub
+  laptop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILva2Z3+lvyJvKkOQ+0E6AwVYJxVsZD53VHajMMc01qi";
   crisuflix = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGgGmbiMVNWY5xjHb66kKSHRvUFTkjsp1/2h+5/6IK/z";
   christiansandberg = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMen/Dv1097eSwB/8kx2vDGVrE1THvuHKNI4VN0LCgok";
 
@@ -8,7 +8,7 @@ let
   userKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJADwUps+xVBj5uHuO68oR3USlmXdSosizvCQlKyKJnu";
 
   # Key groups
-  allHosts = [ crisuflix christiansandberg ];
+  allHosts = [ laptop crisuflix christiansandberg ];
   allKeys = allHosts ++ [ userKey ];
 in
 {
