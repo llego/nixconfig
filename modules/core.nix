@@ -4,6 +4,7 @@
   username,
   hostname,
   inputs,
+  config,
   ...
 }: {
   environment.systemPackages = with pkgs; [
@@ -35,7 +36,7 @@
   # Set up user llego
   users.users.${username} = {
     isNormalUser = true;
-    initialPassword = "12345";
+    hashedPasswordFile = config.age.secrets.initial-password.path;
     description = "Christian Sandberg";
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.zsh;

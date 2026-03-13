@@ -18,6 +18,7 @@
     inputs.disko.nixosModules.disko
     ./../modules/core.nix
     ./../modules/basic-cli.nix
+    ./../modules/secrets.nix
     # ./../modules/storj-backup.nix
     ./crisuflix-disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")

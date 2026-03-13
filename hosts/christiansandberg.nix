@@ -10,6 +10,7 @@
     inputs.disko.nixosModules.disko
     ./../modules/core.nix
     ./../modules/basic-cli.nix
+    ./../modules/secrets.nix
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
