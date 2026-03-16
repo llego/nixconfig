@@ -18,6 +18,7 @@
     inputs.disko.nixosModules.disko
     ./../modules/core.nix
     ./../modules/basic-cli.nix
+    ./../modules/ai.nix
     ./../modules/secrets.nix
     # ./../modules/storj-backup.nix
     ./crisuflix-disk-config.nix
@@ -31,9 +32,6 @@
     smartmontools
     lm_sensors
     nfs-utils
-
-    # AI assisted development
-    claude-code
 
     # Nix stuff
     nixd
@@ -307,14 +305,14 @@
 
       settings = {
         # Shutdown configuration
-        FINALDELAY = 5;          # Wait 5 seconds before actual shutdown
+        FINALDELAY = 5; # Wait 5 seconds before actual shutdown
 
         # Notifications
         NOTIFYFLAG = [
           ["ONLINE" "SYSLOG+WALL"]
           ["ONBATT" "SYSLOG+WALL"]
-          ["LOWBATT" "SYSLOG+WALL+EXEC"]  # Log, wall, and execute shutdown on low battery
-          ["FSD" "SYSLOG+WALL+EXEC"]       # Forced shutdown signal
+          ["LOWBATT" "SYSLOG+WALL+EXEC"] # Log, wall, and execute shutdown on low battery
+          ["FSD" "SYSLOG+WALL+EXEC"] # Forced shutdown signal
           ["SHUTDOWN" "SYSLOG+WALL"]
           ["REPLBATT" "SYSLOG+WALL"]
         ];

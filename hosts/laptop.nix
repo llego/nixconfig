@@ -12,6 +12,7 @@
   imports = [
     ./../modules/core.nix
     ./../modules/basic-cli.nix
+    ./../modules/ai.nix
     ./../modules/secrets.nix
     ./../modules/apps.nix
     ./../modules/desktop-environment.nix
@@ -88,14 +89,14 @@
   # Prevent system freeze when running out of memory
   services.earlyoom = {
     enable = true;
-    freeMemThreshold = 5;    # Kill processes when <5% RAM free
-    freeSwapThreshold = 10;  # Kill processes when <10% swap free
+    freeMemThreshold = 5; # Kill processes when <5% RAM free
+    freeSwapThreshold = 10; # Kill processes when <10% swap free
     enableNotifications = true;
   };
 
   # Memory management tuning
   boot.kernel.sysctl = {
-    "vm.swappiness" = 80;  # Use swap proactively to prevent sudden OOM
+    "vm.swappiness" = 80; # Use swap proactively to prevent sudden OOM
   };
 
   fileSystems."/mnt/truenas-docker/data" = {
@@ -156,7 +157,7 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/29aed872-9471-4d06-b42a-f6273a892c01";
     fsType = "ext4";
-    options = [ "noatime" ];
+    options = ["noatime"];
   };
 
   fileSystems."/boot" = {
@@ -169,16 +170,18 @@
   };
 
   # Swap file backup for when zram fills up
-  swapDevices = [{
-    device = "/var/lib/swapfile";
-    size = 8192;  # 8GB
-  }];
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 8192; # 8GB
+    }
+  ];
 
   # Zram compressed swap (primary)
   zramSwap = {
     enable = true;
     algorithm = "zstd";
-    memoryPercent = 100;  # With 2-3x compression = 200-300% effective
+    memoryPercent = 100; # With 2-3x compression = 200-300% effective
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
