@@ -1,4 +1,4 @@
-{inputs, config, hostname, ...}: {
+{inputs, config, hostname, lib, ...}: {
   imports = [
     inputs.agenix.nixosModules.default
   ];
@@ -13,6 +13,16 @@
       group = "root";
     };
   } // (
+    # laptop + crisuflix secrets
+    if builtins.elem hostname [ "laptop" "crisuflix" ] then {
+      ha-mcp-token = {
+        file = ./../secrets/ha-mcp-token.age;
+        mode = "0400";
+        owner = "llego";
+        group = "users";
+      };
+    } else {}
+  ) // (
     # Host-specific secrets
     if hostname == "crisuflix" then {
       nut-password = {
@@ -31,4 +41,11 @@
       };
     } else {}
   );
+
+  # Expose HA MCP token as environment variable on laptop and crisuflix
+  environment.extraInit = lib.mkIf (builtins.elem hostname [ "laptop" "crisuflix" ]) ''
+    if [ -r /run/agenix/ha-mcp-token ]; then
+      export HA_MCP_TOKEN=$(cat /run/agenix/ha-mcp-token)
+    fi
+  '';
 }
