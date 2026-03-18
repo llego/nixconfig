@@ -2,6 +2,7 @@
   inputs,
   username,
   pkgs,
+  lib,
   ...
 }: {
   system.stateVersion = "24.11";
@@ -100,11 +101,11 @@
     '';
   };
 
-  # Bluetooth hardware enabled, but bluetoothd disabled so hcitool has raw HCI access
-  # bluetoothd holds the adapter exclusively and blocks hcitool lescan
+  # Disable bluetoothd so hcitool has raw HCI access for ruuvi-collector
+  # raspberry-pi-nix enables bluetooth by default; mkForce overrides it
   hardware.bluetooth = {
-    enable = false;
-    powerOnBoot = false;
+    enable = lib.mkForce false;
+    powerOnBoot = lib.mkForce false;
   };
 
   raspberry-pi-nix = {
