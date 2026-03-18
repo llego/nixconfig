@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to OpenCode when working with code in this repository.
 
 ## Repository Overview
 
@@ -8,38 +8,48 @@ This is a multi-host NixOS flake configuration managing 6 different systems with
 
 ## Build & Deployment Commands
 
+### Build host
+Always use crisuflix as the remote build host for all NixOS configurations. It has
+more CPU/RAM than the laptop and supports aarch64 builds (needed for rpi5). Add
+`--build-host llego@crisuflix.home` to every nixos-rebuild and nix build command.
+
 ### Local builds
 ```bash
 # Laptop (main development machine)
 # IMPORTANT: Always use sudo for local rebuilds
-sudo nixos-rebuild switch --flake .#laptop
+sudo nixos-rebuild switch --flake .#laptop \
+  --build-host llego@crisuflix.home
 
 # Gamestation (gaming PC)
-sudo nixos-rebuild switch --flake .#gamestation
+sudo nixos-rebuild switch --flake .#gamestation \
+  --build-host llego@crisuflix.home
 ```
 
 ### Remote deployments
 ```bash
 # christiansandberg.fi server
 nixos-rebuild switch --flake .#christiansandberg-bitti \
-  --sudo --target-host "llego@christiansandberg.fi"
+  --build-host llego@crisuflix.home \
+  --target-host "llego@christiansandberg.fi" --sudo
 
 # crisuflix NAS (TrueNAS replacement)
 nixos-rebuild switch --flake .#crisuflix \
+  --build-host llego@crisuflix.home \
   --target-host "llego@crisuflix.home" --sudo
 
 # Raspberry Pi 5
 nixos-rebuild boot --flake .#rpi5 \
+  --build-host llego@crisuflix.home \
   --target-host llego@rpi5.home \
-  --accept-flake-config \
-  --use-remote-sudo
+  --sudo
 ```
 
 ### Building SD card images
 ```bash
 # RPi5 SD card image (requires aarch64 support)
 nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' \
-  --system aarch64-linux --accept-flake-config
+  --system aarch64-linux \
+  --build-host llego@crisuflix.home
 
 # Flash to SD card
 zstd -dc result/linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
@@ -129,7 +139,7 @@ The flake only defines `nixosConfigurations` - no package, app, or overlay outpu
 - Experimental features: nix-command, flakes
 - Binary cache: nix-community.cachix.org
 - Auto-optimise-store enabled
-- Accepts flake config for easier rebuilds
+- Substituters and trusted keys configured in core.nix (no flake-level nixConfig needed)
 
 ## Key Patterns
 
@@ -158,7 +168,7 @@ laptop has NFS mounts to crisuflix with auto-unmount on idle (600s timeout).
 
 ### crisuflix NAS Server
 
-Home NAS/media server that replaced TrueNAS SCALE. Accessed via `llego@crisuflix.home`. Deploy from laptop: `nixos-rebuild switch --flake .#crisuflix --target-host "llego@crisuflix.home" --sudo`
+Home NAS/media server that replaced TrueNAS SCALE. Accessed via `llego@crisuflix.home`. Deploy from laptop: `nixos-rebuild switch --flake .#crisuflix --target-host "llego@crisuflix.home" --build-host llego@crisuflix.home --sudo`
 
 **Storage:**
 - Two ZFS pools: `illby` (apps/docker) and `veckjarvi` (media/backups)
