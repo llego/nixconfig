@@ -103,10 +103,9 @@
   # Bluetooth hardware enabled, but bluetoothd disabled so hcitool has raw HCI access
   # bluetoothd holds the adapter exclusively and blocks hcitool lescan
   hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
+    enable = false;
+    powerOnBoot = false;
   };
-  services.bluetooth.enable = false;
 
   raspberry-pi-nix = {
     board = "bcm2712";
