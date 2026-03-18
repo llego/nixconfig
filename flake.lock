@@ -371,18 +371,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1771425621,
-        "narHash": "sha256-Qa3+4RfnMJFG3AzBsaAuB+0Wmo8frqYyc6sy78xKyNU=",
-        "ref": "refs/heads/master",
-        "rev": "3ed766221a58349a8356e3d2187b3082c9be2361",
-        "revCount": 163,
-        "type": "git",
-        "url": "file:///home/llego/nixconfig/pkgs/RuuviCollector"
+        "path": "./pkgs/RuuviCollector",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/llego/nixconfig/pkgs/RuuviCollector"
-      }
+        "path": "./pkgs/RuuviCollector",
+        "type": "path"
+      },
+      "parent": []
     },
     "systems": {
       "locked": {

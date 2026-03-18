@@ -25,7 +25,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ruuvi = {
-      url = "git+file:///home/llego/nixconfig/pkgs/RuuviCollector";
+      url = "path:./pkgs/RuuviCollector";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {
