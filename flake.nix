@@ -60,12 +60,11 @@
         };
       };
 
-      # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux --accept-flake-config
+      # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux
       # zstd -dc ..linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
 
-      # To rebuild, run from remote machine, run
-      # nixos-rebuild boot --flake .#rpi5 --target-host llego@rpi5.home --accept-flake-config --use-remote-sudo
+      # To rebuild: nixos-rebuild boot --flake .#rpi5 --target-host llego@rpi5.home --sudo
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
