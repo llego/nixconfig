@@ -37,7 +37,7 @@
           # This is a fixed-output derivation
           outputHashMode = "recursive";
           outputHashAlgo = "sha256";
-          outputHash = "sha256-YFlu0BaUCytTVVQnEf0Fuiie7JzltbTcUVl8O44flQg=";
+          outputHash = "sha256-KUhl9pB+39brTDvHxcD2nHYDVbKbFVdijGJk5tVvBvs=";
 
           installPhase = "true";
         };
