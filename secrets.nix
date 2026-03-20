@@ -18,6 +18,7 @@ in
   # crisuflix-specific secrets
   "secrets/nut-password.age".publicKeys = [ crisuflix userKey ];
   "secrets/beszel-env.age".publicKeys = [ crisuflix userKey ];
+  "secrets/cloudflare-ddns-token.age".publicKeys = [ crisuflix userKey ];
 
   # laptop + crisuflix secrets
   "secrets/ha-mcp-token.age".publicKeys = [ laptop crisuflix userKey ];

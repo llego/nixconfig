@@ -227,6 +227,17 @@
     bantime = "1h";
   };
 
+  # Cloudflare DDNS (native service, migrated from Docker)
+  services.cloudflare-ddns = {
+    enable = true;
+    credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
+    domains = [
+      "cri.su"
+      "csandberg.fi"
+    ];
+    proxied = "false";
+  };
+
   # Music Assistant
   services.music-assistant = {
     enable = true;

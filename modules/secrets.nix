@@ -39,6 +39,12 @@
         owner = "root";
         group = "root";
       };
+      cloudflare-ddns-token = {
+        file = ./../secrets/cloudflare-ddns-token.age;
+        mode = "0400";
+        owner = "cloudflare-ddns";
+        group = "cloudflare-ddns";
+      };
     } else {}
   );
 
