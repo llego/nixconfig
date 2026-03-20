@@ -19,7 +19,6 @@
     ./../modules/core.nix
     ./../modules/basic-cli.nix
     ./../modules/ai.nix
-    ./../modules/secrets.nix
     # ./../modules/storj-backup.nix
     ./crisuflix-disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -68,12 +67,18 @@
     # Filesystem support
     supportedFilesystems = ["zfs"];
 
+    # aarch64 build support via QEMU user-mode emulation
+    binfmt.emulatedSystems = ["aarch64-linux"];
+
     # ZFS configuration
     zfs = {
       forceImportRoot = false;
       extraPools = ["illby" "veckjarvi"]; # Import existing pools from TrueNAS
     };
   };
+
+  # aarch64 build support
+  nix.settings.extra-platforms = ["aarch64-linux"];
 
   # Required for ZFS - from existing TrueNAS
   networking.hostId = "447b046a";
@@ -146,8 +151,8 @@
   # disable its socket-activated service and run cockpit-ws directly instead.
   services.cockpit = {
     enable = true;
-    plugins = [ pkgs.cockpit-zfs ];
-    allowed-origins = [ "https://cockpit.llego.me" ];
+    plugins = [pkgs.cockpit-zfs];
+    allowed-origins = ["https://cockpit.llego.me"];
     settings.WebService = {
       ProtocolHeader = "X-Forwarded-Proto";
       ForwardedForHeader = "X-Forwarded-For";
@@ -163,16 +168,16 @@
   systemd.sockets.cockpit-session = {
     overrideStrategy = "asDropin";
     unitConfig.PartOf = lib.mkForce "";
-    wantedBy = [ "sockets.target" ];
+    wantedBy = ["sockets.target"];
   };
 
   # Run cockpit-ws directly as a persistent service in TLS-proxy mode on port 9091
   # Traefik terminates TLS and forwards plain HTTP to this port
   systemd.services.cockpit-ws-proxy = {
     description = "Cockpit Web Service (TLS proxy mode)";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" "cockpit-session.socket" ];
-    requires = [ "cockpit-session.socket" ];
+    wantedBy = ["multi-user.target"];
+    after = ["network.target" "cockpit-session.socket"];
+    requires = ["cockpit-session.socket"];
     serviceConfig = {
       ExecStart = "${pkgs.cockpit}/libexec/cockpit-ws --for-tls-proxy --port=9091";
       Restart = "on-failure";
@@ -242,6 +247,20 @@
     enable = true;
     maxretry = 5;
     bantime = "1h";
+  };
+
+  # Music Assistant
+  services.music-assistant = {
+    enable = true;
+    providers = [
+      "chromecast"
+      "hass"
+      "jellyfin"
+      "musiccast"
+      "sendspin"
+      "sonos" # required by musiccast/provider.py (imports sonos.helpers which needs aiosonos)
+      "tidal"
+    ];
   };
 
   # Avahi for mDNS/Zeroconf (Chromecast discovery)
