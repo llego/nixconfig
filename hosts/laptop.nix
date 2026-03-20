@@ -13,7 +13,6 @@
     ./../modules/core.nix
     ./../modules/basic-cli.nix
     ./../modules/ai.nix
-    ./../modules/secrets.nix
     ./../modules/apps.nix
     ./../modules/desktop-environment.nix
     ./../modules/printer.nix
