@@ -132,6 +132,23 @@
 
   # Docker
   virtualisation.docker.enable = true;
+
+  # Ensure the traefik Docker network exists before any containers start.
+  # All stacks reference it as external: true, so it must pre-exist.
+  systemd.services.docker-network-traefik = {
+    description = "Create traefik Docker network";
+    after = [ "docker.service" ];
+    requires = [ "docker.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.lib.getExe (pkgs.writeShellScriptBin "docker-network-traefik" ''
+        ${pkgs.docker}/bin/docker network inspect traefik > /dev/null 2>&1 || \
+          ${pkgs.docker}/bin/docker network create --driver bridge traefik
+      '');
+    };
+  };
   users.users.${username}.extraGroups = ["docker" "apps" "llego"];
 
   # Apps user for Docker containers (UID/GID 568)
