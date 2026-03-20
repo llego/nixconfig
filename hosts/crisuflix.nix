@@ -163,45 +163,6 @@
     description = "Apps user for Docker containers";
   };
 
-  # Cockpit web-based server management UI with ZFS plugin
-  # Use the NixOS module only for config file + plugin installation;
-  # disable its socket-activated service and run cockpit-ws directly instead.
-  services.cockpit = {
-    enable = true;
-    plugins = [pkgs.cockpit-zfs];
-    allowed-origins = ["https://cockpit.llego.me"];
-    settings.WebService = {
-      ProtocolHeader = "X-Forwarded-Proto";
-      ForwardedForHeader = "X-Forwarded-For";
-    };
-  };
-
-  # Disable the default socket-activated cockpit pipeline (cockpit-tls based)
-  systemd.services.cockpit.enable = false;
-  systemd.sockets.cockpit.enable = false;
-
-  # cockpit-session.socket normally has PartOf=cockpit.service, which is disabled above.
-  # Override it so it starts independently alongside cockpit-ws-proxy instead.
-  systemd.sockets.cockpit-session = {
-    overrideStrategy = "asDropin";
-    unitConfig.PartOf = lib.mkForce "";
-    wantedBy = ["sockets.target"];
-  };
-
-  # Run cockpit-ws directly as a persistent service in TLS-proxy mode on port 9091
-  # Traefik terminates TLS and forwards plain HTTP to this port
-  systemd.services.cockpit-ws-proxy = {
-    description = "Cockpit Web Service (TLS proxy mode)";
-    wantedBy = ["multi-user.target"];
-    after = ["network.target" "cockpit-session.socket"];
-    requires = ["cockpit-session.socket"];
-    serviceConfig = {
-      ExecStart = "${pkgs.cockpit}/libexec/cockpit-ws --for-tls-proxy --port=9091";
-      Restart = "on-failure";
-      # cockpit-ws needs to spawn cockpit-session as root to authenticate users
-      User = "root";
-    };
-  };
 
   # Beszel monitoring agent
   services.beszel.agent = {
@@ -336,11 +297,18 @@
       interface = "br0";
     };
 
+
     nameservers = ["192.168.1.1"];
 
     # Firewall
     firewall = {
       enable = true;
+      # Allow Yamaha MusicCast to send UDP push events (position updates, state changes)
+      # back to Music Assistant on its ephemeral UDP port. The Yamaha sends these as
+      # unsolicited packets which are otherwise blocked by the stateful firewall.
+      extraInputRules = ''
+        ip saddr 192.168.1.247 udp accept comment "Yamaha MusicCast UDP events to Music Assistant"
+      '';
       allowedTCPPorts = [
         22 # SSH
         111 # NFS rpcbind
@@ -350,7 +318,6 @@
         8096 # Jellyfin
         8098 # Music Assistant (Stream Server)
         8123 # Home Assistant
-        9091 # Cockpit (cockpit-ws-proxy, TLS terminated by Traefik)
         20048 # NFS mountd
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];
