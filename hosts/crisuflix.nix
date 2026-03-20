@@ -137,9 +137,9 @@
   # All stacks reference it as external: true, so it must pre-exist.
   systemd.services.docker-network-traefik = {
     description = "Create traefik Docker network";
-    after = [ "docker.service" ];
-    requires = [ "docker.service" ];
-    wantedBy = [ "multi-user.target" ];
+    after = ["docker.service"];
+    requires = ["docker.service"];
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -279,6 +279,12 @@
       "tidal"
     ];
   };
+
+  # Store MA data on illby ZFS dataset instead of the boot drive.
+  # BindPaths overlays the illby dataset onto the StateDirectory before service start.
+  systemd.services.music-assistant.serviceConfig.BindPaths = [
+    "/mnt/illby/appstorage/music-assistant:/var/lib/music-assistant"
+  ];
 
   # Avahi for mDNS/Zeroconf (Chromecast discovery)
   services.avahi = {
