@@ -8,7 +8,7 @@
     yle-dl
     svtplay-dl
     mediainfo
-    inputs.album-downloader.packages.${pkgs.system}.album-downloader
+    inputs.album-downloader.packages.${pkgs.stdenv.hostPlatform.system}.album-downloader
   ];
 
   # tidal-dl configuration

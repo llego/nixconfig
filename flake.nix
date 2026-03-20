@@ -2,7 +2,6 @@
   description = "llego's nix config";
 
   inputs = {
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs.url = "github:nixos/nixpkgs";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
     noctalia = {

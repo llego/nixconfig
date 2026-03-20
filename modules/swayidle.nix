@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  noctaliaShell = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell";
+  noctaliaShell = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia-shell";
 in {
   # ensure binaries exist system-wide (optional but recommended)
   environment.systemPackages = with pkgs; [

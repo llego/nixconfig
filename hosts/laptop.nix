@@ -25,17 +25,6 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  # services.ruuvi-collector = {
-  #   enable = true;
-  #   influxUrl = "http://192.168.1.101:8086";
-  #   influxDatabase = "ruuvi";
-  #   tagNames = {
-  #     "D4EE9FE30B24" = "Kylskåpet";
-  #     "FFE65BB31904" = "Vardagsrummet";
-  #   };
-  #   filterMode = "named"; # Only collect from named tags
-  # };
-
   # Bootloader
   boot = {
     loader.systemd-boot.enable = true;
@@ -122,22 +111,17 @@
     ];
   };
 
-  # Hardware acceleration
-  #nixpkgs.config.packageOverrides = pkgs: {
-  #  intel-vaapi-driver = pkgs.intel-vaapi-driver.override {enableHybridCodec = true;};
-  #};
+  # Hardware acceleration (VAAPI)
   hardware.graphics = {
-    # hardware.graphics on unstable
     enable = true;
     extraPackages = with pkgs; [
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      #libvdpau-va-gl
+      intel-media-driver
+      intel-vaapi-driver
     ];
   };
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";
-  }; # Force intel-media-driver
+  };
 
   #######
   # hardware-configuration.nix
