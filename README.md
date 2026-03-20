@@ -63,3 +63,24 @@ Secrets are encrypted to SSH host keys + user keys defined in `secrets.nix`.
 ## Documentation
 
 See [CLAUDE.md](./CLAUDE.md) for detailed architecture, module composition patterns, and deployment procedures.
+
+## crisuflix Networking
+
+`crisuflix` uses dual physical NICs, each attached to a Linux bridge:
+
+- **br0** (via `enp5s0`): primary LAN (`192.168.1.0/24`), host IPs `192.168.1.101` and `192.168.1.103`
+- **br1** (via `enp6s0`): IoT LAN (`192.168.3.0/24`), host IP `192.168.3.103`
+
+### Intended usage
+
+- **br0** is the main management and internet-facing network for the host (default route via `192.168.1.1`)
+- **br1** is used to discover and control IoT devices (Shelly plugs, IP camera, charger, etc.)
+- Service discovery is enabled on both bridges (`avahi.allowInterfaces = [ "br0" "br1" ]`)
+
+### Practical examples from current setup
+
+- Printer access on IoT subnet (`192.168.3.125:631`)
+- ESPHome/API traffic to IoT devices (`192.168.3.x`, e.g. `:6053`)
+- Device control sessions from `crisuflix` to IoT endpoints (`:8080`, `:8008`, etc.)
+
+This separation keeps IoT traffic reachable from `crisuflix` while preserving `br0` as the primary host/network egress path.
