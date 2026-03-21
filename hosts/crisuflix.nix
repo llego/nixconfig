@@ -133,6 +133,23 @@
   # Docker
   virtualisation.docker.enable = true;
 
+  # Native MQTT broker with authentication.
+  services.mosquitto = {
+    enable = true;
+    persistence = true;
+    dataDir = "/mnt/illby/appstorage/mosquitto";
+    logDest = ["syslog"];
+    listeners = [
+      {
+        port = 1883;
+        settings.allow_anonymous = false;
+        users.mqtt_user = {
+          passwordFile = config.age.secrets.mosquitto-mqtt-user-password.path;
+        };
+      }
+    ];
+  };
+
   # Ensure the traefik Docker network exists before any containers start.
   # All stacks reference it as external: true, so it must pre-exist.
   systemd.services.docker-network-traefik = {
@@ -258,6 +275,28 @@
     "/mnt/illby/appstorage/music-assistant:/var/lib/music-assistant"
   ];
 
+  # ESPHome dashboard (native NixOS service)
+  services.esphome = {
+    enable = true;
+    address = "0.0.0.0";
+    port = 6052;
+    openFirewall = true;
+    usePing = true;
+  };
+
+  # Keep ESPHome state on dedicated ZFS dataset.
+  systemd.services.esphome = {
+    serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      User = lib.mkForce "apps";
+      Group = lib.mkForce "apps";
+      BindPaths = [
+        "/mnt/illby/appstorage/esphome:/var/lib/esphome"
+      ];
+      EnvironmentFile = config.age.secrets.esphome-dashboard-env.path;
+    };
+  };
+
   # Avahi for mDNS/Zeroconf (Chromecast discovery)
   services.avahi = {
     enable = true;
@@ -329,6 +368,7 @@
         8096 # Jellyfin
         8098 # Music Assistant (Stream Server)
         8123 # Home Assistant
+        1883 # MQTT (Mosquitto)
         20048 # NFS mountd
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];

@@ -45,6 +45,18 @@
         owner = "cloudflare-ddns";
         group = "cloudflare-ddns";
       };
+      esphome-dashboard-env = {
+        file = ./../secrets/esphome-dashboard-env.age;
+        mode = "0400";
+        owner = "root";
+        group = "root";
+      };
+      mosquitto-mqtt-user-password = {
+        file = ./../secrets/mosquitto-mqtt-user-password.age;
+        mode = "0400";
+        owner = "mosquitto";
+        group = "mosquitto";
+      };
     } else {}
   );
 
