@@ -30,7 +30,7 @@ sudo nixos-rebuild switch --flake .#laptop \
 ### Remote deployments
 ```bash
 # christiansandberg.fi server
-nixos-rebuild switch --flake .#christiansandberg-bitti \
+nixos-rebuild switch --flake .#christiansandberg \
   --build-host llego@crisuflix.home \
   --target-host "llego@christiansandberg.fi" --sudo
 
@@ -65,7 +65,7 @@ zstd -dc result/linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=
 Each host in `/hosts/` selectively imports modules based on purpose:
 
 - **laptop** - Main development machine with Niri WM, apps, desktop environment, VPN, printer
-- **christiansandberg-bitti** - Remote server at christiansandberg.fi with Docker, SSH hardening, disko disk config
+- **christiansandberg** - Remote server at christiansandberg.fi with Docker, SSH hardening, disko disk config
 - **crisuflix** - Home NAS/media server with ZFS storage, Docker services, monitoring
 - **rpi5** - Raspberry Pi 5 running Home Assistant Chromium kiosk + RuuviCollector BLE sensor reader
 

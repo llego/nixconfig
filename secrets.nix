@@ -16,7 +16,7 @@ in {
 
   # crisuflix-specific secrets
   "secrets/nut-password.age".publicKeys = [crisuflix userKey];
-  "secrets/beszel-env.age".publicKeys = [crisuflix userKey];
+  "secrets/beszel-env.age".publicKeys = [crisuflix christiansandberg userKey];
 
   # crisuflix + christiansandberg secrets (shared DDNS token)
   "secrets/cloudflare-ddns-token.age".publicKeys = [crisuflix christiansandberg userKey];

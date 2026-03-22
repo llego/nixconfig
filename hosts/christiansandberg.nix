@@ -20,6 +20,18 @@
   virtualisation.docker.enable = true;
   users.users.${username}.extraGroups = ["docker"];
 
+  # Beszel monitoring agent (Tailscale-only)
+  services.beszel.agent = {
+    enable = true;
+    openFirewall = false;
+    environmentFile = "/var/lib/beszel-agent/env";
+    environment = {
+      PORT = "45876";
+      # Bind only to Tailscale interface
+      HOST = "100.78.37.16"; # christiansandberg Tailscale IP
+    };
+  };
+
   # Tailscale
   services.tailscale = {
     enable = true;
@@ -70,15 +82,15 @@
     settings = {
       theme = "auto";
       default_2fa_method = "totp";
-      
+
       server = {
         address = "tcp://0.0.0.0:9091/";
       };
-      
+
       log = {
         level = "info";
       };
-      
+
       totp = {
         disable = false;
         issuer = "christiansandberg.fi";
@@ -88,11 +100,11 @@
         skew = 1;
         secret_size = 32;
       };
-      
+
       webauthn = {
         disable = false;
       };
-      
+
       authentication_backend = {
         password_reset = {
           disable = false;
@@ -117,7 +129,7 @@
           };
         };
       };
-      
+
       access_control = {
         default_policy = "deny";
         rules = [
@@ -132,7 +144,7 @@
           }
         ];
       };
-      
+
       session = {
         name = "authelia_session";
         same_site = "lax";
@@ -149,13 +161,13 @@
           }
         ];
       };
-      
+
       storage = {
         local = {
           path = "/var/lib/authelia-christiansandberg/db.sqlite3";
         };
       };
-      
+
       notifier = {
         disable_startup_check = true;
         smtp = {

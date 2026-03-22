@@ -58,6 +58,13 @@
         group = "mosquitto";
       };
     } else if hostname == "christiansandberg" then {
+      beszel-env = {
+        file = ./../secrets/beszel-env.age;
+        path = "/var/lib/beszel-agent/env";
+        mode = "0600";
+        owner = "root";
+        group = "root";
+      };
       cloudflare-ddns-token = {
         file = ./../secrets/cloudflare-ddns-token.age;
         mode = "0400";
