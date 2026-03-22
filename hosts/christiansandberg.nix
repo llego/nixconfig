@@ -249,19 +249,29 @@
       address = "fe80::1";
       interface = "enp1s0";
     };
+    # Firewall configuration
+    # - Allows Docker containers to reach native NixOS services
+    # - Allows Tailscale access to services
     firewall = {
       enable = true;
-      allowedTCPPorts = [80 443 9091];
-      checkReversePath = false;  # Required for Docker containers to reach host services
+      checkReversePath = false;  # Required for Docker→host communication
+      
+      # Allow Docker traefik network to reach host services
       extraInputRules = ''
-        ip saddr 100.64.0.0/10 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale"
-        ip6 saddr fd7a:115c:a1e0::/48 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale IPv6"
-        ip saddr 172.21.0.0/24 tcp dport 9091 accept comment "Authelia from Docker traefik network"
-        ip saddr 172.21.0.0/24 tcp dport 8079 accept comment "Gotify from Docker traefik network"
-        ip saddr 172.21.0.0/24 tcp dport 3001 accept comment "Uptime-kuma from Docker traefik network"
-        ip saddr 172.21.0.0/24 tcp dport 8000 accept comment "Ihatemoney from Docker traefik network"
-        ip saddr 127.0.0.1 tcp dport 3001 accept comment "Uptime-kuma from localhost"
+        ip saddr 172.21.0.0/24 tcp dport 9091 accept comment "Authelia from Docker"
+        ip saddr 172.21.0.0/24 tcp dport 8079 accept comment "Gotify from Docker"
+        ip saddr 172.21.0.0/24 tcp dport 3001 accept comment "Uptime-kuma from Docker"
+        ip saddr 172.21.0.0/24 tcp dport 8000 accept comment "Ihatemoney from Docker"
+        ip saddr 100.64.0.0/10 tcp dport 6379 accept comment "Redis from Tailscale"
+        ip6 saddr fd7a:115c:a1e0::/48 tcp dport 6379 accept comment "Redis from Tailscale IPv6"
       '';
+      
+      allowedTCPPorts = [
+        22    # SSH
+        80    # HTTP (Traefik)
+        443   # HTTPS (Traefik)
+        9091  # Authelia (native service)
+      ];
     };
   };
 }
