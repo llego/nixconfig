@@ -26,6 +26,7 @@ in {
   "secrets/authelia-christiansandberg-storage.age".publicKeys = [christiansandberg userKey];
   "secrets/authelia-christiansandberg-session.age".publicKeys = [christiansandberg userKey];
   "secrets/authelia-christiansandberg-smtp.age".publicKeys = [christiansandberg userKey];
+  "secrets/gotify-admin-password.age".publicKeys = [christiansandberg userKey];
   "secrets/esphome-dashboard-env.age".publicKeys = [crisuflix userKey];
   "secrets/mosquitto-mqtt-user-password.age".publicKeys = [crisuflix userKey];
 

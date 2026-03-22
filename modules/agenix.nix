@@ -95,6 +95,12 @@
         owner = "authelia-christiansandberg";
         group = "authelia-christiansandberg";
       };
+      gotify-admin-password = {
+        file = ./../secrets/gotify-admin-password.age;
+        mode = "0400";
+        owner = "root";
+        group = "root";
+      };
     } else {}
   );
 

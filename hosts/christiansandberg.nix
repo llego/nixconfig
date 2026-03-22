@@ -183,6 +183,22 @@
     };
   };
 
+  # Gotify push notification server
+  services.gotify = {
+    enable = true;
+    environment = {
+      GOTIFY_SERVER_PORT = 8079;  # Port 8080 used by Traefik dashboard
+      GOTIFY_SERVER_LISTENADDR = "0.0.0.0";
+      GOTIFY_DATABASE_DIALECT = "sqlite3";
+      GOTIFY_DATABASE_CONNECTION = "data/gotify.db";
+      GOTIFY_DEFAULTUSER_NAME = "admin";
+      # GOTIFY_DEFAULTUSER_PASS is loaded from environmentFile
+      GOTIFY_UPLOADEDIMAGESDIR = "data/images";
+      GOTIFY_PLUGINSDIR = "data/plugins";
+    };
+    environmentFiles = [ config.age.secrets.gotify-admin-password.path ];
+  };
+
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
@@ -203,6 +219,7 @@
         ip saddr 100.64.0.0/10 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale"
         ip6 saddr fd7a:115c:a1e0::/48 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale IPv6"
         ip saddr 172.19.0.0/16 tcp dport 9091 accept comment "Authelia from Docker traefik network"
+        ip saddr 172.19.0.0/16 tcp dport 8079 accept comment "Gotify from Docker traefik network"
       '';
     };
   };
