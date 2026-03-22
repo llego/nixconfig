@@ -180,7 +180,6 @@
     description = "Apps user for Docker containers";
   };
 
-
   # Beszel monitoring agent
   services.beszel.agent = {
     enable = true;
@@ -275,6 +274,26 @@
     "/mnt/illby/appstorage/music-assistant:/var/lib/music-assistant"
   ];
 
+  # Home Assistant OCI Container (Docker backend)
+  virtualisation.oci-containers = {
+    backend = "docker";
+    containers.homeassistant = {
+      image = "ghcr.io/home-assistant/home-assistant:stable";
+      autoStart = true;
+      volumes = [
+        "/mnt/illby/appstorage/homeassistant:/config"
+        "/etc/localtime:/etc/localtime:ro"
+      ];
+      environment = {
+        TZ = "Europe/Helsinki";
+      };
+      extraOptions = [
+        "--network=host"
+        "--device=/dev/ttyUSB0:/dev/ttyUSB0"
+      ];
+    };
+  };
+
   # ESPHome dashboard (native NixOS service)
   services.esphome = {
     enable = true;
@@ -346,7 +365,6 @@
       address = "192.168.1.1";
       interface = "br0";
     };
-
 
     nameservers = ["192.168.1.1"];
 

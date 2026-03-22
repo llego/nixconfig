@@ -57,6 +57,13 @@
         owner = "mosquitto";
         group = "mosquitto";
       };
+    } else if hostname == "christiansandberg" then {
+      cloudflare-ddns-token = {
+        file = ./../secrets/cloudflare-ddns-token.age;
+        mode = "0400";
+        owner = "cloudflare-ddns";
+        group = "cloudflare-ddns";
+      };
     } else {}
   );
 

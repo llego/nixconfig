@@ -2,6 +2,7 @@
   modulesPath,
   username,
   inputs,
+  config,
   ...
 }: {
   system.stateVersion = "24.05";
@@ -49,6 +50,16 @@
     bantime = "1h";
   };
 
+  # Cloudflare DDNS for christiansandberg.fi domain
+  services.cloudflare-ddns = {
+    enable = true;
+    credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
+    domains = [
+      "christiansandberg.fi"
+    ];
+    proxied = "false";
+  };
+
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
@@ -65,6 +76,10 @@
     firewall = {
       enable = true;
       allowedTCPPorts = [80 443];
+      extraInputRules = ''
+        ip saddr 100.64.0.0/10 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale"
+        ip6 saddr fd7a:115c:a1e0::/48 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale IPv6"
+      '';
     };
   };
 }
