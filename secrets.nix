@@ -18,7 +18,8 @@ in
   # crisuflix-specific secrets
   "secrets/nut-password.age".publicKeys = [ crisuflix userKey ];
   "secrets/beszel-env.age".publicKeys = [ crisuflix userKey ];
-  "secrets/cloudflare-ddns-token.age".publicKeys = [ crisuflix userKey ];
+  # crisuflix + christiansandberg secrets (shared DDNS token)
+  "secrets/cloudflare-ddns-token.age".publicKeys = [ crisuflix christiansandberg userKey ];
   "secrets/esphome-dashboard-env.age".publicKeys = [ crisuflix userKey ];
   "secrets/mosquitto-mqtt-user-password.age".publicKeys = [ crisuflix userKey ];
 
