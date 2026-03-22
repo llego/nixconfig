@@ -256,22 +256,23 @@
       enable = true;
       checkReversePath = false;  # Required for Docker→host communication
       
-      # Allow Docker traefik network to reach host services
-      extraInputRules = ''
-        ip saddr 172.21.0.0/24 tcp dport 9091 accept comment "Authelia from Docker"
-        ip saddr 172.21.0.0/24 tcp dport 8079 accept comment "Gotify from Docker"
-        ip saddr 172.21.0.0/24 tcp dport 3001 accept comment "Uptime-kuma from Docker"
-        ip saddr 172.21.0.0/24 tcp dport 8000 accept comment "Ihatemoney from Docker"
-        ip saddr 100.64.0.0/10 tcp dport 6379 accept comment "Redis from Tailscale"
-        ip6 saddr fd7a:115c:a1e0::/48 tcp dport 6379 accept comment "Redis from Tailscale IPv6"
-      '';
-      
       allowedTCPPorts = [
         22    # SSH
         80    # HTTP (Traefik)
         443   # HTTPS (Traefik)
         9091  # Authelia (native service)
       ];
+      
+      # Docker containers need explicit rules to reach host services
+      extraCommands = ''
+        # Allow Docker traefik network to reach host services
+        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 9091 -j nixos-fw-accept -m comment --comment "Authelia from Docker"
+        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 8079 -j nixos-fw-accept -m comment --comment "Gotify from Docker"
+        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 3001 -j nixos-fw-accept -m comment --comment "Uptime-kuma from Docker"
+        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 8000 -j nixos-fw-accept -m comment --comment "Ihatemoney from Docker"
+        iptables -w -I nixos-fw -p tcp -s 100.64.0.0/10 --dport 6379 -j nixos-fw-accept -m comment --comment "Redis from Tailscale"
+        ip6tables -w -I nixos-fw -p tcp -s fd7a:115c:a1e0::/48 --dport 6379 -j nixos-fw-accept -m comment --comment "Redis from Tailscale IPv6"
+      '';
     };
   };
 }
