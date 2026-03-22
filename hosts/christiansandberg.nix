@@ -3,6 +3,7 @@
   username,
   inputs,
   config,
+  pkgs,
   ...
 }: {
   system.stateVersion = "24.05";
@@ -17,8 +18,35 @@
     ./christiansandberg-disk-config.nix
   ];
 
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    daemon.settings = {
+      "default-address-pools" = [
+        {
+          base = "172.21.0.0/16";
+          size = 24;
+        }
+      ];
+    };
+  };
   users.users.${username}.extraGroups = ["docker"];
+
+  # Ensure the traefik Docker network exists with the correct subnet.
+  # All stacks reference it as external: true, so it must pre-exist.
+  systemd.services.docker-network-traefik = {
+    description = "Create traefik Docker network";
+    after = ["docker.service"];
+    requires = ["docker.service"];
+    wantedBy = ["multi-user.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.lib.getExe (pkgs.writeShellScriptBin "docker-network-traefik" ''
+        ${pkgs.docker}/bin/docker network inspect traefik > /dev/null 2>&1 || \
+          ${pkgs.docker}/bin/docker network create --driver bridge --subnet=172.21.0.0/24 --gateway=172.21.0.1 traefik
+      '');
+    };
+  };
 
   # Beszel monitoring agent (Tailscale-only)
   services.beszel.agent = {
@@ -227,9 +255,9 @@
       extraInputRules = ''
         ip saddr 100.64.0.0/10 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale"
         ip6 saddr fd7a:115c:a1e0::/48 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale IPv6"
-        ip saddr 172.19.0.0/16 tcp dport 9091 accept comment "Authelia from Docker traefik network"
-        ip saddr 172.19.0.0/16 tcp dport 8079 accept comment "Gotify from Docker traefik network"
-        ip saddr 172.19.0.0/16 tcp dport 3001 accept comment "Uptime-kuma from Docker traefik network"
+        ip saddr 172.21.0.0/24 tcp dport 9091 accept comment "Authelia from Docker traefik network"
+        ip saddr 172.21.0.0/24 tcp dport 8079 accept comment "Gotify from Docker traefik network"
+        ip saddr 172.21.0.0/24 tcp dport 3001 accept comment "Uptime-kuma from Docker traefik network"
         ip saddr 127.0.0.1 tcp dport 3001 accept comment "Uptime-kuma from localhost"
       '';
     };
