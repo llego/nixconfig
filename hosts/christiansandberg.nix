@@ -183,6 +183,15 @@
     };
   };
 
+  # Uptime Kuma monitoring tool
+  services.uptime-kuma = {
+    enable = true;
+    settings = {
+      PORT = "3001";
+      HOST = "0.0.0.0";
+    };
+  };
+
   # Gotify push notification server
   services.gotify = {
     enable = true;
@@ -220,6 +229,8 @@
         ip6 saddr fd7a:115c:a1e0::/48 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale IPv6"
         ip saddr 172.19.0.0/16 tcp dport 9091 accept comment "Authelia from Docker traefik network"
         ip saddr 172.19.0.0/16 tcp dport 8079 accept comment "Gotify from Docker traefik network"
+        ip saddr 172.19.0.0/16 tcp dport 3001 accept comment "Uptime-kuma from Docker traefik network"
+        ip saddr 127.0.0.1 tcp dport 3001 accept comment "Uptime-kuma from localhost"
       '';
     };
   };
