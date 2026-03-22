@@ -64,6 +64,30 @@
         owner = "cloudflare-ddns";
         group = "cloudflare-ddns";
       };
+      authelia-jwt = {
+        file = ./../secrets/authelia-christiansandberg-jwt.age;
+        mode = "0400";
+        owner = "authelia-christiansandberg";
+        group = "authelia-christiansandberg";
+      };
+      authelia-storage = {
+        file = ./../secrets/authelia-christiansandberg-storage.age;
+        mode = "0400";
+        owner = "authelia-christiansandberg";
+        group = "authelia-christiansandberg";
+      };
+      authelia-session = {
+        file = ./../secrets/authelia-christiansandberg-session.age;
+        mode = "0400";
+        owner = "authelia-christiansandberg";
+        group = "authelia-christiansandberg";
+      };
+      authelia-smtp = {
+        file = ./../secrets/authelia-christiansandberg-smtp.age;
+        mode = "0400";
+        owner = "authelia-christiansandberg";
+        group = "authelia-christiansandberg";
+      };
     } else {}
   );
 

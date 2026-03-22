@@ -8,21 +8,27 @@ let
   userKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJADwUps+xVBj5uHuO68oR3USlmXdSosizvCQlKyKJnu";
 
   # Key groups
-  allHosts = [ laptop crisuflix christiansandberg ];
-  allKeys = allHosts ++ [ userKey ];
-in
-{
+  allHosts = [laptop crisuflix christiansandberg];
+  allKeys = allHosts ++ [userKey];
+in {
   # Shared across all hosts
   "secrets/initial-password.age".publicKeys = allKeys;
 
   # crisuflix-specific secrets
-  "secrets/nut-password.age".publicKeys = [ crisuflix userKey ];
-  "secrets/beszel-env.age".publicKeys = [ crisuflix userKey ];
+  "secrets/nut-password.age".publicKeys = [crisuflix userKey];
+  "secrets/beszel-env.age".publicKeys = [crisuflix userKey];
+
   # crisuflix + christiansandberg secrets (shared DDNS token)
-  "secrets/cloudflare-ddns-token.age".publicKeys = [ crisuflix christiansandberg userKey ];
-  "secrets/esphome-dashboard-env.age".publicKeys = [ crisuflix userKey ];
-  "secrets/mosquitto-mqtt-user-password.age".publicKeys = [ crisuflix userKey ];
+  "secrets/cloudflare-ddns-token.age".publicKeys = [crisuflix christiansandberg userKey];
+
+  # christiansandberg authelia secrets
+  "secrets/authelia-christiansandberg-jwt.age".publicKeys = [christiansandberg userKey];
+  "secrets/authelia-christiansandberg-storage.age".publicKeys = [christiansandberg userKey];
+  "secrets/authelia-christiansandberg-session.age".publicKeys = [christiansandberg userKey];
+  "secrets/authelia-christiansandberg-smtp.age".publicKeys = [christiansandberg userKey];
+  "secrets/esphome-dashboard-env.age".publicKeys = [crisuflix userKey];
+  "secrets/mosquitto-mqtt-user-password.age".publicKeys = [crisuflix userKey];
 
   # laptop + crisuflix secrets
-  "secrets/ha-mcp-token.age".publicKeys = [ laptop crisuflix userKey ];
+  "secrets/ha-mcp-token.age".publicKeys = [laptop crisuflix userKey];
 }

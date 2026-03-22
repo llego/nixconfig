@@ -11,7 +11,6 @@
     inputs.disko.nixosModules.disko
     ./../modules/core.nix
     ./../modules/basic-cli.nix
-    ./../modules/secrets.nix
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -60,6 +59,118 @@
     proxied = "false";
   };
 
+  # Authelia authentication server
+  services.authelia.instances.christiansandberg = {
+    enable = true;
+    secrets = {
+      jwtSecretFile = config.age.secrets.authelia-jwt.path;
+      storageEncryptionKeyFile = config.age.secrets.authelia-storage.path;
+      sessionSecretFile = config.age.secrets.authelia-session.path;
+    };
+    settings = {
+      theme = "auto";
+      default_2fa_method = "totp";
+      
+      server = {
+        address = "tcp://0.0.0.0:9091/";
+      };
+      
+      log = {
+        level = "info";
+      };
+      
+      totp = {
+        disable = false;
+        issuer = "christiansandberg.fi";
+        algorithm = "SHA1";
+        digits = 6;
+        period = 30;
+        skew = 1;
+        secret_size = 32;
+      };
+      
+      webauthn = {
+        disable = false;
+      };
+      
+      authentication_backend = {
+        password_reset = {
+          disable = false;
+        };
+        file = {
+          path = "/var/lib/authelia-christiansandberg/users_database.yml";
+          watch = false;
+          search = {
+            email = false;
+            case_insensitive = false;
+          };
+          password = {
+            algorithm = "argon2";
+            argon2 = {
+              variant = "argon2id";
+              iterations = 3;
+              memory = 65536;
+              parallelism = 4;
+              key_length = 32;
+              salt_length = 16;
+            };
+          };
+        };
+      };
+      
+      access_control = {
+        default_policy = "deny";
+        rules = [
+          {
+            domain = "*.christiansandberg.fi";
+            resources = ["^/api([/?].*)?$"];
+            policy = "bypass";
+          }
+          {
+            domain = "*.christiansandberg.fi";
+            policy = "two_factor";
+          }
+        ];
+      };
+      
+      session = {
+        name = "authelia_session";
+        same_site = "lax";
+        inactivity = "5m";
+        expiration = "1h";
+        remember_me = "1M";
+        cookies = [
+          {
+            name = "authelia_session_cookie_name";
+            domain = "christiansandberg.fi";
+            authelia_url = "https://auth.christiansandberg.fi";
+            default_redirection_url = "https://christiansandberg.fi";
+            same_site = "lax";
+          }
+        ];
+      };
+      
+      storage = {
+        local = {
+          path = "/var/lib/authelia-christiansandberg/db.sqlite3";
+        };
+      };
+      
+      notifier = {
+        disable_startup_check = true;
+        smtp = {
+          address = "smtp://smtp.protonmail.ch:587";
+          username = "mail@christiansandberg.fi";
+          sender = "Authelia <mail@christiansandberg.fi>";
+          subject = "[Authelia] {title}";
+        };
+      };
+    };
+    environmentVariables = {
+      AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE = config.age.secrets.authelia-smtp.path;
+    };
+  };
+
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
@@ -75,10 +186,11 @@
     };
     firewall = {
       enable = true;
-      allowedTCPPorts = [80 443];
+      allowedTCPPorts = [80 443 9091];
       extraInputRules = ''
         ip saddr 100.64.0.0/10 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale"
         ip6 saddr fd7a:115c:a1e0::/48 tcp dport 6379 accept comment "Redis for traefik-kop from Tailscale IPv6"
+        ip saddr 172.19.0.0/16 tcp dport 9091 accept comment "Authelia from Docker traefik network"
       '';
     };
   };

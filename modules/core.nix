@@ -7,7 +7,7 @@
   config,
   ...
 }: {
-  imports = [./secrets.nix];
+  imports = [./agenix.nix];
   environment.systemPackages = with pkgs; [
     htop
     screen
