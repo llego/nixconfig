@@ -5,13 +5,20 @@
   config,
   pkgs,
   ...
-}: {
+}:
+
+let
+  net = config.christiansandbergNetwork;
+in
+
+{
   system.stateVersion = "24.05";
 
   imports = [
     inputs.disko.nixosModules.disko
     ./../modules/core.nix
     ./../modules/basic-cli.nix
+    ./christiansandberg-network-config.nix
     ./../modules/authelia.nix
     ./../modules/traefik-vps.nix
 
@@ -57,8 +64,7 @@
     environmentFile = "/var/lib/beszel-agent/env";
     environment = {
       PORT = "45876";
-      # Bind only to Tailscale interface
-      HOST = "100.78.37.16"; # christiansandberg Tailscale IP
+      HOST = net.tailscaleIP;
     };
   };
 
@@ -95,7 +101,7 @@
   services.cloudflare-ddns = {
     enable = true;
     credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    ip4Domains = [ "christiansandberg.fi" ];
+    ip4Domains = [ net.domain ];
     ip6Domains = [];  # Disable IPv6 DDNS
     proxied = "false";
   };
@@ -104,8 +110,8 @@
   services.uptime-kuma = {
     enable = true;
     settings = {
-      PORT = "3001";
-      HOST = "172.21.0.1";
+      PORT = toString net.uptimeKumaPort;
+      HOST = net.dockerGateway;
     };
   };
 
@@ -113,8 +119,8 @@
   services.gotify = {
     enable = true;
     environment = {
-      GOTIFY_SERVER_PORT = 8079;  # Port 8080 used by Traefik dashboard
-      GOTIFY_SERVER_LISTENADDR = "172.21.0.1";
+      GOTIFY_SERVER_PORT = net.gotifyPort;
+      GOTIFY_SERVER_LISTENADDR = net.dockerGateway;
       GOTIFY_DATABASE_DIALECT = "sqlite3";
       GOTIFY_DATABASE_CONNECTION = "data/gotify.db";
       GOTIFY_DEFAULTUSER_NAME = "admin";
@@ -135,16 +141,16 @@
       # Allow Docker traefik subnet (172.21.0.0/24) to reach host-bound services.
       # These ports are bound to 172.21.0.1 only, so they are unreachable from the public internet.
       extraCommands = ''
-        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 9091 -j nixos-fw-accept
-        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 8079 -j nixos-fw-accept
-        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 3001 -j nixos-fw-accept
-        iptables -w -I nixos-fw -p tcp -s 100.123.67.48 --dport 6379 -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.autheliaPort} -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.gotifyPort} -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.uptimeKumaPort} -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept
       '';
       extraStopCommands = ''
-        iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 9091 -j nixos-fw-accept 2>/dev/null || true
-        iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 8079 -j nixos-fw-accept 2>/dev/null || true
-        iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 3001 -j nixos-fw-accept 2>/dev/null || true
-        iptables -w -D nixos-fw -p tcp -s 100.123.67.48 --dport 6379 -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.autheliaPort} -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.gotifyPort} -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.uptimeKumaPort} -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept 2>/dev/null || true
       '';
     };
   };

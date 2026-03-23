@@ -1,4 +1,10 @@
-{ config, ... }: {
+{ config, ... }:
+
+let
+  net = config.christiansandbergNetwork;
+in
+
+{
   # Authelia authentication server
   services.authelia.instances.christiansandberg = {
     enable = true;
@@ -12,7 +18,7 @@
       default_2fa_method = "totp";
 
       server = {
-        address = "tcp://172.21.0.1:9091/";
+        address = "tcp://${net.dockerGateway}:${toString net.autheliaPort}/";
       };
 
       log = {
@@ -21,7 +27,7 @@
 
       totp = {
         disable = false;
-        issuer = "christiansandberg.fi";
+        issuer = net.domain;
         algorithm = "SHA1";
         digits = 6;
         period = 30;
@@ -62,12 +68,12 @@
         default_policy = "deny";
         rules = [
           {
-            domain = "*.christiansandberg.fi";
+            domain = "*.${net.domain}";
             resources = ["^/api([/?].*)?$"];
             policy = "bypass";
           }
           {
-            domain = "*.christiansandberg.fi";
+            domain = "*.${net.domain}";
             policy = "two_factor";
           }
         ];
@@ -82,9 +88,9 @@
         cookies = [
           {
             name = "authelia_session_cookie_name";
-            domain = "christiansandberg.fi";
-            authelia_url = "https://auth.christiansandberg.fi";
-            default_redirection_url = "https://christiansandberg.fi";
+            domain = net.domain;
+            authelia_url = "https://auth.${net.domain}";
+            default_redirection_url = "https://${net.domain}";
             same_site = "lax";
           }
         ];
@@ -100,8 +106,8 @@
         disable_startup_check = true;
         smtp = {
           address = "smtp://smtp.protonmail.ch:587";
-          username = "mail@christiansandberg.fi";
-          sender = "Authelia <mail@christiansandberg.fi>";
+          username = "mail@${net.domain}";
+          sender = "Authelia <mail@${net.domain}>";
           subject = "[Authelia] {title}";
         };
       };

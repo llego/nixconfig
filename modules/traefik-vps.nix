@@ -1,14 +1,18 @@
 # Traefik VPS configuration module
 # Provides reverse proxy with Redis for traefik-kop integration
 
-{ ... }:
+{ config, ... }:
+
+let
+  net = config.christiansandbergNetwork;
+in
 
 {
   # Redis for traefik-kop (crisuflix publishes container routes here)
   services.redis.servers.traefik = {
     enable = true;
-    bind = "100.78.37.16";
-    port = 6379;
+    bind = net.tailscaleIP;
+    port = net.redisPort;
     settings = {
       protected-mode = "no";
     };
@@ -36,7 +40,7 @@
           address = ":443";
           http.tls = {
             certResolver = "myresolver";
-            domains = [{ main = "christiansandberg.fi"; }];
+            domains = [{ main = net.domain; }];
           };
         };
       };
@@ -53,7 +57,7 @@
           endpoint = "unix:///var/run/docker.sock";
         };
         redis = {
-          endpoints = ["100.78.37.16:6379"];
+          endpoints = ["${net.tailscaleIP}:${toString net.redisPort}"];
           rootKey = "traefik";
         };
       };
@@ -66,19 +70,19 @@
       http = {
         routers = {
           authelia = {
-            rule = "Host(`auth.christiansandberg.fi`)";
+            rule = "Host(`auth.${net.domain}`)";
             entryPoints = [ "websecure" ];
             service = "authelia";
             tls.certResolver = "myresolver";
           };
           gotify = {
-            rule = "Host(`gotify.christiansandberg.fi`)";
+            rule = "Host(`gotify.${net.domain}`)";
             entryPoints = [ "websecure" ];
             service = "gotify";
             tls.certResolver = "myresolver";
           };
           uptime-kuma = {
-            rule = "Host(`uptime.christiansandberg.fi`)";
+            rule = "Host(`uptime.${net.domain}`)";
             entryPoints = [ "websecure" ];
             service = "uptime-kuma";
             tls.certResolver = "myresolver";
@@ -87,14 +91,20 @@
         };
 
         services = {
-          authelia.loadBalancer.servers = [{ url = "http://172.21.0.1:9091"; }];
-          gotify.loadBalancer.servers = [{ url = "http://172.21.0.1:8079"; }];
-          uptime-kuma.loadBalancer.servers = [{ url = "http://172.21.0.1:3001"; }];
+          authelia.loadBalancer.servers = [{ 
+            url = "http://${net.dockerGateway}:${toString net.autheliaPort}"; 
+          }];
+          gotify.loadBalancer.servers = [{ 
+            url = "http://${net.dockerGateway}:${toString net.gotifyPort}"; 
+          }];
+          uptime-kuma.loadBalancer.servers = [{ 
+            url = "http://${net.dockerGateway}:${toString net.uptimeKumaPort}"; 
+          }];
         };
 
         middlewares = {
           authelia.forwardAuth = {
-            address = "http://172.21.0.1:9091/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.christiansandberg.fi%2F";
+            address = "http://${net.dockerGateway}:${toString net.autheliaPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.${net.domain}%2F";
             authResponseHeaders = [ "Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name" ];
             trustForwardHeader = true;
           };

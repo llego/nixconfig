@@ -1,0 +1,56 @@
+# Network configuration for christiansandberg VPS
+# Centralizes IP addresses, ports, and domain configuration
+
+{ lib, ... }:
+
+{
+  options.christiansandbergNetwork = {
+    domain = lib.mkOption {
+      type = lib.types.str;
+      default = "christiansandberg.fi";
+      description = "Primary domain name for christiansandberg VPS";
+    };
+    
+    tailscaleIP = lib.mkOption {
+      type = lib.types.str;
+      default = "100.78.37.16";
+      description = "Tailscale IP address for christiansandberg";
+    };
+    
+    crisuflixIP = lib.mkOption {
+      type = lib.types.str;
+      default = "100.123.67.48";
+      description = "Tailscale IP address for crisuflix (traefik-kop source)";
+    };
+    
+    dockerGateway = lib.mkOption {
+      type = lib.types.str;
+      default = "172.21.0.1";
+      description = "Docker traefik network gateway IP";
+    };
+    
+    autheliaPort = lib.mkOption {
+      type = lib.types.port;
+      default = 9091;
+      description = "Authelia service port";
+    };
+    
+    gotifyPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8079;
+      description = "Gotify service port";
+    };
+    
+    uptimeKumaPort = lib.mkOption {
+      type = lib.types.port;
+      default = 3001;
+      description = "Uptime Kuma service port";
+    };
+    
+    redisPort = lib.mkOption {
+      type = lib.types.port;
+      default = 6379;
+      description = "Redis port for traefik-kop";
+    };
+  };
+}
