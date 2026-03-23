@@ -112,7 +112,7 @@
       default_2fa_method = "totp";
 
       server = {
-        address = "tcp://0.0.0.0:9091/";
+        address = "tcp://172.21.0.1:9091/";
       };
 
       log = {
@@ -216,7 +216,7 @@
     enable = true;
     settings = {
       PORT = "3001";
-      HOST = "0.0.0.0";
+      HOST = "172.21.0.1";
     };
   };
 
@@ -225,7 +225,7 @@
     enable = true;
     environment = {
       GOTIFY_SERVER_PORT = 8079;  # Port 8080 used by Traefik dashboard
-      GOTIFY_SERVER_LISTENADDR = "0.0.0.0";
+      GOTIFY_SERVER_LISTENADDR = "172.21.0.1";
       GOTIFY_DATABASE_DIALECT = "sqlite3";
       GOTIFY_DATABASE_CONNECTION = "data/gotify.db";
       GOTIFY_DEFAULTUSER_NAME = "admin";
@@ -249,29 +249,21 @@
       address = "fe80::1";
       interface = "enp1s0";
     };
-    # Firewall configuration
-    # - Allows Docker containers to reach native NixOS services
-    # - Allows Tailscale access to services
     firewall = {
       enable = true;
-      checkReversePath = false;  # Required for Docker→host communication
-      
-      allowedTCPPorts = [
-        22    # SSH
-        80    # HTTP (Traefik)
-        443   # HTTPS (Traefik)
-        9091  # Authelia (native service)
-      ];
-      
-      # Docker containers need explicit rules to reach host services
+      checkReversePath = false;  # Required for Docker→host routing
+      allowedTCPPorts = [ 22 80 443 ];
+      # Allow Docker traefik subnet (172.21.0.0/24) to reach host-bound services.
+      # These ports are bound to 172.21.0.1 only, so they are unreachable from the public internet.
       extraCommands = ''
-        # Allow Docker traefik network to reach host services
-        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 9091 -j nixos-fw-accept -m comment --comment "Authelia from Docker"
-        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 8079 -j nixos-fw-accept -m comment --comment "Gotify from Docker"
-        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 3001 -j nixos-fw-accept -m comment --comment "Uptime-kuma from Docker"
-        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 8000 -j nixos-fw-accept -m comment --comment "Ihatemoney from Docker"
-        iptables -w -I nixos-fw -p tcp -s 100.64.0.0/10 --dport 6379 -j nixos-fw-accept -m comment --comment "Redis from Tailscale"
-        ip6tables -w -I nixos-fw -p tcp -s fd7a:115c:a1e0::/48 --dport 6379 -j nixos-fw-accept -m comment --comment "Redis from Tailscale IPv6"
+        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 9091 -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 8079 -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 3001 -j nixos-fw-accept
+      '';
+      extraStopCommands = ''
+        iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 9091 -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 8079 -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 3001 -j nixos-fw-accept 2>/dev/null || true
       '';
     };
   };
