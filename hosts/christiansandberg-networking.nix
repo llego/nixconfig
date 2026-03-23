@@ -1,13 +1,40 @@
 # Traefik VPS configuration module
 # Provides reverse proxy with Redis for traefik-kop integration
-
-{ config, ... }:
-
-let
+{config, ...}: let
   net = config.christiansandbergNetwork;
-in
+in {
+  networking = {
+    useDHCP = true;
+    networkmanager.enable = false;
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [22 80 443];
+      # Allow crisuflix (via Tailscale) to reach Redis for traefik-kop
+      extraCommands = ''
+        iptables -w -I nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept
+      '';
+      extraStopCommands = ''
+        iptables -w -D nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept 2>/dev/null || true
+      '';
+    };
+  };
 
-{
+  # Static website hosting via Static Web Server
+  services.static-web-server = {
+    enable = true;
+    listen = "${net.loopbackIP}:${toString net.websitePort}";
+    root = "${net.websitePackage}";  # Website from nix store
+  };
+
+  # Cloudflare DDNS for christiansandberg.fi domain (IPv4 only)
+  services.cloudflare-ddns = {
+    enable = true;
+    credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
+    ip4Domains = [net.domain];
+    ip6Domains = []; # Disable IPv6 DDNS
+    proxied = "false";
+  };
+
   # Redis for traefik-kop (crisuflix publishes container routes here)
   services.redis.servers.traefik = {
     enable = true;
@@ -40,7 +67,7 @@ in
           address = ":443";
           http.tls = {
             certResolver = "myresolver";
-            domains = [{ main = net.domain; }];
+            domains = [{main = net.domain;}];
           };
         };
       };
@@ -67,50 +94,58 @@ in
         routers = {
           authelia = {
             rule = "Host(`auth.${net.domain}`)";
-            entryPoints = [ "websecure" ];
+            entryPoints = ["websecure"];
             service = "authelia";
             tls.certResolver = "myresolver";
           };
           gotify = {
             rule = "Host(`gotify.${net.domain}`)";
-            entryPoints = [ "websecure" ];
+            entryPoints = ["websecure"];
             service = "gotify";
             tls.certResolver = "myresolver";
           };
           uptime-kuma = {
             rule = "Host(`uptime.${net.domain}`)";
-            entryPoints = [ "websecure" ];
+            entryPoints = ["websecure"];
             service = "uptime-kuma";
             tls.certResolver = "myresolver";
-            middlewares = [ "authelia" ];
+            middlewares = ["authelia"];
           };
           website = {
             rule = "Host(`${net.domain}`) || Host(`www.${net.domain}`)";
-            entryPoints = [ "websecure" ];
+            entryPoints = ["websecure"];
             service = "website";
             tls.certResolver = "myresolver";
           };
         };
 
         services = {
-          authelia.loadBalancer.servers = [{ 
-            url = "http://${net.loopbackIP}:${toString net.autheliaPort}"; 
-          }];
-          gotify.loadBalancer.servers = [{ 
-            url = "http://${net.loopbackIP}:${toString net.gotifyPort}"; 
-          }];
-          uptime-kuma.loadBalancer.servers = [{ 
-            url = "http://${net.loopbackIP}:${toString net.uptimeKumaPort}"; 
-          }];
-          website.loadBalancer.servers = [{ 
-            url = "http://${net.loopbackIP}:${toString net.websitePort}"; 
-          }];
+          authelia.loadBalancer.servers = [
+            {
+              url = "http://${net.loopbackIP}:${toString net.autheliaPort}";
+            }
+          ];
+          gotify.loadBalancer.servers = [
+            {
+              url = "http://${net.loopbackIP}:${toString net.gotifyPort}";
+            }
+          ];
+          uptime-kuma.loadBalancer.servers = [
+            {
+              url = "http://${net.loopbackIP}:${toString net.uptimeKumaPort}";
+            }
+          ];
+          website.loadBalancer.servers = [
+            {
+              url = "http://${net.loopbackIP}:${toString net.websitePort}";
+            }
+          ];
         };
 
         middlewares = {
           authelia.forwardAuth = {
             address = "http://${net.loopbackIP}:${toString net.autheliaPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.${net.domain}%2F";
-            authResponseHeaders = [ "Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name" ];
+            authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
             trustForwardHeader = true;
           };
         };

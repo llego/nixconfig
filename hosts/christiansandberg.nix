@@ -5,22 +5,18 @@
   config,
   pkgs,
   ...
-}:
-
-let
+}: let
   net = config.christiansandbergNetwork;
-in
-
-{
+in {
   system.stateVersion = "24.05";
 
   imports = [
     inputs.disko.nixosModules.disko
     ./../modules/core.nix
     ./../modules/basic-cli.nix
-    ./christiansandberg-network-config.nix
+    ./christiansandberg-networking.nix
+    ./christiansandberg-networking-variables.nix
     ./../modules/authelia.nix
-    ./../modules/traefik-vps.nix
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -67,15 +63,6 @@ in
     bantime = "1h";
   };
 
-  # Cloudflare DDNS for christiansandberg.fi domain (IPv4 only)
-  services.cloudflare-ddns = {
-    enable = true;
-    credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    ip4Domains = [ net.domain ];
-    ip6Domains = [];  # Disable IPv6 DDNS
-    proxied = "false";
-  };
-
   # Uptime Kuma monitoring tool
   services.uptime-kuma = {
     enable = true;
@@ -83,13 +70,6 @@ in
       PORT = toString net.uptimeKumaPort;
       HOST = net.loopbackIP;
     };
-  };
-
-  # Static website hosting via Static Web Server
-  services.static-web-server = {
-    enable = true;
-    listen = "${net.loopbackIP}:${toString net.websitePort}";  # Only accessible via Traefik
-    root = "/var/www/christiansandberg.fi";
   };
 
   # Gotify push notification server
@@ -105,22 +85,12 @@ in
       GOTIFY_UPLOADEDIMAGESDIR = "data/images";
       GOTIFY_PLUGINSDIR = "data/plugins";
     };
-    environmentFiles = [ config.age.secrets.gotify-admin-password.path ];
+    environmentFiles = [config.age.secrets.gotify-admin-password.path];
   };
 
-  networking = {
-    useDHCP = true;
-    networkmanager.enable = false;
-    firewall = {
-      enable = true;
-      allowedTCPPorts = [ 22 80 443 ];
-      # Allow crisuflix (via Tailscale) to reach Redis for traefik-kop
-      extraCommands = ''
-        iptables -w -I nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept
-      '';
-      extraStopCommands = ''
-        iptables -w -D nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept 2>/dev/null || true
-      '';
-    };
-  };
+  # Build website from GitHub repo
+  christiansandbergNetwork.websitePackage = pkgs.runCommand "christiansandberg-website" {} ''
+    mkdir -p $out
+    cp -r ${inputs.christiansandberg-website}/* $out/
+  '';
 }

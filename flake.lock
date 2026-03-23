@@ -39,6 +39,22 @@
       },
       "parent": []
     },
+    "christiansandberg-website": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1774289335,
+        "narHash": "sha256-KuwmBEHgjfQmZdUOKQkeZ0aeDOQvtjwQR3hPQgS9omo=",
+        "ref": "refs/heads/main",
+        "rev": "892d5f4a781b3cfe931611ab58fd3ac9f79ef9e9",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@github.com/llego/christiansandberg.fi.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/llego/christiansandberg.fi.git"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -276,6 +292,7 @@
       "inputs": {
         "agenix": "agenix",
         "album-downloader": "album-downloader",
+        "christiansandberg-website": "christiansandberg-website",
         "disko": "disko",
         "nixpkgs": "nixpkgs",
         "noctalia": "noctalia",

@@ -58,5 +58,10 @@
       default = 8082;
       description = "Static website server port";
     };
+    
+    websitePackage = lib.mkOption {
+      type = lib.types.package;
+      description = "Website files as a nix package";
+    };
   };
 }
