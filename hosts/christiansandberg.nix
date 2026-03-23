@@ -16,6 +16,7 @@
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
     ./christiansandberg-disk-config.nix
+    ./../modules/authelia.nix
   ];
 
   virtualisation.docker = {
@@ -89,126 +90,13 @@
     bantime = "1h";
   };
 
-  # Cloudflare DDNS for christiansandberg.fi domain
+  # Cloudflare DDNS for christiansandberg.fi domain (IPv4 only)
   services.cloudflare-ddns = {
     enable = true;
     credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    domains = [
-      "christiansandberg.fi"
-    ];
+    ip4Domains = [ "christiansandberg.fi" ];
+    ip6Domains = [];  # Disable IPv6 DDNS
     proxied = "false";
-  };
-
-  # Authelia authentication server
-  services.authelia.instances.christiansandberg = {
-    enable = true;
-    secrets = {
-      jwtSecretFile = config.age.secrets.authelia-jwt.path;
-      storageEncryptionKeyFile = config.age.secrets.authelia-storage.path;
-      sessionSecretFile = config.age.secrets.authelia-session.path;
-    };
-    settings = {
-      theme = "auto";
-      default_2fa_method = "totp";
-
-      server = {
-        address = "tcp://172.21.0.1:9091/";
-      };
-
-      log = {
-        level = "info";
-      };
-
-      totp = {
-        disable = false;
-        issuer = "christiansandberg.fi";
-        algorithm = "SHA1";
-        digits = 6;
-        period = 30;
-        skew = 1;
-        secret_size = 32;
-      };
-
-      webauthn = {
-        disable = false;
-      };
-
-      authentication_backend = {
-        password_reset = {
-          disable = false;
-        };
-        file = {
-          path = "/var/lib/authelia-christiansandberg/users_database.yml";
-          watch = false;
-          search = {
-            email = false;
-            case_insensitive = false;
-          };
-          password = {
-            algorithm = "argon2";
-            argon2 = {
-              variant = "argon2id";
-              iterations = 3;
-              memory = 65536;
-              parallelism = 4;
-              key_length = 32;
-              salt_length = 16;
-            };
-          };
-        };
-      };
-
-      access_control = {
-        default_policy = "deny";
-        rules = [
-          {
-            domain = "*.christiansandberg.fi";
-            resources = ["^/api([/?].*)?$"];
-            policy = "bypass";
-          }
-          {
-            domain = "*.christiansandberg.fi";
-            policy = "two_factor";
-          }
-        ];
-      };
-
-      session = {
-        name = "authelia_session";
-        same_site = "lax";
-        inactivity = "5m";
-        expiration = "1h";
-        remember_me = "1M";
-        cookies = [
-          {
-            name = "authelia_session_cookie_name";
-            domain = "christiansandberg.fi";
-            authelia_url = "https://auth.christiansandberg.fi";
-            default_redirection_url = "https://christiansandberg.fi";
-            same_site = "lax";
-          }
-        ];
-      };
-
-      storage = {
-        local = {
-          path = "/var/lib/authelia-christiansandberg/db.sqlite3";
-        };
-      };
-
-      notifier = {
-        disable_startup_check = true;
-        smtp = {
-          address = "smtp://smtp.protonmail.ch:587";
-          username = "mail@christiansandberg.fi";
-          sender = "Authelia <mail@christiansandberg.fi>";
-          subject = "[Authelia] {title}";
-        };
-      };
-    };
-    environmentVariables = {
-      AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE = config.age.secrets.authelia-smtp.path;
-    };
   };
 
   # Uptime Kuma monitoring tool
@@ -236,19 +124,75 @@
     environmentFiles = [ config.age.secrets.gotify-admin-password.path ];
   };
 
+  # Redis for traefik-kop (crisuflix publishes container routes here)
+  services.redis.servers.traefik = {
+    enable = true;
+    bind = "100.78.37.16";
+    port = 6379;
+    settings = {
+      protected-mode = "no";
+    };
+  };
+
+  # Traefik reverse proxy
+  services.traefik = {
+    enable = true;
+    
+    staticConfigOptions = {
+      api = {
+        dashboard = true;
+        insecure = true;
+      };
+      
+      entryPoints = {
+        web = {
+          address = ":80";
+          http.redirections.entryPoint = {
+            to = "websecure";
+            scheme = "https";
+          };
+        };
+        websecure = {
+          address = ":443";
+          http.tls = {
+            certResolver = "myresolver";
+            domains = [{ main = "christiansandberg.fi"; }];
+          };
+        };
+      };
+      
+      certificatesResolvers.myresolver.acme = {
+        email = "traefik.certs@cri.su";
+        storage = "/var/lib/traefik/acme.json";
+        httpChallenge.entryPoint = "web";
+      };
+      
+      providers = {
+        docker = {
+          exposedByDefault = false;
+          endpoint = "unix:///var/run/docker.sock";
+        };
+        redis = {
+          endpoints = ["100.78.37.16:6379"];
+          rootKey = "traefik";
+        };
+        file = {
+          filename = "/var/lib/traefik/config.yml";
+        };
+      };
+      
+      serversTransport.insecureSkipVerify = true;
+    };
+  };
+  
+  # Allow Traefik to read Docker socket
+  systemd.services.traefik.serviceConfig = {
+    SupplementaryGroups = ["docker"];
+  };
+
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
-    interfaces.enp1s0.ipv6.addresses = [
-      {
-        address = "2a01:4f9:c010:803e::1";
-        prefixLength = 64;
-      }
-    ];
-    defaultGateway6 = {
-      address = "fe80::1";
-      interface = "enp1s0";
-    };
     firewall = {
       enable = true;
       checkReversePath = false;  # Required for Docker→host routing
@@ -259,11 +203,13 @@
         iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 9091 -j nixos-fw-accept
         iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 8079 -j nixos-fw-accept
         iptables -w -I nixos-fw -p tcp -s 172.21.0.0/24 --dport 3001 -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s 100.123.67.48 --dport 6379 -j nixos-fw-accept
       '';
       extraStopCommands = ''
         iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 9091 -j nixos-fw-accept 2>/dev/null || true
         iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 8079 -j nixos-fw-accept 2>/dev/null || true
         iptables -w -D nixos-fw -p tcp -s 172.21.0.0/24 --dport 3001 -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s 100.123.67.48 --dport 6379 -j nixos-fw-accept 2>/dev/null || true
       '';
     };
   };
