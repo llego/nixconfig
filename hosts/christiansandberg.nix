@@ -27,36 +27,6 @@ in
     ./christiansandberg-disk-config.nix
   ];
 
-  virtualisation.docker = {
-    enable = true;
-    daemon.settings = {
-      "default-address-pools" = [
-        {
-          base = "172.21.0.0/16";
-          size = 24;
-        }
-      ];
-    };
-  };
-  users.users.${username}.extraGroups = ["docker"];
-
-  # Ensure the traefik Docker network exists with the correct subnet.
-  # All stacks reference it as external: true, so it must pre-exist.
-  systemd.services.docker-network-traefik = {
-    description = "Create traefik Docker network";
-    after = ["docker.service"];
-    requires = ["docker.service"];
-    wantedBy = ["multi-user.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.lib.getExe (pkgs.writeShellScriptBin "docker-network-traefik" ''
-        ${pkgs.docker}/bin/docker network inspect traefik > /dev/null 2>&1 || \
-          ${pkgs.docker}/bin/docker network create --driver bridge --subnet=172.21.0.0/24 --gateway=172.21.0.1 traefik
-      '');
-    };
-  };
-
   # Beszel monitoring agent (Tailscale-only)
   services.beszel.agent = {
     enable = true;
@@ -111,14 +81,14 @@ in
     enable = true;
     settings = {
       PORT = toString net.uptimeKumaPort;
-      HOST = net.dockerGateway;
+      HOST = net.loopbackIP;
     };
   };
 
   # Static website hosting via Static Web Server
   services.static-web-server = {
     enable = true;
-    listen = "${net.dockerGateway}:${toString net.websitePort}";  # Only accessible via Traefik
+    listen = "${net.loopbackIP}:${toString net.websitePort}";  # Only accessible via Traefik
     root = "/var/www/christiansandberg.fi";
   };
 
@@ -127,7 +97,7 @@ in
     enable = true;
     environment = {
       GOTIFY_SERVER_PORT = net.gotifyPort;
-      GOTIFY_SERVER_LISTENADDR = net.dockerGateway;
+      GOTIFY_SERVER_LISTENADDR = net.loopbackIP;
       GOTIFY_DATABASE_DIALECT = "sqlite3";
       GOTIFY_DATABASE_CONNECTION = "data/gotify.db";
       GOTIFY_DEFAULTUSER_NAME = "admin";
@@ -143,22 +113,12 @@ in
     networkmanager.enable = false;
     firewall = {
       enable = true;
-      checkReversePath = false;  # Required for Docker→host routing
       allowedTCPPorts = [ 22 80 443 ];
-      # Allow Docker traefik subnet (172.21.0.0/24) to reach host-bound services.
-      # These ports are bound to 172.21.0.1 only, so they are unreachable from the public internet.
+      # Allow crisuflix (via Tailscale) to reach Redis for traefik-kop
       extraCommands = ''
-        iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.autheliaPort} -j nixos-fw-accept
-        iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.gotifyPort} -j nixos-fw-accept
-        iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.uptimeKumaPort} -j nixos-fw-accept
-        iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.websitePort} -j nixos-fw-accept
         iptables -w -I nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept
       '';
       extraStopCommands = ''
-        iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.autheliaPort} -j nixos-fw-accept 2>/dev/null || true
-        iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.gotifyPort} -j nixos-fw-accept 2>/dev/null || true
-        iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.uptimeKumaPort} -j nixos-fw-accept 2>/dev/null || true
-        iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.websitePort} -j nixos-fw-accept 2>/dev/null || true
         iptables -w -D nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept 2>/dev/null || true
       '';
     };

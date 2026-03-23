@@ -52,10 +52,6 @@ in
       };
 
       providers = {
-        docker = {
-          exposedByDefault = false;
-          endpoint = "unix:///var/run/docker.sock";
-        };
         redis = {
           endpoints = ["${net.tailscaleIP}:${toString net.redisPort}"];
           rootKey = "traefik";
@@ -98,32 +94,27 @@ in
 
         services = {
           authelia.loadBalancer.servers = [{ 
-            url = "http://${net.dockerGateway}:${toString net.autheliaPort}"; 
+            url = "http://${net.loopbackIP}:${toString net.autheliaPort}"; 
           }];
           gotify.loadBalancer.servers = [{ 
-            url = "http://${net.dockerGateway}:${toString net.gotifyPort}"; 
+            url = "http://${net.loopbackIP}:${toString net.gotifyPort}"; 
           }];
           uptime-kuma.loadBalancer.servers = [{ 
-            url = "http://${net.dockerGateway}:${toString net.uptimeKumaPort}"; 
+            url = "http://${net.loopbackIP}:${toString net.uptimeKumaPort}"; 
           }];
           website.loadBalancer.servers = [{ 
-            url = "http://${net.dockerGateway}:${toString net.websitePort}"; 
+            url = "http://${net.loopbackIP}:${toString net.websitePort}"; 
           }];
         };
 
         middlewares = {
           authelia.forwardAuth = {
-            address = "http://${net.dockerGateway}:${toString net.autheliaPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.${net.domain}%2F";
+            address = "http://${net.loopbackIP}:${toString net.autheliaPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.${net.domain}%2F";
             authResponseHeaders = [ "Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name" ];
             trustForwardHeader = true;
           };
         };
       };
     };
-  };
-
-  # Allow Traefik to read Docker socket
-  systemd.services.traefik.serviceConfig = {
-    SupplementaryGroups = [ "docker" ];
   };
 }

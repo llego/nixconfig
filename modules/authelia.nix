@@ -18,7 +18,7 @@ in
       default_2fa_method = "totp";
 
       server = {
-        address = "tcp://${net.dockerGateway}:${toString net.autheliaPort}/";
+        address = "tcp://${net.loopbackIP}:${toString net.autheliaPort}/";
       };
 
       log = {

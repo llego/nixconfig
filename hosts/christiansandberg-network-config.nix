@@ -23,10 +23,10 @@
       description = "Tailscale IP address for crisuflix (traefik-kop source)";
     };
     
-    dockerGateway = lib.mkOption {
+    loopbackIP = lib.mkOption {
       type = lib.types.str;
-      default = "172.21.0.1";
-      description = "Docker traefik network gateway IP";
+      default = "127.0.0.1";
+      description = "Loopback address for native services (Authelia, Gotify, etc.)";
     };
     
     autheliaPort = lib.mkOption {
