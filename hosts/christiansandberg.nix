@@ -12,11 +12,12 @@
     inputs.disko.nixosModules.disko
     ./../modules/core.nix
     ./../modules/basic-cli.nix
+    ./../modules/authelia.nix
+    ./../modules/traefik-vps.nix
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
     ./christiansandberg-disk-config.nix
-    ./../modules/authelia.nix
   ];
 
   virtualisation.docker = {
@@ -122,72 +123,6 @@
       GOTIFY_PLUGINSDIR = "data/plugins";
     };
     environmentFiles = [ config.age.secrets.gotify-admin-password.path ];
-  };
-
-  # Redis for traefik-kop (crisuflix publishes container routes here)
-  services.redis.servers.traefik = {
-    enable = true;
-    bind = "100.78.37.16";
-    port = 6379;
-    settings = {
-      protected-mode = "no";
-    };
-  };
-
-  # Traefik reverse proxy
-  services.traefik = {
-    enable = true;
-    
-    staticConfigOptions = {
-      api = {
-        dashboard = true;
-        insecure = true;
-      };
-      
-      entryPoints = {
-        web = {
-          address = ":80";
-          http.redirections.entryPoint = {
-            to = "websecure";
-            scheme = "https";
-          };
-        };
-        websecure = {
-          address = ":443";
-          http.tls = {
-            certResolver = "myresolver";
-            domains = [{ main = "christiansandberg.fi"; }];
-          };
-        };
-      };
-      
-      certificatesResolvers.myresolver.acme = {
-        email = "traefik.certs@cri.su";
-        storage = "/var/lib/traefik/acme.json";
-        httpChallenge.entryPoint = "web";
-      };
-      
-      providers = {
-        docker = {
-          exposedByDefault = false;
-          endpoint = "unix:///var/run/docker.sock";
-        };
-        redis = {
-          endpoints = ["100.78.37.16:6379"];
-          rootKey = "traefik";
-        };
-        file = {
-          filename = "/var/lib/traefik/config.yml";
-        };
-      };
-      
-      serversTransport.insecureSkipVerify = true;
-    };
-  };
-  
-  # Allow Traefik to read Docker socket
-  systemd.services.traefik.serviceConfig = {
-    SupplementaryGroups = ["docker"];
   };
 
   networking = {
