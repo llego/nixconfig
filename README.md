@@ -84,3 +84,25 @@ See [CLAUDE.md](./CLAUDE.md) for detailed architecture, module composition patte
 - Device control sessions from `crisuflix` to IoT endpoints (`:8080`, `:8008`, etc.)
 
 This separation keeps IoT traffic reachable from `crisuflix` while preserving `br0` as the primary host/network egress path.
+
+## Reverse Proxy with traefik-kop
+
+Multi-host reverse proxy serving Docker containers from crisuflix through christiansandberg.fi.
+
+**Architecture:**
+- christiansandberg runs Traefik + Redis (NixOS native)
+- crisuflix runs Docker containers with traefik-kop agent
+- Communication over Tailscale
+
+**Exposing a container:**
+Add these labels to any Docker container on crisuflix:
+
+```yaml
+labels:
+  - "kop.namespace=vps"  # Required: identifies containers to expose
+  - "traefik.enable=true"
+  - "traefik.http.routers.myapp.rule=Host(`myapp.christiansandberg.fi`)"
+```
+
+**Network configuration:**
+Centralized in `hosts/christiansandberg-network-config.nix` with defaults for IPs, ports, and domain.
