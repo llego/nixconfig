@@ -115,6 +115,13 @@ in
     };
   };
 
+  # Static website hosting via Static Web Server
+  services.static-web-server = {
+    enable = true;
+    listen = "${net.dockerGateway}:${toString net.websitePort}";  # Only accessible via Traefik
+    root = "/var/www/christiansandberg.fi";
+  };
+
   # Gotify push notification server
   services.gotify = {
     enable = true;
@@ -144,12 +151,14 @@ in
         iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.autheliaPort} -j nixos-fw-accept
         iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.gotifyPort} -j nixos-fw-accept
         iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.uptimeKumaPort} -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.websitePort} -j nixos-fw-accept
         iptables -w -I nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept
       '';
       extraStopCommands = ''
         iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.autheliaPort} -j nixos-fw-accept 2>/dev/null || true
         iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.gotifyPort} -j nixos-fw-accept 2>/dev/null || true
         iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.uptimeKumaPort} -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s ${net.dockerGateway}/24 --dport ${toString net.websitePort} -j nixos-fw-accept 2>/dev/null || true
         iptables -w -D nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept 2>/dev/null || true
       '';
     };

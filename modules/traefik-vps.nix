@@ -88,6 +88,12 @@ in
             tls.certResolver = "myresolver";
             middlewares = [ "authelia" ];
           };
+          website = {
+            rule = "Host(`${net.domain}`) || Host(`www.${net.domain}`)";
+            entryPoints = [ "websecure" ];
+            service = "website";
+            tls.certResolver = "myresolver";
+          };
         };
 
         services = {
@@ -99,6 +105,9 @@ in
           }];
           uptime-kuma.loadBalancer.servers = [{ 
             url = "http://${net.dockerGateway}:${toString net.uptimeKumaPort}"; 
+          }];
+          website.loadBalancer.servers = [{ 
+            url = "http://${net.dockerGateway}:${toString net.websitePort}"; 
           }];
         };
 

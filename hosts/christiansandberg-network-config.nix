@@ -52,5 +52,11 @@
       default = 6379;
       description = "Redis port for traefik-kop";
     };
+    
+    websitePort = lib.mkOption {
+      type = lib.types.port;
+      default = 8082;
+      description = "Static website server port";
+    };
   };
 }
