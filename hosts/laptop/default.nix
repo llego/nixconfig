@@ -10,15 +10,15 @@
   system.stateVersion = "24.05";
 
   imports = [
-    ./../modules/core.nix
-    ./../modules/basic-cli.nix
-    ./../modules/ai.nix
-    ./../modules/apps.nix
-    ./../modules/desktop-environment.nix
-    ./../modules/printer.nix
-    ./../modules/wifi-networks.nix
-    ./../modules/vpn.nix
-    ./../modules/downloaders.nix
+    ./../../modules/core.nix
+    ./../../modules/basic-cli.nix
+    ./../../modules/ai.nix
+    ./../../modules/apps.nix
+    ./../../modules/desktop-environment.nix
+    ./../../modules/printer.nix
+    ./../../modules/wifi-networks.nix
+    ./../../modules/vpn.nix
+    ./../../modules/downloaders.nix
     # inputs.ruuvi.nixosModules.default
 
     # hardware-configuration.nix

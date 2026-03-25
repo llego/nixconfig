@@ -15,9 +15,9 @@ in {
     ./disk-config.nix
     ./networking.nix
     ./networking-variables.nix
-    ./../modules/core.nix
-    ./../modules/basic-cli.nix
-    ./../modules/authelia.nix
+    ./../../modules/core.nix
+    ./../../modules/basic-cli.nix
+    ./../../modules/authelia.nix
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
