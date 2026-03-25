@@ -27,7 +27,7 @@ in
 
       totp = {
         disable = false;
-        issuer = net.domain;
+        issuer = "christiansandberg.fi";
         algorithm = "SHA1";
         digits = 6;
         period = 30;
@@ -68,12 +68,12 @@ in
         default_policy = "deny";
         rules = [
           {
-            domain = "*.${net.domain}";
+            domain = "*.christiansandberg.fi";
             resources = ["^/api([/?].*)?$"];
             policy = "bypass";
           }
           {
-            domain = "*.${net.domain}";
+            domain = "*.christiansandberg.fi";
             policy = "two_factor";
           }
         ];
@@ -88,9 +88,9 @@ in
         cookies = [
           {
             name = "authelia_session_cookie_name";
-            domain = net.domain;
-            authelia_url = "https://auth.${net.domain}";
-            default_redirection_url = "https://${net.domain}";
+            domain = "christiansandberg.fi";
+            authelia_url = "https://auth.christiansandberg.fi";
+            default_redirection_url = "https://christiansandberg.fi";
             same_site = "lax";
           }
         ];
@@ -106,8 +106,8 @@ in
         disable_startup_check = true;
         smtp = {
           address = "smtp://smtp.protonmail.ch:587";
-          username = "mail@${net.domain}";
-          sender = "Authelia <mail@${net.domain}>";
+          username = "mail@christiansandberg.fi";
+          sender = "Authelia <mail@christiansandberg.fi>";
           subject = "[Authelia] {title}";
         };
       };
