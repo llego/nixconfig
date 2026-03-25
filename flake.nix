@@ -54,7 +54,7 @@
       vps = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./hosts/christiansandberg
+          ./hosts/vps
         ];
         specialArgs = {
           inherit inputs;

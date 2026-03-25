@@ -34,6 +34,7 @@ Multi-host NixOS flake managing 4 systems. Dotfiles for `~/.config` are maintain
 │   ├── swayidle.nix       # Idle management
 │   ├── authelia.nix       # Authelia authentication
 │   ├── agenix.nix         # Secrets integration
+│   ├── home-automation.nix # HA, Music Assistant, ESPHome, Mosquitto, Avahi
 │   └── storj-backup.nix   # Storj cloud backup
 ├── pkgs/                  # Custom packages
 │   ├── album-downloader/  # Bandcamp downloader wrapper
@@ -85,14 +86,14 @@ agenix -r                                  # Re-key all secrets
 Each host imports only the modules it needs:
 - `laptop`: core, basic-cli, ai, apps, desktop-environment, printer, wifi-networks, vpn, downloaders
 - `vps`: core, basic-cli, authelia
-- `crisuflix`: core, basic-cli, ai
+- `crisuflix`: core, basic-cli, home-automation, ai
 - `rpi5`: core, basic-cli, wifi-networks, ruuvi module
 
 ### NAS Server (crisuflix)
 
 - **Storage**: ZFS pools `illby` (apps) and `veckjarvi` (media), 8 SATA + 3 NVMe drives
-- **Services**: Docker, Home Assistant (OCI), Music Assistant, ESPHome, Mosquitto MQTT, NFS exports, sanoid snapshots
-- **Network**: Dual bridges (br0: 192.168.1.101/103, br1: 192.168.3.103), Avahi mDNS on both
+- **Services**: Docker, home-automation module, NFS exports, sanoid snapshots
+- **Network**: Dual bridges (br0: 192.168.1.101/103, br1: 192.168.3.103)
 - **Monitoring**: Beszel agent with SMART, Cloudflare DDNS
 - **UPS**: NUT (usbhid-ups driver)
 
