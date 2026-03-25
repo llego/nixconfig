@@ -5,13 +5,13 @@ let
 in
 
 {
-  # Authelia authentication server
-  services.authelia.instances.christiansandberg = {
+  # Authelia authentication server for christiansandberg.fi domain
+  services.authelia.instances."christiansandberg" = {
     enable = true;
     secrets = {
-      jwtSecretFile = config.age.secrets.authelia-jwt.path;
-      storageEncryptionKeyFile = config.age.secrets.authelia-storage.path;
-      sessionSecretFile = config.age.secrets.authelia-session.path;
+      jwtSecretFile = config.age.secrets."authelia-christiansandberg-fi-jwt".path;
+      storageEncryptionKeyFile = config.age.secrets."authelia-christiansandberg-fi-storage".path;
+      sessionSecretFile = config.age.secrets."authelia-christiansandberg-fi-session".path;
     };
     settings = {
       theme = "auto";
@@ -113,7 +113,7 @@ in
       };
     };
     environmentVariables = {
-      AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE = config.age.secrets.authelia-smtp.path;
+      AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE = config.age.secrets."authelia-christiansandberg-fi-smtp".path;
     };
   };
 }

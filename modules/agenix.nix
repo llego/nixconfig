@@ -71,29 +71,72 @@
         owner = "cloudflare-ddns";
         group = "cloudflare-ddns";
       };
-      authelia-jwt = {
-        file = ./../secrets/authelia-christiansandberg-jwt.age;
+      "authelia-christiansandberg-fi-jwt" = {
+        file = ./../secrets/authelia-christiansandberg-fi-jwt.age;
         mode = "0400";
         owner = "authelia-christiansandberg";
         group = "authelia-christiansandberg";
       };
-      authelia-storage = {
-        file = ./../secrets/authelia-christiansandberg-storage.age;
+      "authelia-christiansandberg-fi-storage" = {
+        file = ./../secrets/authelia-christiansandberg-fi-storage.age;
         mode = "0400";
         owner = "authelia-christiansandberg";
         group = "authelia-christiansandberg";
       };
-      authelia-session = {
-        file = ./../secrets/authelia-christiansandberg-session.age;
+      "authelia-christiansandberg-fi-session" = {
+        file = ./../secrets/authelia-christiansandberg-fi-session.age;
         mode = "0400";
         owner = "authelia-christiansandberg";
         group = "authelia-christiansandberg";
       };
-      authelia-smtp = {
-        file = ./../secrets/authelia-christiansandberg-smtp.age;
+      "authelia-christiansandberg-fi-smtp" = {
+        file = ./../secrets/authelia-christiansandberg-fi-smtp.age;
         mode = "0400";
         owner = "authelia-christiansandberg";
         group = "authelia-christiansandberg";
+      };
+      # cri.su authelia secrets
+      "authelia-cri.su-jwt" = {
+        file = ./../secrets/authelia-cri.su-jwt.age;
+        mode = "0400";
+        owner = "authelia-cri.su";
+        group = "authelia-cri.su";
+      };
+      "authelia-cri.su-storage" = {
+        file = ./../secrets/authelia-cri.su-storage.age;
+        mode = "0400";
+        owner = "authelia-cri.su";
+        group = "authelia-cri.su";
+      };
+      "authelia-cri.su-session" = {
+        file = ./../secrets/authelia-cri.su-session.age;
+        mode = "0400";
+        owner = "authelia-cri.su";
+        group = "authelia-cri.su";
+      };
+      "authelia-cri.su-oidc-hmac" = {
+        file = ./../secrets/authelia-cri.su-oidc-hmac.age;
+        mode = "0400";
+        owner = "authelia-cri.su";
+        group = "authelia-cri.su";
+      };
+      "authelia-cri.su-oidc-private-key" = {
+        file = ./../secrets/authelia-cri.su-oidc-private-key.age;
+        mode = "0400";
+        owner = "authelia-cri.su";
+        group = "authelia-cri.su";
+      };
+      "authelia-cri.su-openwebui-secret" = {
+        file = ./../secrets/authelia-cri.su-openwebui-secret.age;
+        mode = "0400";
+        owner = "authelia-cri.su";
+        group = "authelia-cri.su";
+      };
+      "authelia-cri.su-smtp" = {
+        file = ./../secrets/authelia-cri.su-smtp.age;
+        mode = "0400";
+        owner = "authelia-cri.su";
+        group = "authelia-cri.su";
       };
       gotify-admin-password = {
         file = ./../secrets/gotify-admin-password.age;

@@ -30,7 +30,7 @@ in {
   services.cloudflare-ddns = {
     enable = true;
     credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    ip4Domains = ["christiansandberg.fi" "sandbergs.fi"];
+    ip4Domains = ["christiansandberg.fi" "sandbergs.fi" "cri.su"];
     ip6Domains = []; # Disable IPv6 DDNS
     proxied = "false";
   };
@@ -67,7 +67,10 @@ in {
           address = ":443";
           http.tls = {
             certResolver = "myresolver";
-            domains = [{main = "christiansandberg.fi";}];
+            domains = [
+              {main = "christiansandberg.fi";}
+              {main = "cri.su";}
+            ];
           };
         };
       };
@@ -98,6 +101,12 @@ in {
             service = "authelia";
             tls.certResolver = "myresolver";
           };
+          authelia-cri-su = {
+            rule = "Host(`auth.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "authelia-cri-su";
+            tls.certResolver = "myresolver";
+          };
           gotify = {
             rule = "Host(`gotify.christiansandberg.fi`)";
             entryPoints = ["websecure"];
@@ -125,6 +134,11 @@ in {
               url = "http://${net.loopbackIP}:${toString net.autheliaPort}";
             }
           ];
+          authelia-cri-su.loadBalancer.servers = [
+            {
+              url = "http://${net.loopbackIP}:${toString net.autheliaCriSuPort}";
+            }
+          ];
           gotify.loadBalancer.servers = [
             {
               url = "http://${net.loopbackIP}:${toString net.gotifyPort}";
@@ -145,6 +159,11 @@ in {
         middlewares = {
           authelia.forwardAuth = {
             address = "http://${net.loopbackIP}:${toString net.autheliaPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.christiansandberg.fi%2F";
+            authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
+            trustForwardHeader = true;
+          };
+          authelia-cri-su.forwardAuth = {
+            address = "http://${net.loopbackIP}:${toString net.autheliaCriSuPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.cri.su%2F";
             authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
             trustForwardHeader = true;
           };

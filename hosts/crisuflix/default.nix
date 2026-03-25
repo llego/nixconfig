@@ -232,7 +232,6 @@
     enable = true;
     credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
     domains = [
-      "cri.su"
       "csandberg.fi"
     ];
     proxied = "false";

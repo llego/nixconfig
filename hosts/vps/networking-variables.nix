@@ -26,7 +26,13 @@
     autheliaPort = lib.mkOption {
       type = lib.types.port;
       default = 9091;
-      description = "Authelia service port";
+      description = "Authelia service port for christiansandberg.fi domain";
+    };
+    
+    autheliaCriSuPort = lib.mkOption {
+      type = lib.types.port;
+      default = 9092;
+      description = "Authelia service port for cri.su domain";
     };
     
     gotifyPort = lib.mkOption {
