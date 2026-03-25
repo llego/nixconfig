@@ -50,8 +50,8 @@
         };
       };
 
-      # nixos-rebuild switch --flake .#christiansandberg --sudo --target-host "llego@christiansandberg.fi"
-      christiansandberg = nixpkgs.lib.nixosSystem {
+      # nixos-rebuild switch --flake .#vps --sudo --target-host "llego@christiansandberg.fi"
+      vps = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./hosts/christiansandberg

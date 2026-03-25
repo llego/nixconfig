@@ -1,108 +1,130 @@
 # NixOS Configuration
 
-Multi-host NixOS flake configuration managing 5 systems with modular architecture.
-
-Dotfiles for `~/.config` are maintained separately at: https://github.com/llego/dotfiles
+Multi-host NixOS flake managing 4 systems. Dotfiles for `~/.config` are maintained separately at https://github.com/llego/dotfiles.
 
 ## Hosts
 
-- **laptop** - Main development machine (Intel, Niri WM, desktop apps)
-- **gamestation** - Gaming PC (AMD CPU, NVIDIA GPU, Steam)
-- **christiansandberg** - Remote server at christiansandberg.fi (Docker, SSH hardening)
-- **crisuflix** - Home NAS/media server (ZFS, Docker, NFS, UPS)
-- **rpi5** - Raspberry Pi 5 (Home Assistant kiosk, RuuviCollector)
+| Host | Purpose | Key Features |
+|------|---------|--------------|
+| **laptop** | Main development machine | Niri WM, Intel GPU, NFS mounts, Tailscale |
+| **vps** (hostname: christiansandberg) | Remote server | Docker, Traefik, Redis, Gotify, Uptime Kuma, fail2ban |
+| **crisuflix** | Home NAS/media server | ZFS, Docker, Home Assistant, Music Assistant, ESPHome, NFS |
+| **rpi5** | Home Assistant kiosk | Chromium kiosk, RuuviCollector BLE sensors, nightly reboot |
 
 ## Structure
 
-```text
-.
-├── flake.nix                          # Main flake configuration
-├── secrets.nix                        # Agenix secrets key configuration
-├── hosts/                             # Per-host configurations
-│   ├── laptop.nix
-│   ├── gamestation.nix
-│   ├── christiansandberg.nix          # + disk-config.nix
-│   ├── crisuflix.nix                  # + disk-config.nix
-│   └── rpi5.nix
-├── modules/                           # Reusable NixOS modules
-│   ├── core.nix                       # Base system (zsh, git, nix settings)
-│   ├── basic-cli.nix                  # CLI tools (helix, yazi, lazygit)
-│   ├── apps.nix                       # GUI apps (Zen Browser, Thunderbird)
-│   ├── desktop-environment.nix        # Wayland/Niri + greetd
-│   ├── printer.nix                    # CUPS + Avahi
-│   ├── vpn.nix                        # Mullvad VPN
-│   ├── wifi-networks.nix              # NetworkManager profiles
-│   ├── downloaders.nix                # Media downloaders
-│   ├── swayidle.nix                   # Idle management
-│   ├── secrets.nix                    # Agenix integration
-│   └── storj-backup.nix               # Storj cloud backup
-├── pkgs/                              # Custom packages as flakes
-│   ├── album-downloader/              # Bandcamp downloader wrapper
-│   └── RuuviCollector/                # BLE sensor reader for RuuviTags
-├── secrets/                           # Encrypted agenix secrets
-│   ├── initial-password.age
-│   ├── nut-password.age
-│   └── beszel-env.age
-└── z_lab/                             # Experimental/WIP features
+```
+├── flake.nix              # Main flake (nixosConfigurations only)
+├── flake.lock             # Lock file
+├── hosts/                 # Per-host configurations
+│   ├── laptop/
+│   ├── vps/               # christiansandberg.fi server
+│   ├── crisuflix/
+│   └── rpi5/
+├── modules/               # Reusable NixOS modules
+│   ├── core.nix           # zsh, git, nix settings, locale, SSH
+│   ├── basic-cli.nix      # helix, yazi, lazygit, bat, lsd
+│   ├── apps.nix           # Zen Browser, Thunderbird, LibreOffice
+│   ├── desktop-environment.nix  # Niri, greetd/tuigreet
+│   ├── ai.nix             # AI development tools
+│   ├── printer.nix        # CUPS, Avahi
+│   ├── vpn.nix            # Mullvad VPN
+│   ├── wifi-networks.nix  # NetworkManager profiles
+│   ├── downloaders.nix    # yle-dl, svtplay-dl, album-downloader
+│   ├── swayidle.nix       # Idle management
+│   ├── authelia.nix       # Authelia authentication
+│   ├── agenix.nix         # Secrets integration
+│   └── storj-backup.nix   # Storj cloud backup
+├── pkgs/                  # Custom packages
+│   ├── album-downloader/  # Bandcamp downloader wrapper
+│   └── RuuviCollector/    # BLE sensor reader for RuuviTags
+├── secrets/               # agenix-encrypted secrets
+└── iso/                   # ISO configuration
+```
+
+## Build & Deployment
+
+To AI agents:
+
+Always use crisuflix as the remote build host. Add `--build-host llego@crisuflix.home` to all commands except when running on crisuflix itself.
+
+Run `hostname` before `nixos-rebuild`. Most often you are on crisuflix.
+
+
+
+```bash
+# VPS (christiansandberg.fi)
+nixos-rebuild switch --flake .#vps \
+  --build-host llego@crisuflix.home \
+  --target-host "llego@christiansandberg.fi" --sudo
+
+# NAS (crisuflix.home)
+nixos-rebuild switch --flake .#crisuflix \
+  --build-host llego@crisuflix.home \
+  --target-host "llego@crisuflix.home" --sudo
+
+# Raspberry Pi 5 (use boot for remote safety)
+nixos-rebuild boot --flake .#rpi5 \
+  --build-host llego@crisuflix.home \
+  --target-host llego@rpi5.home --sudo
 ```
 
 ## Secrets Management
 
-This configuration uses [agenix](https://github.com/ryantm/agenix) for secrets:
+Uses [agenix](https://github.com/ryantm/agenix). Secrets are encrypted to SSH host keys + user keys defined in `secrets.nix`.
 
 ```bash
-# Edit a secret (decrypts, opens editor, re-encrypts)
-agenix -e secrets/initial-password.age
-
-# Re-key all secrets (after adding/removing SSH keys)
-agenix -r
+agenix -e secrets/initial-password.age    # Edit a secret
+agenix -r                                  # Re-key all secrets
 ```
 
-Secrets are encrypted to SSH host keys + user keys defined in `secrets.nix`.
+## Key Patterns
 
-## Documentation
+### Modular Composition
 
-See [CLAUDE.md](./CLAUDE.md) for detailed architecture, module composition patterns, and deployment procedures.
+Each host imports only the modules it needs:
+- `laptop`: core, basic-cli, ai, apps, desktop-environment, printer, wifi-networks, vpn, downloaders
+- `vps`: core, basic-cli, authelia
+- `crisuflix`: core, basic-cli, ai
+- `rpi5`: core, basic-cli, wifi-networks, ruuvi module
 
-## crisuflix Networking
+### NAS Server (crisuflix)
 
-`crisuflix` uses dual physical NICs, each attached to a Linux bridge:
+- **Storage**: ZFS pools `illby` (apps) and `veckjarvi` (media), 8 SATA + 3 NVMe drives
+- **Services**: Docker, Home Assistant (OCI), Music Assistant, ESPHome, Mosquitto MQTT, NFS exports, sanoid snapshots
+- **Network**: Dual bridges (br0: 192.168.1.101/103, br1: 192.168.3.103), Avahi mDNS on both
+- **Monitoring**: Beszel agent with SMART, Cloudflare DDNS
+- **UPS**: NUT (usbhid-ups driver)
 
-- **br0** (via `enp5s0`): primary LAN (`192.168.1.0/24`), host IPs `192.168.1.101` and `192.168.1.103`
-- **br1** (via `enp6s0`): IoT LAN (`192.168.3.0/24`), host IP `192.168.3.103`
+### Kiosk Mode (rpi5)
 
-### Intended usage
+- cage compositor with single Chromium window
 
-- **br0** is the main management and internet-facing network for the host (default route via `192.168.1.1`)
-- **br1** is used to discover and control IoT devices (Shelly plugs, IP camera, charger, etc.)
-- Service discovery is enabled on both bridges (`avahi.allowInterfaces = [ "br0" "br1" ]`)
+### Traefik Reverse Proxy (traefik-kop)
 
-### Practical examples from current setup
-
-- Printer access on IoT subnet (`192.168.3.125:631`)
-- ESPHome/API traffic to IoT devices (`192.168.3.x`, e.g. `:6053`)
-- Device control sessions from `crisuflix` to IoT endpoints (`:8080`, `:8008`, etc.)
-
-This separation keeps IoT traffic reachable from `crisuflix` while preserving `br0` as the primary host/network egress path.
-
-## Reverse Proxy with traefik-kop
-
-Multi-host reverse proxy serving Docker containers from crisuflix through christiansandberg.fi.
-
-**Architecture:**
-- christiansandberg runs Traefik + Redis (NixOS native)
-- crisuflix runs Docker containers with traefik-kop agent
-- Communication over Tailscale
-
-**Exposing a container:**
-Add these labels to any Docker container on crisuflix:
+Multi-host setup: vps runs Traefik + Redis; crisuflix runs Docker containers with traefik-kop agent. Communication over Tailscale. Expose containers with labels:
 
 ```yaml
 labels:
-  - "kop.namespace=vps"  # Required: identifies containers to expose
+  - "kop.namespace=vps"
   - "traefik.enable=true"
   - "traefik.http.routers.myapp.rule=Host(`myapp.christiansandberg.fi`)"
 ```
 
-**Network configuration:**
-Centralized in `hosts/christiansandberg-network-config.nix` with defaults for IPs, ports, and domain.
+## Flake Inputs
+
+- `nixpkgs` - Unstable channel
+- `raspberry-pi-nix` - RPi5 hardware support
+- `noctalia` - Wayland shell
+- `zen-browser` - Browser package
+- `disko` - Declarative disk partitioning
+- `agenix` - Secrets management
+- `album-downloader`, `ruuvi` - Local custom packages
+
+## Custom Packages
+
+Both packages in `pkgs/` are standalone flakes with `inputs.nixpkgs.follows = "nixpkgs"`.
+
+**RuuviCollector**: Java/Maven BLE sensor reader. Full NixOS module with 20+ options, security.wrappers for BLE tools, InfluxDB output.
+
+**Album Downloader**: Shell wrapper for bandcamp-collection-downloader + rsync.
