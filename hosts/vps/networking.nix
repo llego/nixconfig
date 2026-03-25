@@ -23,14 +23,14 @@ in {
   services.static-web-server = {
     enable = true;
     listen = "${net.loopbackIP}:${toString net.websitePort}";
-    root = "${net.websitePackage}";  # Website from nix store
+    root = "${net.websitePackage}"; # Website from nix store
   };
 
   # Cloudflare DDNS for christiansandberg.fi domain (IPv4 only)
   services.cloudflare-ddns = {
     enable = true;
     credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    ip4Domains = [net.domain];
+    ip4Domains = ["christiansandberg.fi" "sandbergs.fi"];
     ip6Domains = []; # Disable IPv6 DDNS
     proxied = "false";
   };
@@ -67,7 +67,7 @@ in {
           address = ":443";
           http.tls = {
             certResolver = "myresolver";
-            domains = [{main = net.domain;}];
+            domains = [{main = "christiansandberg.fi";}];
           };
         };
       };
@@ -93,26 +93,26 @@ in {
       http = {
         routers = {
           authelia = {
-            rule = "Host(`auth.${net.domain}`)";
+            rule = "Host(`auth.christiansandberg.fi`)";
             entryPoints = ["websecure"];
             service = "authelia";
             tls.certResolver = "myresolver";
           };
           gotify = {
-            rule = "Host(`gotify.${net.domain}`)";
+            rule = "Host(`gotify.christiansandberg.fi`)";
             entryPoints = ["websecure"];
             service = "gotify";
             tls.certResolver = "myresolver";
           };
           uptime-kuma = {
-            rule = "Host(`uptime.${net.domain}`)";
+            rule = "Host(`uptime.christiansandberg.fi`)";
             entryPoints = ["websecure"];
             service = "uptime-kuma";
             tls.certResolver = "myresolver";
             middlewares = ["authelia"];
           };
           website = {
-            rule = "Host(`${net.domain}`) || Host(`www.${net.domain}`)";
+            rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`)";
             entryPoints = ["websecure"];
             service = "website";
             tls.certResolver = "myresolver";
@@ -144,7 +144,7 @@ in {
 
         middlewares = {
           authelia.forwardAuth = {
-            address = "http://${net.loopbackIP}:${toString net.autheliaPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.${net.domain}%2F";
+            address = "http://${net.loopbackIP}:${toString net.autheliaPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.christiansandberg.fi%2F";
             authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
             trustForwardHeader = true;
           };

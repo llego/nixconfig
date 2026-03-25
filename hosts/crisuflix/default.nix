@@ -20,7 +20,7 @@
     ./../modules/basic-cli.nix
     ./../modules/ai.nix
     # ./../modules/storj-backup.nix
-    ./crisuflix-disk-config.nix
+    ./disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 

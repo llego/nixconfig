@@ -41,7 +41,7 @@
       laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./hosts/laptop.nix
+          ./hosts/laptop
         ];
         specialArgs = {
           inherit inputs;
@@ -54,7 +54,7 @@
       christiansandberg = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./hosts/christiansandberg.nix
+          ./hosts/christiansandberg
         ];
         specialArgs = {
           inherit inputs;
@@ -71,7 +71,7 @@
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
-          ./hosts/rpi5.nix
+          ./hosts/rpi5
         ];
         specialArgs = {
           inherit inputs;
@@ -80,23 +80,11 @@
         };
       };
 
-      gamestation = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/gamestation.nix
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "gamestation";
-        };
-      };
-
       # nixos-rebuild switch --flake .#crisuflix --target-host "llego@crisuflix.home" --sudo
       crisuflix = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./hosts/crisuflix.nix
+          ./hosts/crisuflix
         ];
         specialArgs = {
           inherit inputs;

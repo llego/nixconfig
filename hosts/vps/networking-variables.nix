@@ -5,12 +5,6 @@
 
 {
   options.christiansandbergNetwork = {
-    domain = lib.mkOption {
-      type = lib.types.str;
-      default = "christiansandberg.fi";
-      description = "Primary domain name for christiansandberg VPS";
-    };
-    
     tailscaleIP = lib.mkOption {
       type = lib.types.str;
       default = "100.78.37.16";

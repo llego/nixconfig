@@ -12,15 +12,15 @@ in {
 
   imports = [
     inputs.disko.nixosModules.disko
+    ./disk-config.nix
+    ./networking.nix
+    ./networking-variables.nix
     ./../modules/core.nix
     ./../modules/basic-cli.nix
-    ./christiansandberg-networking.nix
-    ./christiansandberg-networking-variables.nix
     ./../modules/authelia.nix
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
-    ./christiansandberg-disk-config.nix
   ];
 
   # Beszel monitoring agent (Tailscale-only)
