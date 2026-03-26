@@ -364,6 +364,9 @@ in
       Environment = [
         "LD_LIBRARY_PATH=${pkgs.libedgetpu}/lib"
       ];
+      # Allow access to USB devices for Coral TPU
+      DeviceAllow = [ "c 189:* rwm" ];  # USB bus character devices
+      PrivateDevices = lib.mkForce false;  # Access host /dev/bus/usb
     };
     unitConfig = {
       # Ensure storage is mounted before starting
