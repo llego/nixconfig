@@ -59,7 +59,7 @@
         specialArgs = {
           inherit inputs;
           inherit username;
-          hostname = "christiansandberg";
+          hostname = "vps";
         };
       };
 

@@ -57,7 +57,7 @@
         owner = "mosquitto";
         group = "mosquitto";
       };
-    } else if hostname == "christiansandberg" then {
+    } else if hostname == "vps" then {
       beszel-env = {
         file = ./../secrets/beszel-env.age;
         path = "/var/lib/beszel-agent/env";

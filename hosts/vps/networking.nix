@@ -45,6 +45,16 @@ in {
     };
   };
 
+  # Ensure Redis waits for network to be online (including Tailscale)
+  systemd.services.redis-traefik = {
+    after = [ "network-online.target" "tailscaled.service" ];
+    wants = [ "network-online.target" "tailscaled.service" ];
+    serviceConfig = {
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
+
   # Traefik reverse proxy
   services.traefik = {
     enable = true;
