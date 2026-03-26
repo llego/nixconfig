@@ -1,10 +1,6 @@
-{ config, ... }:
-
-let
+{config, ...}: let
   net = config.christiansandbergNetwork;
-in
-
-{
+in {
   # Authelia authentication server for cri.su domain
   services.authelia.instances."cri.su" = {
     enable = true;
@@ -164,7 +160,7 @@ in
           {
             client_id = "AGBx2j1MXj9U8E-L9H8MvL1dCWbH7KE30espMYWaZw8EV5gMWHYWfrNsLrZtUjWep0KJwK-d";
             client_name = "Open-WebUI";
-            client_secret = "\$plaintext\$ldER8wLIo7rEC5vgwdzOQLcnGzyZpHO5MP0A1DvezEt6pGjRXWF11cY9MoGtiTNS";
+            client_secret = "$pbkdf2-sha512$310000$f5dY5z3DCYItB4t9Kzx5QA$Cm8IhYheUzfsKbDUqhpHrVzPYTxwnvox8HBVpV4KExuelx2Zg4lGDbK2ckDHPpxS2IizyskdfDSYM41zMS7SpQ";
             public = false;
             authorization_policy = "two_factor";
             require_pkce = true;
