@@ -360,6 +360,10 @@ in
       LimitNOFILE = 65535;
       # Load secrets from environment file
       EnvironmentFile = config.age.secrets.frigate-env.path;
+      # Add Coral library path
+      Environment = [
+        "LD_LIBRARY_PATH=${pkgs.libedgetpu}/lib"
+      ];
     };
     unitConfig = {
       # Ensure storage is mounted before starting
