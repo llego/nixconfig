@@ -20,6 +20,7 @@
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
     ./../../modules/ai.nix
+    ./../../modules/frigate.nix
     # ./../modules/storj-backup.nix
     ./disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -172,6 +173,7 @@
     environment = {
       PORT = "45876";
     };
+    extraPath = [pkgs.nvtopPackages.intel];
 
     # Enable SMART monitoring
     smartmon = {

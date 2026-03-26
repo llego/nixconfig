@@ -2,6 +2,8 @@
 
 Multi-host NixOS flake managing 4 systems. Dotfiles for `~/.config` are maintained separately at https://github.com/llego/dotfiles.
 
+There are docker containers running on crisuflix. Docker compose stacks are in /mnt/illby/docker/stacks and app configs are in /mnt/illby/docker/data.
+
 ## Hosts
 
 | Host | Purpose | Key Features |

@@ -36,4 +36,7 @@ in {
 
   # laptop + crisuflix secrets
   "secrets/ha-mcp-token.age".publicKeys = [laptop crisuflix userKey];
+
+  # Frigate secrets (crisuflix)
+  "secrets/frigate-env.age".publicKeys = [crisuflix userKey];
 }

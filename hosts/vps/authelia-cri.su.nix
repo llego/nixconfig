@@ -146,6 +146,9 @@ in {
           booklore = {
             id_token = ["email" "preferred_username" "name"];
           };
+          grafana = {
+            id_token = ["email" "name" "groups"];
+          };
         };
 
         # Custom scopes
@@ -199,12 +202,14 @@ in {
             client_secret = "$pbkdf2-sha512$310000$ApSo0BmJh4xEEH8cRhGxLQ$TOuQD8Ptsvzh5fFWNceTL1AKSbxZ7WNSEWjqRaDFKJW9JVuv6B6jsBgwiEQfzj77oiAvHMke2sQoovHU5a9eww";
             public = false;
             authorization_policy = "two_factor";
+            claims_policy = "grafana";
             require_pkce = true;
             pkce_challenge_method = "S256";
             redirect_uris = [
               "https://grafana.cri.su/login/generic_oauth"
             ];
             scopes = ["openid" "profile" "groups" "email"];
+            access_token_signed_response_alg = "RS256";
             userinfo_signed_response_alg = "none";
             token_endpoint_auth_method = "client_secret_basic";
           }

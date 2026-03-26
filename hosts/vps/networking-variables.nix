@@ -56,6 +56,12 @@
       description = "Home Assistant service port";
     };
 
+    frigatePort = lib.mkOption {
+      type = lib.types.port;
+      default = 5000;
+      description = "Frigate NVR service port";
+    };
+
     websitePackage = lib.mkOption {
       type = lib.types.package;
       description = "Website files as a nix package";

@@ -136,6 +136,13 @@ in {
             service = "homeassistant";
             tls.certResolver = "myresolver";
           };
+          frigate = {
+            rule = "Host(`frigate.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "frigate";
+            tls.certResolver = "myresolver";
+            middlewares = ["authelia-cri-su"];
+          };
         };
 
         services = {
@@ -162,6 +169,11 @@ in {
           homeassistant.loadBalancer.servers = [
             {
               url = "http://${net.crisuflixIP}:8123";
+            }
+          ];
+          frigate.loadBalancer.servers = [
+            {
+              url = "http://${net.crisuflixIP}:${toString net.frigatePort}";
             }
           ];
         };
