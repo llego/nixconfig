@@ -108,22 +108,28 @@ in {
             tls.certResolver = "myresolver";
           };
           gotify = {
-            rule = "Host(`gotify.christiansandberg.fi`)";
+            rule = "Host(`gotify.cri.su`)";
             entryPoints = ["websecure"];
             service = "gotify";
             tls.certResolver = "myresolver";
           };
           uptime-kuma = {
-            rule = "Host(`uptime.christiansandberg.fi`)";
+            rule = "Host(`uptime.cri.su`)";
             entryPoints = ["websecure"];
             service = "uptime-kuma";
             tls.certResolver = "myresolver";
-            middlewares = ["authelia"];
+            middlewares = ["authelia-cri-su"];
           };
           website = {
             rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`)";
             entryPoints = ["websecure"];
             service = "website";
+            tls.certResolver = "myresolver";
+          };
+          homeassistant = {
+            rule = "Host(`ha.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "homeassistant";
             tls.certResolver = "myresolver";
           };
         };
@@ -152,6 +158,11 @@ in {
           website.loadBalancer.servers = [
             {
               url = "http://${net.loopbackIP}:${toString net.websitePort}";
+            }
+          ];
+          homeassistant.loadBalancer.servers = [
+            {
+              url = "http://${net.crisuflixIP}:8123";
             }
           ];
         };
