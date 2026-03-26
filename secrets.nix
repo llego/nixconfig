@@ -21,12 +21,6 @@ in {
   # crisuflix + christiansandberg secrets (shared DDNS token)
   "secrets/cloudflare-ddns-token.age".publicKeys = [crisuflix christiansandberg userKey];
 
-  # christiansandberg authelia secrets
-  "secrets/authelia-christiansandberg-fi-jwt.age".publicKeys = [christiansandberg userKey];
-  "secrets/authelia-christiansandberg-fi-storage.age".publicKeys = [christiansandberg userKey];
-  "secrets/authelia-christiansandberg-fi-session.age".publicKeys = [christiansandberg userKey];
-  "secrets/authelia-christiansandberg-fi-smtp.age".publicKeys = [christiansandberg userKey];
-
   # cri.su authelia secrets (VPS)
   "secrets/authelia-cri.su-jwt.age".publicKeys = [christiansandberg userKey];
   "secrets/authelia-cri.su-storage.age".publicKeys = [christiansandberg userKey];

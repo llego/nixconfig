@@ -15,7 +15,6 @@ in {
     ./disk-config.nix
     ./networking.nix
     ./networking-variables.nix
-    ./authelia-christiansandberg.fi.nix
     ./authelia-cri.su.nix
     ./../../modules/core.nix
     ./../../modules/basic-cli.nix

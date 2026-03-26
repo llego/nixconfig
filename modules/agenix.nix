@@ -71,30 +71,6 @@
         owner = "cloudflare-ddns";
         group = "cloudflare-ddns";
       };
-      "authelia-christiansandberg-fi-jwt" = {
-        file = ./../secrets/authelia-christiansandberg-fi-jwt.age;
-        mode = "0400";
-        owner = "authelia-christiansandberg";
-        group = "authelia-christiansandberg";
-      };
-      "authelia-christiansandberg-fi-storage" = {
-        file = ./../secrets/authelia-christiansandberg-fi-storage.age;
-        mode = "0400";
-        owner = "authelia-christiansandberg";
-        group = "authelia-christiansandberg";
-      };
-      "authelia-christiansandberg-fi-session" = {
-        file = ./../secrets/authelia-christiansandberg-fi-session.age;
-        mode = "0400";
-        owner = "authelia-christiansandberg";
-        group = "authelia-christiansandberg";
-      };
-      "authelia-christiansandberg-fi-smtp" = {
-        file = ./../secrets/authelia-christiansandberg-fi-smtp.age;
-        mode = "0400";
-        owner = "authelia-christiansandberg";
-        group = "authelia-christiansandberg";
-      };
       # cri.su authelia secrets
       "authelia-cri.su-jwt" = {
         file = ./../secrets/authelia-cri.su-jwt.age;

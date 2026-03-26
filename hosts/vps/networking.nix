@@ -105,12 +105,6 @@ in {
     dynamicConfigOptions = {
       http = {
         routers = {
-          authelia = {
-            rule = "Host(`auth.christiansandberg.fi`)";
-            entryPoints = ["websecure"];
-            service = "authelia";
-            tls.certResolver = "myresolver";
-          };
           authelia-cri-su = {
             rule = "Host(`auth.cri.su`)";
             entryPoints = ["websecure"];
@@ -145,11 +139,6 @@ in {
         };
 
         services = {
-          authelia.loadBalancer.servers = [
-            {
-              url = "http://${net.loopbackIP}:${toString net.autheliaPort}";
-            }
-          ];
           authelia-cri-su.loadBalancer.servers = [
             {
               url = "http://${net.loopbackIP}:${toString net.autheliaCriSuPort}";
@@ -178,11 +167,6 @@ in {
         };
 
         middlewares = {
-          authelia.forwardAuth = {
-            address = "http://${net.loopbackIP}:${toString net.autheliaPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.christiansandberg.fi%2F";
-            authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
-            trustForwardHeader = true;
-          };
           authelia-cri-su.forwardAuth = {
             address = "http://${net.loopbackIP}:${toString net.autheliaCriSuPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.cri.su%2F";
             authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
