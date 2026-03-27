@@ -9,18 +9,13 @@
 }: {
   system.stateVersion = "24.05";
 
-  # users.users.root.openssh.authorizedKeys.keys = [
-  #   # change this to your ssh key
-  #   "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFcYhLnYhEmrmWViN9z9VgEQPInZ/WxSCAgDV5rj4lpj mail@christiansandberg.fi"
-  # ];
-
   imports = [
     inputs.disko.nixosModules.disko
     ./../../modules/core.nix
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
     ./../../modules/ai.nix
-    ./../../modules/frigate.nix
+    # ./../../modules/frigate.nix
     # ./../modules/storj-backup.nix
     ./disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")

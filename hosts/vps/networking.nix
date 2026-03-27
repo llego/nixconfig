@@ -47,8 +47,8 @@ in {
 
   # Ensure Redis waits for network to be online (including Tailscale)
   systemd.services.redis-traefik = {
-    after = [ "network-online.target" "tailscaled.service" ];
-    wants = [ "network-online.target" "tailscaled.service" ];
+    after = ["network-online.target" "tailscaled.service"];
+    wants = ["network-online.target" "tailscaled.service"];
     serviceConfig = {
       Restart = "on-failure";
       RestartSec = "5s";
@@ -136,13 +136,13 @@ in {
             service = "homeassistant";
             tls.certResolver = "myresolver";
           };
-          frigate = {
-            rule = "Host(`frigate.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "frigate";
-            tls.certResolver = "myresolver";
-            middlewares = ["authelia-cri-su"];
-          };
+          # frigate = {
+          #   rule = "Host(`frigate.cri.su`)";
+          #   entryPoints = ["websecure"];
+          #   service = "frigate";
+          #   tls.certResolver = "myresolver";
+          #   middlewares = ["authelia-cri-su"];
+          # };
         };
 
         services = {
@@ -171,11 +171,11 @@ in {
               url = "http://${net.crisuflixIP}:8123";
             }
           ];
-          frigate.loadBalancer.servers = [
-            {
-              url = "http://${net.crisuflixIP}:${toString net.frigatePort}";
-            }
-          ];
+          # frigate.loadBalancer.servers = [
+          #   {
+          #     url = "http://${net.crisuflixIP}:${toString net.frigatePort}";
+          #   }
+          # ];
         };
 
         middlewares = {
