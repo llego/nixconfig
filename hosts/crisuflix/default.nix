@@ -6,7 +6,9 @@
   config,
   lib,
   ...
-}: {
+}: let
+  net = config.networkVars;
+in {
   system.stateVersion = "24.05";
 
   imports = [
@@ -15,6 +17,7 @@
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
     ./../../modules/ai.nix
+    ./../../modules/networking-variables.nix
     # ./../../modules/frigate.nix
     # ./../modules/storj-backup.nix
     ./disk-config.nix
@@ -285,22 +288,22 @@
       '';
       allowedTCPPorts = [
         22 # SSH
-        111 # NFS rpcbind
-        2049 # NFS
-        3493 # NUT (UPS monitoring)
-        8095 # Music Assistant (Web UI)
-        8096 # Jellyfin
-        8098 # Music Assistant (Stream Server)
-        8123 # Home Assistant
-        1883 # MQTT (Mosquitto)
-        20048 # NFS mountd
+        net.nfsRpcbindPort # NFS rpcbind
+        net.nfsPort # NFS
+        net.nutPort # NUT (UPS monitoring)
+        net.musicAssistantUIPort # Music Assistant (Web UI)
+        net.jellyfinPort # Jellyfin
+        net.musicAssistantStreamPort # Music Assistant (Stream Server)
+        net.homeassistantPort # Home Assistant
+        net.mosquittoPort # MQTT (Mosquitto)
+        net.nfsMountdPort # NFS mountd
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];
       allowedUDPPorts = [
-        111 # NFS rpcbind
-        2049 # NFS
+        net.nfsRpcbindPort # NFS rpcbind
+        net.nfsPort # NFS
         5353 # mDNS (Chromecast discovery)
-        20048 # NFS mountd
+        net.nfsMountdPort # NFS mountd
       ];
     };
   };

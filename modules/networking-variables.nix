@@ -1,11 +1,12 @@
-# Network configuration for christiansandberg VPS
-# Centralizes IP addresses, ports, and domain configuration
+# Network configuration variables shared across hosts
+# Centralizes IP addresses and ports for the homelab infrastructure
 {lib, ...}: {
-  options.christiansandbergNetwork = {
+  options.networkVars = {
+    # IP Addresses
     tailscaleIP = lib.mkOption {
       type = lib.types.str;
       default = "100.78.37.16";
-      description = "Tailscale IP address for christiansandberg";
+      description = "Tailscale IP address for christiansandberg VPS";
     };
 
     crisuflixIP = lib.mkOption {
@@ -20,6 +21,7 @@
       description = "Loopback address for native services (Authelia, Gotify, etc.)";
     };
 
+    # VPS Service Ports
     autheliaCriSuPort = lib.mkOption {
       type = lib.types.port;
       default = 9092;
@@ -62,9 +64,54 @@
     #   description = "Frigate NVR service port";
     # };
 
-    websitePackage = lib.mkOption {
-      type = lib.types.package;
-      description = "Website files as a nix package";
+    # Crisuflix Service Ports
+    musicAssistantUIPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8095;
+      description = "Music Assistant Web UI port";
+    };
+
+    musicAssistantStreamPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8098;
+      description = "Music Assistant Stream Server port";
+    };
+
+    jellyfinPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8096;
+      description = "Jellyfin media server port";
+    };
+
+    mosquittoPort = lib.mkOption {
+      type = lib.types.port;
+      default = 1883;
+      description = "Mosquitto MQTT broker port";
+    };
+
+    nutPort = lib.mkOption {
+      type = lib.types.port;
+      default = 3493;
+      description = "NUT (UPS monitoring) port";
+    };
+
+    # NFS Ports
+    nfsRpcbindPort = lib.mkOption {
+      type = lib.types.port;
+      default = 111;
+      description = "NFS rpcbind port";
+    };
+
+    nfsPort = lib.mkOption {
+      type = lib.types.port;
+      default = 2049;
+      description = "NFS server port";
+    };
+
+    nfsMountdPort = lib.mkOption {
+      type = lib.types.port;
+      default = 20048;
+      description = "NFS mountd port";
     };
   };
 }

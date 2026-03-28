@@ -1,7 +1,7 @@
 # Traefik VPS configuration module
 # Provides reverse proxy with Redis for traefik-kop integration
 {config, ...}: let
-  net = config.christiansandbergNetwork;
+  net = config.networkVars;
 in {
   networking = {
     useDHCP = true;
@@ -17,13 +17,6 @@ in {
         iptables -w -D nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept 2>/dev/null || true
       '';
     };
-  };
-
-  # Static website hosting via Static Web Server
-  services.static-web-server = {
-    enable = true;
-    listen = "${net.loopbackIP}:${toString net.websitePort}";
-    root = "${net.websitePackage}"; # Website from nix store
   };
 
   # Cloudflare DDNS for christiansandberg.fi domain (IPv4 only)

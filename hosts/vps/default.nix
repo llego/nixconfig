@@ -6,7 +6,11 @@
   pkgs,
   ...
 }: let
-  net = config.christiansandbergNetwork;
+  net = config.networkVars;
+  website = pkgs.runCommand "christiansandberg-website" {} ''
+    mkdir -p $out
+    cp -r ${inputs.christiansandberg-website}/* $out/
+  '';
 in {
   system.stateVersion = "24.05";
 
@@ -14,7 +18,7 @@ in {
     inputs.disko.nixosModules.disko
     ./disk-config.nix
     ./networking.nix
-    ./networking-variables.nix
+    ./../../modules/networking-variables.nix
     ./authelia-cri.su.nix
     ./../../modules/core.nix
     ./../../modules/basic-cli.nix
@@ -88,9 +92,10 @@ in {
     environmentFiles = [config.age.secrets.gotify-admin-password.path];
   };
 
-  # Build website from GitHub repo
-  christiansandbergNetwork.websitePackage = pkgs.runCommand "christiansandberg-website" {} ''
-    mkdir -p $out
-    cp -r ${inputs.christiansandberg-website}/* $out/
-  '';
+  # Static website hosting via Static Web Server
+  services.static-web-server = {
+    enable = true;
+    listen = "${net.loopbackIP}:${toString net.websitePort}";
+    root = "${website}";
+  };
 }

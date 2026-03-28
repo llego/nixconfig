@@ -1,5 +1,5 @@
 {config, ...}: let
-  net = config.christiansandbergNetwork;
+  net = config.networkVars;
 in {
   # Authelia authentication server for cri.su domain
   services.authelia.instances."cri.su" = {
