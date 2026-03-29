@@ -1,6 +1,5 @@
 {
   inputs,
-  config,
   hostname,
   lib,
   ...
@@ -62,6 +61,19 @@
           mode = "0400";
           owner = "mosquitto";
           group = "mosquitto";
+        };
+        restic-storj-password = {
+          file = ./../secrets/restic-storj-password.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+        storj-s3-credentials = {
+          file = ./../secrets/storj-s3-credentials.age;
+          path = "/var/lib/restic/storj-s3-credentials";
+          mode = "0400";
+          owner = "root";
+          group = "root";
         };
       }
       else if hostname == "vps"

@@ -36,4 +36,6 @@ in {
   "secrets/esphome-dashboard-env.age".publicKeys = [crisuflix userKey];
   "secrets/mosquitto-mqtt-user-password.age".publicKeys = [crisuflix userKey];
   "secrets/frigate-env.age".publicKeys = [crisuflix userKey];
+  "secrets/restic-storj-password.age".publicKeys = [crisuflix userKey];
+  "secrets/storj-s3-credentials.age".publicKeys = [crisuflix userKey];
 }

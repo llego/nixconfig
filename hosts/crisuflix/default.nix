@@ -19,7 +19,7 @@ in {
     ./../../modules/ai.nix
     ./../../modules/networking-variables.nix
     # ./../../modules/frigate.nix
-    # ./../modules/storj-backup.nix
+    ./../../modules/restic-backup.nix
     ./disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
