@@ -6,7 +6,7 @@
     vpsIP = lib.mkOption {
       type = lib.types.str;
       default = "100.78.37.16";
-      description = "VPS IP address for christiansandberg server";
+      description = "VPS IP address for vps";
     };
 
     crisuflixIP = lib.mkOption {
