@@ -39,6 +39,17 @@
     extraSetFlags = ["--operator=${username}"];
   };
 
+  # Beszel monitoring agent
+  services.beszel.agent = {
+    enable = true;
+    openFirewall = true;
+    environmentFile = "/var/lib/beszel-agent/env";
+    environment = {
+      PORT = "45876";
+      DISABLE_SSH = "true";
+    };
+  };
+
   # Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;

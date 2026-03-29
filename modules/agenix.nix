@@ -1,33 +1,20 @@
-{inputs, config, hostname, lib, ...}: {
+{
+  inputs,
+  config,
+  hostname,
+  lib,
+  ...
+}: {
   imports = [
     inputs.agenix.nixosModules.default
   ];
 
   # Define secrets based on hostname
-  age.secrets = {
-    # Initial user password - used by all hosts
-    initial-password = {
-      file = ./../secrets/initial-password.age;
-      mode = "0400";
-      owner = "root";
-      group = "root";
-    };
-  } // (
-    # laptop + crisuflix secrets
-    if builtins.elem hostname [ "laptop" "crisuflix" ] then {
-      ha-mcp-token = {
-        file = ./../secrets/ha-mcp-token.age;
-        mode = "0400";
-        owner = "llego";
-        group = "users";
-      };
-    } else {}
-  ) // (
-    # Host-specific secrets
-    if hostname == "crisuflix" then {
-      nut-password = {
-        file = ./../secrets/nut-password.age;
-        path = "/run/keys/nut-password";
+  age.secrets =
+    {
+      # Initial user password - used by all hosts
+      initial-password = {
+        file = ./../secrets/initial-password.age;
         mode = "0400";
         owner = "root";
         group = "root";
@@ -35,96 +22,111 @@
       beszel-env = {
         file = ./../secrets/beszel-env.age;
         path = "/var/lib/beszel-agent/env";
-        mode = "0600";
+        mode = "0640";
         owner = "root";
-        group = "root";
+        group = "beszel-agent";
       };
-      cloudflare-ddns-token = {
-        file = ./../secrets/cloudflare-ddns-token.age;
-        mode = "0400";
-        owner = "cloudflare-ddns";
-        group = "cloudflare-ddns";
-      };
-      esphome-dashboard-env = {
-        file = ./../secrets/esphome-dashboard-env.age;
-        mode = "0400";
-        owner = "root";
-        group = "root";
-      };
-      mosquitto-mqtt-user-password = {
-        file = ./../secrets/mosquitto-mqtt-user-password.age;
-        mode = "0400";
-        owner = "mosquitto";
-        group = "mosquitto";
-      };
-    } else if hostname == "vps" then {
-      beszel-env = {
-        file = ./../secrets/beszel-env.age;
-        path = "/var/lib/beszel-agent/env";
-        mode = "0600";
-        owner = "root";
-        group = "root";
-      };
-      cloudflare-ddns-token = {
-        file = ./../secrets/cloudflare-ddns-token.age;
-        mode = "0400";
-        owner = "cloudflare-ddns";
-        group = "cloudflare-ddns";
-      };
-      # cri.su authelia secrets
-      "authelia-cri.su-jwt" = {
-        file = ./../secrets/authelia-cri.su-jwt.age;
-        mode = "0400";
-        owner = "authelia-cri.su";
-        group = "authelia-cri.su";
-      };
-      "authelia-cri.su-storage" = {
-        file = ./../secrets/authelia-cri.su-storage.age;
-        mode = "0400";
-        owner = "authelia-cri.su";
-        group = "authelia-cri.su";
-      };
-      "authelia-cri.su-session" = {
-        file = ./../secrets/authelia-cri.su-session.age;
-        mode = "0400";
-        owner = "authelia-cri.su";
-        group = "authelia-cri.su";
-      };
-      "authelia-cri.su-oidc-hmac" = {
-        file = ./../secrets/authelia-cri.su-oidc-hmac.age;
-        mode = "0400";
-        owner = "authelia-cri.su";
-        group = "authelia-cri.su";
-      };
-      "authelia-cri.su-oidc-private-key" = {
-        file = ./../secrets/authelia-cri.su-oidc-private-key.age;
-        mode = "0400";
-        owner = "authelia-cri.su";
-        group = "authelia-cri.su";
-      };
-      "authelia-cri.su-openwebui-secret" = {
-        file = ./../secrets/authelia-cri.su-openwebui-secret.age;
-        mode = "0400";
-        owner = "authelia-cri.su";
-        group = "authelia-cri.su";
-      };
-      "authelia-cri.su-smtp" = {
-        file = ./../secrets/authelia-cri.su-smtp.age;
-        mode = "0400";
-        owner = "authelia-cri.su";
-        group = "authelia-cri.su";
-      };
-      gotify-admin-password = {
-        file = ./../secrets/gotify-admin-password.age;
-        mode = "0400";
-        owner = "root";
-        group = "root";
-      };
-    } else {}
-  );
+    }
+    // (
+      # laptop + crisuflix secrets
+      if builtins.elem hostname ["laptop" "crisuflix"]
+      then {
+        ha-mcp-token = {
+          file = ./../secrets/ha-mcp-token.age;
+          mode = "0400";
+          owner = "llego";
+          group = "users";
+        };
+      }
+      else {}
+    )
+    // (
+      # Host-specific secrets
+      if hostname == "crisuflix"
+      then {
+        nut-password = {
+          file = ./../secrets/nut-password.age;
+          path = "/run/keys/nut-password";
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+        esphome-dashboard-env = {
+          file = ./../secrets/esphome-dashboard-env.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+        mosquitto-mqtt-user-password = {
+          file = ./../secrets/mosquitto-mqtt-user-password.age;
+          mode = "0400";
+          owner = "mosquitto";
+          group = "mosquitto";
+        };
+      }
+      else if hostname == "vps"
+      then {
+        cloudflare-ddns-token = {
+          file = ./../secrets/cloudflare-ddns-token.age;
+          mode = "0400";
+          owner = "cloudflare-ddns";
+          group = "cloudflare-ddns";
+        };
+        # cri.su authelia secrets
+        "authelia-cri.su-jwt" = {
+          file = ./../secrets/authelia-cri.su-jwt.age;
+          mode = "0400";
+          owner = "authelia-cri.su";
+          group = "authelia-cri.su";
+        };
+        "authelia-cri.su-storage" = {
+          file = ./../secrets/authelia-cri.su-storage.age;
+          mode = "0400";
+          owner = "authelia-cri.su";
+          group = "authelia-cri.su";
+        };
+        "authelia-cri.su-session" = {
+          file = ./../secrets/authelia-cri.su-session.age;
+          mode = "0400";
+          owner = "authelia-cri.su";
+          group = "authelia-cri.su";
+        };
+        "authelia-cri.su-oidc-hmac" = {
+          file = ./../secrets/authelia-cri.su-oidc-hmac.age;
+          mode = "0400";
+          owner = "authelia-cri.su";
+          group = "authelia-cri.su";
+        };
+        "authelia-cri.su-oidc-private-key" = {
+          file = ./../secrets/authelia-cri.su-oidc-private-key.age;
+          mode = "0400";
+          owner = "authelia-cri.su";
+          group = "authelia-cri.su";
+        };
+        "authelia-cri.su-openwebui-secret" = {
+          file = ./../secrets/authelia-cri.su-openwebui-secret.age;
+          mode = "0400";
+          owner = "authelia-cri.su";
+          group = "authelia-cri.su";
+        };
+        "authelia-cri.su-smtp" = {
+          file = ./../secrets/authelia-cri.su-smtp.age;
+          mode = "0400";
+          owner = "authelia-cri.su";
+          group = "authelia-cri.su";
+        };
+        gotify-admin-password = {
+          file = ./../secrets/gotify-admin-password.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+      }
+      else {}
+    );
 
   # Expose HA MCP token as environment variable on laptop and crisuflix
-  environment.extraInit = lib.mkIf (builtins.elem hostname [ "laptop" "crisuflix" ]) ''
+  environment.extraInit = lib.mkIf (builtins.elem hostname ["laptop" "crisuflix"]) ''
     if [ -r /run/agenix/ha-mcp-token ]; then
       export HA_MCP_TOKEN=$(cat /run/agenix/ha-mcp-token)
     fi

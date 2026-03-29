@@ -144,8 +144,8 @@ in {
       Type = "oneshot";
       RemainAfterExit = true;
       ExecStart = pkgs.lib.getExe (pkgs.writeShellScriptBin "docker-network-traefik" ''
-        ${pkgs.docker}/bin/docker network inspect traefik > /dev/null 2>&1 || \
-          ${pkgs.docker}/bin/docker network create --driver bridge traefik
+        ${pkgs.docker}/bin/docker network inspect traefik-llego-me > /dev/null 2>&1 || \
+          ${pkgs.docker}/bin/docker network create --driver bridge traefik-llego-me
       '');
     };
   };
@@ -163,6 +163,39 @@ in {
     description = "Apps user for Docker containers";
   };
 
+  # Glances monitoring (web UI)
+  services.glances = {
+    enable = true;
+    port = net.glancesPort;
+    openFirewall = true;
+    extraArgs = ["--webserver" "--time" "5"];
+  };
+
+  # Override glances systemd service for Docker access and disk monitoring
+  systemd.services.glances = {
+    serviceConfig = {
+      # Run as apps user (568) to access docker socket
+      User = "apps";
+      Group = "apps";
+      DynamicUser = lib.mkForce false;
+
+      # Docker socket access
+      SupplementaryGroups = ["docker"];
+      BindReadOnlyPaths = [
+        "/var/run/docker.sock:/var/run/docker.sock"
+        "/:/rootfs:ro"
+      ];
+
+      # Disable filesystem protections for disk monitoring
+      ProtectSystem = lib.mkForce false;
+      ProtectHome = lib.mkForce false;
+      PrivateDevices = lib.mkForce false;
+
+      # Allow reading all filesystems
+      ReadWritePaths = lib.mkForce ["/var/log" "/" "/mnt"];
+    };
+  };
+
   # Beszel monitoring agent
   services.beszel.agent = {
     enable = true;
@@ -170,6 +203,7 @@ in {
     environmentFile = "/var/lib/beszel-agent/env";
     environment = {
       PORT = "45876";
+      DISABLE_SSH = "true";
     };
     extraPath = [pkgs.nvtopPackages.intel];
 
@@ -225,16 +259,6 @@ in {
     enable = true;
     maxretry = 5;
     bantime = "1h";
-  };
-
-  # Cloudflare DDNS (native service, migrated from Docker)
-  services.cloudflare-ddns = {
-    enable = true;
-    credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    domains = [
-      "csandberg.fi"
-    ];
-    proxied = "false";
   };
 
   # Network bridges (matching TrueNAS setup)

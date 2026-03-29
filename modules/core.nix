@@ -8,6 +8,7 @@
   ...
 }: {
   imports = [./agenix.nix];
+
   environment.systemPackages = with pkgs; [
     htop
     screen

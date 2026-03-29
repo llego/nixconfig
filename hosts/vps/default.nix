@@ -18,8 +18,8 @@ in {
     inputs.disko.nixosModules.disko
     ./disk-config.nix
     ./networking.nix
-    ./../../modules/networking-variables.nix
     ./authelia-cri.su.nix
+    ./../../modules/networking-variables.nix
     ./../../modules/core.nix
     ./../../modules/basic-cli.nix
 
@@ -30,11 +30,11 @@ in {
   # Beszel monitoring agent (Tailscale-only)
   services.beszel.agent = {
     enable = true;
-    openFirewall = false;
+    openFirewall = true;
     environmentFile = "/var/lib/beszel-agent/env";
     environment = {
       PORT = "45876";
-      HOST = net.vpsIP;
+      DISABLE_SSH = "true";
     };
   };
 
