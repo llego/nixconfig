@@ -73,6 +73,23 @@
   # SSH server
   services.openssh.enable = true;
 
+  # Tailscale
+  services.tailscale = {
+    enable = true;
+    extraSetFlags = ["--operator=${username}"];
+  };
+
+  # Beszel monitoring agent
+  services.beszel.agent = {
+    enable = true;
+    openFirewall = true;
+    environmentFile = "/var/lib/beszel-agent/env";
+    environment = {
+      PORT = "45876";
+      DISABLE_SSH = "true";
+    };
+  };
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 

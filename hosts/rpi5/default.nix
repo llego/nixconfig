@@ -10,10 +10,10 @@
   imports = [
     inputs.raspberry-pi-nix.nixosModules.raspberry-pi
     inputs.raspberry-pi-nix.nixosModules.sd-image
-    ./../modules/core.nix
-    ./../modules/basic-cli.nix
-    ./../modules/wifi-networks.nix
-    inputs.ruuvi.nixosModules.default
+    ./../../modules/core.nix
+    ./../../modules/basic-cli.nix
+    ./../../modules/wifi-networks.nix
+    # inputs.ruuvi.nixosModules.default
   ];
 
   # System packages
@@ -23,16 +23,16 @@
     # squeekboard
   ];
 
-  services.ruuvi-collector = {
-    enable = true;
-    influxUrl = "http://192.168.1.101:8086";
-    influxDatabase = "ruuvi";
-    tagNames = {
-      "D4EE9FE30B24" = "Kylskåpet";
-      "FFE65BB31904" = "Vardagsrummet";
-    };
-    filterMode = "named"; # Only collect from named tags
-  };
+  # services.ruuvi-collector = {
+  #   enable = true;
+  #   influxUrl = "http://192.168.1.101:8086";
+  #   influxDatabase = "ruuvi";
+  #   tagNames = {
+  #     "D4EE9FE30B24" = "Kylskåpet";
+  #     "FFE65BB31904" = "Vardagsrummet";
+  #   };
+  #   filterMode = "named"; # Only collect from named tags
+  # };
 
   programs.chromium = {
     enable = true;
