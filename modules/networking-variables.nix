@@ -3,10 +3,10 @@
 {lib, ...}: {
   options.networkVars = {
     # IP Addresses
-    tailscaleIP = lib.mkOption {
+    vpsIP = lib.mkOption {
       type = lib.types.str;
       default = "100.78.37.16";
-      description = "Tailscale IP address for christiansandberg VPS";
+      description = "VPS IP address for christiansandberg server";
     };
 
     crisuflixIP = lib.mkOption {
@@ -112,6 +112,12 @@
       type = lib.types.port;
       default = 20048;
       description = "NFS mountd port";
+    };
+
+    glancesPort = lib.mkOption {
+      type = lib.types.port;
+      default = 61208;
+      description = "Glances monitoring web UI port";
     };
   };
 }

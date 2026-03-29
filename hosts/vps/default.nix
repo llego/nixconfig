@@ -34,7 +34,7 @@ in {
     environmentFile = "/var/lib/beszel-agent/env";
     environment = {
       PORT = "45876";
-      HOST = net.tailscaleIP;
+      HOST = net.vpsIP;
     };
   };
 

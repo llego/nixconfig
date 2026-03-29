@@ -31,7 +31,7 @@ in {
   # Redis for traefik-kop (crisuflix publishes container routes here)
   services.redis.servers.traefik = {
     enable = true;
-    bind = net.tailscaleIP;
+    bind = net.vpsIP;
     port = net.redisPort;
     settings = {
       protected-mode = "no";
@@ -86,7 +86,7 @@ in {
 
       providers = {
         redis = {
-          endpoints = ["${net.tailscaleIP}:${toString net.redisPort}"];
+          endpoints = ["${net.vpsIP}:${toString net.redisPort}"];
           rootKey = "traefik";
         };
       };
@@ -136,6 +136,13 @@ in {
           #   tls.certResolver = "myresolver";
           #   middlewares = ["authelia-cri-su"];
           # };
+          glances = {
+            rule = "Host(`glances.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "glances";
+            tls.certResolver = "myresolver";
+            middlewares = ["authelia-cri-su"];
+          };
         };
 
         services = {
@@ -169,6 +176,11 @@ in {
           #     url = "http://${net.crisuflixIP}:${toString net.frigatePort}";
           #   }
           # ];
+          glances.loadBalancer.servers = [
+            {
+              url = "http://${net.crisuflixIP}:${toString net.glancesPort}";
+            }
+          ];
         };
 
         middlewares = {
