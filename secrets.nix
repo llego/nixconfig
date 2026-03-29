@@ -15,7 +15,7 @@ in {
   # Shared across all hosts
   "secrets/initial-password.age".publicKeys = allKeys;
   "secrets/beszel-env.age".publicKeys = allKeys;
-  "secrets/ha-mcp-token.age".publicKeys = [userKey];
+  "secrets/ha-mcp-token.age".publicKeys = allKeys;
 
   # crisuflix-specific secrets
   "secrets/nut-password.age".publicKeys = [crisuflix userKey];

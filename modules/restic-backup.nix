@@ -4,6 +4,17 @@
   lib,
   ...
 }: let
+  # In order to initialize a repository on Storj, run this:
+  # sudo bash -c 'set -a && source /var/lib/restic/storj-s3-credentials && set +a && restic -r s3:https://gateway.storjshare.io/crisuflix-bocker init --password-file /run/agenix/restic-storj-password'
+  #
+  # To list snapshots in a repository:
+  # sudo bash -c 'set -a && source /var/lib/restic/storj-s3-credentials && set +a && restic -r s3:https://gateway.storjshare.io/crisuflix-bocker --password-file /run/agenix/restic-storj-password snapshots'
+  #
+  # To mount a repository for browsing:
+  # sudo mkdir -p /mnt/restic-bocker
+  # sudo bash -c 'set -a && source /var/lib/restic/storj-s3-credentials && set +a && restic -r s3:https://gateway.storjshare.io/crisuflix-bocker --password-file /run/agenix/restic-storj-password mount /mnt/restic-bocker'
+  # When done: sudo umount /mnt/restic-bocker
+  #
   # S3 endpoint for Storj
   storjS3Endpoint = "https://gateway.storjshare.io";
 
@@ -45,27 +56,27 @@ in {
       inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
     };
 
-    # # Home videos backup with exclusions
-    # hemmavideon = {
-    #   repository = "s3:${storjS3Endpoint}/${repoPrefix}hemmavideon";
-    #   paths = ["/mnt/veckjarvi/hemmavideon"];
-    #   exclude = ["**/2018-03 Sydamerika/gopro"];
-    #   inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
-    # };
+    # Home videos backup with exclusions
+    hemmavideon = {
+      repository = "s3:${storjS3Endpoint}/${repoPrefix}hemmavideon";
+      paths = ["/mnt/veckjarvi/hemmavideon"];
+      exclude = ["**/2018-03 Sydamerika/gopro"];
+      inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    };
 
-    # # Music backup
-    # musik = {
-    #   repository = "s3:${storjS3Endpoint}/${repoPrefix}musik";
-    #   paths = ["/mnt/veckjarvi/media/musik"];
-    #   inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
-    # };
+    # Music backup
+    musik = {
+      repository = "s3:${storjS3Endpoint}/${repoPrefix}musik";
+      paths = ["/mnt/veckjarvi/media/musik"];
+      inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    };
 
-    # # Photos backup
-    # fotografier = {
-    #   repository = "s3:${storjS3Endpoint}/${repoPrefix}fotografier";
-    #   paths = [ "/mnt/veckjarvi/fotografier/library-new" ];
-    #   inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
-    # };
+    # Photos backup
+    fotografier = {
+      repository = "s3:${storjS3Endpoint}/${repoPrefix}fotografier";
+      paths = ["/mnt/veckjarvi/fotografier/library-new"];
+      inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    };
 
     # Docker backup with exclusions
     docker = {
