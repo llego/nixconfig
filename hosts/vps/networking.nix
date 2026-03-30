@@ -119,13 +119,7 @@ in {
             middlewares = ["authelia-cri-su"];
           };
           website = {
-            rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`)";
-            entryPoints = ["websecure"];
-            service = "website";
-            tls.certResolver = "myresolver";
-          };
-          website = {
-            rule = "Host(`sandbergs.fi`) || Host(`www.sandbergs.fi`)";
+            rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`) || Host(`sandbergs.fi`) || Host(`www.sandbergs.fi`)";
             entryPoints = ["websecure"];
             service = "website";
             tls.certResolver = "myresolver";
