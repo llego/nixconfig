@@ -7,7 +7,7 @@
   config,
   ...
 }: {
-  imports = [./agenix.nix];
+  imports = [./agenix.nix ./networking-variables.nix];
 
   environment.systemPackages = with pkgs; [
     htop
@@ -86,6 +86,7 @@
     environment = {
       PORT = "45876";
       DISABLE_SSH = "true";
+      HUB_URL = config.networkVars.beszel.hubUrl;
     };
   };
 

@@ -17,7 +17,7 @@ in {
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
     ./../../modules/ai.nix
-    ./../../modules/networking-variables.nix
+    ./../../modules/ai.nix
     # ./../../modules/frigate.nix
     ./../../modules/restic-backup.nix
     ./disk-config.nix
@@ -166,7 +166,7 @@ in {
   # Glances monitoring (web UI)
   services.glances = {
     enable = true;
-    port = net.glancesPort;
+    port = net.crisuflix.glances.port;
     openFirewall = true;
     extraArgs = ["--webserver" "--time" "5"];
   };
@@ -297,22 +297,21 @@ in {
       '';
       allowedTCPPorts = [
         22 # SSH
-        net.nfsRpcbindPort # NFS rpcbind
-        net.nfsPort # NFS
-        net.nutPort # NUT (UPS monitoring)
-        net.musicAssistantUIPort # Music Assistant (Web UI)
-        net.jellyfinPort # Jellyfin
-        net.musicAssistantStreamPort # Music Assistant (Stream Server)
-        net.homeassistantPort # Home Assistant
-        net.mosquittoPort # MQTT (Mosquitto)
-        net.nfsMountdPort # NFS mountd
+        net.nfs.rpcbind.port # NFS rpcbind
+        net.nfs.port # NFS
+        net.crisuflix.nut.port # NUT (UPS monitoring)
+        net.crisuflix.musicAssistant.uiPort # Music Assistant (Web UI)
+        net.crisuflix.jellyfin.port # Jellyfin
+        net.crisuflix.musicAssistant.streamPort # Music Assistant (Stream Server)
+        net.crisuflix.homeAssistant.port # Home Assistant
+        net.crisuflix.mosquitto.port # MQTT (Mosquitto)
+        net.nfs.mountd.port # NFS mountd
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];
       allowedUDPPorts = [
-        net.nfsRpcbindPort # NFS rpcbind
-        net.nfsPort # NFS
-        5353 # mDNS (Chromecast discovery)
-        net.nfsMountdPort # NFS mountd
+        net.nfs.rpcbind.port # NFS rpcbind
+        net.nfs.port # NFS
+        net.nfs.mountd.port # NFS mountd
       ];
     };
   };

@@ -16,7 +16,7 @@ in {
       default_2fa_method = "totp";
 
       server = {
-        address = "tcp://${net.loopbackIP}:${toString net.autheliaCriSuPort}/";
+        address = "tcp://${net.hosts.loopback}:${toString net.vps.authelia.port}/";
       };
 
       log = {

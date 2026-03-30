@@ -19,7 +19,6 @@ in {
     ./disk-config.nix
     ./networking.nix
     ./authelia-cri.su.nix
-    ./../../modules/networking-variables.nix
     ./../../modules/core.nix
     ./../../modules/basic-cli.nix
 
@@ -54,8 +53,8 @@ in {
   services.uptime-kuma = {
     enable = true;
     settings = {
-      PORT = toString net.uptimeKumaPort;
-      HOST = net.loopbackIP;
+      PORT = toString net.vps.uptimeKuma.port;
+      HOST = net.hosts.loopback;
     };
   };
 
@@ -63,8 +62,8 @@ in {
   services.gotify = {
     enable = true;
     environment = {
-      GOTIFY_SERVER_PORT = net.gotifyPort;
-      GOTIFY_SERVER_LISTENADDR = net.loopbackIP;
+      GOTIFY_SERVER_PORT = net.vps.gotify.port;
+      GOTIFY_SERVER_LISTENADDR = net.hosts.loopback;
       GOTIFY_DATABASE_DIALECT = "sqlite3";
       GOTIFY_DATABASE_CONNECTION = "data/gotify.db";
       GOTIFY_DEFAULTUSER_NAME = "admin";
@@ -78,7 +77,7 @@ in {
   # Static website hosting via Static Web Server
   services.static-web-server = {
     enable = true;
-    listen = "${net.loopbackIP}:${toString net.websitePort}";
+    listen = "${net.hosts.loopback}:${toString net.vps.website.port}";
     root = "${website}";
   };
 }

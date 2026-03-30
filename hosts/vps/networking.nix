@@ -11,10 +11,10 @@ in {
       allowedTCPPorts = [22 80 443];
       # Allow crisuflix (via Tailscale) to reach Redis for traefik-kop
       extraCommands = ''
-        iptables -w -I nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s ${net.hosts.crisuflix} --dport ${toString net.vps.redis.port} -j nixos-fw-accept
       '';
       extraStopCommands = ''
-        iptables -w -D nixos-fw -p tcp -s ${net.crisuflixIP} --dport ${toString net.redisPort} -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s ${net.hosts.crisuflix} --dport ${toString net.vps.redis.port} -j nixos-fw-accept 2>/dev/null || true
       '';
     };
   };
@@ -31,8 +31,8 @@ in {
   # Redis for traefik-kop (crisuflix publishes container routes here)
   services.redis.servers.traefik = {
     enable = true;
-    bind = net.vpsIP;
-    port = net.redisPort;
+    bind = net.hosts.vps;
+    port = net.vps.redis.port;
     settings = {
       protected-mode = "no";
     };
@@ -73,6 +73,7 @@ in {
             domains = [
               {main = "christiansandberg.fi";}
               {main = "cri.su";}
+              {main = "sandbergs.fi";}
             ];
           };
         };
@@ -86,7 +87,7 @@ in {
 
       providers = {
         redis = {
-          endpoints = ["${net.vpsIP}:${toString net.redisPort}"];
+          endpoints = ["${net.hosts.vps}:${toString net.vps.redis.port}"];
           rootKey = "traefik";
         };
       };
@@ -123,6 +124,12 @@ in {
             service = "website";
             tls.certResolver = "myresolver";
           };
+          website = {
+            rule = "Host(`sandbergs.fi`) || Host(`www.sandbergs.fi`)";
+            entryPoints = ["websecure"];
+            service = "website";
+            tls.certResolver = "myresolver";
+          };
           homeassistant = {
             rule = "Host(`ha.cri.su`)";
             entryPoints = ["websecure"];
@@ -148,27 +155,27 @@ in {
         services = {
           authelia-cri-su.loadBalancer.servers = [
             {
-              url = "http://${net.loopbackIP}:${toString net.autheliaCriSuPort}";
+              url = "http://${net.hosts.loopback}:${toString net.vps.authelia.port}";
             }
           ];
           gotify.loadBalancer.servers = [
             {
-              url = "http://${net.loopbackIP}:${toString net.gotifyPort}";
+              url = "http://${net.hosts.loopback}:${toString net.vps.gotify.port}";
             }
           ];
           uptime-kuma.loadBalancer.servers = [
             {
-              url = "http://${net.loopbackIP}:${toString net.uptimeKumaPort}";
+              url = "http://${net.hosts.loopback}:${toString net.vps.uptimeKuma.port}";
             }
           ];
           website.loadBalancer.servers = [
             {
-              url = "http://${net.loopbackIP}:${toString net.websitePort}";
+              url = "http://${net.hosts.loopback}:${toString net.vps.website.port}";
             }
           ];
           homeassistant.loadBalancer.servers = [
             {
-              url = "http://${net.crisuflixIP}:8123";
+              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homeAssistant.port}";
             }
           ];
           # frigate.loadBalancer.servers = [
@@ -178,14 +185,14 @@ in {
           # ];
           glances.loadBalancer.servers = [
             {
-              url = "http://${net.crisuflixIP}:${toString net.glancesPort}";
+              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.glances.port}";
             }
           ];
         };
 
         middlewares = {
           authelia-cri-su.forwardAuth = {
-            address = "http://${net.loopbackIP}:${toString net.autheliaCriSuPort}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.cri.su%2F";
+            address = "http://${net.hosts.loopback}:${toString net.vps.authelia.port}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.cri.su%2F";
             authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
             trustForwardHeader = true;
           };
