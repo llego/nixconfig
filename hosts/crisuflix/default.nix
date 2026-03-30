@@ -16,9 +16,6 @@ in {
     ./../../modules/core.nix
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
-    ./../../modules/ai.nix
-    ./../../modules/ai.nix
-    # ./../../modules/frigate.nix
     ./../../modules/restic-backup.nix
     ./disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -31,6 +28,12 @@ in {
     smartmontools
     lm_sensors
     nfs-utils
+
+    # Other apps
+    opencode
+    atool
+    nitch
+    usbutils
 
     # Nix stuff
     nixd

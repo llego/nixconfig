@@ -12,12 +12,11 @@
   imports = [
     ./../../modules/core.nix
     ./../../modules/basic-cli.nix
-    ./../../modules/ai.nix
     ./../../modules/apps.nix
     ./../../modules/desktop-environment.nix
     ./../../modules/printer.nix
     ./../../modules/wifi-networks.nix
-    ./../../modules/vpn.nix
+    # ./../../modules/vpn.nix
     ./../../modules/downloaders.nix
     # inputs.ruuvi.nixosModules.default
 

@@ -1,11 +1,16 @@
 {
   inputs,
+  pkgs,
   hostname,
   lib,
   ...
 }: {
   imports = [
     inputs.agenix.nixosModules.default
+  ];
+  
+  environment.systemPackages = [
+    inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Define secrets based on hostname

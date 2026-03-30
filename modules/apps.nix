@@ -9,12 +9,14 @@
     # CLI
     # bitwarden-cli
     dig
-    unzip
     parted
     nitch
+    usbutils
+    atool
 
     # AI assisted development
     claude-code
+    opencode
 
     # Nix stuff
     nixd

@@ -1,8 +1,6 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
-    usbutils
     stow
-    atool
     btop
     bat
     lsd
