@@ -76,7 +76,6 @@
   # Tailscale
   services.tailscale = {
     enable = true;
-    extraSetFlags = ["--operator=${username}"];
   };
 
   # Beszel monitoring agent

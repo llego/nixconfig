@@ -27,23 +27,6 @@ in {
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
 
-  # Beszel monitoring agent (Tailscale-only)
-  services.beszel.agent = {
-    enable = true;
-    openFirewall = true;
-    environmentFile = "/var/lib/beszel-agent/env";
-    environment = {
-      PORT = "45876";
-      DISABLE_SSH = "true";
-    };
-  };
-
-  # Tailscale
-  services.tailscale = {
-    enable = true;
-    extraSetFlags = ["--operator=${username}"];
-  };
-
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already
     # devices = [ ];

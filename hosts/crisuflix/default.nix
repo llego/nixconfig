@@ -196,18 +196,9 @@ in {
     };
   };
 
-  # Beszel monitoring agent
+  # Beszel monitoring agent (crisuflix-specific settings)
   services.beszel.agent = {
-    enable = true;
-    openFirewall = true;
-    environmentFile = "/var/lib/beszel-agent/env";
-    environment = {
-      PORT = "45876";
-      DISABLE_SSH = "true";
-    };
     extraPath = [pkgs.nvtopPackages.intel];
-
-    # Enable SMART monitoring
     smartmon = {
       enable = true;
       deviceAllow = [
@@ -224,12 +215,6 @@ in {
         "/dev/nvme2"
       ];
     };
-  };
-
-  # Tailscale
-  services.tailscale = {
-    enable = true;
-    extraSetFlags = ["--operator=${username}"];
   };
 
   # NFS Server

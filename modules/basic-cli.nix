@@ -19,6 +19,8 @@
 
   environment.sessionVariables = {
     EDITOR = "hx"; # Set default text editor
+    # Store oh-my-posh cache in /tmp to prevent stale cache accumulation
+    OMP_CACHE_DIR = "/tmp";
   };
 
   # oh-my-posh config
