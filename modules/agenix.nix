@@ -30,6 +30,13 @@
         owner = "root";
         group = "beszel-agent";
       };
+      # Bandcamp cookie for album-downloader - available on all hosts
+      bandcamp-cookie = {
+        file = ./../secrets/bandcamp-cookie.age;
+        mode = "0400";
+        owner = "llego";
+        group = "users";
+      };
     }
     // (
       # laptop + crisuflix secrets

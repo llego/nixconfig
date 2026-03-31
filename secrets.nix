@@ -16,6 +16,7 @@ in {
   "secrets/initial-password.age".publicKeys = allKeys;
   "secrets/beszel-env.age".publicKeys = allKeys;
   "secrets/ha-mcp-token.age".publicKeys = allKeys;
+  "secrets/bandcamp-cookie.age".publicKeys = allKeys;
 
   # crisuflix-specific secrets
   "secrets/nut-password.age".publicKeys = [crisuflix userKey];
