@@ -30,6 +30,7 @@
 
       # Opencode configuration files
       "opencode/opencode.json".source = ./home/opencode/opencode.json;
+      "opencode/AGENTS.md".source = ./home/opencode/AGENTS.md;
 
       # Noctalia configuration files
       "noctalia/settings.json".source = ./home/noctalia/settings.json;
