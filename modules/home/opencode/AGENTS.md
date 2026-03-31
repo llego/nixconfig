@@ -3,11 +3,16 @@
 ## System
 - OS: NixOS. Never suggest apt, brew, pip, or other imperative package managers.
 - NixOS configuration is at `~/nixconfig`.
-- Dotfiles are at `~/dotfiles`, managed with GNU Stow.
+- Dotfiles are at `~/nixconfig/modules/home/`, managed with hjem.
 - Do not suggest or use home-manager.
 - Always check the current hostname before running `nixos-rebuild` to ensure the correct host configuration is targeted.
 - Root-owned files require `sudo tee` to write.
 - Home directory (`~/`) is owned by `llego` — no sudo needed for files there.
+
+## Docker (crisuflix)
+- Docker compose stacks: `llego@crisuflix:/mnt/illby/docker/stacks`
+- Docker app data/configs: `llego@crisuflix:/mnt/illby/docker/data`
+- Some apps have config at: `llego@crisuflix.home:/mnt/illby/appstorage`
 
 ## Home Assistant
 - A Home Assistant MCP server is connected via `ha-mcp` at `https://ha-mcp.llego.me/mcp`.
