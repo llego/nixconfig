@@ -1,0 +1,58 @@
+# Ghostty configuration
+# https://ghostty.org/docs/config
+
+# Theme
+# theme = Noctalia compatible dark theme
+# theme = dark:rose-pine-moon,light:rose-pine-dawn
+theme = dark:eldritch
+# Font
+font-family = FiraCode Nerd Font
+font-size = 10
+
+# Window settings
+window-padding-x = 4
+window-padding-y = 4
+# window-decoration = none
+window-theme = dark
+
+# Inactive window transparency (works with niri's opacity rules)
+background-opacity = 0.8
+background-blur = true
+
+# Wayland specific
+# ghostty works natively on Wayland
+
+# Shell integration
+shell-integration = detect
+shell-integration-features = cursor,sudo,title
+
+# Scrollback
+scrollback-limit = 10000000
+
+# Cursor
+cursor-style = block
+cursor-style-blink = false
+
+# Mouse
+mouse-hide-while-typing = true
+
+# Clipboard
+clipboard-read = allow
+clipboard-write = allow
+clipboard-trim-trailing-spaces = true
+clipboard-paste-protection = true
+
+# Advanced
+auto-update = check
+quit-after-last-window-closed = true
+
+# Keybindings
+# Alt+Return is handled by niri to spawn ghostty
+# ghostty handles these internally:
+
+# Quick terminal (dropdown)
+quick-terminal-position = top
+quick-terminal-autohide = true
+
+# Image support for yazi
+image-storage-limit = 536870912

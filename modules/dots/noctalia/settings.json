@@ -459,7 +459,8 @@
         "nightTemp": "4000"
     },
     "noctaliaPerformance": {
-        "disableDesktopWidgets": true
+        "disableDesktopWidgets": true,
+        "disableWallpaper": true
     },
     "notifications": {
         "backgroundOpacity": 1,
@@ -606,11 +607,11 @@
             },
             {
                 "enabled": true,
-                "id": "alacritty"
+                "id": "zenBrowser"
             },
             {
                 "enabled": true,
-                "id": "zenBrowser"
+                "id": "ghostty"
             }
         ],
         "enableUserTheming": false
@@ -640,6 +641,11 @@
         "fillMode": "crop",
         "hideWallpaperFilenames": false,
         "monitorDirectories": [
+            {
+                "directory": "/home/llego/.config/noctalia/wallpapers",
+                "name": "eDP-1",
+                "wallpaper": ""
+            }
         ],
         "overviewBlur": 0.4,
         "overviewEnabled": false,

@@ -37,7 +37,7 @@
 
   # Environment variables
   environment.sessionVariables = {
-    TERMINAL = "alacritty";
+    TERMINAL = "ghostty";
     # SAL_USE_VCLPLUGIN = "kf5"; # try to get dark mode working in libreoffice
     NIXOS_OZONE_WL = "1"; # For electron applications such as vscode
     QT_QPA_PLATFORMTHEME = "gtk3"; # In order to get icons working in Noctalia: https://docs.noctalia.dev/getting-started/faq/

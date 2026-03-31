@@ -10,6 +10,7 @@
     curl
     helix # text editor
     yazi # file manager
+    ueberzugpp # image preview for yazi on wayland
     lazygit # git
     oh-my-posh
     fzf

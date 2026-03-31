@@ -37,6 +37,9 @@ in {
       "opencode/opencode.json".source = dots + "/opencode/opencode.json";
       "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
 
+      # Ghostty configuration
+      "ghostty/config".source = dots + "/ghostty/config";
+
       # Noctalia configuration files
       "noctalia/settings.json".source = dots + "/noctalia/settings.json";
       "noctalia/wallpapers/wallhaven_p88g5j.jpg".source = dots + "/noctalia/wallpapers/wallhaven_p88g5j.jpg";

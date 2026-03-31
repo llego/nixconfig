@@ -16,7 +16,6 @@
     ./../../modules/desktop-environment.nix
     ./../../modules/printer.nix
     ./../../modules/wifi-networks.nix
-    # ./../../modules/vpn.nix
     ./../../modules/downloaders.nix
     # inputs.ruuvi.nixosModules.default
 

@@ -27,7 +27,7 @@
     nautilus
     gnome-text-editor
     baobab
-    alacritty
+    ghostty
     #bitwarden-desktop
     #protonmail-desktop
     # protonmail-bridge-gui
@@ -86,7 +86,7 @@
   # https://github.com/Stunkymonkey/nautilus-open-any-terminal
   programs.nautilus-open-any-terminal = {
     enable = true;
-    terminal = "alacritty";
+    terminal = "ghostty";
   };
 
   # Email
