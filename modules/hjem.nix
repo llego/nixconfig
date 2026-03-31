@@ -2,52 +2,57 @@
   inputs,
   username,
   ...
-}: {
+}: let
+  dots = "${./dots}";
+in {
   imports = [inputs.hjem.nixosModules.default];
 
   hjem.extraModules = [inputs.hjem-impure.hjemModules.default];
 
   hjem.users.${username} = {
-    impure.enable = true;
-
+    impure = {
+      enable = true;
+      dotsDir = dots;
+      dotsDirImpure = "/home/${username}/nixconfig/modules/dots";
+    };
     directory = "/home/${username}";
 
     xdg.config.files = {
       # Niri configuration files
-      "niri/config.kdl".source = ./home/niri/config.kdl;
+      "niri/config.kdl".source = dots + "/niri/config.kdl";
 
       # Helix configuration files
-      "helix/config.toml".source = ./home/helix/config.toml;
-      "helix/languages.toml".source = ./home/helix/languages.toml;
-      "helix/themes/kanabox.toml".source = ./home/helix/themes/kanabox.toml;
-      "helix/themes/noctalia.toml".source = ./home/helix/themes/noctalia.toml;
+      "helix/config.toml".source = dots + "/helix/config.toml";
+      "helix/languages.toml".source = dots + "/helix/languages.toml";
+      "helix/themes/kanabox.toml".source = dots + "/helix/themes/kanabox.toml";
+      "helix/themes/noctalia.toml".source = dots + "/helix/themes/noctalia.toml";
 
       # Yazi configuration files
-      "yazi/yazi.toml".source = ./home/yazi/yazi.toml;
-      "yazi/theme.toml".source = ./home/yazi/theme.toml;
-      "yazi/flavors/eldritch.yazi/flavor.toml".source = ./home/yazi/flavors/eldritch.yazi/flavor.toml;
-      "yazi/flavors/noctalia.yazi/flavor.toml".source = ./home/yazi/flavors/noctalia.yazi/flavor.toml;
+      "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";
+      "yazi/theme.toml".source = dots + "/yazi/theme.toml";
+      "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
+      "yazi/flavors/noctalia.yazi/flavor.toml".source = dots + "/yazi/flavors/noctalia.yazi/flavor.toml";
 
       # Opencode configuration files
-      "opencode/opencode.json".source = ./home/opencode/opencode.json;
-      "opencode/AGENTS.md".source = ./home/opencode/AGENTS.md;
+      "opencode/opencode.json".source = dots + "/opencode/opencode.json";
+      "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
 
       # Noctalia configuration files
-      "noctalia/settings.json".source = ./home/noctalia/settings.json;
-      "noctalia/wallpapers/wallhaven_p88g5j.jpg".source = ./home/noctalia/wallpapers/wallhaven_p88g5j.jpg;
-      "noctalia/wallpapers/wallhaven_zm5pxv.jpg".source = ./home/noctalia/wallpapers/wallhaven_zm5pxv.jpg;
+      "noctalia/settings.json".source = dots + "/noctalia/settings.json";
+      "noctalia/wallpapers/wallhaven_p88g5j.jpg".source = dots + "/noctalia/wallpapers/wallhaven_p88g5j.jpg";
+      "noctalia/wallpapers/wallhaven_zm5pxv.jpg".source = dots + "/noctalia/wallpapers/wallhaven_zm5pxv.jpg";
     };
 
     # SSH shortcuts (application desktop files)
     xdg.data.files = {
-      "applications/ssh-christiansandberg.desktop".source = ./home/applications/ssh-christiansandberg.desktop;
-      "applications/ssh-crisuflix.desktop".source = ./home/applications/ssh-crisuflix.desktop;
-      "applications/ssh-nixvm.desktop".source = ./home/applications/ssh-nixvm.desktop;
-      "applications/ssh-rpi3.desktop".source = ./home/applications/ssh-rpi3.desktop;
-      "applications/ssh-rpi4.desktop".source = ./home/applications/ssh-rpi4.desktop;
-      "applications/ssh-rpi5.desktop".source = ./home/applications/ssh-rpi5.desktop;
-      "applications/ssh-rpizero.desktop".source = ./home/applications/ssh-rpizero.desktop;
-      "applications/ssh-rpizero2.desktop".source = ./home/applications/ssh-rpizero2.desktop;
+      "applications/ssh-christiansandberg.desktop".source = dots + "/applications/ssh-christiansandberg.desktop";
+      "applications/ssh-crisuflix.desktop".source = dots + "/applications/ssh-crisuflix.desktop";
+      "applications/ssh-nixvm.desktop".source = dots + "/applications/ssh-nixvm.desktop";
+      "applications/ssh-rpi3.desktop".source = dots + "/applications/ssh-rpi3.desktop";
+      "applications/ssh-rpi4.desktop".source = dots + "/applications/ssh-rpi4.desktop";
+      "applications/ssh-rpi5.desktop".source = dots + "/applications/ssh-rpi5.desktop";
+      "applications/ssh-rpizero.desktop".source = dots + "/applications/ssh-rpizero.desktop";
+      "applications/ssh-rpizero2.desktop".source = dots + "/applications/ssh-rpizero2.desktop";
     };
   };
 }
