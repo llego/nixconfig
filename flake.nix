@@ -32,6 +32,11 @@
       url = "github:feel-co/hjem";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hjem-impure = {
+      url = "github:Rexcrazy804/hjem-impure";
+      inputs.nixpkgs.follows = "";
+      inputs.hjem.follows = "";
+    };
     christiansandberg-website = {
       url = "git+ssh://git@github.com/llego/christiansandberg.fi.git";
       flake = false;

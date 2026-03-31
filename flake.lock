@@ -137,6 +137,25 @@
         "type": "github"
       }
     },
+    "hjem-impure": {
+      "inputs": {
+        "hjem": [],
+        "nixpkgs": []
+      },
+      "locked": {
+        "lastModified": 1774033400,
+        "narHash": "sha256-lECETmsnVngKI5qZYsygEAyFQVSvZNxzDqOWZoxK4mQ=",
+        "owner": "Rexcrazy804",
+        "repo": "hjem-impure",
+        "rev": "1a65894ec4b6b80591a7ec121ee4bb52ca772ebf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Rexcrazy804",
+        "repo": "hjem-impure",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -338,6 +357,7 @@
         "christiansandberg-website": "christiansandberg-website",
         "disko": "disko",
         "hjem": "hjem",
+        "hjem-impure": "hjem-impure",
         "nixpkgs": "nixpkgs",
         "noctalia": "noctalia",
         "raspberry-pi-nix": "raspberry-pi-nix",

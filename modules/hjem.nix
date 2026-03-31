@@ -3,13 +3,13 @@
   username,
   ...
 }: {
-  imports = [
-    inputs.hjem.nixosModules.default
-  ];
+  imports = [inputs.hjem.nixosModules.default];
 
-  hjem.clobberByDefault = true;
+  hjem.extraModules = [inputs.hjem-impure.hjemModules.default];
 
   hjem.users.${username} = {
+    impure.enable = true;
+
     directory = "/home/${username}";
 
     xdg.config.files = {
