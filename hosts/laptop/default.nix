@@ -162,4 +162,23 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  # Kanshi display configuration (laptop-specific)
+  systemd.tmpfiles.rules = [
+    "L+ /home/${username}/.config/kanshi/config - - - - ${pkgs.writeText "kanshi-config" ''
+      profile undocked {
+        output eDP-1 enable scale 2.0
+      }
+
+      profile home_office_1 {
+        output DP-1 enable mode 3840x2160 scale 1.6
+        output eDP-1 disable
+      }
+
+      profile home_office_2 {
+        output DP-2 enable mode 3840x2160 scale 1.6
+        output eDP-1 disable
+      }
+    ''}"
+  ];
 }

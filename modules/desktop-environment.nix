@@ -31,27 +31,7 @@
   # Config in dotfiles
   programs.niri.enable = true;
 
-  /*
-  # DankMaterialShell
-  programs.dms-shell = {
-    enable = true;
-
-    systemd = {
-      enable = true; # Systemd service for auto-start
-      restartIfChanged = true; # Auto-restart dms.service when dms-shell changes
-    };
-
-    # Core features
-    enableSystemMonitoring = true; # System monitoring widgets (dgop)
-    enableVPN = true; # VPN management widget
-    enableDynamicTheming = true; # Wallpaper-based theming (matugen)
-    enableAudioWavelength = true; # Audio visualizer (cava)
-    # enableCalendarEvents = true; # Calendar integration (khal)
-  };
-  */
-
   # Noctalia shell
-  # Config in dotfiles
   services.noctalia-shell.enable = true;
 
   # Environment variables
@@ -98,6 +78,43 @@
     };
   };
 
+  # MIME type associations
+  xdg.mime = {
+    enable = true;
+    defaultApplications = {
+      # Web browser (Zen)
+      "default-web-browser" = "zen.desktop";
+      "text/html" = "zen.desktop";
+      "application/xhtml+xml" = "zen.desktop";
+      "x-scheme-handler/http" = "zen.desktop";
+      "x-scheme-handler/https" = "zen.desktop";
+      "x-scheme-handler/about" = "zen.desktop";
+      "x-scheme-handler/unknown" = "zen.desktop";
+
+      # Text files (GNOME Text Editor)
+      "text/plain" = "org.gnome.TextEditor.desktop";
+      "text/markdown" = "org.gnome.TextEditor.desktop";
+      "text/x-markdown" = "org.gnome.TextEditor.desktop";
+      "text/x-log" = "org.gnome.TextEditor.desktop";
+      "application/json" = "org.gnome.TextEditor.desktop";
+      "application/xml" = "org.gnome.TextEditor.desktop";
+
+      # Documents
+      "application/pdf" = "org.gnome.Evince.desktop";
+
+      # Images (GNOME Loupe)
+      "image/jpeg" = "org.gnome.Loupe.desktop";
+      "image/png" = "org.gnome.Loupe.desktop";
+      "image/gif" = "org.gnome.Loupe.desktop";
+      "image/webp" = "org.gnome.Loupe.desktop";
+      "image/bmp" = "org.gnome.Loupe.desktop";
+      "image/svg+xml" = "org.gnome.Loupe.desktop";
+
+      # Video (VLC)
+      "application/octet-stream" = "vlc.desktop";
+    };
+  };
+
   fonts = {
     packages = with pkgs; [
       nerd-fonts.droid-sans-mono
@@ -116,64 +133,4 @@
       };
     };
   };
-
-  # home-manager.users.${username} = {
-  # gtk = {
-  #   enable = true;
-  #   font = {
-  #     package = pkgs.inter;
-  #     name = "Inter Display Regular";
-  #     size = 10;
-  #   };
-  #   colorScheme = "dark";
-  #   # theme = {
-  #   # package = pkgs.tokyonight-gtk-theme;
-  #   # name = "Tokyonight-Dark";
-  #   # };
-  #   iconTheme = {
-  #     package = pkgs.papirus-icon-theme;
-  #     name = "Papirus-Dark";
-  #   };
-  #   cursorTheme = {
-  #     package = pkgs.numix-cursor-theme;
-  #     name = "Numix-Cursor-Light";
-  #     size = 24;
-  #   };
-  # };
-
-  # xdg = {
-  #   mimeApps.enable = true;
-  #   mimeApps.defaultApplications = {
-  #     "default-web-browser" = "firefox.desktop";
-  #     "text/plain" = "org.gnome.TextEditor.desktop";
-  #     "text/html" = "firefox.desktop";
-  #     "x-scheme-handler/http" = "firefox.desktop";
-  #     "x-scheme-handler/https" = "firefox.desktop";
-  #     "x-scheme-handler/about" = "firefox.desktop";
-  #     "x-scheme-handler/unknown" = "firefox.desktop";
-  #     "x-scheme-handler/mailto" = "proton-mail.desktop";
-  #     "application/xhtml+xml" = "firefox.desktop";
-  #     "application/octet-stream" = "vlc.desktop";
-  #     "application/pdf" = "org.gnome.Evince.desktop";
-  #     "image/jpeg" = "org.gnome.Loupe.desktop";
-  #     "image/png" = "org.gnome.Loupe.desktop";
-  #     "image/gif" = "org.gnome.Loupe.desktop";
-  #     "image/webp" = "org.gnome.Loupe.desktop";
-  #     "image/bmp" = "org.gnome.Loupe.desktop";
-  #   };
-  #   configFile."mimeapps.list".force = true;
-  # };
-  # };
-
-  # qt = {
-  #   enable = true;
-  #   platformTheme = "gnome";
-  #   style = "adwaita-dark";
-  # };
-
-  # programs.dconf.profiles.user.databases = [
-  #   {
-  #     settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
-  #   }
-  # ];
 }

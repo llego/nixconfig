@@ -1,0 +1,7 @@
+[Desktop Entry]
+Exec=alacritty -e ssh llego@rpi5.home
+Icon=utilities-terminal
+Name=rpi5.home
+Terminal=false
+Type=Application
+Version=1.5

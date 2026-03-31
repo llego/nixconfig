@@ -1,0 +1,7 @@
+[Desktop Entry]
+Exec=alacritty -e ssh llego@rpizero.home
+Icon=utilities-terminal
+Name=rpizero.home
+Terminal=false
+Type=Application
+Version=1.5

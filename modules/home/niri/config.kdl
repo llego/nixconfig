@@ -1,0 +1,156 @@
+input {
+    keyboard {
+        xkb {
+            layout "fi"
+            model ""
+            rules ""
+            variant ""
+        }
+        repeat-delay 600
+        repeat-rate 25
+        track-layout "global"
+    }
+    touchpad {
+        tap
+        natural-scroll
+    }
+}
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+prefer-no-csd
+overview { workspace-shadow { off; }; }
+layout {
+    gaps 16
+    struts {
+        left 0
+        right 0
+        top -8.000000
+        bottom 0
+    }
+    focus-ring { off; }
+    border {
+        width 4
+        active-gradient angle=45 from="#ff9e64" relative-to="window" to="#f7768e"
+        inactive-color "#526270"
+    }
+    background-color "transparent"
+    shadow {
+        on
+        offset x=0.000000 y=5.000000
+        softness 30.000000
+        spread 5.000000
+        draw-behind-window false
+        color "#00000070"
+    }
+    default-column-width
+    center-focused-column "never"
+    always-center-single-column
+}
+cursor {
+    xcursor-theme "default"
+    xcursor-size 24
+}
+hotkey-overlay { skip-at-startup; }
+environment { DISPLAY ":12"; }
+binds {
+    Alt+C { spawn "codium"; }
+    Alt+F { spawn "nautilus"; }
+    Alt+N { spawn "noctalia-shell" "ipc" "call" "settings" "toggle"; }
+    Alt+Return { spawn "alacritty"; }
+    Alt+Space { spawn "fuzzel"; }
+    Alt+T { spawn "gnome-text-editor"; }
+    // Alt+W { spawn "firefox"; }
+    Alt+W { spawn "zen"; }
+    Alt+M { spawn "thunderbird"; }
+    Ctrl+Alt+Delete { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
+    // Ctrl+Alt+Delete { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+    Mod+Comma { consume-window-into-column; }
+    Mod+Ctrl+Down { move-window-down-or-to-workspace-down; }
+    Mod+Ctrl+Left { move-column-left; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+Up { move-window-up-or-to-workspace-up; }
+    Mod+Down { focus-window-or-workspace-down; }
+    Mod+F { maximize-column; }
+    // Mod+F { maximize-window-to-edges; }
+    Mod+I { focus-workspace-up; }
+    Mod+L { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+    // Mod+L {spawn "dms" "ipc" "call" "lock" "lock"; }
+    Mod+Left { focus-column-left; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+P { spawn "kanshi -c /home/llego/.config/kanshi/config"; }
+    "Mod+Page_Down" { focus-window-or-workspace-down; }
+    "Mod+Page_Up" { focus-window-or-workspace-up; }
+    Mod+Period { expel-window-from-column; }
+    Mod+Plus { set-column-width "+10%"; }
+    Mod+Q { close-window; }
+    Mod+R { switch-preset-column-width; }
+    Mod+Right { focus-column-right; }
+    Mod+Shift+7 { show-hotkey-overlay; }
+    Mod+Shift+E { quit; }
+    // Mod+Shift+F { fullscreen-window; }
+    Mod+Shift+F  { maximize-window-to-edges; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+P { power-off-monitors; }
+    Mod+Shift+Plus { set-window-height "+10%"; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    Mod+U { focus-workspace-down; }
+    Mod+Up { focus-window-or-workspace-up; }
+    Mod+V { toggle-window-floating; }
+    Mod+W { toggle-column-tabbed-display; }
+    Print { screenshot; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; }
+    XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+"; }
+    XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+    XF86MonBrightnessUp { spawn "brightnessctl" "set" "5%+"; }
+}
+
+spawn-at-startup "systemctl" "--user" "restart" "swayidle.service"
+spawn-at-startup "kanshi"
+
+// spawn-at-startup "qs" "-c" "noctalia-shell"
+// spawn-at-startup "noctalia-shell"
+
+window-rule {
+    geometry-corner-radius 20.000000 20.000000 20.000000 20.000000
+    clip-to-geometry true
+}
+window-rule {
+    match app-id="^org[.]pulseaudio[.]pavucontrol$"
+    default-column-width { fixed 762; }
+}
+window-rule {
+    match is-active=false
+    draw-border-with-background false
+    opacity 0.900000
+}
+
+window-rule {
+    match app-id="gamescope"
+    open-fullscreen true
+}
+// Alternatively this
+// window-rule {
+    // match title="gamescope"
+    // default-column-width { proportion 1.0; } // Make it fill the screen width
+// }
+
+// Settings for Noctalia wallapaper
+layer-rule {
+    match namespace="^noctalia-wallpaper*"
+    place-within-backdrop true
+}
+
+// Settings for DankMaterialShell wallpaper
+layer-rule {
+    match namespace="^quickshell$"
+    place-within-backdrop true
+}
+layer-rule {
+    match namespace="dms:blurwallpaper"
+    place-within-backdrop true
+}
+
+gestures { hot-corners { off; }; }
+debug { honor-xdg-activation-with-invalid-serial; }
+

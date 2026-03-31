@@ -7,7 +7,7 @@
   config,
   ...
 }: {
-  imports = [./agenix.nix ./networking-variables.nix];
+  imports = [./agenix.nix ./networking-variables.nix ./hjem.nix];
 
   environment.systemPackages = with pkgs; [
     htop
