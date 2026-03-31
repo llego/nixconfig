@@ -24,6 +24,7 @@
     nwg-look # Needed for setting gtk theme in Noctalia
     adw-gtk3 # Needed for setting gtk theme in Noctalia
     pywalfox-native # Needed by Noctalia to theme Firefox and Thunderbird
+    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default # Noctalia shell
     # swayidle
   ];
 

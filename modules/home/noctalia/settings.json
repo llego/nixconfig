@@ -459,8 +459,7 @@
         "nightTemp": "4000"
     },
     "noctaliaPerformance": {
-        "disableDesktopWidgets": true,
-        "disableWallpaper": true
+        "disableDesktopWidgets": true
     },
     "notifications": {
         "backgroundOpacity": 1,
