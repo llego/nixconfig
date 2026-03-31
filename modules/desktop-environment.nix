@@ -31,8 +31,8 @@
   # Config in dotfiles
   programs.niri.enable = true;
 
-  # Noctalia shell
-  services.noctalia-shell.enable = true;
+  # Noctalia shell (disabled - now started via niri spawn-at-startup)
+  # services.noctalia-shell.enable = true;
 
   # Environment variables
   environment.sessionVariables = {

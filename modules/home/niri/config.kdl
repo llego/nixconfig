@@ -109,7 +109,7 @@ spawn-at-startup "systemctl" "--user" "restart" "swayidle.service"
 spawn-at-startup "kanshi"
 
 // spawn-at-startup "qs" "-c" "noctalia-shell"
-// spawn-at-startup "noctalia-shell"
+spawn-at-startup "noctalia-shell"
 
 window-rule {
     geometry-corner-radius 20.000000 20.000000 20.000000 20.000000
