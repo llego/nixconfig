@@ -42,11 +42,11 @@
 
   programs.foot = {
     enable = true;
-    # theme = "rose-pine";
-    theme = "tokyonight-night";
+    theme = "rose-pine";
+    # theme = "tokyonight-night";
     settings = {
       main = {
-        font = "FiraCode Nerd Font:size=11";
+        font = "FiraCode Nerd Font:size=10";
         pad = "10x5";
         title = "foot";
         app-id = "foot";

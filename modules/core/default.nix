@@ -89,9 +89,14 @@
   time.timeZone = "Europe/Helsinki";
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
+    LC_ALL = "en_US.UTF-8";
+    LANG = "en_US.UTF-8";
     LC_ADDRESS = "fi_FI.UTF-8";
+    LC_COLLATE = "en_US.UTF-8";
+    LC_CTYPE = "en_US.UTF-8";
     LC_IDENTIFICATION = "fi_FI.UTF-8";
     LC_MEASUREMENT = "fi_FI.UTF-8";
+    LC_MESSAGES = "en_US.UTF-8";
     LC_MONETARY = "en_IE.UTF-8"; # Euro with period decimal separator
     LC_NAME = "fi_FI.UTF-8";
     LC_NUMERIC = "en_DK.UTF-8"; # Period for decimal separator
