@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
-    stow
+    htop
+    screen
     btop
     bat
     lsd
@@ -75,4 +76,7 @@
       bindkey '^[[3~' delete-char
     '';
   };
+
+  # Nano
+  programs.nano.enable = true;
 }

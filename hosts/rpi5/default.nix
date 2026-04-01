@@ -10,8 +10,7 @@
   imports = [
     inputs.raspberry-pi-nix.nixosModules.raspberry-pi
     inputs.raspberry-pi-nix.nixosModules.sd-image
-    ./../../modules/core.nix
-    ./../../modules/basic-cli.nix
+    ./../../modules/core
     ./../../modules/wifi-networks.nix
     # inputs.ruuvi.nixosModules.default
   ];

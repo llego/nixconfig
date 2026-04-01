@@ -13,8 +13,7 @@ in {
 
   imports = [
     inputs.disko.nixosModules.disko
-    ./../../modules/core.nix
-    ./../../modules/basic-cli.nix
+    ./../../modules/core
     ./../../modules/home-automation.nix
     ./../../modules/restic-backup.nix
     ./disk-config.nix

@@ -7,12 +7,11 @@
   config,
   ...
 }: {
-  imports = [./agenix.nix ./networking-variables.nix ./hjem.nix];
-
-  environment.systemPackages = with pkgs; [
-    htop
-    screen
-    curl
+  imports = [
+    ./basic-cli.nix
+    ./agenix.nix
+    ./networking-variables.nix
+    ./hjem.nix
   ];
 
   # Git
@@ -23,7 +22,6 @@
         email = "github.login@cri.su";
         name = "${username}";
       };
-
       init.defaultBranch = "main";
     };
   };
@@ -56,12 +54,6 @@
       ];
     }
   ];
-
-  # Nano settings
-  programs.nano = {
-    enable = true;
-    nanorc = builtins.readFile ./nix.nanorc;
-  };
 
   # Networking
   networking = {

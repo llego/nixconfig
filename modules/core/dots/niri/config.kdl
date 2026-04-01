@@ -55,7 +55,7 @@ binds {
     Alt+C { spawn "codium"; }
     Alt+F { spawn "nautilus"; }
     Alt+N { spawn "noctalia-shell" "ipc" "call" "settings" "toggle"; }
-    Alt+Return { spawn "ghostty"; }
+    Alt+Return { spawn "foot"; }
     Alt+Space { spawn "fuzzel"; }
     Alt+T { spawn "gnome-text-editor"; }
     // Alt+W { spawn "firefox"; }

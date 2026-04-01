@@ -13,7 +13,7 @@ in {
     impure = {
       enable = true;
       dotsDir = dots;
-      dotsDirImpure = "/home/${username}/nixconfig/modules/dots";
+      dotsDirImpure = "/home/${username}/nixconfig/modules/core/dots";
     };
     directory = "/home/${username}";
 
@@ -36,9 +36,6 @@ in {
       # Opencode configuration files
       "opencode/opencode.json".source = dots + "/opencode/opencode.json";
       "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
-
-      # Ghostty configuration
-      "ghostty/config".source = dots + "/ghostty/config";
 
       # Noctalia configuration files
       "noctalia/settings.json".source = dots + "/noctalia/settings.json";
