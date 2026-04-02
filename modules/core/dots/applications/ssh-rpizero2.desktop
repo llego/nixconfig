@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=alacritty -e ssh llego@rpizero2.home
+Exec=foot ssh llego@rpizero2.home
 Icon=utilities-terminal
 Name=rpizero2.home
 Terminal=false

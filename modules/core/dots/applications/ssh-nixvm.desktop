@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=alacritty -e ssh llego@nixvm.iot
+Exec=foot ssh llego@nixvm.iot
 Icon=utilities-terminal
 Name=nixvm.iot
 Terminal=false

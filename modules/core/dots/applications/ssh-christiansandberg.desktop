@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=alacritty -e ssh llego@christiansandberg.fi
+Exec=foot ssh llego@christiansandberg.fi
 Icon=utilities-terminal
 Name=christiansandberg.fi
 Terminal=false

@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=alacritty -e ssh pi@rpi3.home
+Exec=foot ssh pi@rpi3.home
 Icon=utilities-terminal
 Name=rpi3.home
 Terminal=false

@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=alacritty -e ssh llego@crisuflix.home
+Exec=foot ssh llego@crisuflix.home
 GenericName=ssh into llego@crisuflix.home
 Icon=utilities-terminal
 Name=crisuflix.home
