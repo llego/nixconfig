@@ -1,6 +1,6 @@
 # NixOS Configuration
 
-Multi-host NixOS flake managing 4 systems. Dotfiles for `~/.config` are maintained separately at https://github.com/llego/dotfiles.
+Multi-host NixOS flake managing 4 systems. Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) and symlinked back to this repo via [hjem-impure](https://github.com/Rexcrazy804/hjem-impure).
 
 There are docker containers running on crisuflix. Docker compose stacks are in /mnt/illby/docker/stacks and app configs are in /mnt/illby/docker/data.
 
@@ -8,7 +8,7 @@ There are docker containers running on crisuflix. Docker compose stacks are in /
 
 | Host | Purpose | Key Features |
 |------|---------|--------------|
-| **laptop** | Main development machine | Niri WM, Intel GPU, NFS mounts, Tailscale |
+| **laptop** | Main development machine | Niri WM, Noctalia, Intel GPU, NFS mounts, Tailscale |
 | **vps** (hostname: christiansandberg) | Remote server | Docker, Traefik, Redis, Gotify, Uptime Kuma, fail2ban |
 | **crisuflix** | Home NAS/media server | ZFS, Docker, Home Assistant, Music Assistant, ESPHome, NFS |
 | **rpi5** | Home Assistant kiosk | Chromium kiosk, RuuviCollector BLE sensors, nightly reboot |
@@ -24,20 +24,19 @@ There are docker containers running on crisuflix. Docker compose stacks are in /
 │   ├── crisuflix/
 │   └── rpi5/
 ├── modules/               # Reusable NixOS modules
-│   ├── core.nix           # zsh, git, nix settings, locale, SSH
+│   ├── core/              # Core: zsh, git, nix, locale, SSH, hjem, agenix
 │   ├── basic-cli.nix      # helix, yazi, lazygit, bat, lsd
 │   ├── apps.nix           # Zen Browser, Thunderbird, LibreOffice
-│   ├── desktop-environment.nix  # Niri, greetd/tuigreet
-│   ├── ai.nix             # AI development tools
+│   ├── desktop-environment.nix  # Niri, Noctalia, greetd/tuigreet
+│   ├── ai.nix             # AI development tools (OpenCode)
 │   ├── printer.nix        # CUPS, Avahi
 │   ├── vpn.nix            # Mullvad VPN
 │   ├── wifi-networks.nix  # NetworkManager profiles
 │   ├── downloaders.nix    # yle-dl, svtplay-dl, album-downloader
 │   ├── swayidle.nix       # Idle management
 │   ├── authelia.nix       # Authelia authentication
-│   ├── agenix.nix         # Secrets integration
 │   ├── home-automation.nix # HA, Music Assistant, ESPHome, Mosquitto, Avahi
-│   └── storj-backup.nix   # Storj cloud backup
+│   └── restic-backup.nix  # Storj/Restice cloud backup
 ├── pkgs/                  # Custom packages
 │   ├── album-downloader/  # Bandcamp downloader wrapper
 │   └── RuuviCollector/    # BLE sensor reader for RuuviTags
@@ -47,7 +46,7 @@ There are docker containers running on crisuflix. Docker compose stacks are in /
 
 ## Build & Deployment
 
-To AI agents:
+To AI agents (see `AGENTS.md` for full context):
 
 Always use crisuflix as the remote build host. Add `--build-host llego@crisuflix.home` to all commands except when running on crisuflix itself.
 
@@ -89,7 +88,13 @@ Each host imports only the modules it needs:
 - `laptop`: core, basic-cli, ai, apps, desktop-environment, printer, wifi-networks, vpn, downloaders
 - `vps`: core, basic-cli, authelia
 - `crisuflix`: core, basic-cli, home-automation, ai
-- `rpi5`: core, basic-cli, wifi-networks, ruuvi module
+- `rpi5`: core, basic-cli, wifi-networks
+
+### Dotfiles (hjem)
+
+Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) via the `hjem.nix` module. The dotfiles are stored in `modules/core/dots/` and symlinked to `~/.config` using [hjem-impure](https://github.com/Rexcrazy804/hjem-impure). This includes:
+- Niri, Helix, Yazi, OpenCode, and Noctalia configurations
+- SSH application shortcuts
 
 ### NAS Server (crisuflix)
 
@@ -122,6 +127,8 @@ labels:
 - `zen-browser` - Browser package
 - `disko` - Declarative disk partitioning
 - `agenix` - Secrets management
+- `hjem` - Dotfiles manager
+- `hjem-impure` - Impure dotfiles support
 - `album-downloader`, `ruuvi` - Local custom packages
 
 ## Custom Packages
