@@ -1,2 +1,4 @@
 result
 modules/optional/home-manager/rclone-secret.txt
+.nixconfig-changes/
+scripts/*.log
