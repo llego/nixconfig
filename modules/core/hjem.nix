@@ -31,7 +31,6 @@ in {
       "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";
       "yazi/theme.toml".source = dots + "/yazi/theme.toml";
       "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
-      "yazi/flavors/noctalia.yazi/flavor.toml".source = dots + "/yazi/flavors/noctalia.yazi/flavor.toml";
 
       # Opencode configuration files
       "opencode/opencode.json".source = dots + "/opencode/opencode.json";
@@ -39,8 +38,11 @@ in {
 
       # Noctalia configuration files
       "noctalia/settings.json".source = dots + "/noctalia/settings.json";
+      "noctalia/wallpapers/mountains4k.jpg".source = dots + "/noctalia/wallpapers/mountains4k.jpg";
+      "noctalia/wallpapers/mountains.png".source = dots + "/noctalia/wallpapers/mountains.png";
       "noctalia/wallpapers/wallhaven_p88g5j.jpg".source = dots + "/noctalia/wallpapers/wallhaven_p88g5j.jpg";
       "noctalia/wallpapers/wallhaven_zm5pxv.jpg".source = dots + "/noctalia/wallpapers/wallhaven_zm5pxv.jpg";
+      "noctalia/wallpapers/wallpaper-blue.jpg".source = dots + "/noctalia/wallpapers/wallpaper-blue.jpg";
     };
 
     # SSH shortcuts (application desktop files)

@@ -9,9 +9,9 @@ There are docker containers running on crisuflix. Docker compose stacks are in /
 | Host | Purpose | Key Features |
 |------|---------|--------------|
 | **laptop** | Main development machine | Niri WM, Noctalia, Intel GPU, NFS mounts, Tailscale |
-| **vps** (hostname: christiansandberg) | Remote server | Docker, Traefik, Redis, Gotify, Uptime Kuma, fail2ban |
+| **vps** (hostname: christiansandberg) | Remote server | Gotify, Uptime Kuma, fail2ban, Authelia, static website |
 | **crisuflix** | Home NAS/media server | ZFS, Docker, Home Assistant, Music Assistant, ESPHome, NFS |
-| **rpi5** | Home Assistant kiosk | Chromium kiosk, RuuviCollector BLE sensors, nightly reboot |
+| **rpi5** | Home Assistant kiosk | Chromium kiosk, nightly reboot |
 
 ## Structure
 
@@ -24,19 +24,15 @@ There are docker containers running on crisuflix. Docker compose stacks are in /
 │   ├── crisuflix/
 │   └── rpi5/
 ├── modules/               # Reusable NixOS modules
-│   ├── core/              # Core: zsh, git, nix, locale, SSH, hjem, agenix
-│   ├── basic-cli.nix      # helix, yazi, lazygit, bat, lsd
+│   ├── core/              # Core: zsh, git, nix, locale, SSH, hjem, agenix, basic-cli
 │   ├── apps.nix           # Zen Browser, Thunderbird, LibreOffice
 │   ├── desktop-environment.nix  # Niri, Noctalia, greetd/tuigreet
-│   ├── ai.nix             # AI development tools (OpenCode)
 │   ├── printer.nix        # CUPS, Avahi
-│   ├── vpn.nix            # Mullvad VPN
 │   ├── wifi-networks.nix  # NetworkManager profiles
 │   ├── downloaders.nix    # yle-dl, svtplay-dl, album-downloader
 │   ├── swayidle.nix       # Idle management
-│   ├── authelia.nix       # Authelia authentication
-│   ├── home-automation.nix # HA, Music Assistant, ESPHome, Mosquitto, Avahi
-│   └── restic-backup.nix  # Storj/Restice cloud backup
+│   ├── home-automation.nix # HA, Music Assistant, ESPHome, Mosquitto
+│   └── restic-backup.nix  # Storj/Restic cloud backup
 ├── pkgs/                  # Custom packages
 │   ├── album-downloader/  # Bandcamp downloader wrapper
 │   └── RuuviCollector/    # BLE sensor reader for RuuviTags
@@ -45,8 +41,6 @@ There are docker containers running on crisuflix. Docker compose stacks are in /
 ```
 
 ## Build & Deployment
-
-To AI agents (see `AGENTS.md` for full context):
 
 Always use crisuflix as the remote build host. Add `--build-host llego@crisuflix.home` to all commands except when running on crisuflix itself.
 
@@ -85,10 +79,10 @@ agenix -r                                  # Re-key all secrets
 ### Modular Composition
 
 Each host imports only the modules it needs:
-- `laptop`: core, basic-cli, ai, apps, desktop-environment, printer, wifi-networks, vpn, downloaders
-- `vps`: core, basic-cli, authelia
-- `crisuflix`: core, basic-cli, home-automation, ai
-- `rpi5`: core, basic-cli, wifi-networks
+- `laptop`: core, apps, desktop-environment, printer, wifi-networks, downloaders
+- `vps`: core
+- `crisuflix`: core, home-automation, restic-backup
+- `rpi5`: core, wifi-networks
 
 ### Dotfiles (hjem)
 
@@ -96,7 +90,7 @@ Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) via the `hjem.
 - Niri, Helix, Yazi, OpenCode, and Noctalia configurations
 - SSH application shortcuts
 
-### NAS Server (crisuflix)
+### crisuflix
 
 - **Storage**: ZFS pools `illby` (apps) and `veckjarvi` (media), 8 SATA + 3 NVMe drives
 - **Services**: Docker, home-automation module, NFS exports, sanoid snapshots
@@ -104,14 +98,30 @@ Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) via the `hjem.
 - **Monitoring**: Beszel agent with SMART, Cloudflare DDNS
 - **UPS**: NUT (usbhid-ups driver)
 
-### Kiosk Mode (rpi5)
+### rpi5
 
 - cage compositor with single Chromium window
 
-### Traefik Reverse Proxy (traefik-kop)
+### Infrastructure Architecture (VPS ↔ Crisuflix)
 
-Multi-host setup: vps runs Traefik + Redis; crisuflix runs Docker containers with traefik-kop agent. Communication over Tailscale. Expose containers with labels:
+Both servers form a unified infrastructure connected via Tailscale VPN:
 
+**Tailscale Connectivity**
+- VPS (christiansandberg.fi): `100.78.37.16`
+- Crisuflix (NAS): `100.123.67.48`
+- All inter-server traffic routes through the secure Tailscale mesh
+
+**Multi-Host Reverse Proxy (traefik-kop)**
+- VPS runs Traefik (ports 80/443) + Redis (port 6379, Tailscale-only)
+- Crisuflix Docker containers use traefik-kop agent to publish routes
+- Flow: Container labels → Redis (via Tailscale) → Traefik → Public access
+
+**Authelia (Centralized Auth)**
+- Runs on VPS only; protects services on both servers
+- Forward-auth middleware in Traefik intercepts all protected routes
+- Traffic flow: User → VPS Traefik → Authelia check → Service (via Tailscale)
+
+Expose crisuflix containers with labels:
 ```yaml
 labels:
   - "kop.namespace=vps"
@@ -129,6 +139,7 @@ labels:
 - `agenix` - Secrets management
 - `hjem` - Dotfiles manager
 - `hjem-impure` - Impure dotfiles support
+- `christiansandberg-website` - Static website for VPS
 - `album-downloader`, `ruuvi` - Local custom packages
 
 ## Custom Packages
