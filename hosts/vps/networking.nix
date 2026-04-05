@@ -19,13 +19,26 @@ in {
     };
   };
 
-  # Cloudflare DDNS for christiansandberg.fi domain (IPv4 only)
+  # Cloudflare DDNS for christiansandberg.fi and sandbergs.fi domains (IPv4 only)
+  # NOTE: cri.su moved to EuroDNS ddclient
   services.cloudflare-ddns = {
     enable = true;
     credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    ip4Domains = ["christiansandberg.fi" "sandbergs.fi" "cri.su"];
+    ip4Domains = ["christiansandberg.fi" "sandbergs.fi"];
     ip6Domains = []; # Disable IPv6 DDNS
     proxied = "false";
+  };
+
+  # EuroDNS DDNS for cri.su domain
+  services.ddclient = {
+    enable = true;
+    protocol = "dyndns2";
+    server = "update.eurodyndns.org";
+    username = "eurodns.login@cri.su";
+    passwordFile = config.age.secrets.eurodns-cri-su-password.path;
+    domains = ["cri.su"];
+    ssl = true;
+    interval = "5min";
   };
 
   # Redis for traefik-kop (crisuflix publishes container routes here)

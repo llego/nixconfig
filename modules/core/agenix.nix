@@ -102,6 +102,13 @@
           owner = "cloudflare-ddns";
           group = "cloudflare-ddns";
         };
+        # EuroDNS DDNS password for cri.su
+        eurodns-cri-su-password = {
+          file = ./../../secrets/eurodns-cri.su-password.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
         # cri.su authelia secrets
         "authelia-cri.su-jwt" = {
           file = ./../../secrets/authelia-cri.su-jwt.age;
