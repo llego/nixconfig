@@ -24,7 +24,7 @@ in {
   services.cloudflare-ddns = {
     enable = true;
     credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    ip4Domains = ["christiansandberg.fi" "sandbergs.fi"];
+    ip4Domains = ["christiansandberg.fi" "sandbergs.fi" "crisusandberg.fi" "csandberg.fi"];
     ip6Domains = []; # Disable IPv6 DDNS
     proxied = "false";
   };
@@ -39,6 +39,7 @@ in {
     domains = ["cri.su"];
     ssl = true;
     interval = "5min";
+    usev6 = "no"; # Disable IPv6 - VPS lacks connectivity
   };
 
   # Redis for traefik-kop (crisuflix publishes container routes here)
@@ -87,6 +88,9 @@ in {
               {main = "christiansandberg.fi";}
               {main = "cri.su";}
               {main = "sandbergs.fi";}
+              {main = "csandberg.consulting";}
+              {main = "crisusandberg.fi";}
+              {main = "csandberg.fi";}
             ];
           };
         };
@@ -132,7 +136,7 @@ in {
             middlewares = ["authelia-cri-su"];
           };
           website = {
-            rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`) || Host(`sandbergs.fi`) || Host(`www.sandbergs.fi`)";
+            rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`) || Host(`sandbergs.fi`) || Host(`www.sandbergs.fi`) || Host(`csandberg.consulting`) || Host(`crisusandberg.fi`) || Host(`csandberg.fi`)";
             entryPoints = ["websecure"];
             service = "website";
             tls.certResolver = "myresolver";
@@ -143,13 +147,6 @@ in {
             service = "homeassistant";
             tls.certResolver = "myresolver";
           };
-          # frigate = {
-          #   rule = "Host(`frigate.cri.su`)";
-          #   entryPoints = ["websecure"];
-          #   service = "frigate";
-          #   tls.certResolver = "myresolver";
-          #   middlewares = ["authelia-cri-su"];
-          # };
           glances = {
             rule = "Host(`glances.cri.su`)";
             entryPoints = ["websecure"];
@@ -185,11 +182,6 @@ in {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homeAssistant.port}";
             }
           ];
-          # frigate.loadBalancer.servers = [
-          #   {
-          #     url = "http://${net.crisuflixIP}:${toString net.frigatePort}";
-          #   }
-          # ];
           glances.loadBalancer.servers = [
             {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.glances.port}";
