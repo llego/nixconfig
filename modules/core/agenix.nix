@@ -93,6 +93,19 @@
           owner = "root";
           group = "root";
         };
+        restic-hetzner-password = {
+          file = ./../../secrets/restic-hetzner-password.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+        hetzner-s3-credentials = {
+          file = ./../../secrets/hetzner-s3-credentials.age;
+          path = "/var/lib/restic/hetzner-s3-credentials";
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
       }
       else if hostname == "vps"
       then {

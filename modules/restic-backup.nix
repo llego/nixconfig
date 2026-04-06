@@ -18,6 +18,9 @@
   # S3 endpoint for Storj
   storjS3Endpoint = "https://gateway.storjshare.io";
 
+  # Hetzner Object Storage endpoint (Helsinki)
+  hetznerS3Endpoint = "https://hel1.your-objectstorage.com";
+
   # Repository prefix
   repoPrefix = "crisuflix-";
 
@@ -43,17 +46,37 @@
     passwordFile = config.age.secrets.restic-storj-password.path;
     environmentFile = "/var/lib/restic/storj-s3-credentials";
   };
+
+  # Hetzner-specific backup settings (pilot test - bocker only)
+  hetznerCommonSettings = {
+    inherit (commonSettings) pruneOpts createWrapper;
+    # Run at 04:00 (1 hour after Storj)
+    timerConfig = {
+      OnCalendar = "*-*-* 04:00:00";
+      Persistent = true;
+      RandomizedDelaySec = "5m";
+    };
+    passwordFile = config.age.secrets.restic-hetzner-password.path;
+    environmentFile = "/var/lib/restic/hetzner-s3-credentials";
+  };
 in {
   # Install restic
   environment.systemPackages = with pkgs; [restic];
 
   # Restic backup configurations
   services.restic.backups = {
-    # Books backup
+    # Books backup (Storj - legacy)
     bocker = {
       repository = "s3:${storjS3Endpoint}/${repoPrefix}bocker";
       paths = ["/mnt/veckjarvi/media/bocker"];
       inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    };
+
+    # Books backup (Hetzner - pilot test)
+    bocker-hetzner = {
+      repository = "s3:${hetznerS3Endpoint}/${repoPrefix}bocker";
+      paths = ["/mnt/veckjarvi/media/bocker"];
+      inherit (hetznerCommonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
     };
 
     # Home videos backup with exclusions
