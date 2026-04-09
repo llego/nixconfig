@@ -28,6 +28,9 @@ in {
     lm_sensors
     nfs-utils
 
+    # Music management
+    beets
+
     # Other apps
     opencode
     atool

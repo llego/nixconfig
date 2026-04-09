@@ -40,6 +40,7 @@
       ll = "lsd -al";
       ltree = "lsd -a --tree";
       yz = "yazi";
+
     };
 
     # History settings

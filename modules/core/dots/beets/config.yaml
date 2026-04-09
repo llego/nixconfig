@@ -1,0 +1,108 @@
+# ------------------------------------------------------------------------------------ #
+#                                      BEETS CONFIG                                    #
+# ------------------------------------------------------------------------------------ #
+# Shared beets configuration for CLI and beets-flask web interface.
+# Managed by hjem at ~/.config/beets/config.yaml
+
+plugins: [
+        info,
+        the,
+        fetchart,
+        embedart,
+        ftintitle,
+        lastgenre,
+        missing,
+        albumtypes,
+        scrub,
+        zero,
+        mbsync,
+        duplicates,
+        convert,
+        fromfilename,
+        inline,
+        edit,
+        musicbrainz,
+        permissions
+    ]
+
+directory: /mnt/veckjarvi/media/musik/album
+library: /mnt/illby/appstorage/beets/library.db
+
+import:
+    move: no
+    copy: yes
+    write: yes
+    log: /mnt/illby/appstorage/beets/last_beets_imports.log
+    quiet_fallback: skip
+    detail: yes
+    duplicate_action: ask
+
+paths:
+    default: $albumartist/$album/$track - $title
+    singleton: $artist/Singles/$artist - $title
+    comp: Compilations/$album%aunique{}/$track - $title
+    albumtype_soundtrack: Soundtracks/$album/$track $title
+
+permissions:
+    file: 774
+    dir: 774
+
+ui:
+    color: yes
+
+replace:
+    '[\\]': ""
+    "[_]": "-"
+    "[/]": "-"
+    '^\.+': ""
+    '[\x00-\x1f]': ""
+    '[<>:"\?\*\|]': ""
+    '\.$': ""
+    '\s+$': ""
+    '^\s+': ""
+    "^-": ""
+    "'": ""
+    "′": ""
+    "″": ""
+    "‐": "-"
+
+per_disc_numbering: no
+asciify_paths: yes
+
+fetchart:
+    minwidth: 500
+    enforce_ratio: 10px
+    sources: coverart filesystem itunes amazon spotify albumart fanarttv
+
+embedart:
+    auto: yes
+    ifempty: yes
+    remove_art_file: yes
+
+ftintitle:
+    auto: yes
+    format: (feat. {0})
+
+lastgenre:
+    auto: yes
+    count: 4
+    prefer_specific: yes
+    force: yes
+    source: track
+    separator: "; "
+    fallback: ""
+
+match:
+    strong_rec_thresh: 0.1
+    distance_weights:
+        data_source: 0.0
+        missing_tracks: 0.2
+
+musicbrainz:
+    external_ids:
+        discogs: yes
+        bandcamp: yes
+        spotify: yes
+        deezer: yes
+        beatport: yes
+        tidal: yes

@@ -32,6 +32,9 @@ in {
       "yazi/theme.toml".source = dots + "/yazi/theme.toml";
       "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
 
+      # Beets configuration file
+      "beets/config.yaml".source = dots + "/beets/config.yaml";
+
       # Opencode configuration files
       "opencode/opencode.json".source = dots + "/opencode/opencode.json";
       "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
