@@ -28,7 +28,7 @@ layout {
     }
     focus-ring { off; }
     border {
-        width 4
+        width 3
         active-gradient angle=45 from="#ff9e64" relative-to="window" to="#f7768e"
         inactive-color "#526270"
     }
@@ -112,7 +112,7 @@ spawn-at-startup "kanshi"
 spawn-at-startup "noctalia-shell"
 
 window-rule {
-    geometry-corner-radius 20.000000 20.000000 20.000000 20.000000
+    geometry-corner-radius 15.000000 15.000000 15.000000 15.000000
     clip-to-geometry true
 }
 window-rule {
@@ -122,7 +122,7 @@ window-rule {
 window-rule {
     match is-active=false
     draw-border-with-background false
-    opacity 0.900000
+    opacity 0.700000
 }
 
 window-rule {
