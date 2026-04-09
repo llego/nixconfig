@@ -154,3 +154,6 @@ layer-rule {
 gestures { hot-corners { off; }; }
 debug { honor-xdg-activation-with-invalid-serial; }
 
+
+include "./noctalia.kdl"
+
