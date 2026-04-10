@@ -28,7 +28,7 @@ layout {
     }
     focus-ring { off; }
     border {
-        width 3
+        width 2
         active-gradient angle=45 from="#ff9e64" relative-to="window" to="#f7768e"
         inactive-color "#526270"
     }
@@ -49,6 +49,30 @@ cursor {
     xcursor-theme "default"
     xcursor-size 24
 }
+
+window-rule {
+    geometry-corner-radius 15.000000 15.000000 15.000000 15.000000
+    clip-to-geometry true
+}
+window-rule {
+    match app-id="^org[.]pulseaudio[.]pavucontrol$"
+    default-column-width { fixed 762; }
+}
+window-rule {
+    match is-active=false
+    draw-border-with-background false
+    opacity 0.600000
+}
+window-rule {
+    match app-id="foot"
+    opacity 0.850000
+}
+
+layer-rule {
+    match namespace="^noctalia-wallpaper*"
+    place-within-backdrop true
+}
+
 hotkey-overlay { skip-at-startup; }
 environment { DISPLAY ":12"; }
 binds {
@@ -111,45 +135,6 @@ spawn-at-startup "kanshi"
 // spawn-at-startup "qs" "-c" "noctalia-shell"
 spawn-at-startup "noctalia-shell"
 
-window-rule {
-    geometry-corner-radius 15.000000 15.000000 15.000000 15.000000
-    clip-to-geometry true
-}
-window-rule {
-    match app-id="^org[.]pulseaudio[.]pavucontrol$"
-    default-column-width { fixed 762; }
-}
-window-rule {
-    match is-active=false
-    draw-border-with-background false
-    opacity 0.700000
-}
-
-window-rule {
-    match app-id="gamescope"
-    open-fullscreen true
-}
-// Alternatively this
-// window-rule {
-    // match title="gamescope"
-    // default-column-width { proportion 1.0; } // Make it fill the screen width
-// }
-
-// Settings for Noctalia wallapaper
-layer-rule {
-    match namespace="^noctalia-wallpaper*"
-    place-within-backdrop true
-}
-
-// Settings for DankMaterialShell wallpaper
-layer-rule {
-    match namespace="^quickshell$"
-    place-within-backdrop true
-}
-layer-rule {
-    match namespace="dms:blurwallpaper"
-    place-within-backdrop true
-}
 
 gestures { hot-corners { off; }; }
 debug { honor-xdg-activation-with-invalid-serial; }
