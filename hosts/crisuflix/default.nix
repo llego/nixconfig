@@ -305,6 +305,7 @@ in {
         net.nfs.rpcbind.port # NFS rpcbind
         net.nfs.port # NFS
         net.crisuflix.nut.port # NUT (UPS monitoring)
+        5201 # iperf3
         net.crisuflix.musicAssistant.uiPort # Music Assistant (Web UI)
         net.crisuflix.jellyfin.port # Jellyfin
         net.crisuflix.musicAssistant.streamPort # Music Assistant (Stream Server)
