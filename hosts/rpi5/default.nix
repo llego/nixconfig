@@ -17,9 +17,8 @@
 
   # System packages
   environment.systemPackages = with pkgs; [
-    # python3
+    wlr-randr
     cage
-    # squeekboard
   ];
 
   # services.ruuvi-collector = {
@@ -35,9 +34,6 @@
 
   programs.chromium = {
     enable = true;
-    #extensions = [
-    #  "cjabmkimbcmhhepelfhjhbhonnapiipj" # simple-virtual-keyboard
-    #];
   };
 
   services.cage = {
@@ -59,7 +55,7 @@
     };
     script = ''
       sleep 8
-      ${pkgs.wlr-randr}/bin/wlr-randr --output "HDMI-A-2" --scale 1.5
+      ${pkgs.wlr-randr}/bin/wlr-randr --output "HDMI-A-1" --scale 1.5
     '';
     wantedBy = ["basic.target"];
   };
@@ -67,8 +63,8 @@
   services.cron = {
     enable = true;
     systemCronJobs = [
-      "* 1 * * *      llego    WAYLAND_DISPLAY='wayland-0' XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output 'HDMI-A-2' --off"
-      "* 6 * * *      llego    WAYLAND_DISPLAY='wayland-0' XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output 'HDMI-A-2' --on"
+      "* 1 * * *      llego    WAYLAND_DISPLAY='wayland-0' XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output 'HDMI-A-1' --off"
+      "* 6 * * *      llego    WAYLAND_DISPLAY='wayland-0' XDG_RUNTIME_DIR=/run/user/1000 ${pkgs.wlr-randr}/bin/wlr-randr --output 'HDMI-A-1' --on"
     ];
   };
 
@@ -85,7 +81,7 @@
   systemd.timers."nightly-reboot" = {
     wantedBy = ["timers.target"];
     timerConfig = {
-      OnCalendar = "02:00"; # pick your time
+      OnCalendar = "06:30"; # pick your time
       Persistent = true; # reboot after missed time if machine was off
       Unit = "nightly-reboot.service";
     };
