@@ -218,7 +218,7 @@ in {
           {
             client_id = "beszel";
             client_name = "Beszel";
-            client_secret = "$pbkdf2-sha512$310000$GPXWuisAtcDbDcmUvTpT.g$VZPsq8//6ajpLZstu1FAeB2f65c8uG3RVR308nmODNxYlYvATG4rcNkef/FKJ1rpnvBZo2xkKrkmcEhLM8simQ";
+            client_secret = "$pbkdf2-sha512$310000$IfWIfZbxjcDOu8hPMK.qiw$qCJjIMAUYGFJsE1/tyPot9cZnbryvshy9mJE3uwwW7TcsZLOIirCzavVt7AhH8/GbmdMHXc2Kzla.Rn.eczIZw";
             public = false;
             authorization_policy = "two_factor";
             redirect_uris = [
