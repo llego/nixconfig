@@ -6,7 +6,6 @@
 }: {
   imports = [
     inputs.noctalia.nixosModules.default
-    ./swayidle.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -23,22 +22,15 @@
     papirus-icon-theme
     nwg-look # Needed for setting gtk theme in Noctalia
     adw-gtk3 # Needed for setting gtk theme in Noctalia
-    pywalfox-native # Needed by Noctalia to theme Firefox and Thunderbird
     inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default # Noctalia shell
-    # swayidle
   ];
 
-  # Niri window manager
-  # Config in dotfiles
+  # Niri window manager, config in dotfiles
   programs.niri.enable = true;
-
-  # Noctalia shell (disabled - now started via niri spawn-at-startup)
-  # services.noctalia-shell.enable = true;
 
   # Environment variables
   environment.sessionVariables = {
-    TERMINAL = "ghostty";
-    # SAL_USE_VCLPLUGIN = "kf5"; # try to get dark mode working in libreoffice
+    TERMINAL = "foot";
     NIXOS_OZONE_WL = "1"; # For electron applications such as vscode
     QT_QPA_PLATFORMTHEME = "gtk3"; # In order to get icons working in Noctalia: https://docs.noctalia.dev/getting-started/faq/
   };
