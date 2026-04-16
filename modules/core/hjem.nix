@@ -27,6 +27,7 @@ in {
 
       # Yazi configuration files
       "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";
+      "yazi/init.lua".source = dots + "/yazi/init.lua";
       "yazi/theme.toml".source = dots + "/yazi/theme.toml";
       "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
 
