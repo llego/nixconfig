@@ -33,6 +33,7 @@ in {
 
     # Other apps
     opencode
+    ollama-cpu
     atool
     nitch
     usbutils
@@ -67,6 +68,7 @@ in {
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = 524288; # For media servers, file sync, dev tools
       "fs.inotify.max_user_instances" = 512; # For multiple Docker containers
+      "vm.zfs.arc_max" = 8589934592; # 8GB ZFS ARC cap (25% of 32GB RAM)
     };
 
     # Filesystem support

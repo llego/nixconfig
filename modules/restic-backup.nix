@@ -16,8 +16,7 @@
   # When done: sudo umount /mnt/restic-bocker
   #
   # S3 endpoint for Storj
-  storjS3Endpoint = "https://gateway.storjshare.io";
-
+  # storjS3Endpoint = "https://gateway.storjshare.io";
   # Hetzner Object Storage endpoint (Helsinki)
   hetznerS3Endpoint = "https://hel1.your-objectstorage.com";
 
@@ -65,12 +64,12 @@ in {
 
   # Restic backup configurations
   services.restic.backups = {
-    # Books backup (Storj - legacy)
-    bocker = {
-      repository = "s3:${storjS3Endpoint}/${repoPrefix}bocker";
-      paths = ["/mnt/veckjarvi/media/bocker"];
-      inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
-    };
+    # # Books backup (Storj - legacy)
+    # bocker = {
+    #   repository = "s3:${storjS3Endpoint}/${repoPrefix}bocker";
+    #   paths = ["/mnt/veckjarvi/media/bocker"];
+    #   inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    # };
 
     # Books backup (Hetzner - pilot test)
     bocker-hetzner = {
@@ -79,13 +78,13 @@ in {
       inherit (hetznerCommonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
     };
 
-    # Home videos backup with exclusions (Storj - legacy)
-    hemmavideon = {
-      repository = "s3:${storjS3Endpoint}/${repoPrefix}hemmavideon";
-      paths = ["/mnt/veckjarvi/hemmavideon"];
-      exclude = ["**/2018-03 Sydamerika/gopro"];
-      inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
-    };
+    # # Home videos backup with exclusions (Storj - legacy)
+    # hemmavideon = {
+    #   repository = "s3:${storjS3Endpoint}/${repoPrefix}hemmavideon";
+    #   paths = ["/mnt/veckjarvi/hemmavideon"];
+    #   exclude = ["**/2018-03 Sydamerika/gopro"];
+    #   inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    # };
 
     # Home videos backup with exclusions (Hetzner)
     hemmavideon-hetzner = {
@@ -95,12 +94,12 @@ in {
       inherit (hetznerCommonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
     };
 
-    # Music backup (Storj - legacy)
-    musik = {
-      repository = "s3:${storjS3Endpoint}/${repoPrefix}musik";
-      paths = ["/mnt/veckjarvi/media/musik"];
-      inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
-    };
+    # # Music backup (Storj - legacy)
+    # musik = {
+    #   repository = "s3:${storjS3Endpoint}/${repoPrefix}musik";
+    #   paths = ["/mnt/veckjarvi/media/musik"];
+    #   inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    # };
 
     # Music backup (Hetzner)
     musik-hetzner = {
@@ -109,12 +108,12 @@ in {
       inherit (hetznerCommonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
     };
 
-    # Photos backup (Storj - legacy)
-    fotografier = {
-      repository = "s3:${storjS3Endpoint}/${repoPrefix}fotografier";
-      paths = ["/mnt/veckjarvi/fotografier/library-new"];
-      inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
-    };
+    # # Photos backup (Storj - legacy)
+    # fotografier = {
+    #   repository = "s3:${storjS3Endpoint}/${repoPrefix}fotografier";
+    #   paths = ["/mnt/veckjarvi/fotografier/library-new"];
+    #   inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    # };
 
     # Photos backup (Hetzner)
     fotografier-hetzner = {
@@ -123,16 +122,16 @@ in {
       inherit (hetznerCommonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
     };
 
-    # Docker backup with exclusions (Storj - legacy)
-    docker = {
-      repository = "s3:${storjS3Endpoint}/${repoPrefix}docker";
-      paths = ["/mnt/illby/docker"];
-      exclude = [
-        "**/jellyfin/data/metadata"
-        "**/MediaCover"
-      ];
-      inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
-    };
+    # # Docker backup with exclusions (Storj - legacy)
+    # docker = {
+    #   repository = "s3:${storjS3Endpoint}/${repoPrefix}docker";
+    #   paths = ["/mnt/illby/docker"];
+    #   exclude = [
+    #     "**/jellyfin/data/metadata"
+    #     "**/MediaCover"
+    #   ];
+    #   inherit (commonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    # };
 
     # Docker backup with exclusions (Hetzner)
     docker-hetzner = {
@@ -156,17 +155,17 @@ in {
     text = ''
       #!/usr/bin/env bash
       echo "=== Restic Backup Status ==="
-      echo "Storj (legacy):"
-      for backup in bocker hemmavideon musik fotografier docker; do
-        echo ""
-        echo "Backup: $backup"
-        systemctl status "restic-backups-$backup" --no-pager -l | grep -E "(Active:|Loaded:|Main PID:)" || true
-        echo "Last run:"
-        journalctl -u "restic-backups-$backup" -n 3 --no-pager -o cat | tail -1 || echo "  No logs available"
-        echo "Next run:"
-        systemctl list-timers "restic-backups-$backup" --no-pager | tail -2 | head -1 || echo "  Timer not active"
-      done
-      echo ""
+      # echo "Storj (legacy):"
+      # for backup in bocker hemmavideon musik fotografier docker; do
+      #   echo ""
+      #   echo "Backup: $backup"
+      #   systemctl status "restic-backups-$backup" --no-pager -l | grep -E "(Active:|Loaded:|Main PID:)" || true
+      #   echo "Last run:"
+      #   journalctl -u "restic-backups-$backup" -n 3 --no-pager -o cat | tail -1 || echo "  No logs available"
+      #   echo "Next run:"
+      #   systemctl list-timers "restic-backups-$backup" --no-pager | tail -2 | head -1 || echo "  Timer not active"
+      # done
+      # echo ""
       echo "Hetzner (new):"
       for backup in bocker-hetzner hemmavideon-hetzner musik-hetzner fotografier-hetzner docker-hetzner; do
         echo ""
