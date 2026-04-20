@@ -6,10 +6,13 @@
 }: {
   imports = [
     inputs.noctalia.nixosModules.default
-    ./swayidle.nix
   ];
 
   environment.systemPackages = with pkgs; [
+    nautilus
+    gnome-text-editor
+    evince
+    loupe
     pavucontrol
     xwayland-satellite
     wayland-utils
@@ -23,22 +26,15 @@
     papirus-icon-theme
     nwg-look # Needed for setting gtk theme in Noctalia
     adw-gtk3 # Needed for setting gtk theme in Noctalia
-    pywalfox-native # Needed by Noctalia to theme Firefox and Thunderbird
     inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default # Noctalia shell
-    # swayidle
   ];
 
-  # Niri window manager
-  # Config in dotfiles
+  # Niri window manager, config in dotfiles
   programs.niri.enable = true;
-
-  # Noctalia shell (disabled - now started via niri spawn-at-startup)
-  # services.noctalia-shell.enable = true;
 
   # Environment variables
   environment.sessionVariables = {
-    TERMINAL = "ghostty";
-    # SAL_USE_VCLPLUGIN = "kf5"; # try to get dark mode working in libreoffice
+    TERMINAL = "foot";
     NIXOS_OZONE_WL = "1"; # For electron applications such as vscode
     QT_QPA_PLATFORMTHEME = "gtk3"; # In order to get icons working in Noctalia: https://docs.noctalia.dev/getting-started/faq/
   };
@@ -54,7 +50,6 @@
     ];
     configPackages = [
       pkgs.xdg-desktop-portal-gtk
-      # pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal
     ];
   };
@@ -133,5 +128,72 @@
         emoji = ["Noto Color Emoji"];
       };
     };
+  };
+
+  # nautilus-open-any-terminal
+  programs.foot = {
+    enable = true;
+    theme = "rose-pine";
+    # theme = "tokyonight-night";
+    settings = {
+      main = {
+        font = "FiraCode Nerd Font:size=10";
+        pad = "10x5";
+        title = "foot";
+        app-id = "foot";
+      };
+      bell = {
+        urgent = false;
+        notify = false;
+      };
+      scrollback = {
+        lines = 250000;
+        indicator-position = "relative";
+        indicator-format = "{percentage}%";
+      };
+      cursor = {
+        style = "block";
+        blink = false;
+      };
+      mouse = {
+        hide-when-typing = true;
+      };
+      csd = {
+        preferred = "server";
+        size = 26;
+      };
+      key-bindings = {
+        scrollback-up-page = "Shift+Page_Up";
+        scrollback-down-page = "Shift+Page_Down";
+        scrollback-up-line = "Shift+Up";
+        scrollback-down-line = "Shift+Down";
+        clipboard-copy = "Control+Shift+c";
+        clipboard-paste = "Control+Shift+v";
+        primary-paste = "Shift+Insert";
+        search-start = "Control+Shift+f";
+        font-increase = "Control+plus Control+equal";
+        font-decrease = "Control+minus";
+        font-reset = "Control+0";
+        spawn-terminal = "Control+Shift+n";
+        show-urls-launch = "Control+Shift+o";
+        quit = "Control+Shift+q";
+      };
+      search-bindings = {
+        cancel = "Escape";
+        commit = "Return";
+        find-prev = "Control+Shift+n";
+        find-next = "Control+n";
+      };
+      url-bindings = {
+        cancel = "Escape Control+c";
+        toggle-url-visible = "Control+Shift+u";
+      };
+    };
+  };
+
+  # https://github.com/Stunkymonkey/nautilus-open-any-terminal
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "foot";
   };
 }
