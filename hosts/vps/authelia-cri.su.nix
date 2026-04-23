@@ -246,6 +246,27 @@ in {
             token_endpoint_auth_method = "client_secret_basic";
           }
 
+          # Reitti
+          {
+            client_id = "reitti";
+            client_name = "Reitti";
+            client_secret = "$pbkdf2-sha512$310000$Bb2NZu5xkPE4Qlu/ffZpJw$BXlqbMz4sqz0ZEn6MsEkkccfpZlxqGHGXIiVnCDj18Al4JadJklNA0JxtuKgDnRpM4nW0CD/E.Nr0spOPwI8iQ";
+            public = false;
+            authorization_policy = "two_factor";
+            consent_mode = "pre-configured";
+            pre_configured_consent_duration = "1w";
+            redirect_uris = [
+              "https://reitti.cri.su/login/oauth2/code/oauth"
+              "https://reitti.cri.su/login"
+            ];
+            scopes = ["openid" "profile"];
+            grant_types = ["authorization_code" "refresh_token"];
+            response_types = ["code"];
+            response_modes = ["form_post" "query" "fragment"];
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "client_secret_basic";
+          }
+
           # Tidarr
           {
             client_id = "tidarr";
