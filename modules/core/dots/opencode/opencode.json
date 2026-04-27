@@ -18,6 +18,16 @@
       }
     },
   "permission": {
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow",
+      "*.md": "allow",
+      "README*": "allow",
+      "AGENTS*": "allow",
+      "HANDOFF*": "allow"
+    },
     "edit": "ask",
     "bash": {
       "*": "ask",
@@ -29,6 +39,7 @@
       "hostname *": "allow",
       "rg *": "allow",
       "grep *": "allow",
+      "find *": "allow",
       "curl": "allow",
       "curl *": "allow",
       "git status": "allow",
