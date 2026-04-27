@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-04-23 00:00 UTC
+Last updated: 2026-04-27 17:00 UTC
 
 ## Current State
 
-Stable. No active work in progress. Supermemory plugin disabled in favor of this docs-based memory system.
+LUKS encryption for laptop configured. Installer ISO ready to build. Awaiting physical reinstall of laptop.
 
 ### Hosts
 - **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale
@@ -38,8 +38,18 @@ Stable. No active work in progress. Supermemory plugin disabled in favor of this
 
 ## Top 3 Next Actions
 
-1. **Remove Storj backups** after 30-day Hetzner transition period (check if ready)
-2. No other active tasks — system is stable
+1. **Build and write installer ISO** (on crisuflix):
+   ```bash
+   cd ~/nixconfig
+   nix build --impure .#nixosConfigurations.laptop-installer.config.system.build.isoImage
+   sudo dd if=result/iso/*.iso of=/dev/sdi bs=4M status=progress oflag=sync
+   ```
+2. **Run install on laptop**: boot USB → `run-install` → enter LUKS passphrase → `sudo reboot`
+3. **Post-install on laptop** (first boot):
+   - Restore SSH keys: `scp -r llego@crisuflix.home:~/laptop-ssh-backup/.ssh ~/`
+   - Enroll TPM2: `sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p2`
+   - On crisuflix: `ssh-keyscan laptop.home` → update `secrets/secrets.nix` → `agenix -r` → `nixos-rebuild switch --flake .#laptop --build-host llego@crisuflix.home --target-host llego@laptop.home --sudo`
+4. **Remove Storj backups** after 30-day Hetzner transition period (check if ready)
 
 ## Blockers
 

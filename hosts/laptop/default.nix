@@ -10,6 +10,8 @@
   system.stateVersion = "24.05";
 
   imports = [
+    inputs.disko.nixosModules.disko
+    ./disk-config.nix
     ./../../modules/core
     ./../../modules/apps.nix
     ./../../modules/desktop-environment.nix
@@ -28,6 +30,9 @@
     loader.efi.canTouchEfiVariables = true;
     plymouth.enable = true;
     # binfmt.emulatedSystems = ["aarch64-linux"]; # Needed to create ISO image for rpi5
+
+    # systemd stage 1 initrd — required for TPM2 unlock via systemd-cryptenroll
+    initrd.systemd.enable = true;
   };
 
   # Bluetooth
@@ -128,20 +133,7 @@
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/29aed872-9471-4d06-b42a-f6273a892c01";
-    fsType = "ext4";
-    options = ["noatime"];
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/2BDF-106D";
-    fsType = "vfat";
-    options = [
-      "fmask=0077"
-      "dmask=0077"
-    ];
-  };
+  # fileSystems for / and /boot are managed by disko (disk-config.nix)
 
   # Swap file backup for when zram fills up
   swapDevices = [
