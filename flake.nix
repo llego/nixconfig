@@ -47,8 +47,9 @@
     username = "llego";
   in {
     nixosConfigurations = {
-      # nix build .#nixosConfigurations.laptop-installer.config.system.build.isoImage
+      # nix build --impure .#nixosConfigurations.laptop-installer.config.system.build.isoImage
       # sudo dd if=result/iso/*.iso of=/dev/sdi bs=4M status=progress oflag=sync
+      # (--impure required because SSH keys are read from /home/llego/.ssh/ at build time)
       laptop-installer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [./hosts/installer];
