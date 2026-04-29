@@ -47,6 +47,17 @@
     username = "llego";
   in {
     nixosConfigurations = {
+      # nix build .#nixosConfigurations.laptop-installer.config.system.build.isoImage
+      # sudo dd if=result/iso/*.iso of=/dev/sdi bs=4M status=progress oflag=sync
+      laptop-installer = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [./hosts/installer];
+        specialArgs = {
+          inherit inputs;
+          inherit username;
+        };
+      };
+
       laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
