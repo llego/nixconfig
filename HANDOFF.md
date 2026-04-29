@@ -55,19 +55,16 @@ Key decisions:
    ```bash
    # On crisuflix — before booting USB
    ssh llego@laptop.home 'cd /etc/ssh && sudo tar -cf - ssh_host_*' > ~/laptop-ssh-host-keys.tar
-   scp -r llego@laptop.home:~/.ssh/ ~/laptop-ssh-backup/
 
-   # Build and write ISO
+   # Build and write ISO (--impure needed: SSH key baked in at build time)
    cd ~/nixconfig
-   nix build .#nixosConfigurations.laptop-installer.config.system.build.isoImage
+   nix build --impure .#nixosConfigurations.laptop-installer.config.system.build.isoImage
    sudo dd if=result/iso/*.iso of=/dev/sdi bs=4M status=progress oflag=sync
 
    # Boot laptop from USB → run-install → enter LUKS passphrase → sudo reboot
+   # (install.sh restores both SSH host keys and personal SSH keys automatically)
 
-   # First boot: restore personal SSH keys
-   scp -r llego@crisuflix.home:~/laptop-ssh-backup/.ssh ~/
-
-   # Enroll TPM2 (silent unlock on subsequent boots)
+   # First boot: enroll TPM2 (silent unlock on subsequent boots)
    sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p2
    ```
 

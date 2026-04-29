@@ -30,12 +30,14 @@ in {
     path = ../..;
   };
 
-  # Pre-populate known_hosts for the nixos user so SSH to crisuflix during
-  # install does not prompt for host key verification (which would break the
-  # non-interactive install script under set -e).
+  # SSH key and known_hosts for the nixos user.
+  # Private key read from crisuflix at ISO build time — never committed to git.
+  # Placed in /home/nixos/.ssh/ so the install script can SSH to crisuflix.
   systemd.tmpfiles.rules = [
     "d /home/nixos/.ssh 0700 nixos users -"
-    "C /home/nixos/.ssh/known_hosts 0644 nixos users - ${builtins.toFile "known_hosts" crisuflixKnownHosts}"
+    "C /home/nixos/.ssh/id_ed25519     0600 nixos users - ${builtins.toFile "id_ed25519" (builtins.readFile /home/llego/.ssh/id_ed25519)}"
+    "C /home/nixos/.ssh/id_ed25519.pub 0644 nixos users - ${builtins.toFile "id_ed25519.pub" (builtins.readFile /home/llego/.ssh/id_ed25519.pub)}"
+    "C /home/nixos/.ssh/known_hosts    0644 nixos users - ${builtins.toFile "known_hosts" crisuflixKnownHosts}"
   ];
 
   # Install script available as 'run-install'
