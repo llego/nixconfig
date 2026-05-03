@@ -31,8 +31,8 @@
     plymouth.enable = true;
     # binfmt.emulatedSystems = ["aarch64-linux"]; # Needed to create ISO image for rpi5
 
-    # systemd stage 1 initrd — required for TPM2 unlock via systemd-cryptenroll
-    initrd.systemd.enable = true;
+    # systemd stage 1 initrd — disabled, using traditional initrd for reliability
+    # initrd.systemd.enable = true;
   };
 
   # Bluetooth
