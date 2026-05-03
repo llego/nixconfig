@@ -35,10 +35,11 @@ Laptop boot issues resolved by switching to traditional initrd and passphrase-on
 - ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
 ### Recent Configuration Changes
-- **Boot reliability fix (2026-05-03)**: Disabled systemd initrd and TPM2 to resolve boot failures
+- **Boot reliability fix (2026-05-03) - COMPLETED SUCCESSFULLY**: Disabled systemd initrd and TPM2 to resolve boot failures
   - Commented out `boot.initrd.systemd.enable = true` in laptop config
   - Removed `tpm2-device=auto` from `crypttabExtraOpts`
-  - Generation 7 built with traditional initrd, ready for testing
+  - Generation 7 built and tested - traditional initrd working perfectly
+  - Login keyring reset to resolve authentication mismatch
   - TPM2 slots preserved in LUKS for potential future re-enablement
 - **Kanshi migration**: Moved from systemd.tmpfiles.rules to hjem dotfiles management
   - Config now in `modules/core/dots/kanshi/config` (clean, no ownership issues)
@@ -55,14 +56,14 @@ Laptop boot issues resolved by switching to traditional initrd and passphrase-on
 
 ## Top 3 Next Actions
 
-1. **Test generation 7 boot** — verify traditional initrd and passphrase-only LUKS work reliably
-   - Reboot and confirm passphrase prompt appears
-   - Test multiple boot cycles for consistency
-   - If successful, optionally clean up TPM2 LUKS slots
+1. ✅ **Boot reliability fix completed successfully**
+   - Generation 7 with traditional initrd working perfectly
+   - Passphrase-only LUKS unlock verified
+   - Login keyring reset and functioning properly
 
 2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
 
-3. No other active tasks
+3. **Optional cleanup**: Remove TPM2 LUKS slots if traditional setup remains stable
 
 ## Blockers
 
