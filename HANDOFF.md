@@ -28,18 +28,16 @@ Laptop LUKS encryption reinstall completed successfully. TPM2 basic enrollment a
 - Symlinked to `~/.config/` via `modules/core/hjem.nix`
 - Edit source files directly; changes take effect without rebuild
 
-### Laptop LUKS Setup (ready to execute)
-New files added:
-- `hosts/laptop/disk-config.nix` — disko layout: 1G ESP + LUKS2 (`cryptroot`) → ext4 `/`
-- `hosts/installer/default.nix` — installer ISO: WiFi auto-connect, embedded repo, crisuflix known_hosts
-- `hosts/installer/install.sh` — install script aliased to `run-install`
-
-Key decisions:
-- LUKS2 with `allowDiscards` (SSD TRIM) and `crypttabExtraOpts = ["tpm2-device=auto"]`
+### Laptop LUKS Setup (completed)
+- LUKS2 with `allowDiscards` and `crypttabExtraOpts = ["tpm2-device=auto"]`
 - `boot.initrd.systemd.enable = true` for TPM2 unlock support
-- Repo embedded in ISO at `/etc/nixconfig` via `builtins.path` — no git/GitHub needed
-- Laptop SSH host keys preserved across reinstall → agenix re-key not needed
-- `hashedPasswordFile` via agenix unchanged — works because host key is preserved
+- Install done via nixos-anywhere from crisuflix with `--copy-host-keys`
+- TPM2 enrollment pending: `sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p2`
+
+### hjem Fix Note
+After reinstall, `~/.config` was owned by root (created by systemd.tmpfiles for kanshi). hjem-impure
+failed to create symlinks because parent dirs didn't exist. Fix: `sudo chown llego:users ~/.config`,
+create missing subdirs, restart `hjem-activate@llego.service`.
 
 ## Architecture Principles
 
@@ -53,7 +51,7 @@ Key decisions:
 
 1. **Complete TPM2+PIN setup:** ✅ LUKS reinstall done, implementing 4-digit PIN protection on TPM2 enrollment
 
-2. **Remove Storj backups** after 30-day Hetzner transition period (check if ready)
+2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
 
 3. No other active tasks
 

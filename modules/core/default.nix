@@ -44,7 +44,8 @@
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJADwUps+xVBj5uHuO68oR3USlmXdSosizvCQlKyKJnu mail@christiansandberg.fi"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJADwUps+xVBj5uHuO68oR3USlmXdSosizvCQlKyKJnu mail@christiansandberg.fi" # llego private key
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID0LhqlmrvsU3NCaxPlQ6EEzv1M02aPFgrQJz9iFDknZ eddsa-key-20260429" # gaming-pc
     ];
   };
 

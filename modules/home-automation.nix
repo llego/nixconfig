@@ -43,6 +43,12 @@
     "/mnt/illby/appstorage/music-assistant:/var/lib/music-assistant"
   ];
 
+  # Smart Fades uses librosa -> numba -> llvmlite (LLVM JIT), which requires
+  # allocating W+X memory pages. MemoryDenyWriteExecute=yes (set by systemd
+  # hardening defaults) blocks this with EPERM. Same fix applied to PostgreSQL
+  # JIT in nixpkgs (nixpkgs PR #344925).
+  systemd.services.music-assistant.serviceConfig.MemoryDenyWriteExecute = lib.mkForce false;
+
   # ESPHome dashboard (native NixOS service)
   services.esphome = {
     enable = true;
