@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-05-03 21:30 UTC
+Last updated: 2026-05-03 21:50 UTC
 
 ## Current State
 
-Laptop boot issues resolved by switching to traditional initrd and passphrase-only LUKS. Generation 7 built and ready for testing.
+Laptop boot issues COMPLETELY RESOLVED. Traditional initrd + passphrase-only LUKS working perfectly. TPM2 cleaned up, keyring authentication fixed.
 
 ### Hosts
 - **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS (passphrase-only), kanshi
@@ -37,10 +37,11 @@ Laptop boot issues resolved by switching to traditional initrd and passphrase-on
 ### Recent Configuration Changes
 - **Boot reliability fix (2026-05-03) - COMPLETED SUCCESSFULLY**: Disabled systemd initrd and TPM2 to resolve boot failures
   - Commented out `boot.initrd.systemd.enable = true` in laptop config
-  - Removed `tpm2-device=auto` from `crypttabExtraOpts`
+  - Removed `tmp2-device=auto` from `crypttabExtraOpts`
   - Generation 7 built and tested - traditional initrd working perfectly
-  - Login keyring reset to resolve authentication mismatch
-  - TPM2 slots preserved in LUKS for potential future re-enablement
+  - Login keyring reset and properly authenticated - no more popups
+  - TPM2 LUKS slots completely removed for clean setup
+  - Boot stability tested and confirmed across multiple reboots
 - **Kanshi migration**: Moved from systemd.tmpfiles.rules to hjem dotfiles management
   - Config now in `modules/core/dots/kanshi/config` (clean, no ownership issues)
   - Startup still via niri: `spawn-at-startup "kanshi"`
@@ -56,14 +57,16 @@ Laptop boot issues resolved by switching to traditional initrd and passphrase-on
 
 ## Top 3 Next Actions
 
-1. ✅ **Boot reliability fix completed successfully**
+1. ✅ **Boot reliability fix FULLY COMPLETED**
    - Generation 7 with traditional initrd working perfectly
-   - Passphrase-only LUKS unlock verified
-   - Login keyring reset and functioning properly
+   - Passphrase-only LUKS unlock verified and stable
+   - TPM2 completely removed from LUKS slots
+   - Login keyring authentication resolved - no more popups
+   - Multiple reboot cycles tested successfully
 
 2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
 
-3. **Optional cleanup**: Remove TPM2 LUKS slots if traditional setup remains stable
+3. No other active tasks - laptop fully stable and reliable
 
 ## Blockers
 
