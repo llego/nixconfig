@@ -1,13 +1,13 @@
 # HANDOFF
 
-Last updated: 2026-05-03 20:45 UTC
+Last updated: 2026-05-03 21:30 UTC
 
 ## Current State
 
-Laptop LUKS+TPM2 setup completed successfully. Kanshi configuration migrated to hjem dotfiles approach.
+Laptop boot issues resolved by switching to traditional initrd and passphrase-only LUKS. Generation 7 built and ready for testing.
 
 ### Hosts
-- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS+TPM2, kanshi
+- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS (passphrase-only), kanshi
 - **vps** (`christiansandberg.fi`): Traefik + Redis + Authelia + Gotify + Uptime Kuma + static site
 - **crisuflix**: NAS, ZFS, Docker, Home Assistant, Music Assistant, ESPHome, Mosquitto, restic backups
 - **rpi5**: Chromium kiosk, RuuviCollector, nightly reboot
@@ -28,13 +28,18 @@ Laptop LUKS+TPM2 setup completed successfully. Kanshi configuration migrated to 
 - Symlinked to `~/.config/` via `modules/core/hjem.nix`
 - Edit source files directly; changes take effect without rebuild
 
-### Laptop LUKS+TPM2 Setup (completed)
-- LUKS2 with `allowDiscards` and `crypttabExtraOpts = ["tmp2-device=auto"]`
-- `boot.initrd.systemd.enable = true` for TPM2 unlock support
+### Laptop LUKS Setup (reverted for reliability)
+- LUKS2 with `allowDiscards` and `crypttabExtraOpts = []` (TPM2 disabled)
+- Traditional busybox initrd (`boot.initrd.systemd.enable = false`)  
 - Install done via nixos-anywhere from crisuflix with `--copy-host-keys`
-- ✅ **TPM2 enrollment completed** — automatic unlock on boot
+- ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
 ### Recent Configuration Changes
+- **Boot reliability fix (2026-05-03)**: Disabled systemd initrd and TPM2 to resolve boot failures
+  - Commented out `boot.initrd.systemd.enable = true` in laptop config
+  - Removed `tpm2-device=auto` from `crypttabExtraOpts`
+  - Generation 7 built with traditional initrd, ready for testing
+  - TPM2 slots preserved in LUKS for potential future re-enablement
 - **Kanshi migration**: Moved from systemd.tmpfiles.rules to hjem dotfiles management
   - Config now in `modules/core/dots/kanshi/config` (clean, no ownership issues)
   - Startup still via niri: `spawn-at-startup "kanshi"`
@@ -50,9 +55,14 @@ Laptop LUKS+TPM2 setup completed successfully. Kanshi configuration migrated to 
 
 ## Top 3 Next Actions
 
-1. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
+1. **Test generation 7 boot** — verify traditional initrd and passphrase-only LUKS work reliably
+   - Reboot and confirm passphrase prompt appears
+   - Test multiple boot cycles for consistency
+   - If successful, optionally clean up TPM2 LUKS slots
 
-2. No other active tasks
+2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
+
+3. No other active tasks
 
 ## Blockers
 
