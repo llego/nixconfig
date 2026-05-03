@@ -60,19 +60,25 @@
     greetd = {
       enable = true;
       settings.default_session = {
-        user = username;
+        user = "greeter";
         command = ''
           ${pkgs.tuigreet}/bin/tuigreet \
             --time \
             --asterisks \
             --remember \
             --remember-session \
+            --user-menu \
             --cmd niri-session \
             --theme 'border=#c4a7e7;text=#e0def4;prompt=#9ccfd8;time=#6e6a86;action=#31748f;button=#f6c177;container=#191724;input=#eb6f92'
         '';
       };
     };
   };
+
+  # Cache directory for tuigreet --remember functionality
+  systemd.tmpfiles.rules = [
+    "d /var/cache/tuigreet 0755 greeter greeter -"
+  ];
 
   # MIME type associations
   xdg.mime = {
