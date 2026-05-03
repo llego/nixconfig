@@ -1,13 +1,13 @@
 # HANDOFF
 
-Last updated: 2026-04-27 20:00 UTC
+Last updated: 2026-04-30 12:00 UTC
 
 ## Current State
 
-Laptop LUKS encryption fully configured. Installer ISO ready to build. Awaiting physical reinstall of laptop.
+Laptop LUKS encryption reinstall completed successfully. TPM2 basic enrollment active. Currently implementing TPM2+PIN protection.
 
 ### Hosts
-- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale — **pending LUKS reinstall**
+- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale — **LUKS reinstall completed**
 - **vps** (`christiansandberg.fi`): Traefik + Redis + Authelia + Gotify + Uptime Kuma + static site
 - **crisuflix**: NAS, ZFS, Docker, Home Assistant, Music Assistant, ESPHome, Mosquitto, restic backups
 - **rpi5**: Chromium kiosk, RuuviCollector, nightly reboot
@@ -51,22 +51,7 @@ Key decisions:
 
 ## Top 3 Next Actions
 
-1. **Execute laptop LUKS reinstall:**
-   ```bash
-   # On crisuflix — before booting USB
-   ssh llego@laptop.home 'cd /etc/ssh && sudo tar -cf - ssh_host_*' > ~/laptop-ssh-host-keys.tar
-
-   # Build and write ISO (--impure needed: SSH key baked in at build time)
-   cd ~/nixconfig
-   nix build --impure .#nixosConfigurations.laptop-installer.config.system.build.isoImage
-   sudo dd if=result/iso/*.iso of=/dev/sdi bs=4M status=progress oflag=sync
-
-   # Boot laptop from USB → run-install → enter LUKS passphrase → sudo reboot
-   # (install.sh restores both SSH host keys and personal SSH keys automatically)
-
-   # First boot: enroll TPM2 (silent unlock on subsequent boots)
-   sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p2
-   ```
+1. **Complete TPM2+PIN setup:** ✅ LUKS reinstall done, implementing 4-digit PIN protection on TPM2 enrollment
 
 2. **Remove Storj backups** after 30-day Hetzner transition period (check if ready)
 
