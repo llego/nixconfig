@@ -36,9 +36,6 @@
   # Set up user llego
   users.users.${username} = {
     isNormalUser = true;
-    hashedPasswordFile = config.age.secrets.initial-password.path;
-    # Fallback password active before agenix secrets are re-keyed (e.g. after reinstall).
-    # Generated with mkpasswd. Override by hashedPasswordFile once agenix is operational.
     initialHashedPassword = "$y$j9T$ZkjPz16I42/HiBKp5pDiJ0$N2UuFtPMc1n8t41tl94Am3c0RTTw9zaTku9ER.r0wg/";
     description = "Christian Sandberg";
     extraGroups = ["networkmanager" "wheel"];

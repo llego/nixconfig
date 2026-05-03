@@ -1,13 +1,13 @@
 # HANDOFF
 
-Last updated: 2026-04-30 12:00 UTC
+Last updated: 2026-05-03 20:45 UTC
 
 ## Current State
 
-Laptop LUKS encryption reinstall completed successfully. TPM2 basic enrollment active. Currently implementing TPM2+PIN protection.
+Laptop LUKS+TPM2 setup completed successfully. Kanshi configuration migrated to hjem dotfiles approach.
 
 ### Hosts
-- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale — **LUKS reinstall completed**
+- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS+TPM2, kanshi
 - **vps** (`christiansandberg.fi`): Traefik + Redis + Authelia + Gotify + Uptime Kuma + static site
 - **crisuflix**: NAS, ZFS, Docker, Home Assistant, Music Assistant, ESPHome, Mosquitto, restic backups
 - **rpi5**: Chromium kiosk, RuuviCollector, nightly reboot
@@ -28,16 +28,17 @@ Laptop LUKS encryption reinstall completed successfully. TPM2 basic enrollment a
 - Symlinked to `~/.config/` via `modules/core/hjem.nix`
 - Edit source files directly; changes take effect without rebuild
 
-### Laptop LUKS Setup (completed)
-- LUKS2 with `allowDiscards` and `crypttabExtraOpts = ["tpm2-device=auto"]`
+### Laptop LUKS+TPM2 Setup (completed)
+- LUKS2 with `allowDiscards` and `crypttabExtraOpts = ["tmp2-device=auto"]`
 - `boot.initrd.systemd.enable = true` for TPM2 unlock support
 - Install done via nixos-anywhere from crisuflix with `--copy-host-keys`
-- TPM2 enrollment pending: `sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p2`
+- ✅ **TPM2 enrollment completed** — automatic unlock on boot
 
-### hjem Fix Note
-After reinstall, `~/.config` was owned by root (created by systemd.tmpfiles for kanshi). hjem-impure
-failed to create symlinks because parent dirs didn't exist. Fix: `sudo chown llego:users ~/.config`,
-create missing subdirs, restart `hjem-activate@llego.service`.
+### Recent Configuration Changes
+- **Kanshi migration**: Moved from systemd.tmpfiles.rules to hjem dotfiles management
+  - Config now in `modules/core/dots/kanshi/config` (clean, no ownership issues)
+  - Startup still via niri: `spawn-at-startup "kanshi"`
+  - Follows established dotfiles architecture pattern
 
 ## Architecture Principles
 
@@ -49,11 +50,9 @@ create missing subdirs, restart `hjem-activate@llego.service`.
 
 ## Top 3 Next Actions
 
-1. **Complete TPM2+PIN setup:** ✅ LUKS reinstall done, implementing 4-digit PIN protection on TPM2 enrollment
+1. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
 
-2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
-
-3. No other active tasks
+2. No other active tasks
 
 ## Blockers
 

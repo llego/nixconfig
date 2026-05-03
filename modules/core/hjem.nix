@@ -39,6 +39,9 @@ in {
       "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
       "opencode/agent/code-reviewer.md".source = dots + "/opencode/agent/code-reviewer.md";
 
+      # Kanshi configuration file
+      "kanshi/config".source = dots + "/kanshi/config";
+
       # Noctalia configuration files
       "noctalia/settings.json".source = dots + "/noctalia/settings.json";
       "noctalia/wallpapers/mountains4k.jpg".source = dots + "/noctalia/wallpapers/mountains4k.jpg";

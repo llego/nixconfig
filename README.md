@@ -46,6 +46,11 @@ Always use crisuflix as the remote build host. Add `--build-host llego@crisuflix
 
 Run `hostname` before `nixos-rebuild`. Most often you are on crisuflix.
 
+If you have created new files, add them to git before running `nixos-rebuild`:
+```bash
+git add .
+```
+
 
 
 ```bash
