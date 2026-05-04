@@ -108,7 +108,7 @@
     LC_TELEPHONE = "fi_FI.UTF-8";
     LC_TIME = "en_DK.UTF-8"; # ISO 8601 date format (YYYY-MM-DD)
   };
-  console.keyMap = "sv-latin1";
+  console.keyMap = "fi";
 
   # Nix settings
   nix = {

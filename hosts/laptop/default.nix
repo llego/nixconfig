@@ -3,7 +3,6 @@
   lib,
   pkgs,
   modulesPath,
-  username,
   inputs,
   ...
 }: {
@@ -24,114 +23,115 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  # Bootloader
-  boot = {
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
-    plymouth.enable = true;
-    # binfmt.emulatedSystems = ["aarch64-linux"]; # Needed to create ISO image for rpi5
-
-    # systemd stage 1 initrd — disabled, using traditional initrd for reliability
-    # initrd.systemd.enable = true;
-  };
-
-  # Bluetooth
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-
-  # Enable sound with pipewire
-  #services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Thunderbolt
-  services.hardware.bolt.enable = true;
-
-  # Battery power information
-  services.upower.enable = true;
-
-  # Firmware updates
-  services.fwupd.enable = true;
-
-  # SSD optimization - weekly TRIM
-  services.fstrim.enable = true;
-
-  # Reduce systemd journal writes
-  services.journald.extraConfig = ''
-    SystemMaxUse=100M
-    MaxRetentionSec=7day
-  '';
-
-  # Prevent system freeze when running out of memory
-  services.earlyoom = {
-    enable = true;
-    freeMemThreshold = 5; # Kill processes when <5% RAM free
-    freeSwapThreshold = 10; # Kill processes when <10% swap free
-    enableNotifications = true;
-  };
-
-  # Memory management tuning
-  boot.kernel.sysctl = {
-    "vm.swappiness" = 80; # Use swap proactively to prevent sudden OOM
-  };
-
-  fileSystems."/mnt/truenas-docker/data" = {
-    device = "truenas.home:/mnt/illby/docker/data";
-    fsType = "nfs";
-    options = [
-      "x-systemd.automount"
-      "noauto"
-      "x-systemd.idle-timeout=300"
-      "noatime"
-      "nfsvers=4.0"
-    ];
-  };
-
-  fileSystems."/mnt/truenas-docker/stacks" = {
-    device = "truenas.home:/mnt/illby/docker/stacks";
-    fsType = "nfs";
-    options = [
-      "x-systemd.automount"
-      "noauto"
-      "x-systemd.idle-timeout=300"
-      "noatime"
-      "nfsvers=4.0"
-    ];
-  };
-
-  # Hardware acceleration (VAAPI)
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver
-      intel-vaapi-driver
-    ];
-  };
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";
   };
 
-  #######
-  # hardware-configuration.nix
-  #######
-  boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "nvme"
-    "usbhid"
-    "usb_storage"
-    "sd_mod"
+  hardware = {
+    bluetooth.enable = true;
+    bluetooth.powerOnBoot = true;
+    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+    # Hardware acceleration (VAAPI)
+    graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        intel-media-driver
+        intel-vaapi-driver
+      ];
+    };
+  };
+
+  security.rtkit.enable = true;
+
+  services = {
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+    # Thunderbolt
+    hardware.bolt.enable = true;
+
+    # Battery power information
+    upower.enable = true;
+
+    # Firmware updates
+    fwupd.enable = true;
+
+    # SSD optimization - weekly TRIM
+    fstrim.enable = true;
+
+    # Reduce systemd journal writes
+    journald.extraConfig = ''
+      SystemMaxUse=100M
+      MaxRetentionSec=7day
+    '';
+
+    # Prevent system freeze when running out of memory
+    earlyoom = {
+      enable = true;
+      freeMemThreshold = 5; # Kill processes when <5% RAM free
+      freeSwapThreshold = 10; # Kill processes when <10% swap free
+      enableNotifications = true;
+    };
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /mnt/crisuflix-docker 0755 root root -"
+    "d /mnt/crisuflix-docker/data 0755 root root -"
+    "d /mnt/crisuflix-docker/stacks 0755 root root -"
   ];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = ["kvm-intel"];
-  boot.extraModulePackages = [];
+  fileSystems."/mnt/crisuflix-docker/data" = {
+    device = "crisuflix.home:/mnt/illby/docker/data";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=300"
+      "noatime"
+      "nfsvers=4.0"
+    ];
+  };
+
+  fileSystems."/mnt/crisuflix-docker/stacks" = {
+    device = "crisuflix.home:/mnt/illby/docker/stacks";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=300"
+      "noatime"
+      "nfsvers=4.0"
+    ];
+  };
+
+  boot = {
+    # Bootloader
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    plymouth.enable = true;
+
+    initrd = {
+      availableKernelModules = [
+        "xhci_pci"
+        "nvme"
+        "usbhid"
+        "usb_storage"
+        "sd_mod"
+      ];
+      kernelModules = [];
+    };
+    kernelModules = ["kvm-intel"];
+    extraModulePackages = [];
+    # Memory management tuning
+    kernel.sysctl = {
+      "vm.swappiness" = 80; # Use swap proactively to prevent sudden OOM
+    };
+  };
 
   # fileSystems for / and /boot are managed by disko (disk-config.nix)
 
@@ -151,5 +151,4 @@
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

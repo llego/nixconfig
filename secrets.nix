@@ -13,7 +13,6 @@ let
   allKeys = allHosts ++ [userKey];
 in {
   # Shared across all hosts
-  "secrets/initial-password.age".publicKeys = allKeys;
   "secrets/beszel-env.age".publicKeys = allKeys;
   "secrets/ha-mcp-token.age".publicKeys = allKeys;
   "secrets/bandcamp-cookie.age".publicKeys = allKeys;

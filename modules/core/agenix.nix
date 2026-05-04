@@ -8,7 +8,7 @@
   imports = [
     inputs.agenix.nixosModules.default
   ];
-  
+
   environment.systemPackages = [
     inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
@@ -16,13 +16,6 @@
   # Define secrets based on hostname
   age.secrets =
     {
-      # Initial user password - used by all hosts
-      initial-password = {
-        file = ./../../secrets/initial-password.age;
-        mode = "0400";
-        owner = "root";
-        group = "root";
-      };
       beszel-env = {
         file = ./../../secrets/beszel-env.age;
         path = "/var/lib/beszel-agent/env";

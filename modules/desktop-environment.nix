@@ -140,7 +140,6 @@
   programs.foot = {
     enable = true;
     theme = "rose-pine";
-    # theme = "tokyonight-night";
     settings = {
       main = {
         font = "FiraCode Nerd Font:size=10";
