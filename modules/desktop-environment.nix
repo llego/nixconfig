@@ -136,7 +136,6 @@
     };
   };
 
-  # nautilus-open-any-terminal
   programs.foot = {
     enable = true;
     theme = "rose-pine";
@@ -196,6 +195,7 @@
     };
   };
 
+  # nautilus-open-any-terminal
   # https://github.com/Stunkymonkey/nautilus-open-any-terminal
   programs.nautilus-open-any-terminal = {
     enable = true;
