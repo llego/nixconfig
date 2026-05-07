@@ -4,6 +4,7 @@
   pkgs,
   modulesPath,
   inputs,
+  username,
   ...
 }: {
   system.stateVersion = "24.05";
@@ -151,4 +152,18 @@
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  systemd.user.services.kanshi = {
+    enable = true;
+    description = "Kanshi display auto-configuration";
+    wantedBy = ["graphical-session.target"];
+    wants = ["graphical-session.target"];
+    after = ["graphical-session.target"];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.kanshi}/bin/kanshi -c /home/${username}/.config/kanshi/config";
+      Restart = "on-failure";
+      RestartSec = 3;
+    };
+  };
 }

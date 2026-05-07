@@ -100,7 +100,7 @@ binds {
     // Mod+L {spawn "dms" "ipc" "call" "lock" "lock"; }
     Mod+Left { focus-column-left; }
     Mod+Minus { set-column-width "-10%"; }
-    Mod+P { spawn "kanshi -c /home/llego/.config/kanshi/config"; }
+    Mod+P { spawn "systemctl" "--user" "restart" "kanshi.service"; }
     "Mod+Page_Down" { focus-window-or-workspace-down; }
     "Mod+Page_Up" { focus-window-or-workspace-up; }
     Mod+Period { expel-window-from-column; }
@@ -130,7 +130,6 @@ binds {
 }
 
 spawn-at-startup "systemctl" "--user" "restart" "swayidle.service"
-spawn-at-startup "kanshi"
 
 // spawn-at-startup "qs" "-c" "noctalia-shell"
 spawn-at-startup "noctalia-shell"
