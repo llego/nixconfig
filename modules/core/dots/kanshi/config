@@ -1,0 +1,13 @@
+profile undocked {
+  output eDP-1 enable scale 2.0
+}
+
+profile home_office_1 {
+  output DP-1 enable mode 3840x2160 scale 1.6
+  output eDP-1 disable
+}
+
+profile home_office_2 {
+  output DP-2 enable mode 3840x2160 scale 1.6
+  output eDP-1 disable
+}

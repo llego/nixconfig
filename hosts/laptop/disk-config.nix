@@ -25,11 +25,9 @@
               # Safe to use: LUKS2 does not leak meaningful data via discard patterns.
               settings = {
                 allowDiscards = true;
-                # tpm2-device=auto tells systemd-cryptsetup in the initrd to attempt
-                # TPM2 unlock automatically. Requires enrolling TPM2 post-install with:
-                #   sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p2
-                # Passphrase remains as fallback if TPM2 fails.
-                crypttabExtraOpts = ["tpm2-device=auto"];
+                # TPM2 disabled for reliability - using passphrase-only unlock
+                # Traditional initrd handles passphrase unlock without extra options
+                crypttabExtraOpts = [];
                 # nixos-anywhere uploads the passphrase to this path before disko runs.
                 # The file is ephemeral — only exists in the installer RAM environment.
                 keyFile = "/tmp/disk.key";

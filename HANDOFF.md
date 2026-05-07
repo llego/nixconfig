@@ -1,13 +1,13 @@
 # HANDOFF
 
-Last updated: 2026-04-30 12:00 UTC
+Last updated: 2026-05-03 21:50 UTC
 
 ## Current State
 
-Laptop LUKS encryption reinstall completed successfully. TPM2 basic enrollment active. Currently implementing TPM2+PIN protection.
+Laptop boot issues COMPLETELY RESOLVED. Traditional initrd + passphrase-only LUKS working perfectly. TPM2 cleaned up, keyring authentication fixed.
 
 ### Hosts
-- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale — **LUKS reinstall completed**
+- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS (passphrase-only), kanshi
 - **vps** (`christiansandberg.fi`): Traefik + Redis + Authelia + Gotify + Uptime Kuma + static site
 - **crisuflix**: NAS, ZFS, Docker, Home Assistant, Music Assistant, ESPHome, Mosquitto, restic backups
 - **rpi5**: Chromium kiosk, RuuviCollector, nightly reboot
@@ -28,16 +28,24 @@ Laptop LUKS encryption reinstall completed successfully. TPM2 basic enrollment a
 - Symlinked to `~/.config/` via `modules/core/hjem.nix`
 - Edit source files directly; changes take effect without rebuild
 
-### Laptop LUKS Setup (completed)
-- LUKS2 with `allowDiscards` and `crypttabExtraOpts = ["tpm2-device=auto"]`
-- `boot.initrd.systemd.enable = true` for TPM2 unlock support
+### Laptop LUKS Setup (reverted for reliability)
+- LUKS2 with `allowDiscards` and `crypttabExtraOpts = []` (TPM2 disabled)
+- Traditional busybox initrd (`boot.initrd.systemd.enable = false`)  
 - Install done via nixos-anywhere from crisuflix with `--copy-host-keys`
-- TPM2 enrollment pending: `sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p2`
+- ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
-### hjem Fix Note
-After reinstall, `~/.config` was owned by root (created by systemd.tmpfiles for kanshi). hjem-impure
-failed to create symlinks because parent dirs didn't exist. Fix: `sudo chown llego:users ~/.config`,
-create missing subdirs, restart `hjem-activate@llego.service`.
+### Recent Configuration Changes
+- **Boot reliability fix (2026-05-03) - COMPLETED SUCCESSFULLY**: Disabled systemd initrd and TPM2 to resolve boot failures
+  - Commented out `boot.initrd.systemd.enable = true` in laptop config
+  - Removed `tmp2-device=auto` from `crypttabExtraOpts`
+  - Generation 7 built and tested - traditional initrd working perfectly
+  - Login keyring reset and properly authenticated - no more popups
+  - TPM2 LUKS slots completely removed for clean setup
+  - Boot stability tested and confirmed across multiple reboots
+- **Kanshi migration**: Moved from systemd.tmpfiles.rules to hjem dotfiles management
+  - Config now in `modules/core/dots/kanshi/config` (clean, no ownership issues)
+  - Startup still via niri: `spawn-at-startup "kanshi"`
+  - Follows established dotfiles architecture pattern
 
 ## Architecture Principles
 
@@ -49,11 +57,16 @@ create missing subdirs, restart `hjem-activate@llego.service`.
 
 ## Top 3 Next Actions
 
-1. **Complete TPM2+PIN setup:** ✅ LUKS reinstall done, implementing 4-digit PIN protection on TPM2 enrollment
+1. ✅ **Boot reliability fix FULLY COMPLETED**
+   - Generation 7 with traditional initrd working perfectly
+   - Passphrase-only LUKS unlock verified and stable
+   - TPM2 completely removed from LUKS slots
+   - Login keyring authentication resolved - no more popups
+   - Multiple reboot cycles tested successfully
 
 2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
 
-3. No other active tasks
+3. No other active tasks - laptop fully stable and reliable
 
 ## Blockers
 
