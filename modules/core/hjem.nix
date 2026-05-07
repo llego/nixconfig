@@ -42,6 +42,9 @@ in {
       # Kanshi configuration file
       "kanshi/config".source = dots + "/kanshi/config";
 
+      # GTK configuration files
+      "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
+
       # Noctalia configuration files
       "noctalia/settings.json".source = dots + "/noctalia/settings.json";
       "noctalia/wallpapers/mountains4k.jpg".source = dots + "/noctalia/wallpapers/mountains4k.jpg";
