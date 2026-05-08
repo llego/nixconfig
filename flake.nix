@@ -2,12 +2,8 @@
   description = "llego's nix config";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/6368eda62c9775c38ef7f714b2555a741c20c72d";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     album-downloader = {
       url = "path:./pkgs/album-downloader";
       inputs.nixpkgs.follows = "nixpkgs";
