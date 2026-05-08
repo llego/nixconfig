@@ -1,13 +1,4 @@
-{
-  inputs,
-  pkgs,
-  username,
-  ...
-}: {
-  imports = [
-    inputs.noctalia.nixosModules.default
-  ];
-
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     nautilus
     gnome-text-editor
@@ -26,7 +17,7 @@
     papirus-icon-theme
     nwg-look # Needed for setting gtk theme in Noctalia
     adw-gtk3 # Needed for setting gtk theme in Noctalia
-    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default # Noctalia shell
+    noctalia-shell # Noctalia shell
   ];
 
   # Niri window manager, config in dotfiles
