@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-05-03 21:50 UTC
+Last updated: 2026-05-11 12:15 UTC
 
 ## Current State
 
-Laptop boot issues COMPLETELY RESOLVED. Traditional initrd + passphrase-only LUKS working perfectly. TPM2 cleaned up, keyring authentication fixed.
+Dotfile configuration reorganization COMPLETED. Laptop tested and working perfectly. Package installations now co-located with their configurations.
 
 ### Hosts
 - **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS (passphrase-only), kanshi
@@ -35,17 +35,14 @@ Laptop boot issues COMPLETELY RESOLVED. Traditional initrd + passphrase-only LUK
 - ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
 ### Recent Configuration Changes
-- **Boot reliability fix (2026-05-03) - COMPLETED SUCCESSFULLY**: Disabled systemd initrd and TPM2 to resolve boot failures
-  - Commented out `boot.initrd.systemd.enable = true` in laptop config
-  - Removed `tmp2-device=auto` from `crypttabExtraOpts`
-  - Generation 7 built and tested - traditional initrd working perfectly
-  - Login keyring reset and properly authenticated - no more popups
-  - TPM2 LUKS slots completely removed for clean setup
-  - Boot stability tested and confirmed across multiple reboots
-- **Kanshi migration**: Moved from systemd.tmpfiles.rules to hjem dotfiles management
-  - Config now in `modules/core/dots/kanshi/config` (clean, no ownership issues)
-  - Startup still via niri: `spawn-at-startup "kanshi"`
-  - Follows established dotfiles architecture pattern
+- **Dotfile reorganization (2026-05-11) - COMPLETED SUCCESSFULLY**: Moved dotfile configurations to their respective package modules
+  - **desktop-environment.nix** now contains: niri, kanshi, GTK, noctalia configs + SSH desktop shortcuts
+  - **basic-cli.nix** now contains: helix and yazi configurations  
+  - **apps.nix** now contains: opencode configurations
+  - **core/hjem.nix** simplified to: core hjem infrastructure + beets config (docker container dependency)
+  - Package installations now co-located with their configurations for better maintainability
+  - All dotfile symlinks verified working correctly on laptop
+  - Single hjem module import in core avoids conflicts
 
 ## Architecture Principles
 
@@ -57,16 +54,16 @@ Laptop boot issues COMPLETELY RESOLVED. Traditional initrd + passphrase-only LUK
 
 ## Top 3 Next Actions
 
-1. ✅ **Boot reliability fix FULLY COMPLETED**
-   - Generation 7 with traditional initrd working perfectly
-   - Passphrase-only LUKS unlock verified and stable
-   - TPM2 completely removed from LUKS slots
-   - Login keyring authentication resolved - no more popups
-   - Multiple reboot cycles tested successfully
+1. ✅ **Dotfile reorganization FULLY COMPLETED** 
+   - All dotfile configs moved to their respective package modules
+   - Package installations co-located with configurations for better maintainability
+   - hjem.nix simplified to core infrastructure + beets config
+   - Laptop tested and verified working correctly
+   - Commit 634e665 contains all changes
 
 2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
 
-3. No other active tasks - laptop fully stable and reliable
+3. No other active tasks - system fully stable and well-organized
 
 ## Blockers
 
