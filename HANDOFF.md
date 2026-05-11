@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-05-11 12:15 UTC
+Last updated: 2026-05-11 15:00 UTC
 
 ## Current State
 
-Dotfile configuration reorganization COMPLETED. Laptop tested and working perfectly. Package installations now co-located with their configurations.
+oh-my-posh configuration moved to hjem-managed dotfiles COMPLETED. All prompt configurations now user-editable without rebuilds. System fully stable and well-organized.
 
 ### Hosts
 - **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS (passphrase-only), kanshi
@@ -25,8 +25,10 @@ Dotfile configuration reorganization COMPLETED. Laptop tested and working perfec
 
 ### Dotfiles
 - Managed with hjem-impure from `modules/core/dots/`
-- Symlinked to `~/.config/` via `modules/core/hjem.nix`
+- Symlinked to `~/.config/` via distributed hjem configuration across modules
+- **Recent additions**: oh-my-posh config now user-managed (was system-wide)
 - Edit source files directly; changes take effect without rebuild
+- **Coverage**: helix, yazi, niri, kanshi, GTK, noctalia, opencode, oh-my-posh, beets, SSH shortcuts
 
 ### Laptop LUKS Setup (reverted for reliability)
 - LUKS2 with `allowDiscards` and `crypttabExtraOpts = []` (TPM2 disabled)
@@ -35,14 +37,16 @@ Dotfile configuration reorganization COMPLETED. Laptop tested and working perfec
 - ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
 ### Recent Configuration Changes
-- **Dotfile reorganization (2026-05-11) - COMPLETED SUCCESSFULLY**: Moved dotfile configurations to their respective package modules
-  - **desktop-environment.nix** now contains: niri, kanshi, GTK, noctalia configs + SSH desktop shortcuts
-  - **basic-cli.nix** now contains: helix and yazi configurations  
-  - **apps.nix** now contains: opencode configurations
-  - **core/hjem.nix** simplified to: core hjem infrastructure + beets config (docker container dependency)
-  - Package installations now co-located with their configurations for better maintainability
-  - All dotfile symlinks verified working correctly on laptop
-  - Single hjem module import in core avoids conflicts
+- **oh-my-posh to hjem dotfiles (2026-05-11) - COMPLETED SUCCESSFULLY**: Moved oh-my-posh config to user-managed dotfiles
+  - **Moved**: `modules/core/oh-my-posh-config.json` → `modules/core/dots/oh-my-posh/config.json`
+  - **Updated**: zsh to reference `~/.config/oh-my-posh/config.json` instead of system-wide `/etc/` config
+  - **Removed**: system-wide config via `environment.etc` - now user-space only
+  - **Added**: to hjem dotfiles management in basic-cli.nix for consistency
+  - **Enables**: live editing without rebuilds, follows standard user config conventions
+  - **Verified**: working correctly, old system config properly removed
+- **Dotfile reorganization (2026-05-11) - COMPLETED**: Package installations co-located with configurations
+  - All configurations moved to appropriate modules (desktop-environment, basic-cli, apps)
+  - hjem.nix simplified to core infrastructure only (+ beets for docker dependency)
 
 ## Architecture Principles
 
@@ -54,16 +58,16 @@ Dotfile configuration reorganization COMPLETED. Laptop tested and working perfec
 
 ## Top 3 Next Actions
 
-1. ✅ **Dotfile reorganization FULLY COMPLETED** 
-   - All dotfile configs moved to their respective package modules
-   - Package installations co-located with configurations for better maintainability
-   - hjem.nix simplified to core infrastructure + beets config
-   - Laptop tested and verified working correctly
-   - Commit 634e665 contains all changes
+1. ✅ **oh-my-posh to hjem dotfiles FULLY COMPLETED**
+   - Config moved from system-wide to user-managed dotfiles
+   - Now editable directly in `modules/core/dots/oh-my-posh/config.json` 
+   - Live editing enabled without rebuilds via hjem-impure
+   - Follows standard user config conventions and consistency with other tools
+   - Commit 1e78ac9 contains all changes
 
 2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
 
-3. No other active tasks - system fully stable and well-organized
+3. No other active tasks - all dotfile management optimized and system fully stable
 
 ## Blockers
 
