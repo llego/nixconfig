@@ -1,4 +1,10 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  username,
+  ...
+}: let
+  dots = "${./dots}";
+in {
   environment.systemPackages = with pkgs; [
     htop
     screen
@@ -80,4 +86,19 @@
 
   # Nano
   programs.nano.enable = true;
+
+  # CLI application dotfiles
+  hjem.users.${username} = {
+    xdg.config.files = {
+      # Helix configuration files
+      "helix/config.toml".source = dots + "/helix/config.toml";
+      "helix/languages.toml".source = dots + "/helix/languages.toml";
+
+      # Yazi configuration files
+      "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";
+      "yazi/init.lua".source = dots + "/yazi/init.lua";
+      "yazi/theme.toml".source = dots + "/yazi/theme.toml";
+      "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
+    };
+  };
 }
