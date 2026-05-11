@@ -2,9 +2,7 @@
   pkgs,
   username,
   ...
-}: let
-  dots = "${./core/dots}";
-in {
+}: {
   environment.systemPackages = with pkgs; [
     nautilus
     gnome-text-editor
@@ -200,7 +198,9 @@ in {
   };
 
   # Desktop environment dotfiles
-  hjem.users.${username} = {
+  hjem.users.${username} = let
+    dots = "${./core/dots}";
+  in {
     xdg.config.files = {
       # Niri configuration files
       "niri/config.kdl".source = dots + "/niri/config.kdl";

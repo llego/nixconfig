@@ -2,9 +2,7 @@
   pkgs,
   username,
   ...
-}: let
-  dots = "${./dots}";
-in {
+}: {
   environment.systemPackages = with pkgs; [
     htop
     screen
@@ -29,8 +27,7 @@ in {
     OMP_CACHE_DIR = "/tmp";
   };
 
-  # oh-my-posh config
-  environment.etc."oh-my-posh/config.json".text = builtins.readFile ./oh-my-posh-config.json;
+
 
   # Zsh configuration
   programs.zsh = {
@@ -70,7 +67,7 @@ in {
       fi
 
       # oh-my-posh prompt
-      eval "$(oh-my-posh init zsh --config /etc/oh-my-posh/config.json)"
+      eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/config.json)"
 
       # Key bindings
       bindkey -e
@@ -88,17 +85,20 @@ in {
   programs.nano.enable = true;
 
   # CLI application dotfiles
-  hjem.users.${username} = {
-    xdg.config.files = {
-      # Helix configuration files
-      "helix/config.toml".source = dots + "/helix/config.toml";
-      "helix/languages.toml".source = dots + "/helix/languages.toml";
+  hjem.users.${username}.xdg.config.files = let
+    dots = "${./dots}";
+  in {
+    # Helix configuration files
+    "helix/config.toml".source = dots + "/helix/config.toml";
+    "helix/languages.toml".source = dots + "/helix/languages.toml";
 
-      # Yazi configuration files
-      "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";
-      "yazi/init.lua".source = dots + "/yazi/init.lua";
-      "yazi/theme.toml".source = dots + "/yazi/theme.toml";
-      "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
-    };
+    # Yazi configuration files
+    "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";
+    "yazi/init.lua".source = dots + "/yazi/init.lua";
+    "yazi/theme.toml".source = dots + "/yazi/theme.toml";
+    "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
+
+    # oh-my-posh configuration
+    "oh-my-posh/config.json".source = dots + "/oh-my-posh/config.json";
   };
 }

@@ -143,8 +143,8 @@
       "sudo *": "ask",
       "rm *": "ask",
       "mv *": "ask",
-      "cp *": "ask"
-      "which *": "allow",
+      "cp *": "ask",
+      "which *": "allow"
     }
   }
 }

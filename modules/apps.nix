@@ -3,9 +3,7 @@
   inputs,
   username,
   ...
-}: let
-  dots = "${./core/dots}";
-in {
+}: {
   # System packages
   environment.systemPackages = with pkgs; [
     # CLI
@@ -83,12 +81,12 @@ in {
   services.protonmail-bridge.enable = true;
 
   # Application dotfiles
-  hjem.users.${username} = {
-    xdg.config.files = {
-      # OpenCode configuration files
-      "opencode/opencode.json".source = dots + "/opencode/opencode.json";
-      "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
-      "opencode/agent/code-reviewer.md".source = dots + "/opencode/agent/code-reviewer.md";
-    };
+  hjem.users.${username}.xdg.config.files = let
+    dots = "${./core/dots}";
+  in {
+    # OpenCode configuration files
+    "opencode/opencode.json".source = dots + "/opencode/opencode.json";
+    "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
+    "opencode/agent/code-reviewer.md".source = dots + "/opencode/agent/code-reviewer.md";
   };
 }
