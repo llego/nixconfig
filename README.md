@@ -24,20 +24,24 @@ There are docker containers running on crisuflix. Docker compose stacks are in /
 │   ├── crisuflix/
 │   └── rpi5/
 ├── modules/               # Reusable NixOS modules
-│   ├── core/              # Core: zsh, git, nix, locale, SSH, hjem, agenix, basic-cli
-│   ├── apps.nix           # Zen Browser, Thunderbird, LibreOffice
-│   ├── desktop-environment.nix  # Niri, Noctalia, greetd/tuigreet
-│   ├── printer.nix        # CUPS, Avahi
-│   ├── wifi-networks.nix  # NetworkManager profiles
-│   ├── downloaders.nix    # yle-dl, svtplay-dl, album-downloader
-│   ├── swayidle.nix       # Idle management
+│   ├── core/              # Core system components
+│   │   ├── dots/          # Dotfiles source (helix, yazi, niri, opencode, etc.)
+│   │   ├── default.nix    # Main core module (git, nix, locale, SSH, users)
+│   │   ├── basic-cli.nix  # CLI tools + configs: helix, yazi, oh-my-posh, zsh, htop
+│   │   ├── hjem.nix       # Hjem infrastructure + beets config
+│   │   ├── agenix.nix     # Secrets management integration
+│   │   └── networking-variables.nix # Network configuration variables
+│   ├── apps.nix           # Apps + configs: Zen, Thunderbird, LibreOffice, OpenCode
+│   ├── desktop-environment.nix  # Desktop + configs: Niri, Noctalia, GTK, SSH shortcuts
 │   ├── home-automation.nix # HA, Music Assistant, ESPHome, Mosquitto
-│   └── restic-backup.nix  # Storj/Restic cloud backup
+│   ├── restic-backup.nix  # Restic cloud backup (Hetzner, legacy Storj)
+│   ├── downloaders.nix    # yle-dl, svtplay-dl, album-downloader
+│   ├── printer.nix        # CUPS, Avahi printing support
+│   └── wifi-networks.nix  # NetworkManager wireless profiles
 ├── pkgs/                  # Custom packages
 │   ├── album-downloader/  # Bandcamp downloader wrapper
 │   └── RuuviCollector/    # BLE sensor reader for RuuviTags
-├── secrets/               # agenix-encrypted secrets
-└── iso/                   # ISO configuration
+└── secrets/               # agenix-encrypted secrets
 ```
 
 ## Build & Deployment
@@ -91,9 +95,31 @@ Each host imports only the modules it needs:
 
 ### Dotfiles (hjem)
 
-Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) via the `hjem.nix` module. The dotfiles are stored in `modules/core/dots/` and symlinked to `~/.config` using [hjem-impure](https://github.com/Rexcrazy804/hjem-impure). This includes:
-- Niri, Helix, Yazi, OpenCode, and Noctalia configurations
-- SSH application shortcuts
+Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) using a distributed approach where configurations are co-located with their package definitions.
+
+**Architecture:**
+- **Source**: Configurations stored in `modules/core/dots/`
+- **Management**: [hjem-impure](https://github.com/Rexcrazy804/hjem-impure) symlinks to `~/.config/`
+- **Live Editing**: Changes to source files take effect without rebuilds
+- **Distribution**: Each module manages its own application configs via hjem
+
+**Organization:**
+- **basic-cli.nix**: helix, yazi, oh-my-posh configs
+- **desktop-environment.nix**: niri, kanshi, GTK, noctalia configs + SSH shortcuts  
+- **apps.nix**: opencode configs
+- **core/hjem.nix**: hjem infrastructure + beets config (docker dependency)
+
+**Covered Applications:**
+- **CLI Tools**: helix, yazi, oh-my-posh, beets
+- **Desktop**: niri, kanshi, GTK bookmarks, noctalia (+ wallpapers)
+- **Development**: opencode (settings, agents)
+- **Shortcuts**: SSH application desktop files
+
+**Benefits:**
+- ✅ Live editing without rebuilds
+- ✅ Standard user config locations (`~/.config/`)
+- ✅ Package installations co-located with their configurations
+- ✅ Consistent management across all tools
 
 ### crisuflix
 

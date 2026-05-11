@@ -2,7 +2,7 @@
   description = "llego's nix config";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/6368eda62c9775c38ef7f714b2555a741c20c72d";
+    nixpkgs.url = "github:nixos/nixpkgs";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
     album-downloader = {
       url = "path:./pkgs/album-downloader";
