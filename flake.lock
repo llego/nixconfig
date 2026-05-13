@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "adlibris-downloader": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "path": "./pkgs/adlibris-downloader",
+        "type": "path"
+      },
+      "original": {
+        "path": "./pkgs/adlibris-downloader",
+        "type": "path"
+      },
+      "parent": []
+    },
     "agenix": {
       "inputs": {
         "darwin": "darwin",
@@ -291,6 +307,7 @@
     },
     "root": {
       "inputs": {
+        "adlibris-downloader": "adlibris-downloader",
         "agenix": "agenix",
         "album-downloader": "album-downloader",
         "christiansandberg-website": "christiansandberg-website",

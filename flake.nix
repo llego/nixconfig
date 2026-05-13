@@ -8,6 +8,10 @@
       url = "path:./pkgs/album-downloader";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    adlibris-downloader = {
+      url = "path:./pkgs/adlibris-downloader";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     ruuvi = {
       url = "path:./pkgs/RuuviCollector";
       inputs.nixpkgs.follows = "nixpkgs";

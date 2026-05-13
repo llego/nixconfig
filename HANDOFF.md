@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-05-11 15:00 UTC
+Last updated: 2026-05-13 10:30 UTC
 
 ## Current State
 
@@ -37,6 +37,12 @@ oh-my-posh configuration moved to hjem-managed dotfiles COMPLETED. All prompt co
 - ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
 ### Recent Configuration Changes
+- **adlibris-downloader (2026-05-13) - IMPLEMENTED**: New TUI script to fetch watermarked EPUBs from Adlibris digital library and rsync them directly to Booklore's bookdrop on crisuflix.
+  - `pkgs/adlibris-downloader/` — sub-flake with `writeShellApplication` + shellcheck
+  - Phase 1: cookies via `~/.config/adlibris-downloader/config`
+  - Phase 2 (TODO): auto-extract from Zen browser's `cookies.sqlite` via `ZEN_PROFILE_PATH` config key
+  - Added to `modules/downloaders.nix` (laptop-only)
+  - Full flow: Adlibris library scrape → fzf TUI picker → curl EPUB → rsync to `sabnzbd-downloads/complete/books/` → Booklore auto-imports
 - **oh-my-posh to hjem dotfiles (2026-05-11) - COMPLETED SUCCESSFULLY**: Moved oh-my-posh config to user-managed dotfiles
   - **Moved**: `modules/core/oh-my-posh-config.json` → `modules/core/dots/oh-my-posh/config.json`
   - **Updated**: zsh to reference `~/.config/oh-my-posh/config.json` instead of system-wide `/etc/` config
@@ -58,16 +64,11 @@ oh-my-posh configuration moved to hjem-managed dotfiles COMPLETED. All prompt co
 
 ## Top 3 Next Actions
 
-1. ✅ **oh-my-posh to hjem dotfiles FULLY COMPLETED**
-   - Config moved from system-wide to user-managed dotfiles
-   - Now editable directly in `modules/core/dots/oh-my-posh/config.json` 
-   - Live editing enabled without rebuilds via hjem-impure
-   - Follows standard user config conventions and consistency with other tools
-   - Commit 1e78ac9 contains all changes
+1. **Deploy adlibris-downloader to laptop** — run `nixos-rebuild switch --flake .#laptop` from crisuflix, then configure `~/.config/adlibris-downloader/config` with cookie values from browser DevTools (`.adlibrisauth` and `adss` cookies from adlibris.com).
 
-2. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed)
+2. **Phase 2: Zen cookie auto-extraction** — implement on laptop once Phase 1 is working. Set `ZEN_PROFILE_PATH=~/.zen/<profile>/cookies.sqlite` in the config file. The script already has the extraction logic via `sqlite3`.
 
-3. No other active tasks - all dotfile management optimized and system fully stable
+3. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed).
 
 ## Blockers
 

@@ -9,6 +9,7 @@
     svtplay-dl
     mediainfo
     inputs.album-downloader.packages.${pkgs.stdenv.hostPlatform.system}.album-downloader
+    inputs.adlibris-downloader.packages.${pkgs.stdenv.hostPlatform.system}.adlibris-downloader
   ];
 
   # tidal-dl configuration
