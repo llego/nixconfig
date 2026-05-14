@@ -82,6 +82,7 @@
         port = 1883;
         settings.allow_anonymous = false;
         users.mqtt_user = {
+          acl = ["readwrite #"];
           passwordFile = config.age.secrets.mosquitto-mqtt-user-password.path;
         };
       }

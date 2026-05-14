@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-05-13 10:30 UTC
+Last updated: 2026-05-15 00:15 UTC
 
 ## Current State
 
-oh-my-posh configuration moved to hjem-managed dotfiles COMPLETED. All prompt configurations now user-editable without rebuilds. System fully stable and well-organized.
+System stable. Frigate↔HA MQTT integration repaired and verified working.
 
 ### Hosts
 - **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS (passphrase-only), kanshi
@@ -37,6 +37,7 @@ oh-my-posh configuration moved to hjem-managed dotfiles COMPLETED. All prompt co
 - ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
 ### Recent Configuration Changes
+- **Mosquitto ACL fix (2026-05-15) - FIXED**: Frigate↔HA MQTT was broken because Mosquitto 2.x with `per_listener_settings true` silently blocks all pub/sub when an ACL file has only `user mqtt_user` with no `topic` lines. Added `acl = ["readwrite #"]` to `users.mqtt_user` in `modules/home-automation.nix`. Root cause was subtle: clients connected successfully (CONNACK 0) but every publish/subscribe was silently rejected by the ACL plugin.
 - **adlibris-downloader (2026-05-13) - IMPLEMENTED**: New TUI script to fetch watermarked EPUBs from Adlibris digital library and rsync them directly to Booklore's bookdrop on crisuflix.
   - `pkgs/adlibris-downloader/` — sub-flake with `writeShellApplication` + shellcheck
   - Phase 1: cookies via `~/.config/adlibris-downloader/config`
@@ -61,14 +62,15 @@ oh-my-posh configuration moved to hjem-managed dotfiles COMPLETED. All prompt co
 - **Traefik-kop routing.** VPS runs Traefik + Redis. Crisuflix containers self-register via Docker labels → traefik-kop → Redis. Authelia on VPS guards both hosts. Traffic: User → VPS Traefik → Authelia → crisuflix (Tailscale).
 - **Restic on Hetzner.** Buckets at `hel1.your-objectstorage.com`: crisuflix-{bocker,hemmavideon,musik,fotografier,docker}. Secrets: `hetzner-s3-credentials.age`, `restic-hetzner-password.age`.
 - **Session memory via `HANDOFF.md`.** Single file at project root. No Supermemory plugin.
+- **Mosquitto ACL requires explicit topic grants.** With `per_listener_settings true`, a `users.<name>` block with no `acl` entries generates an ACL file that silently denies all pub/sub. Always include `acl = ["readwrite #"]` (or more restrictive grants) for each MQTT user.
 
 ## Top 3 Next Actions
 
-1. **Deploy adlibris-downloader to laptop** — run `nixos-rebuild switch --flake .#laptop` from crisuflix, then configure `~/.config/adlibris-downloader/config` with cookie values from browser DevTools (`.adlibrisauth` and `adss` cookies from adlibris.com).
+1. **Remove Storj backups** — transition started ~2026-04, 30 days have passed. Remove Storj services from `modules/restic-backup.nix`, remove `restic-storj-password.age` and `storj-s3-credentials.age` from `secrets/`, delete Storj buckets, rebuild crisuflix.
 
-2. **Phase 2: Zen cookie auto-extraction** — implement on laptop once Phase 1 is working. Set `ZEN_PROFILE_PATH=~/.zen/<profile>/cookies.sqlite` in the config file. The script already has the extraction logic via `sqlite3`.
+2. **Deploy adlibris-downloader to laptop** — run `nixos-rebuild switch --flake .#laptop` from crisuflix, then configure `~/.config/adlibris-downloader/config` with cookie values from browser DevTools (`.adlibrisauth` and `adss` cookies from adlibris.com).
 
-3. **Remove Storj backups** after 30-day Hetzner transition period (started ~2026-04, check if 30 days have passed).
+3. **Phase 2: Zen cookie auto-extraction** — implement on laptop once Phase 1 is working. Set `ZEN_PROFILE_PATH=~/.zen/<profile>/cookies.sqlite` in the config file. The script already has the extraction logic via `sqlite3`.
 
 ## Blockers
 
