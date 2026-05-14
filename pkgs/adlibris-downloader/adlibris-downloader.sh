@@ -97,14 +97,88 @@ fi
 
 COOKIE_HEADER="Cookie: .adlibrisauth=${ADLIBRIS_AUTH}; adss=${ADLIBRIS_ADSS}; culture=fi-FI"
 
+# ── Session warming (simulate real browser behavior) ─────────────────────────────
+
+warm_session() {
+    info "Warming session..."
+    
+    # Visit main page first (like a real user)
+    curl -s -L \
+        --compressed \
+        --connect-timeout 15 \
+        --max-time 30 \
+        -H "$COOKIE_HEADER" \
+        -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0" \
+        -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" \
+        -H "Accept-Language: en-US,en;q=0.9,fi;q=0.8,sv;q=0.7" \
+        -H "Accept-Encoding: gzip, deflate, br" \
+        -H "DNT: 1" \
+        -H "Connection: keep-alive" \
+        -H "Upgrade-Insecure-Requests: 1" \
+        -H "Sec-Fetch-Dest: document" \
+        -H "Sec-Fetch-Mode: navigate" \
+        -H "Sec-Fetch-Site: none" \
+        -H "Sec-Fetch-User: ?1" \
+        -H "Cache-Control: max-age=0" \
+        "$ADLIBRIS_BASE/" > /dev/null
+    
+    # Brief pause like a real user
+    sleep 2
+    
+    # Visit account area (like navigating to my books)
+    curl -s -L \
+        --compressed \
+        --connect-timeout 15 \
+        --max-time 30 \
+        -H "$COOKIE_HEADER" \
+        -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0" \
+        -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" \
+        -H "Accept-Language: en-US,en;q=0.9,fi;q=0.8,sv;q=0.7" \
+        -H "Accept-Encoding: gzip, deflate, br" \
+        -H "DNT: 1" \
+        -H "Connection: keep-alive" \
+        -H "Upgrade-Insecure-Requests: 1" \
+        -H "Sec-Fetch-Dest: document" \
+        -H "Sec-Fetch-Mode: navigate" \
+        -H "Sec-Fetch-Site: same-origin" \
+        -H "Sec-Fetch-User: ?1" \
+        -H "Referer: $ADLIBRIS_BASE/" \
+        -H "Cache-Control: max-age=0" \
+        "$ADLIBRIS_BASE/asiakastili/" > /dev/null
+    
+    sleep 1
+}
+
 # ── Library scraping ──────────────────────────────────────────────────────────
 
+# Enhanced browser simulation to bypass bot detection
 fetch_page() {
     local page="$1"
+    
+    # Add random delay between 1-3 seconds to simulate human behavior
+    sleep $(( (RANDOM % 3) + 1 ))
+    
     curl -s -L \
+        --compressed \
+        --connect-timeout 30 \
+        --max-time 60 \
+        --retry 3 \
+        --retry-delay 2 \
         -H "$COOKIE_HEADER" \
-        -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0" \
-        -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
+        -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0" \
+        -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8" \
+        -H "Accept-Language: en-US,en;q=0.9,fi;q=0.8,sv;q=0.7" \
+        -H "Accept-Encoding: gzip, deflate, br" \
+        -H "DNT: 1" \
+        -H "Connection: keep-alive" \
+        -H "Upgrade-Insecure-Requests: 1" \
+        -H "Sec-Fetch-Dest: document" \
+        -H "Sec-Fetch-Mode: navigate" \
+        -H "Sec-Fetch-Site: same-origin" \
+        -H "Sec-Fetch-User: ?1" \
+        -H "Cache-Control: max-age=0" \
+        -H "Referer: $ADLIBRIS_BASE/asiakastili/" \
+        -H "Origin: $ADLIBRIS_BASE" \
         "$ADLIBRIS_BASE/asiakastili/library?page=${page}"
 }
 
@@ -199,10 +273,29 @@ download_book() {
 
     info "Downloading: ${title} — ${author}"
 
+    # Add small delay before download to simulate user interaction
+    sleep $(( (RANDOM % 2) + 1 ))
+    
     local http_code
     http_code=$(curl -s -L -w "%{http_code}" \
+        --compressed \
+        --connect-timeout 30 \
+        --max-time 300 \
+        --retry 2 \
+        --retry-delay 3 \
         -H "$COOKIE_HEADER" \
-        -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0" \
+        -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0" \
+        -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" \
+        -H "Accept-Language: en-US,en;q=0.9,fi;q=0.8,sv;q=0.7" \
+        -H "Accept-Encoding: gzip, deflate, br" \
+        -H "DNT: 1" \
+        -H "Connection: keep-alive" \
+        -H "Sec-Fetch-Dest: document" \
+        -H "Sec-Fetch-Mode: navigate" \
+        -H "Sec-Fetch-Site: same-origin" \
+        -H "Referer: $ADLIBRIS_BASE/asiakastili/library" \
+        -H "Cache-Control: no-cache" \
+        -H "Pragma: no-cache" \
         -o "$dest" \
         "$ADLIBRIS_BASE/tuote/download?variantId=${variant}&selectedVersion=EpubWatermark")
 
@@ -335,6 +428,9 @@ downloaded_count=$(wc -l < "$DOWNLOADED_FILE")
 echo
 echo -e "${BOLD}Library:${RESET} $total books total  |  $epub_count watermarked EPUB  |  $drm_count Adobe DRM (skipped)  |  $downloaded_count already downloaded"
 echo
+
+# Warm up the session before starting user interaction
+warm_session
 
 while true; do
     choice=$(main_menu)

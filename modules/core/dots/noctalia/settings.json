@@ -161,6 +161,9 @@
                     "usePadding": false
                 },
                 {
+                    "id": "plugin:tailscale"
+                },
+                {
                     "deviceNativePath": "",
                     "displayMode": "alwaysShow",
                     "hideIfIdle": false,
