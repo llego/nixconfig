@@ -32,6 +32,7 @@ in {
     url = "https://${cloudDomain}";
     address = net.hosts.crisuflix; # must be reachable from VPS Traefik via Tailscale
     port = net.crisuflix.opencloud.port;
+    stateDir = "/mnt/illby/appstorage/opencloud";
 
     environment = {
       PROXY_TLS = "false"; # TLS terminated at Traefik

@@ -143,6 +143,13 @@ in {
       ];
       inherit (hetznerCommonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
     };
+
+    # OpenCloud data backup (Hetzner)
+    opencloud-hetzner = {
+      repository = "s3:${hetznerS3Endpoint}/${repoPrefix}opencloud";
+      paths = ["/mnt/illby/appstorage/opencloud"];
+      inherit (hetznerCommonSettings) pruneOpts createWrapper timerConfig passwordFile environmentFile;
+    };
   };
 
   # Ensure restic state directory exists
@@ -167,7 +174,7 @@ in {
       # done
       # echo ""
       echo "Hetzner (new):"
-      for backup in bocker-hetzner hemmavideon-hetzner musik-hetzner fotografier-hetzner docker-hetzner; do
+      for backup in bocker-hetzner hemmavideon-hetzner musik-hetzner fotografier-hetzner docker-hetzner opencloud-hetzner; do
         echo ""
         echo "Backup: $backup"
         systemctl status "restic-backups-$backup" --no-pager -l | grep -E "(Active:|Loaded:|Main PID:)" || true
