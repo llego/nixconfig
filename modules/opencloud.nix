@@ -30,7 +30,7 @@ in {
   services.opencloud = {
     enable = true;
     url = "https://${cloudDomain}";
-    address = "127.0.0.1";
+    address = net.hosts.crisuflix; # must be reachable from VPS Traefik via Tailscale
     port = net.crisuflix.opencloud.port;
 
     environment = {
