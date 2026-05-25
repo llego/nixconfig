@@ -91,6 +91,8 @@ in {
               {main = "csandberg.consulting";}
               {main = "crisusandberg.fi";}
               {main = "csandberg.fi";}
+              {main = "cloud.cri.su";}
+              {main = "office.cri.su";}
             ];
           };
         };
@@ -154,6 +156,20 @@ in {
             tls.certResolver = "myresolver";
             middlewares = ["authelia-cri-su"];
           };
+          opencloud = {
+            rule = "Host(`cloud.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "opencloud";
+            tls.certResolver = "myresolver";
+            # No Authelia — OpenCloud has its own authentication
+          };
+          collabora = {
+            rule = "Host(`office.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "collabora";
+            tls.certResolver = "myresolver";
+            # No Authelia — WOPI requests from OpenCloud must pass through unauthenticated
+          };
         };
 
         services = {
@@ -187,6 +203,20 @@ in {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.glances.port}";
             }
           ];
+          opencloud.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.opencloud.port}";
+            }
+          ];
+          collabora.loadBalancer = {
+            servers = [
+              {
+                url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.collabora.port}";
+              }
+            ];
+            # Collabora uses WebSockets for real-time editing
+            passHostHeader = true;
+          };
         };
 
         middlewares = {

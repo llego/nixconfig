@@ -44,4 +44,7 @@ in {
   "secrets/storj-s3-credentials.age".publicKeys = [crisuflix userKey];
   "secrets/restic-hetzner-password.age".publicKeys = [crisuflix userKey];
   "secrets/hetzner-s3-credentials.age".publicKeys = [crisuflix userKey];
+
+  # OpenCloud admin password and WOPI env vars
+  "secrets/opencloud-env.age".publicKeys = [crisuflix userKey];
 }
