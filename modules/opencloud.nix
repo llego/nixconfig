@@ -52,57 +52,60 @@ in {
 
     settings = {
       proxy = {
-        # CSP override: every directive must be re-declared when overriding.
-        # The default values come from OpenCloud's upstream compose files.
-        # The critical addition here is `office.cri.su` in frame-src, which
-        # allows Collabora to be embedded in the OpenCloud web UI.
-        # The NixOS module writes this to /etc/opencloud/proxy.yaml which
-        # OpenCloud reads automatically via OC_CONFIG_DIR.
-        csp = {
-          directives = {
-            child-src = ["'self'"];
-            connect-src = [
-              "'self'"
-              "blob:"
-              "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
-              "https://update.opencloud.eu/"
-            ];
-            default-src = ["'none'"];
-            font-src = ["'self'"];
-            frame-ancestors = ["'self'"];
-            frame-src = [
-              "'self'"
-              "blob:"
-              "https://embed.diagrams.net"
-              "https://${officeDomain}" # Collabora embed — the critical gotcha
-              "https://docs.opencloud.eu"
-            ];
-            img-src = [
-              "'self'"
-              "data:"
-              "blob:"
-              "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
-              "https://tile.openstreetmap.org/"
-            ];
-            manifest-src = ["'self'"];
-            media-src = ["'self'"];
-            object-src = [
-              "'self'"
-              "blob:"
-            ];
-            script-src = [
-              "'self'"
-              "'unsafe-inline'"
-            ];
-            style-src = [
-              "'self'"
-              "'unsafe-inline'"
-            ];
-          };
-        };
+        # Point the proxy service at the CSP config file.
+        # The csp key cannot be inlined in proxy.yaml — OpenCloud's proxy service
+        # reads CSP from a separate file referenced by csp_config_file_location.
+        csp_config_file_location = "/etc/opencloud/csp.yaml";
       };
     };
   };
+
+  # ── CSP config file ───────────────────────────────────────────────────────
+  # The proxy service reads CSP from a separate YAML file (csp_config_file_location).
+  # Inlining `csp:` under settings.proxy does not work — the key is unknown to the
+  # proxy YAML schema. This file is the correct mechanism.
+  # All directives must be fully declared; there is no merge with defaults.
+  environment.etc."opencloud/csp.yaml".text = ''
+    directives:
+      child-src:
+        - "'self'"
+      connect-src:
+        - "'self'"
+        - "blob:"
+        - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
+        - "https://update.opencloud.eu/"
+      default-src:
+        - "'none'"
+      font-src:
+        - "'self'"
+      frame-ancestors:
+        - "'self'"
+      frame-src:
+        - "'self'"
+        - "blob:"
+        - "https://embed.diagrams.net"
+        - "https://${officeDomain}"
+        - "https://docs.opencloud.eu"
+      img-src:
+        - "'self'"
+        - "data:"
+        - "blob:"
+        - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
+        - "https://tile.openstreetmap.org/"
+      manifest-src:
+        - "'self'"
+      media-src:
+        - "'self'"
+      object-src:
+        - "'self'"
+        - "blob:"
+      script-src:
+        - "'self'"
+        - "'unsafe-inline'"
+      style-src:
+        - "'self'"
+        - "'unsafe-inline'"
+  '';
 
   # ── Collabora Online ──────────────────────────────────────────────────────
   services.collabora-online = {
