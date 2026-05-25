@@ -46,6 +46,18 @@ in {
       COLLABORATION_APP_INSECURE = "true";
       COLLABORATION_WOPI_SRC = "https://${cloudDomain}";
       COLLABORATION_APP_PROOF_DISABLE = "true"; # Avoids WOPI proof key mismatches
+
+      # External OIDC — Authelia as identity provider
+      OC_OIDC_ISSUER = "https://auth.cri.su";
+      OC_EXCLUDE_RUN_SERVICES = "idp"; # disable built-in IDP; Authelia handles auth
+      PROXY_OIDC_REWRITE_WELLKNOWN = "true"; # expose .well-known/openid-configuration via cloud.cri.su
+      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD = "none"; # Authelia issues opaque (non-JWT) access tokens
+      PROXY_AUTOPROVISION_ACCOUNTS = "true"; # create OpenCloud user on first Authelia login
+      PROXY_ROLE_ASSIGNMENT_DRIVER = "default"; # all auto-provisioned users get 'user' role
+      PROXY_USER_OIDC_CLAIM = "preferred_username"; # match Authelia username → OpenCloud username
+      PROXY_USER_CS3_CLAIM = "username";
+      GRAPH_USERNAME_MATCH = "none"; # allow any username characters
+      WEB_OIDC_SCOPE = "openid profile email groups";
     };
 
     environmentFile = config.age.secrets.opencloud-env.path;

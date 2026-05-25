@@ -149,6 +149,9 @@ in {
           grafana = {
             id_token = ["email" "name" "groups"];
           };
+          opencloud = {
+            id_token = ["email" "preferred_username" "name" "groups"];
+          };
         };
 
         # Custom scopes
@@ -265,6 +268,87 @@ in {
             response_modes = ["form_post" "query" "fragment"];
             userinfo_signed_response_alg = "none";
             token_endpoint_auth_method = "client_secret_basic";
+          }
+
+          # OpenCloud — Web (browser)
+          {
+            client_id = "web";
+            client_name = "OpenCloud";
+            public = true;
+            authorization_policy = "two_factor";
+            claims_policy = "opencloud";
+            require_pkce = true;
+            pkce_challenge_method = "S256";
+            consent_mode = "pre-configured";
+            pre_configured_consent_duration = "1w";
+            redirect_uris = [
+              "https://cloud.cri.su/"
+              "https://cloud.cri.su/oidc-callback.html"
+              "https://cloud.cri.su/oidc-silent-redirect.html"
+            ];
+            scopes = ["openid" "profile" "email" "groups"];
+            grant_types = ["authorization_code" "refresh_token"];
+            response_types = ["code"];
+            response_modes = ["form_post" "query" "fragment"];
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "none";
+          }
+
+          # OpenCloud — Desktop client
+          {
+            client_id = "OpenCloudDesktop";
+            client_name = "OpenCloud Desktop";
+            public = true;
+            authorization_policy = "two_factor";
+            require_pkce = true;
+            pkce_challenge_method = "S256";
+            consent_mode = "pre-configured";
+            pre_configured_consent_duration = "1w";
+            redirect_uris = [
+              "http://127.0.0.1"
+              "http://localhost"
+            ];
+            scopes = ["openid" "profile" "email" "groups" "offline_access"];
+            grant_types = ["authorization_code" "refresh_token"];
+            response_types = ["code"];
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "none";
+          }
+
+          # OpenCloud — Android app
+          {
+            client_id = "OpenCloudAndroid";
+            client_name = "OpenCloud Android";
+            public = true;
+            authorization_policy = "two_factor";
+            require_pkce = true;
+            pkce_challenge_method = "S256";
+            consent_mode = "pre-configured";
+            pre_configured_consent_duration = "1w";
+            redirect_uris = ["oc://android.opencloud.eu"];
+            scopes = ["openid" "profile" "email" "groups" "offline_access"];
+            grant_types = ["authorization_code" "refresh_token"];
+            response_types = ["code"];
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "none";
+          }
+
+          # OpenCloud — iOS app
+          {
+            client_id = "OpenCloudIOS";
+            client_name = "OpenCloud iOS";
+            public = true;
+            authorization_policy = "two_factor";
+            require_pkce = true;
+            pkce_challenge_method = "S256";
+            consent_mode = "pre-configured";
+            pre_configured_consent_duration = "1w";
+            redirect_uris = ["oc://ios.opencloud.eu"];
+            scopes = ["openid" "profile" "email" "groups" "offline_access"];
+            grant_types = ["authorization_code" "refresh_token"];
+            response_types = ["code"];
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "none";
           }
 
           # Tidarr
