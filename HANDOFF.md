@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-05-25 20:00 UTC
+Last updated: 2026-05-25 20:30 UTC
 
 ## Current State
 
@@ -32,6 +32,7 @@ System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Au
 - **Secrets**: `secrets/opencloud-env.age` — contains `IDM_ADMIN_PASSWORD`
 - **CSP**: managed via `/etc/opencloud/csp.yaml` (written by `environment.etc`); `csp_config_file_location` points proxy there; requires `systemctl restart opencloud` when changed (not auto-restarted on `environment.etc` changes)
 - **File migration**: SFTPGo → OpenCloud completed 2026-05-25 via rclone WebDAV (878 files, ~2.7 GiB, timestamps preserved)
+- **Backup**: `crisuflix-opencloud` bucket created in Hetzner hel1, restic repo initialized, timer fires at 04:00 daily
 
 ### Backup State
 - **Dual parallel backup system** running during 30-day transition period:
@@ -94,9 +95,9 @@ System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Au
 
 1. **Remove Storj backups** — transition started ~2026-04, 30 days have passed. Remove Storj services from `modules/restic-backup.nix`, remove `restic-storj-password.age` and `storj-s3-credentials.age` from `secrets/`, delete Storj buckets, rebuild crisuflix.
 
-2. **Initialize Hetzner opencloud backup bucket** — create `crisuflix-opencloud` bucket in Hetzner Object Storage console (hel1 region), then run restic init command on crisuflix (see OpenCloud section above).
+2. **Deploy adlibris-downloader to laptop** — run `nixos-rebuild switch --flake .#laptop` from crisuflix, then configure `~/.config/adlibris-downloader/config` with cookie values from browser DevTools.
 
-3. **Clean up old admin user in OpenCloud** — the built-in `admin` account (created during first init) is now orphaned since auth is via Authelia. Can be deleted via Graph API: `curl -X DELETE -u REDACTED_BASIC_AUTH https://cloud.cri.su/graph/v1.0/users/<admin-user-id>`.
+3. **Verify first OpenCloud backup** — check tomorrow after 04:00: `ssh llego@crisuflix.home sudo systemctl status restic-backups-opencloud-hetzner`.
 
 ## Blockers
 
