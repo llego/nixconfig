@@ -246,6 +246,12 @@ in {
     };
   };
 
+  # Use llego's SSH key for GitHub when running as root (e.g. sudo git push)
+  programs.ssh.extraConfig = ''
+    Host github.com
+      IdentityFile /home/llego/.ssh/id_ed25519
+  '';
+
   # fail2ban for SSH protection
   services.fail2ban = {
     enable = true;
