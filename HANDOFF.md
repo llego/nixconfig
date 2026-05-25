@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-05-25 13:15 UTC
+Last updated: 2026-05-25 20:00 UTC
 
 ## Current State
 
-System stable. OpenCloud + Collabora deployed on crisuflix and running. Authelia OIDC integration in progress — CSP fixes applied, login flow not yet verified working end-to-end.
+System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Authelia OIDC login working. SFTPGo → OpenCloud file migration complete.
 
 ### Hosts
 - **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS (passphrase-only), kanshi
@@ -24,11 +24,14 @@ System stable. OpenCloud + Collabora deployed on crisuflix and running. Authelia
 - **Backup**: `restic-backups-opencloud-hetzner.timer` → `crisuflix-opencloud` bucket at Hetzner hel1
   - ⚠️ Bucket must be created in Hetzner console and repo initialized before first backup runs
   - Init: `sudo bash -c 'set -a && source /var/lib/restic/hetzner-s3-credentials && set +a && restic -r s3:https://hel1.your-objectstorage.com/crisuflix-opencloud init --password-file /run/agenix/restic-hetzner-password'`
-- **Auth**: Authelia OIDC (`auth.cri.su`) — built-in IDP excluded (`OC_EXCLUDE_RUN_SERVICES=idp`)
+- **Auth**: Authelia OIDC (`auth.cri.su`) — built-in IDP excluded (`OC_EXCLUDE_RUN_SERVICES=idp`) — **working**
 - **User mapping**: Authelia `preferred_username` → OpenCloud `username`; `llego` user has admin role
 - **Auto-provision**: new Authelia users get OpenCloud `user` role on first login
+- **WebDAV**: working at `https://cloud.cri.su/dav/files/<username>/` — use app passwords for basic auth clients
+- **Collabora**: working — documents open and edit correctly
 - **Secrets**: `secrets/opencloud-env.age` — contains `IDM_ADMIN_PASSWORD`
 - **CSP**: managed via `/etc/opencloud/csp.yaml` (written by `environment.etc`); `csp_config_file_location` points proxy there; requires `systemctl restart opencloud` when changed (not auto-restarted on `environment.etc` changes)
+- **File migration**: SFTPGo → OpenCloud completed 2026-05-25 via rclone WebDAV (878 files, ~2.7 GiB, timestamps preserved)
 
 ### Backup State
 - **Dual parallel backup system** running during 30-day transition period:
@@ -50,12 +53,17 @@ System stable. OpenCloud + Collabora deployed on crisuflix and running. Authelia
 - ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
 ### Recent Configuration Changes
-- **OpenCloud Authelia OIDC (2026-05-25) - DEPLOYED, LOGIN NOT YET VERIFIED**:
+- **OpenCloud Authelia OIDC (2026-05-25) - WORKING**:
   - 4 Authelia OIDC clients added (`web`, `OpenCloudDesktop`, `OpenCloudAndroid`, `OpenCloudIOS`) — all public PKCE, `two_factor` policy
   - `opencloud` claims policy added to Authelia — includes `groups` in id_token
   - OpenCloud env: `OC_OIDC_ISSUER=https://auth.cri.su`, `OC_EXCLUDE_RUN_SERVICES=idp`, `PROXY_AUTOPROVISION_ACCOUNTS=true`, `PROXY_ROLE_ASSIGNMENT_DRIVER=default`
   - CSP `connect-src` and `frame-src` updated to include `https://auth.cri.su` and `wss://auth.cri.su`
   - ⚠️ After `csp.yaml` changes, must `sudo systemctl restart opencloud` on crisuflix (not auto-restarted)
+- **SFTPGo → OpenCloud migration (2026-05-25) - COMPLETE**: All files migrated via rclone WebDAV
+  - 878 files, ~2.7 GiB; timestamps preserved via `--webdav-vendor owncloud` (`X-OC-Mtime` headers)
+  - Large files (>~500MB) needed `--timeout 0` to avoid OpenCloud's 60s internal PUT timeout
+  - Files owned by `apps:apps` with `rw-------` needed root to read — use `sudo rclone` or fix perms first
+  - SFTPGo data at `/mnt/illby/docker/data/sftpgo/data/data/llego/` is untouched
 - **OpenCloud CSP fix (2026-05-25)**: Moved CSP from `settings.proxy.csp` (silently ignored) to `environment.etc."opencloud/csp.yaml"` + `settings.proxy.csp_config_file_location`. The `csp` key is not a valid proxy YAML schema key — only `csp_config_file_location` works.
 - **Collabora SSL fix (2026-05-25)**: Must use `ssl.enable = false` / `ssl.termination = true` (child elements), NOT `ssl."@enable"` / `ssl."@termination"` (XML attributes). Collabora reads child elements; attributes are ignored.
 - **Collabora server_name (2026-05-25)**: Must set `settings.server_name = "office.cri.su:443"` or discovery advertises `https://127.0.0.1:9980` and browsers cannot connect.
@@ -80,14 +88,15 @@ System stable. OpenCloud + Collabora deployed on crisuflix and running. Authelia
 - **Collabora font rendering requires host bind mount.** Installing fonts in the Nix store is not enough; Collabora reads from `/usr/share/fonts/collabora`. Use `fileSystems."/usr/share/fonts/collabora"` with `fsType = "none"` and `options = ["bind"]`.
 - **OpenCloud WOPI proof keys disabled.** `COLLABORATION_APP_PROOF_DISABLE=true` is required to avoid WOPI request rejections when running behind a reverse proxy.
 - **OpenCloud CSP must include auth domain.** When using an external OIDC provider, `connect-src` and `frame-src` must include the provider's domain (e.g. `https://auth.cri.su`) or the browser's OIDC client silently hangs.
+- **rclone WebDAV migration to OpenCloud.** Use `--webdav-vendor owncloud` for timestamp preservation (`X-OC-Mtime`). Use `--timeout 0` for large files. App passwords work for basic auth; generate in OpenCloud web UI → Settings → Security → App passwords. For files inaccessible due to permissions, run rclone with `sudo`. If 409 Conflict on directory upload, create the directory first via `curl -u user:pass -X MKCOL <url>`.
 
 ## Top 3 Next Actions
 
-1. **Verify OpenCloud Authelia login** — open `https://cloud.cri.su` in a fresh incognito window; should redirect to `auth.cri.su` for 2FA login, then land in OpenCloud as `llego` with admin role. If still hanging, check browser DevTools console/network tab for CSP violations or failed requests.
+1. **Remove Storj backups** — transition started ~2026-04, 30 days have passed. Remove Storj services from `modules/restic-backup.nix`, remove `restic-storj-password.age` and `storj-s3-credentials.age` from `secrets/`, delete Storj buckets, rebuild crisuflix.
 
-2. **Remove Storj backups** — transition started ~2026-04, 30 days have passed. Remove Storj services from `modules/restic-backup.nix`, remove `restic-storj-password.age` and `storj-s3-credentials.age` from `secrets/`, delete Storj buckets, rebuild crisuflix.
+2. **Initialize Hetzner opencloud backup bucket** — create `crisuflix-opencloud` bucket in Hetzner Object Storage console (hel1 region), then run restic init command on crisuflix (see OpenCloud section above).
 
-3. **Initialize Hetzner opencloud backup bucket** — create `crisuflix-opencloud` bucket in Hetzner Object Storage console (hel1 region), then run restic init command on crisuflix (see OpenCloud section above).
+3. **Clean up old admin user in OpenCloud** — the built-in `admin` account (created during first init) is now orphaned since auth is via Authelia. Can be deleted via Graph API: `curl -X DELETE -u REDACTED_BASIC_AUTH https://cloud.cri.su/graph/v1.0/users/<admin-user-id>`.
 
 ## Blockers
 
