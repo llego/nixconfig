@@ -84,6 +84,8 @@ in {
       connect-src:
         - "'self'"
         - "blob:"
+        - "https://auth.cri.su"
+        - "wss://auth.cri.su"
         - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
         - "https://update.opencloud.eu/"
       default-src:
@@ -95,6 +97,7 @@ in {
       frame-src:
         - "'self'"
         - "blob:"
+        - "https://auth.cri.su"
         - "https://embed.diagrams.net"
         - "https://${officeDomain}"
         - "https://docs.opencloud.eu"
