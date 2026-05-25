@@ -116,11 +116,11 @@ in {
     ];
 
     settings = {
-      # Disable Collabora's own TLS — Traefik terminates SSL
-      ssl = {
-        "@enable" = false;
-        "@termination" = true;
-      };
+      # Disable Collabora's own TLS — Traefik terminates SSL.
+      # Must set child elements (ssl.enable, ssl.termination), NOT XML attributes
+      # (@enable/@termination) — Collabora reads the child elements, not the attributes.
+      ssl.enable = false;
+      ssl.termination = true;
 
       # Allow WOPI requests from localhost (OpenCloud) and from Traefik
       # arriving via Tailscale. The firewall restricts public exposure.
