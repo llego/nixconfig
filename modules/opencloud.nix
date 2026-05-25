@@ -116,6 +116,10 @@ in {
     ];
 
     settings = {
+      # Public hostname Collabora advertises in WOPI discovery XML.
+      # Without this it advertises https://127.0.0.1:9980 and browsers can't connect.
+      server_name = "${officeDomain}:443";
+
       # Disable Collabora's own TLS — Traefik terminates SSL.
       # Must set child elements (ssl.enable, ssl.termination), NOT XML attributes
       # (@enable/@termination) — Collabora reads the child elements, not the attributes.
