@@ -10,7 +10,16 @@ System stable. All four hosts running. Key services: OpenCloud + Collabora (OIDC
 
 - **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS passphrase-only
 - **vps** (`christiansandberg.fi`): Traefik + Redis + Authelia + Gotify + Uptime Kuma + static site
-- **crisuflix**: NAS, ZFS, Docker, Home Assistant, Music Assistant, ESPHome, Mosquitto, restic backups, OpenCloud, Collabora, Homepage
+- **crisuflix**: NAS, ZFS, Docker, restic backups
+  | Service | URL | Notes |
+  |---------|-----|-------|
+  | Homepage | `cri.su` | NixOS `services.homepage-dashboard`, port 3000 |
+  | Home Assistant | `ha.cri.su` | NixOS `virtualisation.oci-containers` |
+  | OpenCloud | `cloud.cri.su` | NixOS service, port 9200, OIDC via Authelia |
+  | Collabora | `office.cri.su` | NixOS service, port 9980 |
+  | Glances | `glances.cri.su` | NixOS service, port 61208 |
+  | Jellyfin | `jellyfin.cri.su` | Docker, port 8096 |
+  | Immich | `immich.cri.su` | Docker, port 2283 (bound to Tailscale IP only) |
 - **rpi5**: Chromium kiosk, RuuviCollector, nightly reboot
 
 ### Infrastructure
@@ -19,18 +28,6 @@ System stable. All four hosts running. Key services: OpenCloud + Collabora (OIDC
 - Traefik-kop: crisuflix Docker containers self-register via labels → Redis on VPS → Traefik public routing
 - Native NixOS services (HA, Glances, OpenCloud, Collabora, Homepage) use static Traefik routes in `hosts/vps/networking.nix`
 - Authelia on VPS (`auth.cri.su`) guards both hosts via forward-auth middleware
-
-### Services on crisuflix
-
-| Service | URL | Notes |
-|---------|-----|-------|
-| Homepage | `cri.su` | NixOS `services.homepage-dashboard`, port 3000 |
-| OpenCloud | `cloud.cri.su` | NixOS service, port 9200, OIDC via Authelia |
-| Collabora | `office.cri.su` | NixOS service, port 9980 |
-| Home Assistant | `ha.cri.su` | NixOS `virtualisation.oci-containers` |
-| Glances | `glances.cri.su` | NixOS service, port 61208 |
-| Jellyfin | `jellyfin.cri.su` | Docker, port 8096 |
-| Immich | `immich.cri.su` | Docker, port 2283 (bound to Tailscale IP only) |
 
 ### OpenCloud + Collabora
 
