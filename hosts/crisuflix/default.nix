@@ -15,6 +15,7 @@ in {
     inputs.disko.nixosModules.disko
     ./../../modules/core
     ./../../modules/home-automation.nix
+    ./../../modules/homepage.nix
     ./../../modules/opencloud.nix
     ./../../modules/restic-backup.nix
     ./disk-config.nix
@@ -321,6 +322,7 @@ in {
         net.crisuflix.homeAssistant.port # Home Assistant
         net.crisuflix.mosquitto.port # MQTT (Mosquitto)
         net.nfs.mountd.port # NFS mountd
+        net.crisuflix.homepage.port # Homepage dashboard (for VPS Traefik)
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];
       allowedUDPPorts = [

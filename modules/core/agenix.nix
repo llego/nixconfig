@@ -99,6 +99,18 @@
           owner = "root";
           group = "root";
         };
+        homepage-unifi-password = {
+          file = ./../../secrets/homepage-unifi-password.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+        homepage-gotify-key = {
+          file = ./../../secrets/homepage-gotify-key.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
       }
       else if hostname == "vps"
       then {

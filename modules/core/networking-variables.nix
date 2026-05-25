@@ -111,6 +111,12 @@
         default = 9980;
         description = "Collabora Online (coolwsd) port";
       };
+
+      homepage.port = lib.mkOption {
+        type = lib.types.port;
+        default = 3000;
+        description = "Homepage dashboard port";
+      };
     };
 
     # NFS Ports

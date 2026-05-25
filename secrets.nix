@@ -47,4 +47,10 @@ in {
 
   # OpenCloud admin password and WOPI env vars
   "secrets/opencloud-env.age".publicKeys = [crisuflix userKey];
+
+  # Homepage dashboard - Unifi widget credentials
+  "secrets/homepage-unifi-password.age".publicKeys = [crisuflix userKey];
+
+  # Homepage dashboard - Gotify widget client token
+  "secrets/homepage-gotify-key.age".publicKeys = [crisuflix userKey];
 }

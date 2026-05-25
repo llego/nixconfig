@@ -156,6 +156,13 @@ in {
             tls.certResolver = "myresolver";
             middlewares = ["authelia-cri-su"];
           };
+          homepage = {
+            rule = "Host(`cri.su`)";
+            entryPoints = ["websecure"];
+            service = "homepage";
+            tls.certResolver = "myresolver";
+            middlewares = ["authelia-cri-su"];
+          };
           opencloud = {
             rule = "Host(`cloud.cri.su`)";
             entryPoints = ["websecure"];
@@ -191,6 +198,11 @@ in {
           website.loadBalancer.servers = [
             {
               url = "http://${net.hosts.loopback}:${toString net.vps.website.port}";
+            }
+          ];
+          homepage.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homepage.port}";
             }
           ];
           homeassistant.loadBalancer.servers = [

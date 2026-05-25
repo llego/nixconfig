@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-05-25 20:30 UTC
+Last updated: 2026-05-25 20:45 UTC
 
 ## Current State
 
-System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Authelia OIDC login working. SFTPGo → OpenCloud file migration complete.
+System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Authelia OIDC login working. SFTPGo → OpenCloud file migration complete. Homepage migrated from Docker Compose to native `services.homepage-dashboard` NixOS service.
 
 ### Hosts
 - **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS (passphrase-only), kanshi
@@ -53,6 +53,15 @@ System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Au
 - Install done via nixos-anywhere from crisuflix with `--copy-host-keys`
 - ⚠️ **TPM2 disabled** — passphrase-only unlock for maximum reliability
 
+### Homepage Dashboard (migrated 2026-05-25)
+- **NixOS service**: `services.homepage-dashboard` in `modules/homepage.nix`
+- **Port**: 3000 (`net.crisuflix.homepage.port`)
+- **Docker auto-discover**: Docker socket mounted read-only; service runs with docker supplementary group (GID 131). `PrivateUsers = lib.mkForce false` required to allow supplementary groups with `DynamicUser`.
+- **Routing**: Static Traefik route on VPS (`Host(\`cri.su\`)` → `100.123.67.48:3000`), protected by Authelia middleware. No longer using traefik-kop.
+- **Secrets via environmentFiles**: `secrets/homepage-unifi-password.age` (`HOMEPAGE_VAR_UNIFI_PASSWORD`) and `secrets/homepage-gotify-key.age` (`HOMEPAGE_VAR_GOTIFY_KEY`) — referenced as `{{HOMEPAGE_VAR_*}}` in widget config.
+- **Docker compose stack stopped**: `/mnt/illby/docker/stacks/homepage/` — container removed. Stack files left in place for reference.
+- **Widget URLs**: Auto-discovered widgets using Docker-internal container hostnames broke after migration (NixOS service has no Docker DNS). Fixed by updating `homepage.widget.url` labels in compose files to use `localhost` or the Tailscale IP (immich is bound to `100.123.67.48:2283` only). Affected stacks: `arr-stack`, `beszel`, `jellyfin-official`, `immich`.
+
 ### Recent Configuration Changes
 - **OpenCloud Authelia OIDC (2026-05-25) - WORKING**:
   - 4 Authelia OIDC clients added (`web`, `OpenCloudDesktop`, `OpenCloudAndroid`, `OpenCloudIOS`) — all public PKCE, `two_factor` policy
@@ -71,6 +80,7 @@ System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Au
 - **OpenCloud bind address (2026-05-25)**: Must bind to `net.hosts.crisuflix` (Tailscale IP), not `127.0.0.1`, so VPS Traefik can reach it.
 - **OpenCloud stateDir (2026-05-25)**: Data stored at `/mnt/illby/appstorage/opencloud` (ZFS).
 - **oh-my-posh reverted to environment.etc (2026-05-25)**: hjem-impure symlinks point to live repo path which doesn't exist on VPS. Reverted to `environment.etc."oh-my-posh/config.json"` so VPS builds succeed.
+- **Homepage NixOS migration (2026-05-25) - COMPLETE**: Moved from Docker Compose to `services.homepage-dashboard`. Widget URLs updated to use `localhost`/Tailscale IP. Gotify key and Unifi password in agenix. See "Homepage Dashboard" section above.
 - **Mosquitto ACL fix (2026-05-15) - FIXED**: Frigate↔HA MQTT was broken because Mosquitto 2.x with `per_listener_settings true` silently blocks all pub/sub when an ACL file has only `user mqtt_user` with no `topic` lines. Added `acl = ["readwrite #"]` to `users.mqtt_user` in `modules/home-automation.nix`.
 - **adlibris-downloader (2026-05-13) - IMPLEMENTED**: New TUI script to fetch watermarked EPUBs from Adlibris digital library and rsync them directly to Booklore's bookdrop on crisuflix.
   - `pkgs/adlibris-downloader/` — sub-flake with `writeShellApplication` + shellcheck
@@ -84,6 +94,7 @@ System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Au
 - **Restic on Hetzner.** Buckets at `hel1.your-objectstorage.com`: crisuflix-{bocker,hemmavideon,musik,fotografier,docker,opencloud}. Secrets: `hetzner-s3-credentials.age`, `restic-hetzner-password.age`.
 - **Session memory via `HANDOFF.md`.** Single file at project root. No Supermemory plugin.
 - **Mosquitto ACL requires explicit topic grants.** With `per_listener_settings true`, a `users.<name>` block with no `acl` entries generates an ACL file that silently denies all pub/sub. Always include `acl = ["readwrite #"]` (or more restrictive grants) for each MQTT user.
+- **homepage-dashboard docker socket access requires PrivateUsers override.** The NixOS module uses `DynamicUser = true` + `PrivateUsers = true`. `PrivateUsers` blocks supplementary groups from taking effect. Override with `PrivateUsers = lib.mkForce false` in the systemd service config alongside `SupplementaryGroups = ["docker"]` and `BindReadOnlyPaths = ["/var/run/docker.sock:/var/run/docker.sock"]`.
 - **OpenCloud CSP via separate file.** The `csp` key under `settings.proxy` is not a valid proxy YAML schema key and is silently ignored. Use `environment.etc."opencloud/csp.yaml"` + `settings.proxy.csp_config_file_location = "/etc/opencloud/csp.yaml"`. After changing csp.yaml, run `systemctl restart opencloud` (environment.etc changes don't trigger service restarts).
 - **Collabora SSL termination requires child elements.** Use `ssl.enable = false` / `ssl.termination = true`, not `ssl."@enable"` / `ssl."@termination"`. The `@` prefix sets XML attributes; Collabora reads the child `<enable>` and `<termination>` elements.
 - **Collabora font rendering requires host bind mount.** Installing fonts in the Nix store is not enough; Collabora reads from `/usr/share/fonts/collabora`. Use `fileSystems."/usr/share/fonts/collabora"` with `fsType = "none"` and `options = ["bind"]`.
@@ -97,7 +108,7 @@ System stable. OpenCloud + Collabora fully deployed and working on crisuflix. Au
 
 2. **Deploy adlibris-downloader to laptop** — run `nixos-rebuild switch --flake .#laptop` from crisuflix, then configure `~/.config/adlibris-downloader/config` with cookie values from browser DevTools.
 
-3. **Verify first OpenCloud backup** — check tomorrow after 04:00: `ssh llego@crisuflix.home sudo systemctl status restic-backups-opencloud-hetzner`.
+3. **Clean up homepage Docker data** — once satisfied with NixOS service, remove `/mnt/illby/docker/stacks/homepage/` and `/mnt/illby/docker/data/homepage/` (config is now fully in Nix). Also remove `sabnzbd/compose.yaml` and individual `prowlarr/`, `radarr/`, `sonarr/` stacks (inactive duplicates superseded by `arr-stack`).
 
 ## Blockers
 
