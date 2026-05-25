@@ -2,7 +2,9 @@
   pkgs,
   username,
   ...
-}: {
+}: let
+  dots = "${./dots}";
+in {
   environment.systemPackages = with pkgs; [
     htop
     screen
@@ -67,7 +69,7 @@
       fi
 
       # oh-my-posh prompt
-      eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/config.json)"
+      eval "$(oh-my-posh init zsh --config /etc/oh-my-posh/config.json)"
 
       # Key bindings
       bindkey -e
@@ -84,10 +86,12 @@
   # Nano
   programs.nano.enable = true;
 
+  # oh-my-posh config via NixOS (environment.etc) so it works on all hosts,
+  # including the VPS which doesn't have the nixconfig repo checked out.
+  environment.etc."oh-my-posh/config.json".text = builtins.readFile (dots + "/oh-my-posh/config.json");
+
   # CLI application dotfiles
-  hjem.users.${username}.xdg.config.files = let
-    dots = "${./dots}";
-  in {
+  hjem.users.${username}.xdg.config.files = {
     # Helix configuration files
     "helix/config.toml".source = dots + "/helix/config.toml";
     "helix/languages.toml".source = dots + "/helix/languages.toml";
@@ -97,8 +101,5 @@
     "yazi/init.lua".source = dots + "/yazi/init.lua";
     "yazi/theme.toml".source = dots + "/yazi/theme.toml";
     "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
-
-    # oh-my-posh configuration
-    "oh-my-posh/config.json".source = dots + "/oh-my-posh/config.json";
   };
 }
