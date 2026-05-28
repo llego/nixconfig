@@ -91,8 +91,6 @@ in {
               {main = "csandberg.consulting";}
               {main = "crisusandberg.fi";}
               {main = "csandberg.fi";}
-              {main = "cloud.cri.su";}
-              {main = "office.cri.su";}
             ];
           };
         };
