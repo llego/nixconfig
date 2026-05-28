@@ -202,6 +202,9 @@
     dots = "${./core/dots}";
   in {
     xdg.config.files = {
+      # Fuzzel configuration
+      "fuzzel/fuzzel.ini".source = dots + "/fuzzel/fuzzel.ini";
+
       # Niri configuration files
       "niri/config.kdl".source = dots + "/niri/config.kdl";
 
