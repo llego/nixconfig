@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-05-25 20:50 UTC
+Last updated: 2026-05-29 18:00 UTC
 
 ## Current State
 
@@ -72,6 +72,12 @@ LUKS2, `allowDiscards`, TPM2 disabled — passphrase-only unlock.
 - **Collabora SSL termination uses child elements.** `ssl.enable`/`ssl.termination`, not `ssl."@enable"`/`ssl."@termination"` (those set XML attributes, which Collabora ignores).
 - **OpenCloud WOPI proof keys disabled.** `COLLABORATION_APP_PROOF_DISABLE=true` required behind a reverse proxy.
 - **rclone WebDAV to OpenCloud.** `--webdav-vendor owncloud` for timestamps; `--timeout 0` for large files; `sudo rclone` if files are `apps:apps rw-------`.
+
+### Frigate AI Description on Wallmount
+
+- **Sensor**: `sensor.frigate_terrassen_senaste_beskrivning` — trigger-based MQTT sensor in `templates.yaml`; filters `camera == 'terrassen'`; stores full AI description in attribute `description` (bypasses 255-char `input_text` limit); state is ISO timestamp of last trigger
+- **Dashboard**: Wallmount Home tab markdown card (`lovelace.lovelace_wallmount` line ~601) now reads `state_attr(..., 'description')` + timestamp from sensor state
+- **Old entities untouched**: `input_text.frigate_latest_object_detection` and `input_datetime.frigate_latest_object_detection_datetime` still updated by separate "Uppdatera wallmount" automation
 
 ## Top 3 Next Actions
 
