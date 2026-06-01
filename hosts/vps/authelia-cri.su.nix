@@ -91,8 +91,8 @@ in {
       session = {
         name = "authelia_session";
         same_site = "lax";
-        inactivity = "5m";
-        expiration = "1h";
+        inactivity = "1h";
+        expiration = "12h";
         remember_me = "1M";
         cookies = [
           {
@@ -324,7 +324,7 @@ in {
             require_pkce = true;
             pkce_challenge_method = "S256";
             consent_mode = "pre-configured";
-            pre_configured_consent_duration = "1w";
+            pre_configured_consent_duration = "1y";
             redirect_uris = ["oc://android.opencloud.eu"];
             scopes = ["openid" "profile" "email" "groups" "offline_access"];
             grant_types = ["authorization_code" "refresh_token"];
@@ -342,7 +342,7 @@ in {
             require_pkce = true;
             pkce_challenge_method = "S256";
             consent_mode = "pre-configured";
-            pre_configured_consent_duration = "1w";
+            pre_configured_consent_duration = "1y";
             redirect_uris = ["oc://ios.opencloud.eu"];
             scopes = ["openid" "profile" "email" "groups" "offline_access"];
             grant_types = ["authorization_code" "refresh_token"];
