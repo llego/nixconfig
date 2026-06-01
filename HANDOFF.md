@@ -29,21 +29,6 @@ System stable. All four hosts running. Key services: OpenCloud + Collabora (OIDC
 - Native NixOS services (HA, Glances, OpenCloud, Collabora, Homepage) use static Traefik routes in `hosts/vps/networking.nix`
 - Authelia on VPS (`auth.cri.su`) guards both hosts via forward-auth middleware
 
-### OpenCloud + Collabora
-
-- **Data**: `/mnt/illby/appstorage/opencloud` (ZFS); backup to `crisuflix-opencloud` Hetzner bucket at 04:00
-- **Auth**: Authelia OIDC — `OC_EXCLUDE_RUN_SERVICES=idp`, `PROXY_AUTOPROVISION_ACCOUNTS=true`; `llego` has admin role
-- **WebDAV**: `https://cloud.cri.su/dav/files/<username>/` — use app passwords for basic auth clients
-- **CSP**: `environment.etc."opencloud/csp.yaml"` + `settings.proxy.csp_config_file_location`; run `systemctl restart opencloud` after changes
-- **Secrets**: `secrets/opencloud-env.age` (IDM_ADMIN_PASSWORD)
-
-### Homepage Dashboard
-
-- **Module**: `modules/homepage.nix` — `services.homepage-dashboard`, port 3000
-- **Docker auto-discover**: socket bind-mounted read-only; `PrivateUsers = lib.mkForce false` + `SupplementaryGroups = ["docker"]` required (DynamicUser blocks supplementary groups otherwise)
-- **Widget URLs**: NixOS service has no Docker DNS — compose labels must use `localhost` or host IP, not container names. Immich uses `100.123.67.48:2283` (bound to Tailscale IP only). Fixed in: `arr-stack`, `beszel`, `jellyfin-official`, `immich`
-- **Secrets**: `homepage-unifi-password.age` (`HOMEPAGE_VAR_UNIFI_PASSWORD`), `homepage-gotify-key.age` (`HOMEPAGE_VAR_GOTIFY_KEY`) — injected via `environmentFiles`, referenced as `{{HOMEPAGE_VAR_*}}` in config
-
 ### Backups (Hetzner Object Storage)
 
 Buckets at `hel1.your-objectstorage.com`: `crisuflix-{bocker,hemmavideon,musik,fotografier,docker,opencloud}` — all running at 04:00 daily.
@@ -65,19 +50,6 @@ LUKS2, `allowDiscards`, TPM2 disabled — passphrase-only unlock.
 - **Two routing tiers.** Docker containers → traefik-kop → Redis → VPS Traefik. Native NixOS services → static routes in `hosts/vps/networking.nix`.
 - **Restic on Hetzner.** Secrets: `hetzner-s3-credentials.age`, `restic-hetzner-password.age`.
 - **Session memory via `HANDOFF.md`.** Single file at project root.
-- **homepage-dashboard needs PrivateUsers override for Docker socket.** `DynamicUser = true` + `PrivateUsers = true` blocks supplementary groups. Add `PrivateUsers = lib.mkForce false` + `SupplementaryGroups = ["docker"]` + `BindReadOnlyPaths = ["/var/run/docker.sock:/var/run/docker.sock"]`.
-- **homepage widget URLs must avoid Docker DNS.** Use `localhost:<port>` or host IP. Exception: immich binds only to `100.123.67.48:2283`.
-- **Mosquitto ACL requires explicit topic grants.** With `per_listener_settings true`, a user block with no `acl` entries silently denies everything. Always include `acl = ["readwrite #"]` or stricter.
-- **OpenCloud CSP via separate file.** `settings.proxy.csp` is silently ignored; use `environment.etc."opencloud/csp.yaml"` + `csp_config_file_location`. Restart service after changes.
-- **Collabora SSL termination uses child elements.** `ssl.enable`/`ssl.termination`, not `ssl."@enable"`/`ssl."@termination"` (those set XML attributes, which Collabora ignores).
-- **OpenCloud WOPI proof keys disabled.** `COLLABORATION_APP_PROOF_DISABLE=true` required behind a reverse proxy.
-- **rclone WebDAV to OpenCloud.** `--webdav-vendor owncloud` for timestamps; `--timeout 0` for large files; `sudo rclone` if files are `apps:apps rw-------`.
-
-### Frigate AI Description on Wallmount
-
-- **Sensor**: `sensor.frigate_terrassen_senaste_beskrivning` — trigger-based MQTT sensor in `templates.yaml`; filters `camera == 'terrassen'`; stores full AI description in attribute `description` (bypasses 255-char `input_text` limit); state is ISO timestamp of last trigger
-- **Dashboard**: Wallmount Home tab markdown card (`lovelace.lovelace_wallmount` line ~601) now reads `state_attr(..., 'description')` + timestamp from sensor state
-- **Old entities untouched**: `input_text.frigate_latest_object_detection` and `input_datetime.frigate_latest_object_detection_datetime` still updated by separate "Uppdatera wallmount" automation
 
 ## Top 3 Next Actions
 

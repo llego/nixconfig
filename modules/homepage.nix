@@ -71,14 +71,6 @@ in {
             };
           }
           {
-            music-assistant = {
-              href = "https://mass.llego.me";
-              icon = "music-assistant";
-              description = "llego.me";
-              siteMonitor = "http://192.168.1.101:${toString net.crisuflix.musicAssistant.uiPort}";
-            };
-          }
-          {
             esphome = {
               href = "https://esphome.llego.me";
               icon = "esphome";
@@ -109,6 +101,14 @@ in {
               icon = "sh-opencloud";
               description = "cri.su";
               siteMonitor = "https://cloud.cri.su";
+            };
+          }
+          {
+            music-assistant = {
+              href = "https://ma.cri.su";
+              icon = "music-assistant";
+              description = "llego.me";
+              siteMonitor = "http://192.168.1.101:${toString net.crisuflix.musicAssistant.uiPort}";
             };
           }
         ];

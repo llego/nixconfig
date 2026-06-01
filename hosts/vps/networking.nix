@@ -147,6 +147,12 @@ in {
             service = "homeassistant";
             tls.certResolver = "myresolver";
           };
+          musicassistant = {
+            rule = "Host(`ma.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "musicassistant";
+            tls.certResolver = "myresolver";
+          };
           glances = {
             rule = "Host(`glances.cri.su`)";
             entryPoints = ["websecure"];
@@ -206,6 +212,11 @@ in {
           homeassistant.loadBalancer.servers = [
             {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homeAssistant.port}";
+            }
+          ];
+          musicassistant.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.musicAssistant.uiPort}";
             }
           ];
           glances.loadBalancer.servers = [
