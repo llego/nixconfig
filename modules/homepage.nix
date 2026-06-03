@@ -107,7 +107,7 @@ in {
             music-assistant = {
               href = "https://ma.cri.su";
               icon = "music-assistant";
-              description = "llego.me";
+              description = "cri.su";
               siteMonitor = "http://192.168.1.101:${toString net.crisuflix.musicAssistant.uiPort}";
             };
           }
