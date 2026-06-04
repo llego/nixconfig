@@ -1,10 +1,12 @@
 # HANDOFF
 
-Last updated: 2026-05-29 18:00 UTC
+Last updated: 2026-06-04 07:45 UTC
 
 ## Current State
 
 System stable. All four hosts running. Key services: OpenCloud + Collabora (OIDC via Authelia), Homepage dashboard (NixOS service), restic backups (Hetzner), traefik-kop routing.
+
+DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner across both traefik instances.
 
 ### Hosts
 
@@ -21,6 +23,28 @@ System stable. All four hosts running. Key services: OpenCloud + Collabora (OIDC
   | Jellyfin | `jellyfin.cri.su` | Docker, port 8096 |
   | Immich | `immich.cri.su` | Docker, port 2283 (bound to Tailscale IP only) |
 - **rpi5**: Chromium kiosk, RuuviCollector, nightly reboot
+
+### Traefik / ACME / DDNS
+
+**crisuflix (Docker)** — `traefik:v3` in `/mnt/illby/docker/stacks/traefik/`
+- Label constraint: `traefik.instance=internal` — only picks up containers labelled `internal`
+- Containers with `traefik.instance=public` route via traefik-kop → VPS Traefik instead
+- DNS-01 via Hetzner Cloud API (`HETZNER_API_TOKEN` in `.env`)
+- Single wildcard cert: `llego.me` + `*.llego.me`
+- `LEGO_DISABLE_CNAME_SUPPORT=true` to prevent lego CNAME-following issues
+
+**VPS (NixOS)** — `services.traefik` in `hosts/vps/networking.nix`
+- Two DNS-01 resolvers: `hetzner` (all Hetzner-hosted zones) + `desec` (`csandberg.consulting`)
+- `myresolver` aliased to `hetzner` for traefik-kop redis router compatibility
+- Wildcard certs: `*.cri.su`, `*.christiansandberg.fi`, `*.sandbergs.fi`, `*.crisusandberg.fi`, `*.csandberg.fi`, `*.csandberg.consulting`
+- `LEGO_DISABLE_CNAME_SUPPORT=true` via `environmentFiles`
+- `rootKey = "traefik"` in Redis provider — matches the key prefix traefik-kop writes under
+
+**DDNS (VPS)** — `systemd.services.hetzner-ddns` timer (every 5 min)
+- Updates A `@` record for all 5 VPS zones via Hetzner Cloud API delete+recreate rrset pattern
+- Caches last IP per zone in `/var/lib/hetzner-ddns/<zone>.ip`
+- Token from agenix secret `hetzner-dns-token`
+- Replaces both EuroDNS `ddclient` (cri.su) and `cloudflare-ddns` service
 
 ### Infrastructure
 
@@ -55,7 +79,7 @@ LUKS2, `allowDiscards`, TPM2 disabled — passphrase-only unlock.
 
 1. **Remove Storj backups** — overdue. Remove Storj services from `modules/restic-backup.nix`, remove `restic-storj-password.age` and `storj-s3-credentials.age` from `secrets/`, delete Storj buckets, rebuild crisuflix.
 
-2. **Deploy adlibris-downloader to laptop** — `nixos-rebuild switch --flake .#laptop`, then configure `~/.config/adlibris-downloader/config` with cookie values from browser DevTools.
+2. **Update traefik-kop container labels** — containers on crisuflix with `traefik.instance=public` still publish `certResolver=myresolver` to VPS Traefik via Redis. Currently works via the `myresolver` alias but should be cleaned up to use `certResolver=hetzner` explicitly.
 
 3. **Clean up Docker leftovers** — remove `/mnt/illby/docker/stacks/homepage/`, `/mnt/illby/docker/data/homepage/`, and inactive duplicate stacks (`sabnzbd/`, `prowlarr/`, `radarr/`, `sonarr/` — superseded by `arr-stack`).
 
