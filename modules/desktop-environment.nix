@@ -148,7 +148,7 @@
       scrollback = {
         lines = 250000;
         indicator-position = "relative";
-        indicator-format = "{percentage}%";
+        indicator-format = "percentage";
       };
       cursor = {
         style = "block";
