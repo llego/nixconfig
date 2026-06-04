@@ -120,9 +120,16 @@
           owner = "cloudflare-ddns";
           group = "cloudflare-ddns";
         };
-        # EuroDNS DDNS password for cri.su
-        eurodns-cri-su-password = {
-          file = ./../../secrets/eurodns-cri.su-password.age;
+        # Hetzner DNS API token for Traefik DNS-01 challenge and cri.su DDNS
+        hetzner-dns-token = {
+          file = ./../../secrets/hetzner-dns-token.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+        # deSEC DNS API token for Traefik DNS-01 challenge (csandberg.consulting)
+        desec-dns-token = {
+          file = ./../../secrets/desec-dns-token.age;
           mode = "0400";
           owner = "root";
           group = "root";

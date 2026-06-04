@@ -24,8 +24,11 @@ in {
   # crisuflix + vps secrets (shared DDNS token)
   "secrets/cloudflare-ddns-token.age".publicKeys = [crisuflix vps userKey];
 
-  # cri.su EuroDNS DDNS password (VPS)
-  "secrets/eurodns-cri.su-password.age".publicKeys = [vps userKey];
+  # Hetzner DNS API token (VPS Traefik DNS-01 + DDNS)
+  "secrets/hetzner-dns-token.age".publicKeys = [vps userKey];
+
+  # deSEC DNS API token (VPS Traefik DNS-01 for csandberg.consulting)
+  "secrets/desec-dns-token.age".publicKeys = [vps userKey];
 
   # cri.su authelia secrets (VPS)
   "secrets/authelia-cri.su-jwt.age".publicKeys = [vps userKey];

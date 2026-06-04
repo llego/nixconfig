@@ -1,6 +1,10 @@
 # Traefik VPS configuration module
 # Provides reverse proxy with Redis for traefik-kop integration
-{config, ...}: let
+{
+  config,
+  pkgs,
+  ...
+}: let
   net = config.networkVars;
 in {
   networking = {
@@ -20,7 +24,6 @@ in {
   };
 
   # Cloudflare DDNS for christiansandberg.fi and sandbergs.fi domains (IPv4 only)
-  # NOTE: cri.su moved to EuroDNS ddclient
   services.cloudflare-ddns = {
     enable = true;
     credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
@@ -29,17 +32,50 @@ in {
     proxied = "false";
   };
 
-  # EuroDNS DDNS for cri.su domain
-  services.ddclient = {
-    enable = true;
-    protocol = "dyndns2";
-    server = "update.eurodyndns.org";
-    username = "eurodns.login@cri.su";
-    passwordFile = config.age.secrets.eurodns-cri-su-password.path;
-    domains = ["cri.su"];
-    ssl = true;
-    interval = "5min";
-    usev6 = "no"; # Disable IPv6 - VPS lacks connectivity
+  # Hetzner DDNS for cri.su — replaces EuroDNS ddclient
+  # Uses the Hetzner Cloud DNS API (delete + recreate rrset pattern)
+  systemd.services.hetzner-ddns-cri-su = {
+    description = "Hetzner DDNS update for cri.su A record";
+    after = ["network-online.target"];
+    wants = ["network-online.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      StateDirectory = "hetzner-ddns";
+      ExecStart = pkgs.writeShellScript "hetzner-ddns-cri-su" ''
+        TOKEN=$(grep '^HETZNER_API_TOKEN=' ${config.age.secrets.hetzner-dns-token.path} | cut -d= -f2)
+        IP=$(${pkgs.curl}/bin/curl -sf https://api.ipify.org)
+        if [ -z "$IP" ]; then
+          echo "Failed to get public IP" >&2
+          exit 1
+        fi
+        CACHE=/var/lib/hetzner-ddns/cri.su.ip
+        if [ -f "$CACHE" ] && [ "$(cat "$CACHE")" = "$IP" ]; then
+          echo "IP unchanged ($IP), skipping update"
+          exit 0
+        fi
+        echo "Updating cri.su A record to $IP"
+        ${pkgs.curl}/bin/curl -sf -X DELETE \
+          -H "Authorization: Bearer $TOKEN" \
+          "https://api.hetzner.cloud/v1/zones/cri.su/rrsets/@/A" || true
+        ${pkgs.curl}/bin/curl -sf -X POST \
+          -H "Authorization: Bearer $TOKEN" \
+          -H "Content-Type: application/json" \
+          -d "{\"name\":\"@\",\"type\":\"A\",\"ttl\":300,\"records\":[{\"value\":\"$IP\",\"comment\":\"\"}],\"labels\":{}}" \
+          "https://api.hetzner.cloud/v1/zones/cri.su/rrsets"
+        echo "$IP" > "$CACHE"
+        echo "Done"
+      '';
+    };
+  };
+
+  systemd.timers.hetzner-ddns-cri-su = {
+    wantedBy = ["timers.target"];
+    description = "Hetzner DDNS timer for cri.su";
+    timerConfig = {
+      OnBootSec = "1min";
+      OnUnitActiveSec = "5min";
+      Unit = "hetzner-ddns-cri-su.service";
+    };
   };
 
   # Redis for traefik-kop (crisuflix publishes container routes here)
@@ -66,6 +102,16 @@ in {
   services.traefik = {
     enable = true;
 
+    # Inject DNS provider API tokens for ACME DNS-01 challenges
+    # Also disable lego CNAME following to prevent zone-detection errors with apex domains
+    environmentFiles = [
+      config.age.secrets.hetzner-dns-token.path
+      config.age.secrets.desec-dns-token.path
+      (pkgs.writeText "traefik-lego-env" ''
+        LEGO_DISABLE_CNAME_SUPPORT=true
+      '')
+    ];
+
     staticConfigOptions = {
       api = {
         dashboard = true;
@@ -83,23 +129,46 @@ in {
         websecure = {
           address = ":443";
           http.tls = {
-            certResolver = "myresolver";
+            certResolver = "hetzner";
             domains = [
-              {main = "christiansandberg.fi";}
-              {main = "cri.su";}
-              {main = "sandbergs.fi";}
-              {main = "csandberg.consulting";}
-              {main = "crisusandberg.fi";}
-              {main = "csandberg.fi";}
+              {main = "cri.su";               sans = ["*.cri.su"];}
+              {main = "christiansandberg.fi";  sans = ["*.christiansandberg.fi"];}
+              {main = "sandbergs.fi";          sans = ["*.sandbergs.fi"];}
+              {main = "crisusandberg.fi";      sans = ["*.crisusandberg.fi"];}
+              {main = "csandberg.fi";          sans = ["*.csandberg.fi"];}
             ];
           };
         };
       };
 
-      certificatesResolvers.myresolver.acme = {
-        email = "traefik.certs@cri.su";
-        storage = "/var/lib/traefik/acme.json";
-        httpChallenge.entryPoint = "web";
+      certificatesResolvers = {
+        # DNS-01 via Hetzner Cloud API — covers all Hetzner-hosted zones
+        # Also aliased as "myresolver" for traefik-kop redis routers from crisuflix
+        hetzner.acme = {
+          email = "hetzner.traefikadmin@cri.su";
+          storage = "/var/lib/traefik/acme.json";
+          dnsChallenge = {
+            provider = "hetzner";
+            delayBeforeCheck = 10;
+          };
+        };
+        myresolver.acme = {
+          email = "hetzner.traefikadmin@cri.su";
+          storage = "/var/lib/traefik/acme.json";
+          dnsChallenge = {
+            provider = "hetzner";
+            delayBeforeCheck = 10;
+          };
+        };
+        # DNS-01 via deSEC — covers csandberg.consulting (on deSEC nameservers)
+        desec.acme = {
+          email = "hetzner.traefikadmin@cri.su";
+          storage = "/var/lib/traefik/acme.json";
+          dnsChallenge = {
+            provider = "desec";
+            delayBeforeCheck = 10;
+          };
+        };
       };
 
       providers = {
@@ -120,65 +189,76 @@ in {
             rule = "Host(`auth.cri.su`)";
             entryPoints = ["websecure"];
             service = "authelia-cri-su";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
           };
           gotify = {
             rule = "Host(`gotify.cri.su`)";
             entryPoints = ["websecure"];
             service = "gotify";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
           };
           uptime-kuma = {
             rule = "Host(`uptime.cri.su`)";
             entryPoints = ["websecure"];
             service = "uptime-kuma";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
             middlewares = ["authelia-cri-su"];
           };
+          # Hetzner-hosted domains
           website = {
-            rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`) || Host(`sandbergs.fi`) || Host(`www.sandbergs.fi`) || Host(`csandberg.consulting`) || Host(`crisusandberg.fi`) || Host(`csandberg.fi`)";
+            rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`) || Host(`sandbergs.fi`) || Host(`www.sandbergs.fi`) || Host(`crisusandberg.fi`) || Host(`csandberg.fi`)";
             entryPoints = ["websecure"];
             service = "website";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
+          };
+          # csandberg.consulting is on deSEC — needs its own resolver and wildcard cert
+          website-consulting = {
+            rule = "Host(`csandberg.consulting`)";
+            entryPoints = ["websecure"];
+            service = "website";
+            tls = {
+              certResolver = "desec";
+              domains = [{main = "csandberg.consulting"; sans = ["*.csandberg.consulting"];}];
+            };
           };
           homeassistant = {
             rule = "Host(`ha.cri.su`)";
             entryPoints = ["websecure"];
             service = "homeassistant";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
           };
           musicassistant = {
             rule = "Host(`ma.cri.su`)";
             entryPoints = ["websecure"];
             service = "musicassistant";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
           };
           glances = {
             rule = "Host(`glances.cri.su`)";
             entryPoints = ["websecure"];
             service = "glances";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
             middlewares = ["authelia-cri-su"];
           };
           homepage = {
             rule = "Host(`cri.su`)";
             entryPoints = ["websecure"];
             service = "homepage";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
             middlewares = ["authelia-cri-su"];
           };
           opencloud = {
             rule = "Host(`cloud.cri.su`)";
             entryPoints = ["websecure"];
             service = "opencloud";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
             # No Authelia — OpenCloud has its own authentication
           };
           collabora = {
             rule = "Host(`office.cri.su`)";
             entryPoints = ["websecure"];
             service = "collabora";
-            tls.certResolver = "myresolver";
+            tls.certResolver = "hetzner";
             # No Authelia — WOPI requests from OpenCloud must pass through unauthenticated
           };
         };

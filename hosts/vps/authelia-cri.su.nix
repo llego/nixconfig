@@ -128,7 +128,7 @@ in {
         minimum_parameter_entropy = 8;
         enforce_pkce = "public_clients_only";
 
-        # CORS configuration for BookLore and other clients
+        # CORS configuration for grimmory and other clients
         cors = {
           endpoints = ["authorization" "token" "revocation" "introspection"];
           allowed_origins = ["https://cri.su"];
@@ -143,7 +143,7 @@ in {
               sftpgo_role = {};
             };
           };
-          booklore = {
+          grimmory = {
             id_token = ["email" "preferred_username" "name"];
           };
           grafana = {
@@ -179,23 +179,25 @@ in {
             token_endpoint_auth_method = "client_secret_post";
           }
 
-          # BookLore (public client with PKCE)
+          # grimmory (public client with PKCE)
           {
-            client_id = "booklore";
-            client_name = "BookLore";
-            public = true;
+            client_id = "grimmory";
+            client_name = "Grimmory";
+            client_secret = "$pbkdf2-sha512$310000$NZTX2m4St1rQrgziBaeItw$x9i9PPDtX.2ypwcGvOHexJAdl/pHBEsJaR0pWfwutgMfZYoU8c.uKVUXqoaWPx5WqKFLQtvLyss35Tf1mXZkPA";
+            # public = true;
             authorization_policy = "two_factor";
             require_pkce = true;
             pkce_challenge_method = "S256";
             redirect_uris = [
-              "https://booklore.cri.su/oauth2-callback"
+              "https://grimmory.cri.su/oauth2-callback"
             ];
-            scopes = ["openid" "profile" "email" "offline_access"];
-            response_types = ["code"];
-            grant_types = ["authorization_code" "refresh_token"];
-            access_token_signed_response_alg = "none";
-            userinfo_signed_response_alg = "none";
-            token_endpoint_auth_method = "none";
+            scopes = ["openid" "profile" "email" "groups" "offline_access"];
+            # response_types = ["code"];
+            # grant_types = ["authorization_code" "refresh_token"];
+            grant_types = ["authorization_code"];
+            # access_token_signed_response_alg = "none";
+            # userinfo_signed_response_alg = "none";
+            # token_endpoint_auth_method = "none";
           }
 
           # Grafana
