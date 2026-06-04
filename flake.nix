@@ -37,6 +37,10 @@
       inputs.nixpkgs.follows = "";
       inputs.hjem.follows = "";
     };
+    hetzner_ddns = {
+      url = "github:filiparag/hetzner_ddns";
+      flake = false;
+    };
     christiansandberg-website = {
       url = "git+ssh://git@github.com/llego/christiansandberg.fi.git";
       flake = false;

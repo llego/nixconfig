@@ -142,8 +142,8 @@ in {
   # Docker
   virtualisation.docker.enable = true;
 
-  # Ensure the traefik Docker network exists before any containers start.
-  # All stacks reference it as external: true, so it must pre-exist.
+  # Ensure the traefik Docker networks exists before any containers start.
+  # All stacks reference them as external: true, so they must pre-exist.
   systemd.services.docker-network-traefik = {
     description = "Create traefik Docker network";
     after = ["docker.service"];
@@ -153,8 +153,12 @@ in {
       Type = "oneshot";
       RemainAfterExit = true;
       ExecStart = pkgs.lib.getExe (pkgs.writeShellScriptBin "docker-network-traefik" ''
-        ${pkgs.docker}/bin/docker network inspect traefik-llego-me > /dev/null 2>&1 || \
-          ${pkgs.docker}/bin/docker network create --driver bridge traefik-llego-me
+        ${pkgs.docker}/bin/docker network inspect traefik-internal > /dev/null 2>&1 || \
+          ${pkgs.docker}/bin/docker network create --driver bridge traefik-internal
+
+
+        ${pkgs.docker}/bin/docker network inspect traefik-public > /dev/null 2>&1 || \
+          ${pkgs.docker}/bin/docker network create --driver bridge traefik-public
       '');
     };
   };

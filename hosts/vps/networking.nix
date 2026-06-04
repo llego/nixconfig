@@ -3,10 +3,13 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: let
   net = config.networkVars;
 in {
+  imports = ["${inputs.hetzner_ddns}/release/NixOS/nixos_module.nix"];
+
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
@@ -23,53 +26,35 @@ in {
     };
   };
 
-  # Hetzner DDNS for all VPS domains — updates A records via Hetzner Cloud API
-  # Covers: cri.su, christiansandberg.fi, sandbergs.fi, crisusandberg.fi, csandberg.fi
-  systemd.services.hetzner-ddns = {
-    description = "Hetzner DDNS update for all VPS A records";
-    after = ["network-online.target"];
-    wants = ["network-online.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      StateDirectory = "hetzner-ddns";
-      ExecStart = pkgs.writeShellScript "hetzner-ddns" ''
-        TOKEN=$(grep '^HETZNER_API_TOKEN=' ${config.age.secrets.hetzner-dns-token.path} | cut -d= -f2)
-        IP=$(${pkgs.curl}/bin/curl -sf https://api.ipify.org)
-        if [ -z "$IP" ]; then
-          echo "Failed to get public IP" >&2
-          exit 1
-        fi
-        for ZONE in cri.su christiansandberg.fi sandbergs.fi crisusandberg.fi csandberg.fi; do
-          CACHE=/var/lib/hetzner-ddns/$ZONE.ip
-          if [ -f "$CACHE" ] && [ "$(cat "$CACHE")" = "$IP" ]; then
-            echo "$ZONE: IP unchanged ($IP), skipping"
-            continue
-          fi
-          echo "$ZONE: updating A record to $IP"
-          ${pkgs.curl}/bin/curl -sf -X DELETE \
-            -H "Authorization: Bearer $TOKEN" \
-            "https://api.hetzner.cloud/v1/zones/$ZONE/rrsets/@/A" || true
-          ${pkgs.curl}/bin/curl -sf -X POST \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"name\":\"@\",\"type\":\"A\",\"ttl\":300,\"records\":[{\"value\":\"$IP\",\"comment\":\"\"}],\"labels\":{}}" \
-            "https://api.hetzner.cloud/v1/zones/$ZONE/rrsets"
-          echo "$IP" > "$CACHE"
-          echo "$ZONE: done"
-        done
-      '';
-    };
+  services.hetzner_ddns = {
+    enable = true;
+    zones = [
+      {
+        domain = "cri.su";
+        records = [{name = "@";}];
+      }
+      {
+        domain = "christiansandberg.fi";
+        records = [{name = "@";}];
+      }
+      {
+        domain = "sandbergs.fi";
+        records = [{name = "@";}];
+      }
+      {
+        domain = "crisusandberg.fi";
+        records = [{name = "@";}];
+      }
+      {
+        domain = "csandberg.fi";
+        records = [{name = "@";}];
+      }
+    ];
+    protections = true; # enables protection settings in the systemd service. might cause permission problems with reading the api_key_file
+    api_key_file = "/run/credentials/hetzner_ddns.service/hetzner-dns-token";
   };
 
-  systemd.timers.hetzner-ddns = {
-    wantedBy = ["timers.target"];
-    description = "Hetzner DDNS timer for all VPS domains";
-    timerConfig = {
-      OnBootSec = "1min";
-      OnUnitActiveSec = "5min";
-      Unit = "hetzner-ddns.service";
-    };
-  };
+  systemd.services.hetzner_ddns.serviceConfig.LoadCredential = "hetzner-dns-token:${config.age.secrets.hetzner-dns-token.path}";
 
   # Redis for traefik-kop (crisuflix publishes container routes here)
   services.redis.servers.traefik = {
@@ -98,12 +83,14 @@ in {
     # Inject DNS provider API tokens for ACME DNS-01 challenges
     # Also disable lego CNAME following to prevent zone-detection errors with apex domains
     environmentFiles = [
-      config.age.secrets.hetzner-dns-token.path
       config.age.secrets.desec-dns-token.path
       (pkgs.writeText "traefik-lego-env" ''
         LEGO_DISABLE_CNAME_SUPPORT=true
+        HETZNER_API_TOKEN_FILE=${config.age.secrets.hetzner-dns-token.path}
+        HETZNER_API_KEY_FILE=${config.age.secrets.hetzner-dns-token.path}
       '')
     ];
+
 
     staticConfigOptions = {
       api = {
@@ -124,11 +111,26 @@ in {
           http.tls = {
             certResolver = "hetzner";
             domains = [
-              {main = "cri.su";               sans = ["*.cri.su"];}
-              {main = "christiansandberg.fi";  sans = ["*.christiansandberg.fi"];}
-              {main = "sandbergs.fi";          sans = ["*.sandbergs.fi"];}
-              {main = "crisusandberg.fi";      sans = ["*.crisusandberg.fi"];}
-              {main = "csandberg.fi";          sans = ["*.csandberg.fi"];}
+              {
+                main = "cri.su";
+                sans = ["*.cri.su"];
+              }
+              {
+                main = "christiansandberg.fi";
+                sans = ["*.christiansandberg.fi"];
+              }
+              {
+                main = "sandbergs.fi";
+                sans = ["*.sandbergs.fi"];
+              }
+              {
+                main = "crisusandberg.fi";
+                sans = ["*.crisusandberg.fi"];
+              }
+              {
+                main = "csandberg.fi";
+                sans = ["*.csandberg.fi"];
+              }
             ];
           };
         };
@@ -211,7 +213,12 @@ in {
             service = "website";
             tls = {
               certResolver = "desec";
-              domains = [{main = "csandberg.consulting"; sans = ["*.csandberg.consulting"];}];
+              domains = [
+                {
+                  main = "csandberg.consulting";
+                  sans = ["*.csandberg.consulting"];
+                }
+              ];
             };
           };
           homeassistant = {
