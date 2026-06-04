@@ -114,12 +114,6 @@
       }
       else if hostname == "vps"
       then {
-        cloudflare-ddns-token = {
-          file = ./../../secrets/cloudflare-ddns-token.age;
-          mode = "0400";
-          owner = "cloudflare-ddns";
-          group = "cloudflare-ddns";
-        };
         # Hetzner DNS API token for Traefik DNS-01 challenge and cri.su DDNS
         hetzner-dns-token = {
           file = ./../../secrets/hetzner-dns-token.age;

@@ -21,9 +21,6 @@ in {
   # crisuflix-specific secrets
   "secrets/nut-password.age".publicKeys = [crisuflix userKey];
 
-  # crisuflix + vps secrets (shared DDNS token)
-  "secrets/cloudflare-ddns-token.age".publicKeys = [crisuflix vps userKey];
-
   # Hetzner DNS API token (VPS Traefik DNS-01 + DDNS)
   "secrets/hetzner-dns-token.age".publicKeys = [vps userKey];
 

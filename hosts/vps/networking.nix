@@ -23,58 +23,51 @@ in {
     };
   };
 
-  # Cloudflare DDNS for christiansandberg.fi and sandbergs.fi domains (IPv4 only)
-  services.cloudflare-ddns = {
-    enable = true;
-    credentialsFile = config.age.secrets.cloudflare-ddns-token.path;
-    ip4Domains = ["christiansandberg.fi" "sandbergs.fi" "crisusandberg.fi" "csandberg.fi"];
-    ip6Domains = []; # Disable IPv6 DDNS
-    proxied = "false";
-  };
-
-  # Hetzner DDNS for cri.su — replaces EuroDNS ddclient
-  # Uses the Hetzner Cloud DNS API (delete + recreate rrset pattern)
-  systemd.services.hetzner-ddns-cri-su = {
-    description = "Hetzner DDNS update for cri.su A record";
+  # Hetzner DDNS for all VPS domains — updates A records via Hetzner Cloud API
+  # Covers: cri.su, christiansandberg.fi, sandbergs.fi, crisusandberg.fi, csandberg.fi
+  systemd.services.hetzner-ddns = {
+    description = "Hetzner DDNS update for all VPS A records";
     after = ["network-online.target"];
     wants = ["network-online.target"];
     serviceConfig = {
       Type = "oneshot";
       StateDirectory = "hetzner-ddns";
-      ExecStart = pkgs.writeShellScript "hetzner-ddns-cri-su" ''
+      ExecStart = pkgs.writeShellScript "hetzner-ddns" ''
         TOKEN=$(grep '^HETZNER_API_TOKEN=' ${config.age.secrets.hetzner-dns-token.path} | cut -d= -f2)
         IP=$(${pkgs.curl}/bin/curl -sf https://api.ipify.org)
         if [ -z "$IP" ]; then
           echo "Failed to get public IP" >&2
           exit 1
         fi
-        CACHE=/var/lib/hetzner-ddns/cri.su.ip
-        if [ -f "$CACHE" ] && [ "$(cat "$CACHE")" = "$IP" ]; then
-          echo "IP unchanged ($IP), skipping update"
-          exit 0
-        fi
-        echo "Updating cri.su A record to $IP"
-        ${pkgs.curl}/bin/curl -sf -X DELETE \
-          -H "Authorization: Bearer $TOKEN" \
-          "https://api.hetzner.cloud/v1/zones/cri.su/rrsets/@/A" || true
-        ${pkgs.curl}/bin/curl -sf -X POST \
-          -H "Authorization: Bearer $TOKEN" \
-          -H "Content-Type: application/json" \
-          -d "{\"name\":\"@\",\"type\":\"A\",\"ttl\":300,\"records\":[{\"value\":\"$IP\",\"comment\":\"\"}],\"labels\":{}}" \
-          "https://api.hetzner.cloud/v1/zones/cri.su/rrsets"
-        echo "$IP" > "$CACHE"
-        echo "Done"
+        for ZONE in cri.su christiansandberg.fi sandbergs.fi crisusandberg.fi csandberg.fi; do
+          CACHE=/var/lib/hetzner-ddns/$ZONE.ip
+          if [ -f "$CACHE" ] && [ "$(cat "$CACHE")" = "$IP" ]; then
+            echo "$ZONE: IP unchanged ($IP), skipping"
+            continue
+          fi
+          echo "$ZONE: updating A record to $IP"
+          ${pkgs.curl}/bin/curl -sf -X DELETE \
+            -H "Authorization: Bearer $TOKEN" \
+            "https://api.hetzner.cloud/v1/zones/$ZONE/rrsets/@/A" || true
+          ${pkgs.curl}/bin/curl -sf -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"name\":\"@\",\"type\":\"A\",\"ttl\":300,\"records\":[{\"value\":\"$IP\",\"comment\":\"\"}],\"labels\":{}}" \
+            "https://api.hetzner.cloud/v1/zones/$ZONE/rrsets"
+          echo "$IP" > "$CACHE"
+          echo "$ZONE: done"
+        done
       '';
     };
   };
 
-  systemd.timers.hetzner-ddns-cri-su = {
+  systemd.timers.hetzner-ddns = {
     wantedBy = ["timers.target"];
-    description = "Hetzner DDNS timer for cri.su";
+    description = "Hetzner DDNS timer for all VPS domains";
     timerConfig = {
       OnBootSec = "1min";
       OnUnitActiveSec = "5min";
-      Unit = "hetzner-ddns-cri-su.service";
+      Unit = "hetzner-ddns.service";
     };
   };
 
