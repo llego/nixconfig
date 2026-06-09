@@ -285,10 +285,6 @@ in {
           address = "192.168.1.101";
           prefixLength = 24;
         }
-        {
-          address = "192.168.1.103";
-          prefixLength = 24;
-        }
       ];
       br1.ipv4.addresses = [
         {
@@ -321,6 +317,7 @@ in {
         net.crisuflix.nut.port # NUT (UPS monitoring)
         5201 # iperf3
         net.crisuflix.musicAssistant.uiPort # Music Assistant (Web UI)
+        8098 # Music Assistant Web Socket
         net.crisuflix.jellyfin.port # Jellyfin
         net.crisuflix.musicAssistant.streamPort # Music Assistant (Stream Server)
         net.crisuflix.homeAssistant.port # Home Assistant

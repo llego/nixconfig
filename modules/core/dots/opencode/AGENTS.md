@@ -1,5 +1,9 @@
 # Global Rules
 
+## General
+- Don't assume on which machine you are running. Use hostname command.
+- You can use nix-shell -p to run python and other packages not installed on the system
+
 ## System
 - OS: NixOS. Never suggest apt, brew, pip, or other imperative package managers.
 - Do not suggest or use home-manager.
@@ -11,7 +15,8 @@
 4 hosts:
 - **laptop**: daily driver (Niri WM, Intel GPU)
 - **vps** (`christiansandberg.fi`, `100.78.37.16`): Traefik reverse proxy, Redis, Authelia, public-facing services
-- **crisuflix** (`100.123.67.48`): NAS, ZFS, Docker, Home Assistant
+- **crisuflix** (`100.123.67.48`): NAS, ZFS, Docker (configs in /mnt/illby/docker), Home Assistant (running as NixOS service), Music Assistant (running as NixOS service)
+  - config directories for HA and MA are in /mnt/illby/appstorage/homeassistant  /mnt/illby/appstorage/music-assistant, respectively 
 - **rpi5**: Chromium kiosk
 
 All inter-server communication over Tailscale. NixOS config at `~/nixconfig`.
