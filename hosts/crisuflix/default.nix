@@ -307,8 +307,14 @@ in {
       # Allow Yamaha MusicCast to send UDP push events (position updates, state changes)
       # back to Music Assistant on its ephemeral UDP port. The Yamaha sends these as
       # unsolicited packets which are otherwise blocked by the stateful firewall.
-      extraInputRules = ''
-        ip saddr 192.168.1.247 udp accept comment "Yamaha MusicCast UDP events to Music Assistant"
+      # Note: extraInputRules uses nftables syntax and is silently ignored when
+      # networking.nftables.enable is false (which it must be while Docker uses iptables).
+      # extraCommands/extraStopCommands use iptables syntax and work correctly here.
+      extraCommands = ''
+        iptables -A nixos-fw -p udp -s 192.168.1.247 -j nixos-fw-accept
+      '';
+      extraStopCommands = ''
+        iptables -D nixos-fw -p udp -s 192.168.1.247 -j nixos-fw-accept 2>/dev/null || true
       '';
       allowedTCPPorts = [
         22 # SSH
