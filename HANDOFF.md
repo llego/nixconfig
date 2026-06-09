@@ -1,12 +1,14 @@
 # HANDOFF
 
-Last updated: 2026-06-04 07:45 UTC
+Last updated: 2026-06-09 20:15 UTC
 
 ## Current State
 
 System stable. All four hosts running. Key services: OpenCloud + Collabora (OIDC via Authelia), Homepage dashboard (NixOS service), restic backups (Hetzner), traefik-kop routing.
 
 DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner across both traefik instances.
+
+IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CUSTOM1), avahi reflector enabled on crisuflix for cross-subnet mDNS. `192.168.1.103` alias removed from br0 — Shelly devices migrated to `192.168.3.103`.
 
 ### Hosts
 
@@ -17,6 +19,7 @@ DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner acro
   |---------|-----|-------|
   | Homepage | `cri.su` | NixOS `services.homepage-dashboard`, port 3000 |
   | Home Assistant | `ha.cri.su` | NixOS `virtualisation.oci-containers` |
+  | Music Assistant | `ma.cri.su` | NixOS `services.music-assistant`, port 8095 |
   | OpenCloud | `cloud.cri.su` | NixOS service, port 9200, OIDC via Authelia |
   | Collabora | `office.cri.su` | NixOS service, port 9980 |
   | Glances | `glances.cri.su` | NixOS service, port 61208 |
@@ -52,6 +55,16 @@ DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner acro
 - Traefik-kop: crisuflix Docker containers self-register via labels → Redis on VPS → Traefik public routing
 - Native NixOS services (HA, Glances, OpenCloud, Collabora, Homepage) use static Traefik routes in `hosts/vps/networking.nix`
 - Authelia on VPS (`auth.cri.su`) guards both hosts via forward-auth middleware
+
+### Network (crisuflix)
+
+- `br0` (`192.168.1.101/24`) — trusted LAN, gateway `192.168.1.1`
+- `br1` (`192.168.3.103/24`) — IoT network
+- UniFi: `192.168.3.0/24` is in custom zone (CUSTOM1) — blocks IoT → trusted LAN, allows IoT → WAN
+- UniFi: mDNS Proxy enabled on both networks as fallback
+- Avahi reflector enabled on crisuflix (`br0` + `br1`) for cross-subnet mDNS (Chromecast, ESPHome, etc.)
+- IoT devices reach HA/MQTT/ESPHome via `192.168.3.103` (same-subnet, no firewall rule needed)
+- InfluxDB integration: config entry `path` must be `""` (empty) — was `/`, caused 404 on setup
 
 ### Backups (Hetzner Object Storage)
 
