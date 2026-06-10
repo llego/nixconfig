@@ -36,9 +36,10 @@
 
   # Extra Portal Configuration
   # xdg-desktop-portal provides a portal frontend service for Flatpak, Snap, and possibly other desktop containment/sandboxing frameworks.
+  # Niri is not a wlroots compositor so xdg-desktop-portal-wlr is not used;
+  # programs.niri.enable routes portal interfaces to gnome/gtk backends.
   xdg.portal = {
     enable = true;
-    wlr.enable = true;
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal
