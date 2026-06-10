@@ -39,7 +39,7 @@
   services.cage = {
     enable = true;
     user = username;
-    program = "${pkgs.chromium}/bin/chromium --app=http://crisuflix.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
+    program = "${pkgs.chromium}/bin/chromium --app=http://crisuflix.home:8123/lovelace-wallmount/default_view --user-data-dir=/home/${username}/kiosk-profile --disk-cache-dir=/tmp/chromium-cache --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
   };
 
   systemd.user.services.scalekiosk = {
