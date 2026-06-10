@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-06-09 20:15 UTC
+Last updated: 2026-06-10 14:30 UTC
 
 ## Current State
 
@@ -25,7 +25,10 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
   | Glances | `glances.cri.su` | NixOS service, port 61208 |
   | Jellyfin | `jellyfin.cri.su` | Docker, port 8096 |
   | Immich | `immich.cri.su` | Docker, port 2283 (bound to Tailscale IP only) |
-- **rpi5**: Chromium kiosk, RuuviCollector, nightly reboot
+- **rpi5**: Chromium kiosk, nightly reboot — fully working after NixOS 26.05 migration
+  - `boot.initrd.systemd.enable = false` required: systemd initrd incompatible with raspberry-pi-nix kernel on 26.05+
+  - Display output is `HDMI-A-2`, scale 1.5
+  - nixpkgs pinned to `nixos-26.05`; `system.stateVersion` still `"24.11"` (harmless)
 
 ### Traefik / ACME / DDNS
 
