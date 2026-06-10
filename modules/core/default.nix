@@ -38,7 +38,6 @@
     initialHashedPassword = "$y$j9T$ZkjPz16I42/HiBKp5pDiJ0$N2UuFtPMc1n8t41tl94Am3c0RTTw9zaTku9ER.r0wg/";
     description = "Christian Sandberg";
     extraGroups = ["networkmanager" "wheel"];
-    shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJADwUps+xVBj5uHuO68oR3USlmXdSosizvCQlKyKJnu mail@christiansandberg.fi" # llego private key
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID0LhqlmrvsU3NCaxPlQ6EEzv1M02aPFgrQJz9iFDknZ eddsa-key-20260429" # gaming-pc

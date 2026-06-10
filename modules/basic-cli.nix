@@ -31,6 +31,8 @@ in {
 
 
 
+  users.users.${username}.shell = pkgs.zsh;
+
   # Zsh configuration
   programs.zsh = {
     enable = true;
