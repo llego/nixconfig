@@ -8,7 +8,6 @@
   ...
 }: {
   imports = [
-    ./basic-cli.nix
     ./agenix.nix
     ./networking-variables.nix
     ./hjem.nix

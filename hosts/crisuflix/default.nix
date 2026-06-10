@@ -14,6 +14,7 @@ in {
   imports = [
     inputs.disko.nixosModules.disko
     ./../../modules/core
+    ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
     ./../../modules/homepage.nix
     ./../../modules/opencloud.nix

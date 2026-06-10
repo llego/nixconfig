@@ -20,6 +20,7 @@ in {
     ./networking.nix
     ./authelia-cri.su.nix
     ./../../modules/core
+    ./../../modules/basic-cli.nix
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")

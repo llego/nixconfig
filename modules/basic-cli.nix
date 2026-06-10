@@ -3,7 +3,7 @@
   username,
   ...
 }: let
-  dots = "${./dots}";
+  dots = "${./core/dots}";
 in {
   environment.systemPackages = with pkgs; [
     htop
