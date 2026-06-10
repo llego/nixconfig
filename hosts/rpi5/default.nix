@@ -39,7 +39,7 @@
   services.cage = {
     enable = true;
     user = username;
-    program = "${pkgs.chromium}/bin/chromium --app=http://homeassistant.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
+    program = "${pkgs.chromium}/bin/chromium --app=http://crisuflix.home:8123/lovelace-wallmount/default_view --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
     #program = "${pkgs.chromium}/bin/chromium --app=https://duckduckgo.com/ --user-data-dir=/home/llego/kiosk-profile-dir --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
     #program = "/home/llego/start-kiosk.sh";
     #environment = {
@@ -103,6 +103,10 @@
     enable = lib.mkForce false;
     powerOnBoot = lib.mkForce false;
   };
+
+  # RPi Linux kernel doesn't ship tpm-crb; disable systemd TPM2 initrd support
+  # to prevent "Module tpm-crb not found" build failure.
+  boot.initrd.systemd.tpm2.enable = false;
 
   raspberry-pi-nix = {
     board = "bcm2712";
