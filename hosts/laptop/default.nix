@@ -125,6 +125,9 @@
         "sd_mod"
       ];
       kernelModules = [];
+      # Laptop has a hardware TPM2 chip but it is not enrolled in LUKS.
+      # Disable to prevent initrd TPM2 module errors (mirrors rpi5 fix).
+      systemd.tpm2.enable = false;
     };
     kernelModules = ["kvm-intel"];
     extraModulePackages = [];

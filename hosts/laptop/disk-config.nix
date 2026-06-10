@@ -28,9 +28,8 @@
                 # TPM2 disabled for reliability - using passphrase-only unlock
                 # Traditional initrd handles passphrase unlock without extra options
                 crypttabExtraOpts = [];
-                # nixos-anywhere uploads the passphrase to this path before disko runs.
-                # The file is ephemeral — only exists in the installer RAM environment.
-                keyFile = "/tmp/disk.key";
+                # keyFile was used by nixos-anywhere during install only (installer RAM env).
+                # Removed: causes systemd-cryptsetup to error at every normal boot.
               };
               content = {
                 type = "filesystem";
