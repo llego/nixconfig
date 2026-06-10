@@ -18,6 +18,7 @@
 - **crisuflix** (`100.123.67.48`): NAS, ZFS, Docker (configs in /mnt/illby/docker), Home Assistant (running as NixOS service), Music Assistant (running as NixOS service)
   - config directories for HA and MA are in /mnt/illby/appstorage/homeassistant  /mnt/illby/appstorage/music-assistant, respectively 
 - **rpi5**: Chromium kiosk
+- **unifi.home** Unify Dream Router. Can be ssh'd into from crisuflix by `ssh root@unifi.home`.
 
 All inter-server communication over Tailscale. NixOS config at `~/nixconfig`.
 
@@ -33,4 +34,3 @@ Services split across VPS and crisuflix. Crisuflix is the primary Docker host:
 ## Home Assistant
 - MCP server at `https://ha-mcp.llego.me/mcp` (requires `HA_MCP_TOKEN` env var)
 - Web UI at `http://192.168.1.101:8123`
-- Config files at `llego@crisuflix:/mnt/illby/docker/data/homeassistant/ha-config`
