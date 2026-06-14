@@ -143,9 +143,9 @@ in {
               sftpgo_role = {};
             };
           };
-          grimmory = {
-            id_token = ["email" "preferred_username" "name"];
-          };
+          # grimmory = {
+          # id_token = ["email" "preferred_username" "name"];
+          # };
           grafana = {
             id_token = ["email" "name" "groups"];
           };
@@ -179,12 +179,11 @@ in {
             token_endpoint_auth_method = "client_secret_post";
           }
 
-          # grimmory (public client with PKCE)
+          # grimmory
           {
             client_id = "grimmory";
             client_name = "Grimmory";
-            client_secret = "$pbkdf2-sha512$310000$NZTX2m4St1rQrgziBaeItw$x9i9PPDtX.2ypwcGvOHexJAdl/pHBEsJaR0pWfwutgMfZYoU8c.uKVUXqoaWPx5WqKFLQtvLyss35Tf1mXZkPA";
-            # public = true;
+            client_secret = "$pbkdf2-sha512$310000$uRmVVt8CSjlrkM/7fzkUfQ$c98y9CGmpcAfYskrTop4f1sv0Oq6nJHHepyG5gXgj7W6zr/d.oGiY45wxZeM.hBt73mF3NhPOeGZwq.g6k8B4A";
             authorization_policy = "two_factor";
             require_pkce = true;
             pkce_challenge_method = "S256";
@@ -192,12 +191,8 @@ in {
               "https://grimmory.cri.su/oauth2-callback"
             ];
             scopes = ["openid" "profile" "email" "groups" "offline_access"];
-            # response_types = ["code"];
-            # grant_types = ["authorization_code" "refresh_token"];
-            grant_types = ["authorization_code"];
-            # access_token_signed_response_alg = "none";
-            # userinfo_signed_response_alg = "none";
-            # token_endpoint_auth_method = "none";
+            grant_types = ["authorization_code" "refresh_token"];
+            token_endpoint_auth_method = "client_secret_post";
           }
 
           # Grafana
