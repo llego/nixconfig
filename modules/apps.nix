@@ -33,6 +33,10 @@
     hunspellDicts.en-gb-ize
   ];
 
+  services.mullvad-vpn.enable = true;
+  # Uncomment this to get Mullvad GUI
+  # services.mullvad-vpn.package = pkgs.mullvad-vpn;
+
   # # Firefox
   # programs.firefox = {
   #   enable = true;
@@ -79,6 +83,4 @@
   # Email
   # programs.thunderbird.enable = true;
   # services.protonmail-bridge.enable = true;
-
-
 }
