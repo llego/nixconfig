@@ -1,6 +1,7 @@
 {
   pkgs,
   username,
+  inputs,
   ...
 }: {
   environment.systemPackages = with pkgs; [
@@ -11,7 +12,7 @@
     pavucontrol
     xwayland-satellite
     wayland-utils
-    fuzzel # config in dotfiles
+    # fuzzel # config in dotfiles
     brightnessctl
     wlr-randr
     wdisplays
@@ -21,7 +22,8 @@
     papirus-icon-theme
     nwg-look # Needed for setting gtk theme in Noctalia
     adw-gtk3 # Needed for setting gtk theme in Noctalia
-    noctalia-shell # Noctalia shell
+    # noctalia-shell # Noctalia shell
+    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Niri window manager, config in dotfiles
@@ -138,7 +140,7 @@
     settings = {
       main = {
         font = "FiraCode Nerd Font:size=10";
-        pad = "10x5";
+        pad = "10x10";
         title = "foot";
         app-id = "foot";
       };
@@ -204,7 +206,7 @@
   in {
     xdg.config.files = {
       # Fuzzel configuration
-      "fuzzel/fuzzel.ini".source = dots + "/fuzzel/fuzzel.ini";
+      # "fuzzel/fuzzel.ini".source = dots + "/fuzzel/fuzzel.ini";
 
       # Niri configuration files
       "niri/config.kdl".source = dots + "/niri/config.kdl";
@@ -216,7 +218,7 @@
       "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
 
       # Noctalia configuration files
-      "noctalia/settings.json".source = dots + "/noctalia/settings.json";
+      "noctalia/config.toml".source = dots + "/noctalia/config.toml";
       "noctalia/wallpapers/mountains4k.jpg".source = dots + "/noctalia/wallpapers/mountains4k.jpg";
       "noctalia/wallpapers/mountains.png".source = dots + "/noctalia/wallpapers/mountains.png";
       "noctalia/wallpapers/wallhaven_p88g5j.jpg".source = dots + "/noctalia/wallpapers/wallhaven_p88g5j.jpg";

@@ -281,6 +281,19 @@
     },
     "nixpkgs_2": {
       "locked": {
+        "lastModified": 1781074563,
+        "narHash": "sha256-d34lhgOet4IqYMnCxbIvwFBMOyTV6PT4TyNEOP0/ZhU=",
+        "rev": "9ae611a455b90cf061d8f332b977e387bda8e1ca",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1014179.9ae611a455b9/nixexprs.tar.xz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
         "lastModified": 1736061677,
         "narHash": "sha256-DjkQPnkAfd7eB522PwnkGhOMuT9QVCZspDpJJYyOj60=",
         "owner": "NixOS",
@@ -295,11 +308,29 @@
         "type": "github"
       }
     },
+    "noctalia": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1781513139,
+        "narHash": "sha256-TcydrjcqioN59E/ko6wA2D1lWcOpHqBrEjKtsSuNLjo=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia",
+        "rev": "eb6e177dc5abd4a8e375d7dd43342eecb226cd76",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia",
+        "type": "github"
+      }
+    },
     "raspberry-pi-nix": {
       "inputs": {
         "libcamera-src": "libcamera-src",
         "libpisp-src": "libpisp-src",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_3",
         "rpi-bluez-firmware-src": "rpi-bluez-firmware-src",
         "rpi-firmware-nonfree-src": "rpi-firmware-nonfree-src",
         "rpi-firmware-src": "rpi-firmware-src",
@@ -333,6 +364,7 @@
         "hjem": "hjem",
         "hjem-impure": "hjem-impure",
         "nixpkgs": "nixpkgs",
+        "noctalia": "noctalia",
         "raspberry-pi-nix": "raspberry-pi-nix",
         "ruuvi": "ruuvi",
         "zen-browser": "zen-browser"

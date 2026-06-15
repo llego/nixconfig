@@ -1,0 +1,35 @@
+[backdrop]
+enabled = true
+
+[bar.default]
+end = [ "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "session" ]
+start = [ "workspaces", "active_window" ]
+
+
+[shell]
+niri_overview_type_to_launch_enabled = true
+
+[theme]
+builtin = "Rosé Pine"
+
+    [theme.templates]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "niri" ]
+    community_ids = [ "zen-browser", "fuzzel" ]
+
+[wallpaper]
+directory = "/home/llego/nixconfig/modules/core/dots/noctalia/wallpapers"
+transition = [ "wipe" ]
+transition_on_startup = true
+
+[widget.battery]
+capsule = true
+display_mode = "graphic"
+
+[widget.brightness]
+capsule = true
+
+[widget.network]
+show_label = false
+
+[widget.volume]
+capsule = true

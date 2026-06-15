@@ -41,6 +41,10 @@
       url = "github:filiparag/hetzner_ddns";
       flake = false;
     };
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+      # inputs.nixpkgs.follows = "nixpkgs";
+    };
     christiansandberg-website = {
       url = "git+ssh://git@github.com/llego/christiansandberg.fi.git";
       flake = false;

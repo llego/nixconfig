@@ -119,13 +119,13 @@
       accept-flake-config = true;
       trusted-users = ["root" "${username}" "@wheel"];
       # Add binary cache
-      substituters = [
-        "https://cache.nixos.org"
+      extra-substituters = [
         "https://nix-community.cachix.org"
+        "https://noctalia.cachix.org"
       ];
-      trusted-substituters = ["https://nix-community.cachix.org"];
-      trusted-public-keys = [
+      extra-trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       ];
     };
     # Required by nixd (LSP) when using flakes
