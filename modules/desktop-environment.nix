@@ -230,11 +230,8 @@
     xdg.data.files = {
       "applications/ssh-christiansandberg.desktop".source = dots + "/applications/ssh-christiansandberg.desktop";
       "applications/ssh-crisuflix.desktop".source = dots + "/applications/ssh-crisuflix.desktop";
-      "applications/ssh-nixvm.desktop".source = dots + "/applications/ssh-nixvm.desktop";
       "applications/ssh-rpi3.desktop".source = dots + "/applications/ssh-rpi3.desktop";
-      "applications/ssh-rpi4.desktop".source = dots + "/applications/ssh-rpi4.desktop";
       "applications/ssh-rpi5.desktop".source = dots + "/applications/ssh-rpi5.desktop";
-      "applications/ssh-rpizero.desktop".source = dots + "/applications/ssh-rpizero.desktop";
       "applications/ssh-rpizero2.desktop".source = dots + "/applications/ssh-rpizero2.desktop";
     };
   };
