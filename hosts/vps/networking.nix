@@ -365,7 +365,14 @@ in {
       dns = {
         magic_dns = true;
         base_domain = "tailnet.cri.su";
-        nameservers.global = ["9.9.9.9"];
+
+        nameservers = {
+          global = ["9.9.9.9"];
+          split = {
+            "home." = ["192.168.1.1"];
+            "iot."  = ["192.168.3.1"];
+          };
+        };
       };
       prefixes = {
         v4 = "100.64.0.0/10";
