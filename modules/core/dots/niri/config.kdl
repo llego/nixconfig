@@ -73,7 +73,6 @@ layer-rule {
     place-within-backdrop true
 }
 
-spawn-at-startup "systemctl" "--user" "restart" "swayidle.service"
 spawn-at-startup "noctalia"
 
 
