@@ -1,7 +1,0 @@
-[Desktop Entry]
-Exec=foot ssh llego@rpi4.home
-Icon=utilities-terminal
-Name=rpi4.home
-Terminal=false
-Type=Application
-Version=1.5

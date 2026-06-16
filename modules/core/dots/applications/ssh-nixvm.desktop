@@ -1,7 +1,0 @@
-[Desktop Entry]
-Exec=foot ssh llego@nixvm.iot
-Icon=utilities-terminal
-Name=nixvm.iot
-Terminal=false
-Type=Application
-Version=1.5

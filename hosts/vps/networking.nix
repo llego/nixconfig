@@ -2,7 +2,6 @@
 # Provides reverse proxy with Redis for traefik-kop integration
 {
   config,
-  pkgs,
   inputs,
   ...
 }: let
@@ -76,6 +75,10 @@ in {
     };
   };
 
+  systemd.services.traefik.serviceConfig.Environment = [
+    "LEGO_DISABLE_CNAME_SUPPORT=true"
+  ];
+
   # Traefik reverse proxy
   services.traefik = {
     enable = true;
@@ -84,13 +87,9 @@ in {
     # Also disable lego CNAME following to prevent zone-detection errors with apex domains
     environmentFiles = [
       config.age.secrets.desec-dns-token.path
-      (pkgs.writeText "traefik-lego-env" ''
-        LEGO_DISABLE_CNAME_SUPPORT=true
-        HETZNER_API_TOKEN_FILE=${config.age.secrets.hetzner-dns-token.path}
-        HETZNER_API_KEY_FILE=${config.age.secrets.hetzner-dns-token.path}
-      '')
+      config.age.secrets.hetzner-dns-token.path
+      config.age.secrets.hetzner-dns-token.path
     ];
-
 
     staticConfigOptions = {
       api = {
@@ -201,7 +200,7 @@ in {
           };
           # Hetzner-hosted domains
           website = {
-            rule = "Host(`christiansandberg.fi`) || Host(`www.christiansandberg.fi`) || Host(`sandbergs.fi`) || Host(`www.sandbergs.fi`) || Host(`crisusandberg.fi`) || Host(`csandberg.fi`)";
+            rule = "Host(`christiansandberg.fi`) || Host(`sandbergs.fi`) || Host(`crisusandberg.fi`) || Host(`csandberg.fi`)";
             entryPoints = ["websecure"];
             service = "website";
             tls.certResolver = "hetzner";
@@ -261,6 +260,12 @@ in {
             tls.certResolver = "hetzner";
             # No Authelia — WOPI requests from OpenCloud must pass through unauthenticated
           };
+          headscale = {
+            rule = "Host(`headscale.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "headscale";
+            tls.certResolver = "hetzner";
+          };
         };
 
         services = {
@@ -318,6 +323,14 @@ in {
             # Collabora uses WebSockets for real-time editing
             passHostHeader = true;
           };
+          headscale.loadBalancer = {
+            servers = [
+              {
+                url = "http://${net.hosts.loopback}:${toString net.vps.headscale.port}";
+              }
+            ];
+            passHostHeader = true;
+          };
         };
 
         middlewares = {
@@ -327,6 +340,37 @@ in {
             trustForwardHeader = true;
           };
         };
+      };
+    };
+  };
+
+  services.headscale = {
+    enable = true;
+    address = "0.0.0.0";
+    port = net.vps.headscale.port;
+
+    settings = {
+      server_url = "https://headscale.cri.su";
+
+      # dns_config = {
+      #   override_local_dns = true;
+      #   base_domain = "${net.domain}";
+      #   magic_dns = true;
+      #   domains = ["tailscale.${net.domain}"];
+      #   nameservers = [
+      #     "9.9.9.9" # no cloudflare, nice
+      #   ];
+      # };
+
+      dns = {
+        magic_dns = true;
+        base_domain = "tailnet.cri.su";
+        nameservers.global = ["9.9.9.9"];
+      };
+      prefixes = {
+        v4 = "100.64.0.0/10";
+        v6 = "fd7a:115c:a1e0::/48";
+        allocation = "sequential";
       };
     };
   };

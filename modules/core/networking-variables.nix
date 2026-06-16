@@ -2,17 +2,23 @@
 # Centralizes IP addresses and ports for the homelab infrastructure
 {lib, ...}: {
   options.networkVars = {
+    domain = lib.mkOption {
+      type = lib.types.str;
+      default = "cri.su";
+      description = "Domain for all services";
+    };
+
     # IP Addresses by host
     hosts = {
       vps = lib.mkOption {
         type = lib.types.str;
-        default = "100.78.37.16";
+        default = "100.64.0.2";
         description = "VPS IP address";
       };
 
       crisuflix = lib.mkOption {
         type = lib.types.str;
-        default = "100.123.67.48";
+        default = "100.64.0.3";
         description = "Tailscale IP address for crisuflix (traefik-kop source)";
       };
 
@@ -53,6 +59,12 @@
         type = lib.types.port;
         default = 8082;
         description = "Static website server port";
+      };
+
+      headscale.port = lib.mkOption {
+        type = lib.types.port;
+        default = 8085;
+        description = "Headscale/tailscale service port";
       };
     };
 
@@ -144,7 +156,7 @@
     beszel = {
       hubUrl = lib.mkOption {
         type = lib.types.str;
-        default = "http://100.123.67.48:8090";
+        default = "http://100.64.0.3:8090";
         description = "Beszel hub URL for agents to connect to";
       };
     };

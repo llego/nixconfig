@@ -1,6 +1,5 @@
 {
   lib,
-  pkgs,
   username,
   hostname,
   inputs,

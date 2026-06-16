@@ -1,7 +1,7 @@
 [Desktop Entry]
-Exec=foot ssh llego@rpi5.home
+Exec=foot ssh llego@rpi5.tailnet.cri.su
 Icon=utilities-terminal
-Name=rpi5.home
+Name=rpi5
 Terminal=false
 Type=Application
 Version=1.5
