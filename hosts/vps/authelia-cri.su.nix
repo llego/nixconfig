@@ -152,6 +152,9 @@ in {
           opencloud = {
             id_token = ["email" "preferred_username" "name" "groups"];
           };
+          headscale = {
+            id_token = ["email" "groups"];
+          };
         };
 
         # Custom scopes
@@ -364,6 +367,28 @@ in {
             access_token_signed_response_alg = "none";
             userinfo_signed_response_alg = "none";
             token_endpoint_auth_method = "client_secret_post";
+          }
+
+          # Headscale / Headplane (shared client for perfect subject matching)
+          {
+            client_id = "headscale";
+            client_name = "Headscale";
+            client_secret = "$pbkdf2-sha512$310000$NEYIgTDGeG8NofQ.BwDAOA$qLdqcS4hHzNDY6QT8u7Ombg1iZmF/ZXYvP2BDa3LCOq6zCHpgElWClYJMLTql88pMlGPBoya0mvfqI3qzJU05g";
+            public = false;
+            authorization_policy = "two_factor";
+            claims_policy = "headscale";
+            require_pkce = true;
+            pkce_challenge_method = "S256";
+            redirect_uris = [
+              "https://headscale.cri.su/oidc/callback"
+              "https://headplane.cri.su/admin/oidc/callback"
+            ];
+            scopes = ["openid" "profile" "email" "groups"];
+            response_types = ["code"];
+            grant_types = ["authorization_code"];
+            access_token_signed_response_alg = "none";
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "client_secret_basic";
           }
         ];
       };

@@ -53,4 +53,9 @@ in {
 
   # Homepage dashboard - Gotify widget client token
   "secrets/homepage-gotify-key.age".publicKeys = [crisuflix userKey];
+
+  # Headplane cookie secret and Headscale API key (VPS)
+  "secrets/headplane-cookie-secret.age".publicKeys = [vps userKey];
+  "secrets/headscale-api-key.age".publicKeys = [vps userKey];
+  "secrets/headscale-oidc-client-secret.age".publicKeys = [vps userKey];
 }

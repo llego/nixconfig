@@ -177,6 +177,24 @@
           owner = "root";
           group = "root";
         };
+        headplane-cookie-secret = {
+          file = ./../../secrets/headplane-cookie-secret.age;
+          mode = "0400";
+          owner = "headscale";
+          group = "headscale";
+        };
+        headscale-api-key = {
+          file = ./../../secrets/headscale-api-key.age;
+          mode = "0400";
+          owner = "headscale";
+          group = "headscale";
+        };
+        headscale-oidc-client-secret = {
+          file = ./../../secrets/headscale-oidc-client-secret.age;
+          mode = "0400";
+          owner = "headscale";
+          group = "headscale";
+        };
       }
       else {}
     );

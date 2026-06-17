@@ -66,6 +66,12 @@
         default = 8085;
         description = "Headscale/tailscale service port";
       };
+
+      headplane.port = lib.mkOption {
+        type = lib.types.port;
+        default = 8086;
+        description = "Headplane service port";
+      };
     };
 
     # Crisuflix Service Ports

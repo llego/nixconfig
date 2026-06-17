@@ -213,6 +213,12 @@ in {
             service = "headscale";
             tls.certResolver = "hetzner";
           };
+          headplane = {
+            rule = "Host(`headplane.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "headplane";
+            tls.certResolver = "hetzner";
+          };
         };
 
         services = {
@@ -278,6 +284,11 @@ in {
             ];
             passHostHeader = true;
           };
+          headplane.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.loopback}:${toString net.vps.headplane.port}";
+            }
+          ];
         };
 
         middlewares = {

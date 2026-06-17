@@ -57,6 +57,16 @@ in {
         v6 = "fd7a:115c:a1e0::/48";
         allocation = "sequential";
       };
+      oidc = {
+        issuer = "https://auth.cri.su";
+        client_id = "headscale";
+        client_secret_path = config.age.secrets.headscale-oidc-client-secret.path;
+        scope = ["openid" "profile" "email" "groups"];
+        pkce = {
+          enabled = true;
+          method = "S256";
+        };
+      };
     };
   };
 }
