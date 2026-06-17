@@ -15,6 +15,7 @@ in {
     jq
     wget
     curl
+    dig
     helix # text editor
     yazi # file manager
     ueberzugpp # image preview for yazi on wayland
@@ -28,8 +29,6 @@ in {
     # Store oh-my-posh cache in /tmp to prevent stale cache accumulation
     OMP_CACHE_DIR = "/tmp";
   };
-
-
 
   users.users.${username}.shell = pkgs.zsh;
 
@@ -47,7 +46,6 @@ in {
       ll = "lsd -al";
       ltree = "lsd -a --tree";
       yz = "yazi";
-
     };
 
     # History settings

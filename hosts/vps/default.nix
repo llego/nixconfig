@@ -1,6 +1,5 @@
 {
   modulesPath,
-  username,
   inputs,
   config,
   pkgs,
@@ -17,7 +16,9 @@ in {
   imports = [
     inputs.disko.nixosModules.disko
     ./disk-config.nix
-    ./networking.nix
+    ./ddns.nix
+    ./reverse-proxy.nix
+    ./headscale.nix
     ./authelia-cri.su.nix
     ./../../modules/core
     ./../../modules/basic-cli.nix
