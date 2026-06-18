@@ -54,6 +54,9 @@ in {
   # Homepage dashboard - Gotify widget client token
   "secrets/homepage-gotify-key.age".publicKeys = [crisuflix userKey];
 
+  # HA long-lived token for rpi5 kiosk (bypass login screen)
+  "secrets/ha-kiosk-token.age".publicKeys = [rpi5 userKey];
+
   # Headplane cookie secret and Headscale API key (VPS)
   "secrets/headplane-cookie-secret.age".publicKeys = [vps userKey];
   "secrets/headscale-api-key.age".publicKeys = [vps userKey];
