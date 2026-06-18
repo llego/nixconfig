@@ -168,7 +168,7 @@
     beszel = {
       hubUrl = lib.mkOption {
         type = lib.types.str;
-        default = "http://100.64.0.3:8090";
+        default = "http://crisuflix.tailnet.cri.su:8090";
         description = "Beszel hub URL for agents to connect to";
       };
     };

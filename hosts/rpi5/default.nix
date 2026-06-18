@@ -3,7 +3,6 @@
   username,
   pkgs,
   lib,
-  config,
   ...
 }: {
   system.stateVersion = "24.11";
@@ -37,29 +36,10 @@
     enable = true;
   };
 
-  age.secrets.ha-kiosk-token = {
-    file = ./../../secrets/ha-kiosk-token.age;
-    owner = username;
-  };
-
-  # Wrapper script reads the HA long-lived token at runtime and passes it as
-  # ?auth=<token> so the login screen is bypassed without storing secrets in the Nix store.
-  services.cage = let
-    kiosk = pkgs.writeShellScriptBin "kiosk-launch" ''
-      TOKEN=$(cat ${config.age.secrets.ha-kiosk-token.path})
-      exec ${pkgs.chromium}/bin/chromium \
-        --app="http://crisuflix.tailnet.cri.su:8123/lovelace-wallmount/default_view?auth=$TOKEN" \
-        --user-data-dir=/home/${username}/kiosk-profile \
-        --disk-cache-dir=/tmp/chromium-cache \
-        --kiosk --noerrdialogs --disable-infobars --no-first-run \
-        --ozone-platform=wayland \
-        --enable-features=OverlayScrollbar \
-        --start-maximized
-    '';
-  in {
+  services.cage = {
     enable = true;
     user = username;
-    program = "${kiosk}/bin/kiosk-launch";
+    program = "${pkgs.chromium}/bin/chromium --app=http://crisuflix.tailnet.cri.su:8123/lovelace-wallmount/default_view --user-data-dir=/home/${username}/kiosk-profile --disk-cache-dir=/tmp/chromium-cache --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized";
   };
 
   systemd.user.services.scalekiosk = {
