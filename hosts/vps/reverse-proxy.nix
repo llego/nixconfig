@@ -219,6 +219,13 @@ in {
             service = "headplane";
             tls.certResolver = "hetzner";
           };
+          traefik-dashboard = {
+            rule = "Host(`traefik.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "traefik-api";
+            tls.certResolver = "hetzner";
+            middlewares = ["authelia-cri-su"];
+          };
         };
 
         services = {
@@ -287,6 +294,11 @@ in {
           headplane.loadBalancer.servers = [
             {
               url = "http://${net.hosts.loopback}:${toString net.vps.headplane.port}";
+            }
+          ];
+          traefik-api.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.loopback}:${toString net.vps.traefik.port}";
             }
           ];
         };

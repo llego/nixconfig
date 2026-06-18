@@ -13,7 +13,7 @@
 in {
   system.stateVersion = "24.05";
 
-  nixpkgs.overlays = [ inputs.headplane.overlays.default ];
+  nixpkgs.overlays = [inputs.headplane.overlays.default];
 
   imports = [
     inputs.disko.nixosModules.disko
@@ -21,7 +21,6 @@ in {
     ./ddns.nix
     ./reverse-proxy.nix
     ./headscale.nix
-    ./headplane.nix
     ./authelia-cri.su.nix
     ./../../modules/core
     ./../../modules/basic-cli.nix

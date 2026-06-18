@@ -123,22 +123,30 @@ in {
             };
           }
           {
+            headplane = {
+              href = "https://headplane.cri.su/admin/";
+              icon = "headscale";
+              description = "cri.su";
+              siteMonitor = "https://headplane.cri.su/admin/login";
+            };
+          }
+          {
             unifi = {
               href = "https://unifi";
               icon = "unifi";
+            };
+          }
+          {
+            traefik = {
+              href = "https://traefik.cri.su";
+              icon = "traefik";
+              description = "cri.su - vps";
             };
           }
         ];
       }
       {
         Monitoring = [
-          {
-            traefik = {
-              href = "http://vps.tail5d4d4.ts.net:8080/dashboard/";
-              icon = "traefik";
-              description = "vps tailscale address";
-            };
-          }
           {
             uptime-kuma = {
               href = "https://uptime.cri.su";

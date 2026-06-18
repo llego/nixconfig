@@ -9,41 +9,9 @@ in {
     settings = {
       server_url = "https://headscale.cri.su";
 
-      # dns_config = {
-      #   override_local_dns = true;
-      #   base_domain = "${net.domain}";
-      #   magic_dns = true;
-      #   domains = ["tailscale.${net.domain}"];
-      #   nameservers = [
-      #     "9.9.9.9" # no cloudflare, nice
-      #   ];
-      # };
-
       dns = {
         magic_dns = true;
         base_domain = "tailnet.cri.su";
-        extra_records = [
-          {
-            name = "laptop.tailnet.cri.su";
-            type = "A";
-            value = "100.64.0.1";
-          }
-          {
-            name = "vps.tailnet.cri.su";
-            type = "A";
-            value = "100.64.0.2";
-          }
-          {
-            name = "crisuflix.tailnet.cri.su";
-            type = "A";
-            value = "100.64.0.3";
-          }
-          {
-            name = "rpi5.tailnet.cri.su";
-            type = "A";
-            value = "100.64.0.4";
-          }
-        ];
         nameservers = {
           global = ["9.9.9.9"];
           split = {
@@ -66,6 +34,33 @@ in {
           enabled = true;
           method = "S256";
         };
+      };
+    };
+  };
+
+  services.headplane = {
+    enable = true;
+    settings = {
+      server = {
+        host = "127.0.0.1";
+        port = net.vps.headplane.port;
+        base_url = "https://headplane.cri.su";
+        cookie_secure = true;
+        cookie_secret_path = config.age.secrets.headplane-cookie-secret.path;
+      };
+      headscale = {
+        url = "https://headscale.cri.su";
+      };
+      oidc = {
+        issuer = "https://auth.cri.su";
+        client_id = "headscale";
+        client_secret_path = config.age.secrets.headscale-oidc-client-secret.path;
+        headscale_api_key_path = config.age.secrets.headscale-api-key.path;
+        use_pkce = true;
+        token_endpoint_auth_method = "client_secret_basic";
+      };
+      integration.agent = {
+        enabled = false;
       };
     };
   };

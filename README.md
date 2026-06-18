@@ -8,45 +8,14 @@ There are docker containers running on crisuflix. Docker compose stacks are in /
 
 | Host | Purpose | Key Features |
 |------|---------|--------------|
-| **laptop** | Main development machine | Niri WM, Noctalia, Intel GPU, NFS mounts, Tailscale |
+| **laptop** | Main development machine | Niri WM, Noctalia, Intel GPU, NFS mounts, Headscale |
 | **vps** (hostname: christiansandberg) | Remote server | Gotify, Uptime Kuma, fail2ban, Authelia, static website |
 | **crisuflix** | Home NAS/media server | ZFS, Docker, Home Assistant, Music Assistant, ESPHome, NFS |
 | **rpi5** | Home Assistant kiosk | Chromium kiosk, nightly reboot |
 
-## Structure
-
-```
-├── flake.nix              # Main flake (nixosConfigurations only)
-├── flake.lock             # Lock file
-├── hosts/                 # Per-host configurations
-│   ├── laptop/
-│   ├── vps/               # christiansandberg.fi server
-│   ├── crisuflix/
-│   └── rpi5/
-├── modules/               # Reusable NixOS modules
-│   ├── core/              # Core system components
-│   │   ├── dots/          # Dotfiles source (helix, yazi, niri, opencode, etc.)
-│   │   ├── default.nix    # Main core module (git, nix, locale, SSH, users)
-│   │   ├── basic-cli.nix  # CLI tools + configs: helix, yazi, oh-my-posh, zsh, htop
-│   │   ├── hjem.nix       # Hjem infrastructure + beets config
-│   │   ├── agenix.nix     # Secrets management integration
-│   │   └── networking-variables.nix # Network configuration variables
-│   ├── apps.nix           # Apps + configs: Zen, Thunderbird, LibreOffice, OpenCode
-│   ├── desktop-environment.nix  # Desktop + configs: Niri, Noctalia, GTK, SSH shortcuts
-│   ├── home-automation.nix # HA, Music Assistant, ESPHome, Mosquitto
-│   ├── restic-backup.nix  # Restic cloud backup (Hetzner, legacy Storj)
-│   ├── downloaders.nix    # yle-dl, svtplay-dl, album-downloader
-│   ├── printer.nix        # CUPS, Avahi printing support
-│   └── wifi-networks.nix  # NetworkManager wireless profiles
-├── pkgs/                  # Custom packages
-│   ├── album-downloader/  # Bandcamp downloader wrapper
-│   └── RuuviCollector/    # BLE sensor reader for RuuviTags
-└── secrets/               # agenix-encrypted secrets
-```
-
 ## Build & Deployment
 
-Always use crisuflix as the remote build host. Add `--build-host llego@crisuflix.home` to all commands except when running on crisuflix itself.
+Always use crisuflix as the remote build host. Add `--build-host llego@crisuflix` to all commands except when running on crisuflix itself.
 
 Run `hostname` before `nixos-rebuild`. Most often you are on crisuflix.
 
@@ -60,17 +29,17 @@ git add .
 ```bash
 # VPS (christiansandberg.fi)
 nixos-rebuild switch --flake .#vps \
-  --build-host llego@crisuflix.home \
+  --build-host llego@crisuflix \
   --target-host "llego@christiansandberg.fi" --sudo
 
 # NAS (crisuflix.home)
 nixos-rebuild switch --flake .#crisuflix \
-  --build-host llego@crisuflix.home \
+  --build-host llego@crisufli \
   --target-host "llego@crisuflix.home" --sudo
 
 # Raspberry Pi 5 (use boot for remote safety)
 nixos-rebuild boot --flake .#rpi5 \
-  --build-host llego@crisuflix.home \
+  --build-host llego@crisuflix \
   --target-host llego@rpi5.home --sudo
 ```
 
@@ -135,22 +104,22 @@ Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) using a distri
 
 ### Infrastructure Architecture (VPS ↔ Crisuflix)
 
-Both servers form a unified infrastructure connected via Tailscale VPN:
+Both servers form a unified infrastructure connected via Headscale VPN:
 
-**Tailscale Connectivity**
+**Headscale Connectivity**
 - VPS (christiansandberg.fi): `100.78.37.16`
 - Crisuflix (NAS): `100.123.67.48`
-- All inter-server traffic routes through the secure Tailscale mesh
+- All inter-server traffic routes through the secure Headscale mesh
 
 **Multi-Host Reverse Proxy (traefik-kop)**
-- VPS runs Traefik (ports 80/443) + Redis (port 6379, Tailscale-only)
+- VPS runs Traefik (ports 80/443) + Redis (port 6379, Headscale-only)
 - Crisuflix Docker containers use traefik-kop agent to publish routes
-- Flow: Container labels → Redis (via Tailscale) → Traefik → Public access
+- Flow: Container labels → Redis (via Headscale) → Traefik → Public access
 
 **Authelia (Centralized Auth)**
 - Runs on VPS only; protects services on both servers
 - Forward-auth middleware in Traefik intercepts all protected routes
-- Traffic flow: User → VPS Traefik → Authelia check → Service (via Tailscale)
+- Traffic flow: User → VPS Traefik → Authelia check → Service (via Headscale)
 
 Expose crisuflix containers with labels:
 ```yaml
@@ -159,19 +128,6 @@ labels:
   - "traefik.enable=true"
   - "traefik.http.routers.myapp.rule=Host(`myapp.christiansandberg.fi`)"
 ```
-
-## Flake Inputs
-
-- `nixpkgs` - Unstable channel
-- `raspberry-pi-nix` - RPi5 hardware support
-- `noctalia` - Wayland shell
-- `zen-browser` - Browser package
-- `disko` - Declarative disk partitioning
-- `agenix` - Secrets management
-- `hjem` - Dotfiles manager
-- `hjem-impure` - Impure dotfiles support
-- `christiansandberg-website` - Static website for VPS
-- `album-downloader`, `ruuvi` - Local custom packages
 
 ## Custom Packages
 

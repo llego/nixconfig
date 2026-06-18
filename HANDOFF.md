@@ -1,10 +1,12 @@
 # HANDOFF
 
-Last updated: 2026-06-17 18:25 UTC
+Last updated: 2026-06-17 21:30 UTC
 
 ## Current State
 
-Headscale OIDC + Headplane deployed on VPS. All four hosts running. Key services: OpenCloud 7.0.0 + Collabora (OIDC via Authelia), Homepage dashboard (NixOS service), restic backups (Hetzner), traefik-kop routing, Headscale OIDC via Authelia, Headplane Web UI.
+Headscale OIDC + Headplane deployed on VPS. All four hosts running. Key services: OpenCloud 7.0.0 + Collabora (OIDC via Authelia), Homepage dashboard (NixOS service), restic backups (Hetzner), traefik-kop routing, Headscale OIDC via Authelia, Headplane Web UI. Traefik dashboard exposed at `https://traefik.cri.su` with Authelia protection.
+
+DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner across both traefik instances.
 
 DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner across both traefik instances.
 
@@ -25,11 +27,12 @@ Headscale now authenticates via Authelia OIDC (shared client `headscale` with He
 ### Headplane
 
 - URL: `https://headplane.cri.su/admin/login`
-- Version: 0.7.0-beta.4 (from nixpkgs 26.05)
+- Version: 0.7.0-beta.4 (from headplane flake input, via overlay)
 - Auth: OIDC via Authelia (shared client with Headscale for perfect subject matching)
 - Agent: disabled (no pre-auth key needed)
 - Config strict mode: disabled (NixOS-generated config is read-only)
 - Runs as `headscale` user on port 8086
+- nixpkgs 26.05 has `services.headplane` module + `pkgs.headplane` 0.6.2 — keeping flake overlay for 0.7.0-beta.4 (OIDC fixes in 0.7.0 are needed)
 
 ### Hosts
 
@@ -111,6 +114,24 @@ LUKS2, `allowDiscards`, TPM2 disabled — passphrase-only unlock.
 - **Two routing tiers.** Docker containers → traefik-kop → Redis → VPS Traefik. Native NixOS services → static routes in `hosts/vps/networking.nix`.
 - **Restic on Hetzner.** Secrets: `hetzner-s3-credentials.age`, `restic-hetzner-password.age`.
 - **Session memory via `HANDOFF.md`.** Single file at project root.
+- **Fully declarative tailscale.** Prefer `authKeyFile` + `extraUpFlags` over manual `tailscale up`.
+
+## Pending: Declarative Tailscale + Subnet Routing
+
+**Goal:** All tailscale nodes should be fully declarative using headscale pre-auth keys, with crisuflix as subnet router for both LANs.
+
+**Why it matters:** The NixOS `services.tailscale.extraUpFlags` only works when `authKeyFile` is set. Currently all nodes use manual `tailscale up` — flags are lost on rebuilds.
+
+**What needs to happen:**
+1. Generate reusable pre-auth keys per host via `sudo headscale preauthkeys --user llego --reusable create`
+2. Store each key as an agenix secret (owned by root on the target host)
+3. Per-host tailscale config:
+   - **crisuflix**: `authKeyFile` + `extraUpFlags = [ "--advertise-routes=192.168.1.0/24,192.168.3.0/24" ]`
+   - **laptop/vps/rpi5**: `authKeyFile` + `extraUpFlags = [ "--accept-routes" ]`
+4. On first deploy with authKeyFile, wipe `/var/lib/tailscale/tailscaled.state` on each host to trigger re-auth via the autoconnect service
+5. Approve subnet routes: `sudo headscale nodes approve-routes --identifier <crisuflix-node-id>`
+
+**Current state of this work:** Config edits made (`modules/core/default.nix` has `--accept-routes`, `hosts/crisuflix/default.nix` has `--advertise-routes`) but flags are silently ignored because no `authKeyFile` is set. No pre-auth keys generated yet.
 
 ## Top 3 Next Actions
 
@@ -118,7 +139,7 @@ LUKS2, `allowDiscards`, TPM2 disabled — passphrase-only unlock.
 
 2. **Remove Storj backups** — overdue. Remove Storj services from `modules/restic-backup.nix`, remove `restic-storj-password.age` and `storj-s3-credentials.age` from `secrets/`, delete Storj buckets, rebuild crisuflix.
 
-3. **Update traefik-kop container labels** — containers on crisuflix with `traefik.instance=public` still publish `certResolver=myresolver` to VPS Traefik via Redis. Currently works via the `myresolver` alias but should be cleaned up to use `certResolver=hetzner` explicitly.
+3. **Declarative tailscale + subnet routing** — See "Pending" section above. Generate pre-auth keys, create agenix secrets, set `authKeyFile` per host, wipe tailscale state, approve routes.
 
 ## Blockers
 

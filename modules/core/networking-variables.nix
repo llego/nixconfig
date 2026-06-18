@@ -12,14 +12,14 @@
     hosts = {
       vps = lib.mkOption {
         type = lib.types.str;
-        default = "100.64.0.2";
-        description = "VPS IP address";
+        default = "vps.tailnet.cri.su";
+        description = "VPS hostname (resolved via Headscale MagicDNS)";
       };
 
       crisuflix = lib.mkOption {
         type = lib.types.str;
-        default = "100.64.0.3";
-        description = "Tailscale IP address for crisuflix (traefik-kop source)";
+        default = "crisuflix.tailnet.cri.su";
+        description = "Crisuflix hostname (resolved via Headscale MagicDNS)";
       };
 
       loopback = lib.mkOption {
@@ -71,6 +71,12 @@
         type = lib.types.port;
         default = 8086;
         description = "Headplane service port";
+      };
+
+      traefik.port = lib.mkOption {
+        type = lib.types.port;
+        default = 8080;
+        description = "Traefik API/dashboard port";
       };
     };
 
