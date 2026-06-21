@@ -8,10 +8,15 @@ in {
 
     settings = {
       server_url = "https://headscale.cri.su";
+      listen_addr = "127.0.0.1:${toString net.vps.headscale.port}";
+      trusted_proxies = ["127.0.0.1/32" "::1/128"];
+      tls_cert_path = null;
+      tls_key_path = null;
 
       dns = {
         magic_dns = true;
         base_domain = "tailnet.cri.su";
+        search_domains = ["tailnet.cri.su"];
         nameservers = {
           global = ["9.9.9.9"];
           split = {
