@@ -12,6 +12,7 @@
     usbutils
     atool
     opencode
+    claude-code
 
     # Nix stuff
     nixd
