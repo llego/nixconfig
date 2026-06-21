@@ -1,7 +1,6 @@
 {
   pkgs,
   inputs,
-  username,
   ...
 }: {
   # System packages
@@ -24,6 +23,7 @@
     vlc
     # rpi-imager
     calibre
+    signal-desktop
 
     # Libre Office
     libreoffice

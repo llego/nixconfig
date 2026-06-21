@@ -3,13 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
     album-downloader = {
       url = "path:./pkgs/album-downloader";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    adlibris-downloader = {
-      url = "path:./pkgs/adlibris-downloader";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ruuvi = {
@@ -44,6 +41,10 @@
     noctalia = {
       url = "github:noctalia-dev/noctalia";
       # inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     christiansandberg-website = {
       url = "git+ssh://git@github.com/llego/christiansandberg.fi.git";
@@ -123,6 +124,7 @@
           inherit inputs;
           inherit username;
           hostname = "crisuflix";
+          pkgs-unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; };
         };
       };
     };

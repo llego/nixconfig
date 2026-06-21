@@ -19,6 +19,7 @@ in {
   "secrets/supermemory-api-key.age".publicKeys = [laptop crisuflix userKey];
 
   # crisuflix-specific secrets
+  "secrets/hermes-env.age".publicKeys = [crisuflix userKey];
   "secrets/nut-password.age".publicKeys = [crisuflix userKey];
 
   # Hetzner DNS API token (VPS Traefik DNS-01 + DDNS)

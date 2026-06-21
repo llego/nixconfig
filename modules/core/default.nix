@@ -69,7 +69,7 @@
   # Tailscale
   services.tailscale = {
     enable = true;
-    extraUpFlags = [ "--accept-routes" ];
+    extraUpFlags = ["--accept-routes"];
   };
 
   # Beszel monitoring agent

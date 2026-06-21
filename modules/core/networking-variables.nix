@@ -141,6 +141,12 @@
         default = 3000;
         description = "Homepage dashboard port";
       };
+
+      signalCli.port = lib.mkOption {
+        type = lib.types.port;
+        default = 8089;
+        description = "signal-cli HTTP daemon port (loopback only, used by hermes-agent Signal adapter)";
+      };
     };
 
     # NFS Ports

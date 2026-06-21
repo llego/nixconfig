@@ -16,6 +16,7 @@ in {
     ./../../modules/core
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
+    ./../../modules/hermes.nix
     ./../../modules/homepage.nix
     ./../../modules/opencloud.nix
     ./../../modules/restic-backup.nix
@@ -36,7 +37,7 @@ in {
 
     # Other apps
     opencode
-    ollama-cpu
+    # ollama-cpu
     atool
     nitch
     usbutils
@@ -168,7 +169,7 @@ in {
       '');
     };
   };
-  users.users.${username}.extraGroups = ["docker" "apps" "llego"];
+  users.users.${username}.extraGroups = ["docker" "apps" "llego" "hermes"];
 
   # Apps user for Docker containers (UID/GID 568)
   users.groups.apps = {

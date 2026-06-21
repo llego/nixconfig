@@ -54,6 +54,13 @@
       # Host-specific secrets
       if hostname == "crisuflix"
       then {
+        hermes-env = {
+          file = ./../../secrets/hermes-env.age;
+          path = "/var/lib/hermes/env";
+          mode = "0400";
+          owner = "hermes";
+          group = "hermes";
+        };
         nut-password = {
           file = ./../../secrets/nut-password.age;
           path = "/run/keys/nut-password";
