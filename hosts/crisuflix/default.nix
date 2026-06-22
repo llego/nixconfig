@@ -16,7 +16,7 @@ in {
     ./../../modules/core
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
-    ./../../modules/hermes.nix
+    ./../../modules/hermes
     ./../../modules/homepage.nix
     ./../../modules/opencloud.nix
     ./../../modules/restic-backup.nix
