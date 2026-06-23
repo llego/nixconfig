@@ -69,7 +69,10 @@
   # Tailscale
   services.tailscale = {
     enable = true;
-    extraUpFlags = ["--accept-routes"];
+    extraUpFlags = [
+      "--login-server=https://headscale.cri.su"
+      "--accept-routes"
+    ];
   };
 
   # Beszel monitoring agent

@@ -18,8 +18,16 @@ in {
         base_domain = "tailnet.cri.su";
         search_domains = ["tailnet.cri.su"];
         nameservers = {
-          global = ["9.9.9.9"];
+          global = [
+            "https://dns.controld.com/wrpogws0c1"
+            "76.76.2.22"
+            # "9.9.9.9"
+          ];
           split = {
+            # Tailscale/Headscale extra_records do not wildcard-match; they only
+            # answer the literal "*.llego.me" name. Send the whole zone to a
+            # tailnet-only dnsmasq responder instead.
+            "llego.me." = ["100.64.0.7"];
             "home." = ["192.168.1.1"];
             "iot." = ["192.168.3.1"];
           };
@@ -41,6 +49,33 @@ in {
         };
       };
     };
+  };
+
+  services.dnsmasq = {
+    enable = true;
+    resolveLocalQueries = false;
+    settings = {
+      # Only listen on the VPS tailnet interface; this DNS responder exists
+      # solely for Headscale split DNS clients.
+      interface = "tailscale0";
+      "bind-interfaces" = true;
+      "no-resolv" = true;
+
+      # Wildcard the entire llego.me zone to crisuflix's tailnet IP so internal
+      # Traefik receives *.llego.me requests over Headscale instead of public DNS.
+      address = ["/llego.me/100.64.0.1"];
+    };
+  };
+
+  systemd.services.dnsmasq = {
+    # tailscale0 must exist before dnsmasq binds to it.
+    after = ["tailscaled.service"];
+    wants = ["tailscaled.service"];
+  };
+
+  networking.firewall.interfaces.tailscale0 = {
+    allowedTCPPorts = [53];
+    allowedUDPPorts = [53];
   };
 
   services.headplane = {

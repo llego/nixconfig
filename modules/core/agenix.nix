@@ -68,6 +68,12 @@
           owner = "root";
           group = "root";
         };
+        tailscale-preauth-crisuflix = {
+          file = ./../../secrets/tailscale-preauth-crisuflix.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
         esphome-dashboard-env = {
           file = ./../../secrets/esphome-dashboard-env.age;
           mode = "0400";
