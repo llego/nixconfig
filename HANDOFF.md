@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-06-23 13:59 UTC
+Last updated: 2026-06-23 15:28 UTC
 
 ## Current State
 
-Headscale OIDC + Headplane deployed on VPS. All four hosts running. Crisuflix, laptop, and VPS Tailscale are now declarative with agenix Headscale preauth keys. Crisuflix registers as node `13` / `100.64.0.1` and advertises approved routes for `192.168.1.0/24` and `192.168.3.0/24`; laptop registers as node `14` / `100.64.0.3` and accepts routes; VPS registers as node `15` / `100.64.0.4` and accepts routes. Headscale split DNS routes `llego.me.` to a VPS `dnsmasq` responder on `100.64.0.4`, which answers `*.llego.me` as crisuflix `100.64.0.1` for tailnet clients. Key services: OpenCloud 7.0.0 + Collabora (OIDC via Authelia), Homepage dashboard (NixOS service), restic backups (Hetzner), traefik-kop routing, Headscale OIDC via Authelia, Headplane Web UI. Traefik dashboard exposed at `https://traefik.cri.su` with Authelia protection.
+Headscale OIDC + Headplane deployed on VPS. All four hosts running. Crisuflix, laptop, VPS, and rpi5 Tailscale are now declarative with agenix Headscale preauth keys. Crisuflix registers as node `13` / `100.64.0.1` and advertises approved routes for `192.168.1.0/24` and `192.168.3.0/24`; laptop registers as node `14` / `100.64.0.3` and accepts routes; VPS registers as node `15` / `100.64.0.4` and accepts routes; rpi5 registers as node `16` / `100.64.0.5` and accepts routes. Headscale split DNS routes `llego.me.` to a VPS `dnsmasq` responder on `100.64.0.4`, which answers `*.llego.me` as crisuflix `100.64.0.1` for tailnet clients. Key services: OpenCloud 7.0.0 + Collabora (OIDC via Authelia), Homepage dashboard (NixOS service), restic backups (Hetzner), traefik-kop routing, Headscale OIDC via Authelia, Headplane Web UI. Traefik dashboard exposed at `https://traefik.cri.su` with Authelia protection.
 
 DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner across both traefik instances.
 
@@ -73,13 +73,13 @@ LUKS2, `allowDiscards`, TPM2 disabled — passphrase-only unlock.
 4. On first deploy with authKeyFile, wipe `/var/lib/tailscale/tailscaled.state` on each host to trigger re-auth via the autoconnect service
 5. Approve subnet routes: `sudo headscale nodes approve-routes --identifier <crisuflix-node-id>`
 
-**Current state of this work:** Crisuflix, laptop, and VPS are complete. `secrets/tailscale-preauth-{crisuflix,laptop,vps}.age` are wired via `authKeyFile`, `--login-server=https://headscale.cri.su` is included in global Tailscale up flags, crisuflix uses `useRoutingFeatures = "both"`, and Headscale node `13` has approved routes for `192.168.1.0/24` and `192.168.3.0/24`. rpi5 still needs its own preauth key if full declarative client enrollment is desired.
+**Current state of this work:** Complete for all NixOS hosts. `secrets/tailscale-preauth-{crisuflix,laptop,vps,rpi5}.age` are wired via `authKeyFile`, `--login-server=https://headscale.cri.su` is included in global Tailscale up flags, crisuflix uses `useRoutingFeatures = "both"`, and Headscale node `13` has approved routes for `192.168.1.0/24` and `192.168.3.0/24`.
 
 ## Top 3 Next Actions
 
 1. **Remove Storj backups** — overdue. Remove Storj services from `modules/restic-backup.nix`, remove `restic-storj-password.age` and `storj-s3-credentials.age` from `secrets/`, delete Storj buckets, rebuild crisuflix.
 
-2. **Declarative tailscale client: rpi5** — Crisuflix, laptop, and VPS are complete. Generate a preauth key for rpi5, create an agenix secret, set `authKeyFile`, then wipe tailscale state.
+2. **Commit rpi5 declarative Tailscale** — rpi5 was re-enrolled as Headscale node `16` / `100.64.0.5`; commit `hosts/rpi5/default.nix`, `modules/core/agenix.nix`, `secrets.nix`, `secrets/tailscale-preauth-rpi5.age`, and this handoff update if desired.
 
 3. **Stabilize tailnet DNS IPs** — The `llego.me.` split DNS responder currently depends on VPS `100.64.0.4` and crisuflix `100.64.0.1`. If VPS is re-enrolled with a new tailnet IP again, update `hosts/vps/headscale.nix`.
 

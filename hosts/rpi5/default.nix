@@ -3,6 +3,7 @@
   username,
   pkgs,
   lib,
+  config,
   ...
 }: {
   system.stateVersion = "24.11";
@@ -14,6 +15,8 @@
     ./../../modules/wifi-networks.nix
     # inputs.ruuvi.nixosModules.default
   ];
+
+  services.tailscale.authKeyFile = config.age.secrets.tailscale-preauth-rpi5.path;
 
   # System packages
   environment.systemPackages = with pkgs; [

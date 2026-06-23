@@ -61,6 +61,15 @@
           group = "root";
         };
       }
+      else if hostname == "rpi5"
+      then {
+        tailscale-preauth-rpi5 = {
+          file = ./../../secrets/tailscale-preauth-rpi5.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+      }
       else if hostname == "crisuflix"
       then {
         hermes-env = {

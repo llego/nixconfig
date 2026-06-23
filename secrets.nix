@@ -26,6 +26,9 @@ in {
   # laptop-specific secrets
   "secrets/tailscale-preauth-laptop.age".publicKeys = [laptop userKey];
 
+  # rpi5-specific secrets
+  "secrets/tailscale-preauth-rpi5.age".publicKeys = [rpi5 userKey];
+
   # Hetzner DNS API token (VPS Traefik DNS-01 + DDNS)
   "secrets/hetzner-dns-token.age".publicKeys = [vps userKey];
 
