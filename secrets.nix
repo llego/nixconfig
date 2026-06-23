@@ -23,6 +23,9 @@ in {
   "secrets/nut-password.age".publicKeys = [crisuflix userKey];
   "secrets/tailscale-preauth-crisuflix.age".publicKeys = [crisuflix userKey];
 
+  # laptop-specific secrets
+  "secrets/tailscale-preauth-laptop.age".publicKeys = [laptop userKey];
+
   # Hetzner DNS API token (VPS Traefik DNS-01 + DDNS)
   "secrets/hetzner-dns-token.age".publicKeys = [vps userKey];
 

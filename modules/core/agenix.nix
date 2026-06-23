@@ -52,7 +52,16 @@
     )
     // (
       # Host-specific secrets
-      if hostname == "crisuflix"
+      if hostname == "laptop"
+      then {
+        tailscale-preauth-laptop = {
+          file = ./../../secrets/tailscale-preauth-laptop.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
+      }
+      else if hostname == "crisuflix"
       then {
         hermes-env = {
           file = ./../../secrets/hermes-env.age;

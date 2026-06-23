@@ -144,7 +144,8 @@
       "rm *": "ask",
       "mv *": "ask",
       "cp *": "ask",
-      "which *": "allow"
+      "which *": "allow",
+      "date *": "allow"
     }
   }
 }

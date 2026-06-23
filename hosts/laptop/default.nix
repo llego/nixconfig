@@ -29,6 +29,8 @@
     LIBVA_DRIVER_NAME = "iHD";
   };
 
+  services.tailscale.authKeyFile = config.age.secrets.tailscale-preauth-laptop.path;
+
   hardware = {
     bluetooth.enable = true;
     bluetooth.powerOnBoot = true;
