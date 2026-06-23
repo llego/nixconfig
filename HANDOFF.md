@@ -8,8 +8,6 @@ Headscale OIDC + Headplane deployed on VPS. All four hosts running. Crisuflix Ta
 
 DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner across both traefik instances.
 
-DNS-01 ACME and DDNS fully migrated away from Cloudflare/EuroDNS to Hetzner across both traefik instances.
-
 IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CUSTOM1), avahi reflector enabled on crisuflix for cross-subnet mDNS. `192.168.1.103` alias removed from br0 — Shelly devices migrated to `192.168.3.103`.
 
 ### Headplane
@@ -21,32 +19,6 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 - Config strict mode: disabled (NixOS-generated config is read-only)
 - Runs as `headscale` user on port 8086
 - nixpkgs 26.05 has `services.headplane` module + `pkgs.headplane` 0.6.2 — keeping flake overlay for 0.7.0-beta.4 (OIDC fixes in 0.7.0 are needed)
-
-### Hosts
-
-- **laptop**: daily driver, Niri WM, Intel GPU, NFS mounts, Tailscale, LUKS passphrase-only
-- **vps** (`christiansandberg.fi`): Traefik + Redis + Authelia + Gotify + Uptime Kuma + static site + Headscale (OIDC) + Headplane
-- **crisuflix**: NAS, ZFS, Docker, restic backups
-  | Service | URL | Notes |
-  |---------|-----|-------|
-  | Homepage | `cri.su` | NixOS `services.homepage-dashboard`, port 3000 |
-  | Home Assistant | `ha.cri.su` | NixOS `virtualisation.oci-containers` |
-  | Music Assistant | `ma.cri.su` | NixOS `services.music-assistant`, port 8095 |
-  | OpenCloud | `cloud.cri.su` | NixOS service, port 9200, OIDC via Authelia |
-  | Collabora | `office.cri.su` | NixOS service, port 9980 |
-  | Glances | `glances.cri.su` | NixOS service, port 61208 |
-  | Jellyfin | `jellyfin.cri.su` | Docker, port 8096 |
-  | Immich | `immich.cri.su` | Docker, port 2283 (bound to Tailscale IP only) |
-- **rpi5**: Chromium kiosk, ### Traefik / ACME / DDNS
-
-**crisuflix (Docker)** — `traefik:v3` in `/mnt/illby/docker/stacks/traefik/`
-- Label constraint: `traefik.instance=internal` — only picks up containers labelled `internal`
-- Containers with `traefik.instance=public` route via traefik-kop → VPS Traefik instead
-
-**VPS (NixOS)** — `services.traefik` in `hosts/vps/networking.nix`
-- Two DNS-01 resolvers: `hetzner` (all Hetzner-hosted zones) + `desec` (`csandberg.consulting`)
-- `myresolver` aliased to `hetzner` for traefik-kop redis router compatibility
-- `rootKey = "traefik"` in Redis provider — matches the key prefix traefik-kop writes under
 
 ### Infrastructure
 

@@ -34,13 +34,12 @@ nixos-rebuild switch --flake .#vps \
 
 # NAS (crisuflix.home)
 nixos-rebuild switch --flake .#crisuflix \
-  --build-host llego@crisufli \
-  --target-host "llego@crisuflix.home" --sudo
-
+  --build-host llego@crisuflix
+  
 # Raspberry Pi 5 (use boot for remote safety)
 nixos-rebuild boot --flake .#rpi5 \
   --build-host llego@crisuflix \
-  --target-host llego@rpi5.home --sudo
+  --target-host llego@rpi5 --sudo
 ```
 
 ## Secrets Management
@@ -77,12 +76,6 @@ Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) using a distri
 - **desktop-environment.nix**: niri, kanshi, GTK, noctalia configs + SSH shortcuts  
 - **apps.nix**: opencode configs
 - **core/hjem.nix**: hjem infrastructure + beets config (docker dependency)
-
-**Covered Applications:**
-- **CLI Tools**: helix, yazi, oh-my-posh, beets
-- **Desktop**: niri, kanshi, GTK bookmarks, noctalia (+ wallpapers)
-- **Development**: opencode (settings, agents)
-- **Shortcuts**: SSH application desktop files
 
 **Benefits:**
 - ✅ Live editing without rebuilds
