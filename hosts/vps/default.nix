@@ -13,6 +13,8 @@
 in {
   system.stateVersion = "24.05";
 
+  services.tailscale.authKeyFile = config.age.secrets.tailscale-preauth-vps.path;
+
   nixpkgs.overlays = [inputs.headplane.overlays.default];
 
   imports = [

@@ -143,6 +143,12 @@
           owner = "root";
           group = "root";
         };
+        tailscale-preauth-vps = {
+          file = ./../../secrets/tailscale-preauth-vps.age;
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
         # deSEC DNS API token for Traefik DNS-01 challenge (csandberg.consulting)
         desec-dns-token = {
           file = ./../../secrets/desec-dns-token.age;

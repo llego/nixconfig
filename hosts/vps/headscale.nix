@@ -27,7 +27,7 @@ in {
             # Tailscale/Headscale extra_records do not wildcard-match; they only
             # answer the literal "*.llego.me" name. Send the whole zone to a
             # tailnet-only dnsmasq responder instead.
-            "llego.me." = ["100.64.0.7"];
+            "llego.me." = ["100.64.0.4"];
             "home." = ["192.168.1.1"];
             "iot." = ["192.168.3.1"];
           };
@@ -68,9 +68,11 @@ in {
   };
 
   systemd.services.dnsmasq = {
-    # tailscale0 must exist before dnsmasq binds to it.
+    # tailscale0 must exist before dnsmasq binds to it; if tailscaled restarts
+    # and recreates the interface, restart dnsmasq so it re-binds cleanly.
     after = ["tailscaled.service"];
     wants = ["tailscaled.service"];
+    partOf = ["tailscaled.service"];
   };
 
   networking.firewall.interfaces.tailscale0 = {
