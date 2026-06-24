@@ -79,6 +79,13 @@
           owner = "hermes";
           group = "hermes";
         };
+        yle-sonarr-import-env = {
+          file = ./../../secrets/yle-sonarr-import-env.age;
+          path = "/run/keys/yle-sonarr-import-env";
+          mode = "0400";
+          owner = "root";
+          group = "root";
+        };
         nut-password = {
           file = ./../../secrets/nut-password.age;
           path = "/run/keys/nut-password";

@@ -20,6 +20,7 @@ in {
 
   # crisuflix-specific secrets
   "secrets/hermes-env.age".publicKeys = [crisuflix userKey];
+  "secrets/yle-sonarr-import-env.age".publicKeys = [crisuflix userKey];
   "secrets/nut-password.age".publicKeys = [crisuflix userKey];
   "secrets/tailscale-preauth-crisuflix.age".publicKeys = [crisuflix userKey];
 

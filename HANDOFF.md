@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-06-24 06:15 UTC
+Last updated: 2026-06-24 12:25 UTC
 
 ## Current State
 
@@ -14,17 +14,20 @@ README consolidated to remove duplicated architecture, dotfile, routing, and net
 
 Podman migration analysis drafted in `docs/podman-migration-analysis.md`. Current direction: migrate only currently running Docker stacks, prefer rootless Podman under `apps` for ordinary app containers, use `/mnt/illby/podman` for migrated Dockge/stacks config, and keep hardware/network-admin/socket/rootful exceptions explicit rather than forcing everything into one rootless socket scope.
 
+Bluey YLE-to-Sonarr importer added as a standalone crisuflix NixOS service/timer: `yle-bluey-sonarr-import.service` / `.timer`. It downloads confirmed mapped YLE Areena episodes to `/mnt/illby/transient/sabnzbd-downloads/yle-dl/bluey-2018`, triggers Sonarr import through `/downloads/yle-dl/bluey-2018`, stores state/mapping/pending suggestions under `/var/lib/yle-sonarr-import/bluey-2018`, sends Gotify notifications, and uses OpenRouter only to write pending mapping suggestions for review. New encrypted secret: `secrets/yle-sonarr-import-env.age`.
+
 ## Architecture Principles
 
 - For a Docker-to-Podman migration on crisuflix, treat rootless Podman as per-user socket scope. Dockge, Traefik discovery, `traefik-kop`, Homepage discovery, Dozzle, and Watchtower must read the same Podman socket as the containers they manage/discover.
 - Prefer rootless `apps` containers for ordinary services; keep Frigate, WireGuard/SABnzbd network namespace, and ZFS administration as rootful exceptions unless redesigned and tested.
 - Do not migrate inactive compose stacks by default; only currently running services are in scope unless explicitly revived.
+- Keep the YLE/Sonarr media importer as a deterministic standalone systemd service. AI may propose pending mappings, but only confirmed mapping entries are allowed to trigger downloads/imports.
 
 ## Top 3 Next Actions
 
-1. Test Dockge against a temporary rootless `apps` Podman socket and temporary `/mnt/illby/podman/stacks` tree.
-2. Test local Traefik, Homepage, and `traefik-kop` discovery against the `apps` Podman socket with one non-critical labeled stack.
-3. Decide whether Watchtower and containerized Glances should be retained, replaced, or retired during the migration.
+1. Deploy the crisuflix rebuild and run `systemctl start yle-bluey-sonarr-import.service` once manually.
+2. Inspect `/var/lib/yle-sonarr-import/bluey-2018/pending-suggestions.json` after the first run and promote correct suggestions to `mapping.json`.
+3. Continue Podman migration testing: Dockge against a temporary rootless `apps` Podman socket and temporary `/mnt/illby/podman/stacks` tree.
 
 ## Blockers
 
