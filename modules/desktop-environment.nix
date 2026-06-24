@@ -117,8 +117,9 @@
 
   fonts = {
     packages = with pkgs; [
-      nerd-fonts.droid-sans-mono
-      nerd-fonts.fira-code
+      # nerd-fonts.droid-sans-mono
+      # nerd-fonts.fira-code
+      maple-mono.NF-unhinted
       noto-fonts
       noto-fonts-color-emoji
       inter
@@ -127,8 +128,9 @@
       enable = true;
       defaultFonts = {
         serif = ["Noto Serif"];
-        sansSerif = ["Inter Display Medium"];
-        monospace = ["FiraCode Nerd Font"];
+        sansSerif = ["Inter"];
+        # monospace = ["FiraCode Nerd Font"];
+        monospace = ["Maple Mono NF"];
         emoji = ["Noto Color Emoji"];
       };
     };
@@ -139,7 +141,7 @@
     theme = "rose-pine";
     settings = {
       main = {
-        font = "FiraCode Nerd Font:size=10";
+        font = "Maple Mono NF:size=11";
         pad = "10x10";
         title = "foot";
         app-id = "foot";
