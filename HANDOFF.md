@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-06-24 05:52 UTC
+Last updated: 2026-06-24 06:15 UTC
 
 ## Current State
 
@@ -12,9 +12,19 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 
 README consolidated to remove duplicated architecture, dotfile, routing, and network guidance while preserving deployment commands and operational notes.
 
+Podman migration analysis drafted in `docs/podman-migration-analysis.md`. Current direction: migrate only currently running Docker stacks, prefer rootless Podman under `apps` for ordinary app containers, use `/mnt/illby/podman` for migrated Dockge/stacks config, and keep hardware/network-admin/socket/rootful exceptions explicit rather than forcing everything into one rootless socket scope.
+
+## Architecture Principles
+
+- For a Docker-to-Podman migration on crisuflix, treat rootless Podman as per-user socket scope. Dockge, Traefik discovery, `traefik-kop`, Homepage discovery, Dozzle, and Watchtower must read the same Podman socket as the containers they manage/discover.
+- Prefer rootless `apps` containers for ordinary services; keep Frigate, WireGuard/SABnzbd network namespace, and ZFS administration as rootful exceptions unless redesigned and tested.
+- Do not migrate inactive compose stacks by default; only currently running services are in scope unless explicitly revived.
+
 ## Top 3 Next Actions
 
-None.
+1. Test Dockge against a temporary rootless `apps` Podman socket and temporary `/mnt/illby/podman/stacks` tree.
+2. Test local Traefik, Homepage, and `traefik-kop` discovery against the `apps` Podman socket with one non-critical labeled stack.
+3. Decide whether Watchtower and containerized Glances should be retained, replaced, or retired during the migration.
 
 ## Blockers
 
