@@ -1,120 +1,62 @@
 # NixOS Configuration
 
-Multi-host NixOS flake managing 4 systems. Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) and symlinked back to this repo via [hjem-impure](https://github.com/Rexcrazy804/hjem-impure).
-
-There are docker containers running on crisuflix. Docker compose stacks are in /mnt/illby/docker/stacks and app configs are in /mnt/illby/docker/data.
+Multi-host NixOS flake for four systems. Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) and symlinked to standard user config paths with [hjem-impure](https://github.com/Rexcrazy804/hjem-impure). Do not use home-manager.
 
 ## Hosts
 
-| Host | Purpose | Key Features |
-|------|---------|--------------|
-| **laptop** | Main development machine | Niri WM, Noctalia, Intel GPU, NFS mounts, Headscale |
-| **vps** (hostname: christiansandberg) | Remote server | Gotify, Uptime Kuma, fail2ban, Authelia, static website |
-| **crisuflix** | Home NAS/media server | ZFS, Docker, Home Assistant, Music Assistant, ESPHome, NFS |
-| **rpi5** | Home Assistant kiosk | Chromium kiosk, nightly reboot |
+| Host | Purpose | Main Roles |
+| --- | --- | --- |
+| `laptop` | Daily driver | Niri, Noctalia, Intel GPU, NFS mounts, Headscale |
+| `vps` / `christiansandberg` | Public edge | Traefik, Authelia, Redis, Gotify, Uptime Kuma, fail2ban, static site |
+| `crisuflix` | NAS and home services | ZFS, Docker, Home Assistant, Music Assistant, ESPHome, NFS, restic |
+| `rpi5` | Home Assistant kiosk | Cage, Chromium kiosk, nightly reboot |
 
-## Build & Deployment
+## Build And Deploy
 
-Always use crisuflix as the remote build host. Add `--build-host llego@crisuflix` to all commands except when running on crisuflix itself.
+Run `hostname` before `nixos-rebuild`. Use `crisuflix` as the remote build host unless the command is already running on `crisuflix`. If new files were added, stage them before rebuilding so the flake can see them.
 
-Run `hostname` before `nixos-rebuild`. Most often you are on crisuflix.
-
-If you have created new files, add them to git before running `nixos-rebuild`:
 ```bash
 git add .
 ```
 
-
-
 ```bash
-# VPS (christiansandberg.fi)
+# VPS
 nixos-rebuild switch --flake .#vps \
   --build-host llego@crisuflix \
-  --target-host "llego@christiansandberg.fi" --sudo
+  --target-host llego@christiansandberg.fi --sudo
 
-# NAS (crisuflix.home)
+# NAS, when not already on crisuflix
 nixos-rebuild switch --flake .#crisuflix \
   --build-host llego@crisuflix
-  
-# Raspberry Pi 5 (use boot for remote safety)
+
+# NAS, when already on crisuflix
+nixos-rebuild switch --flake .#crisuflix
+
+# Raspberry Pi 5, use boot for remote safety
 nixos-rebuild boot --flake .#rpi5 \
   --build-host llego@crisuflix \
   --target-host llego@rpi5 --sudo
 ```
 
-## Secrets Management
+## Architecture
 
-Uses [agenix](https://github.com/ryantm/agenix). Secrets are encrypted to SSH host keys + user keys defined in `secrets.nix`.
+- Host modules are composed narrowly: `laptop` imports core, apps, desktop-environment, printer, wifi-networks, downloaders; `vps` imports core; `crisuflix` imports core, home-automation, restic-backup; `rpi5` imports core and wifi-networks.
+- Dotfile sources live in `modules/core/dots/` and are symlinked to `~/.config/`; edit the source directly and no rebuild is needed. The exception is oh-my-posh, which uses `environment.etc` because VPS does not have the live repo path required by hjem-impure symlinks.
+- Docker compose stacks for `crisuflix` live in `/mnt/illby/docker/stacks`; app data lives in `/mnt/illby/docker/data`; shared app storage lives in `/mnt/illby/appstorage`.
+- Session handoff and durable decisions are tracked in `HANDOFF.md`.
 
-```bash
-agenix -e secrets/initial-password.age    # Edit a secret
-agenix -r                                  # Re-key all secrets
-```
+## Routing And Network
 
-## Key Patterns
+- Docker containers on `crisuflix` self-register through traefik-kop labels, then flow through Redis on `vps` to public Traefik routing.
+- Native NixOS services such as Home Assistant, Glances, OpenCloud, Collabora, and Homepage use static Traefik routes in `hosts/vps/networking.nix`.
+- Authelia on `vps` (`auth.cri.su`) protects both hosts with forward-auth middleware.
+- Headscale split DNS routes `llego.me.` to VPS `dnsmasq` on `100.64.0.4`; `dnsmasq` answers `*.llego.me` with `crisuflix` at `100.64.0.1` for tailnet clients.
+- `crisuflix` bridge `br0` is trusted LAN at `192.168.1.101/24`, gateway `192.168.1.1`; bridge `br1` is IoT at `192.168.3.103/24`.
+- UniFi keeps `192.168.3.0/24` in custom zone `CUSTOM1`, blocking IoT to trusted LAN and allowing IoT to WAN. mDNS proxy is enabled on both networks as fallback.
+- Avahi reflector on `crisuflix` bridges mDNS between `br0` and `br1`; IoT devices reach HA, MQTT, and ESPHome via `192.168.3.103` on the same subnet.
 
-### Modular Composition
+Expose a `crisuflix` container publicly with labels like:
 
-Each host imports only the modules it needs:
-- `laptop`: core, apps, desktop-environment, printer, wifi-networks, downloaders
-- `vps`: core
-- `crisuflix`: core, home-automation, restic-backup
-- `rpi5`: core, wifi-networks
-
-### Dotfiles (hjem)
-
-Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) using a distributed approach where configurations are co-located with their package definitions.
-
-**Architecture:**
-- **Source**: Configurations stored in `modules/core/dots/`
-- **Management**: [hjem-impure](https://github.com/Rexcrazy804/hjem-impure) symlinks to `~/.config/`
-- **Live Editing**: Changes to source files take effect without rebuilds
-- **Distribution**: Each module manages its own application configs via hjem
-
-**Organization:**
-- **basic-cli.nix**: helix, yazi, oh-my-posh configs
-- **desktop-environment.nix**: niri, kanshi, GTK, noctalia configs + SSH shortcuts  
-- **apps.nix**: opencode configs
-- **core/hjem.nix**: hjem infrastructure + beets config (docker dependency)
-
-**Benefits:**
-- ✅ Live editing without rebuilds
-- ✅ Standard user config locations (`~/.config/`)
-- ✅ Package installations co-located with their configurations
-- ✅ Consistent management across all tools
-
-### crisuflix
-
-- **Storage**: ZFS pools `illby` (apps) and `veckjarvi` (media), 8 SATA + 3 NVMe drives
-- **Services**: Docker, home-automation module, NFS exports, sanoid snapshots
-- **Network**: Dual bridges (br0: 192.168.1.101/103, br1: 192.168.3.103)
-- **Monitoring**: Beszel agent with SMART, Cloudflare DDNS
-- **UPS**: NUT (usbhid-ups driver)
-
-### rpi5
-
-- cage compositor with single Chromium window
-
-### Infrastructure Architecture (VPS ↔ Crisuflix)
-
-Both servers form a unified infrastructure connected via Headscale VPN:
-
-**Headscale Connectivity**
-- VPS (christiansandberg.fi): `100.78.37.16`
-- Crisuflix (NAS): `100.123.67.48`
-- All inter-server traffic routes through the secure Headscale mesh
-
-**Multi-Host Reverse Proxy (traefik-kop)**
-- VPS runs Traefik (ports 80/443) + Redis (port 6379, Headscale-only)
-- Crisuflix Docker containers use traefik-kop agent to publish routes
-- Flow: Container labels → Redis (via Headscale) → Traefik → Public access
-
-**Authelia (Centralized Auth)**
-- Runs on VPS only; protects services on both servers
-- Forward-auth middleware in Traefik intercepts all protected routes
-- Traffic flow: User → VPS Traefik → Authelia check → Service (via Headscale)
-
-Expose crisuflix containers with labels:
 ```yaml
 labels:
   - "kop.namespace=vps"
@@ -122,10 +64,26 @@ labels:
   - "traefik.http.routers.myapp.rule=Host(`myapp.christiansandberg.fi`)"
 ```
 
+## crisuflix Notes
+
+- Storage: ZFS pools `illby` for apps and `veckjarvi` for media, backed by 8 SATA and 3 NVMe drives.
+- Services: Docker, home-automation module, NFS exports, sanoid snapshots, Home Assistant, Music Assistant, ESPHome.
+- Monitoring: Beszel agent with SMART.
+- UPS: NUT with `usbhid-ups` driver.
+- InfluxDB integration: config entry `path` must be `""`; `/` caused 404 during setup.
+
+## Secrets
+
+Secrets use [agenix](https://github.com/ryantm/agenix) and are encrypted to SSH host keys plus user keys from `secrets.nix`.
+
+```bash
+agenix -e secrets/initial-password.age
+agenix -r
+```
+
 ## Custom Packages
 
-Both packages in `pkgs/` are standalone flakes with `inputs.nixpkgs.follows = "nixpkgs"`.
+Packages in `pkgs/` are standalone flakes with `inputs.nixpkgs.follows = "nixpkgs"`.
 
-**RuuviCollector**: Java/Maven BLE sensor reader. Full NixOS module with 20+ options, security.wrappers for BLE tools, InfluxDB output.
-
-**Album Downloader**: Shell wrapper for bandcamp-collection-downloader + rsync.
+- `RuuviCollector`: Java/Maven BLE sensor reader with a NixOS module, BLE security wrappers, and InfluxDB output.
+- `Album Downloader`: shell wrapper for `bandcamp-collection-downloader` plus `rsync`.
