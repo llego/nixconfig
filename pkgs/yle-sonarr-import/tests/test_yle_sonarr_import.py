@@ -3,6 +3,7 @@ import pathlib
 import stat
 import tempfile
 import unittest
+from unittest import mock
 
 from yle_sonarr_import import cli as IMPORTER
 
@@ -128,6 +129,20 @@ class SuggestionValidationTest(unittest.TestCase):
         self.assertIn("not a provided candidate", result["reason"])
         self.assertEqual(result["raw_suggestion"], suggestion)
 
+    def test_sonarr_candidates_include_unmonitored_episodes(self):
+        result = IMPORTER.sonarr_candidates([
+            {
+                "seasonNumber": 1,
+                "episodeNumber": 1,
+                "title": "Episode One",
+                "hasFile": False,
+                "monitored": False,
+            }
+        ])
+
+        self.assertEqual(len(result), 1)
+        self.assertFalse(result[0]["monitored"])
+
 
 class StateFileTest(unittest.TestCase):
     def test_migrates_legacy_json_file_to_yaml(self):
@@ -157,6 +172,86 @@ class StateFileTest(unittest.TestCase):
             result = IMPORTER.read_yaml(yaml_path, {})
 
             self.assertEqual(result, {})
+
+    def test_ensure_yaml_file_adds_missing_header(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            yaml_path = pathlib.Path(tmpdir) / "state.yaml"
+            IMPORTER.write_yaml(yaml_path, {"handled_program_ids": {}})
+
+            IMPORTER.ensure_yaml_file(
+                yaml_path,
+                {"handled_program_ids": {}},
+                header=IMPORTER.STATE_HEADER,
+            )
+
+            contents = yaml_path.read_text(encoding="utf-8")
+            self.assertTrue(contents.startswith("# Internal importer state"))
+
+    def test_parse_args_defaults_to_run(self):
+        result = IMPORTER.parse_args([])
+
+        self.assertEqual(result.command, "run")
+        self.assertIsNone(result.series)
+
+    def test_resolves_minimal_series_config_from_slug(self):
+        cfg = {"enabled": True, "yle_url": "https://arenan.yle.fi/1-50504909"}
+        sonarr_series = [{"id": 321, "titleSlug": "alfie-atkins-2012", "title": "Alfie Atkins (2012)"}]
+
+        result = IMPORTER.resolve_series_config(
+            "alfie-atkins-2012",
+            cfg,
+            sonarr_series,
+        )
+
+        self.assertEqual(result["sonarr_series_id"], 321)
+        self.assertEqual(result["sonarr_title"], "Alfie Atkins (2012)")
+        self.assertEqual(
+            result["state_dir"],
+            IMPORTER.BASE_STATE_DIR / "alfie-atkins-2012",
+        )
+        self.assertEqual(
+            result["host_download_dir"],
+            IMPORTER.HOST_DOWNLOAD_ROOT / "alfie-atkins-2012",
+        )
+        self.assertEqual(
+            result["sonarr_download_dir"],
+            "/downloads/yle-dl/alfie-atkins-2012",
+        )
+
+    def test_load_series_configs_caches_resolved_id_only(self):
+        sonarr_series = [{"id": 321, "titleSlug": "alfie-atkins-2012", "title": "Alfie Atkins (2012)"}]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            series_path = pathlib.Path(tmpdir) / "series.yaml"
+            IMPORTER.write_yaml(
+                series_path,
+                {
+                    "alfie-atkins-2012": {
+                        "enabled": True,
+                        "yle_url": "https://arenan.yle.fi/1-50504909",
+                    }
+                },
+                header=IMPORTER.SERIES_HEADER,
+            )
+
+            with mock.patch.object(IMPORTER, "fetch_sonarr_series", return_value=sonarr_series):
+                result = IMPORTER.load_series_configs(series_path, "api-key")
+
+            self.assertEqual(result["alfie-atkins-2012"]["sonarr_series_id"], 321)
+            written = IMPORTER.read_yaml(series_path, {})
+            self.assertEqual(
+                written,
+                {
+                    "alfie-atkins-2012": {
+                        "enabled": True,
+                        "yle_url": "https://arenan.yle.fi/1-50504909",
+                        "sonarr_series_id": 321,
+                    }
+                },
+            )
+            contents = series_path.read_text(encoding="utf-8")
+            self.assertIn("# One top-level key", contents)
+            self.assertNotIn("host_download_dir", contents)
+            self.assertNotIn("sonarr_slug", contents)
 
 
 if __name__ == "__main__":
