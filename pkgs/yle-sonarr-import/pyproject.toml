@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yle-sonarr-import"
+version = "0.1.0"
+description = "Import mapped YLE Areena episodes into Sonarr"
+requires-python = ">=3.11"
+dependencies = ["PyYAML"]
+
+[project.scripts]
+yle-sonarr-import = "yle_sonarr_import.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
