@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   username,
   inputs,
@@ -130,7 +131,7 @@
         serif = ["Noto Serif"];
         sansSerif = ["Inter"];
         # monospace = ["FiraCode Nerd Font"];
-        monospace = ["Maple Mono NF"];
+        monospace = ["Maple Mono NF Light"];
         emoji = ["Noto Color Emoji"];
       };
     };
@@ -141,7 +142,7 @@
     theme = "rose-pine";
     settings = {
       main = {
-        font = "Maple Mono NF:size=11";
+        font = "Maple Mono NF Light:size=10";
         pad = "10x10";
         title = "foot";
         app-id = "foot";
@@ -205,28 +206,29 @@
   # Desktop environment dotfiles
   hjem.users.${username} = let
     dots = "${./core/dots}";
+    wallpaperDir = ./core/dots/noctalia/wallpapers;
+    wallpaperFiles = builtins.attrNames (lib.filterAttrs (_: type: type == "regular") (builtins.readDir wallpaperDir));
+    wallpaperMappings = builtins.listToAttrs (map (file: {
+        name = "noctalia/wallpapers/${file}";
+        value.source = dots + "/noctalia/wallpapers/${file}";
+      })
+      wallpaperFiles);
   in {
-    xdg.config.files = {
-      # Fuzzel configuration
-      # "fuzzel/fuzzel.ini".source = dots + "/fuzzel/fuzzel.ini";
+    xdg.config.files =
+      {
+        # Niri configuration files
+        "niri/config.kdl".source = dots + "/niri/config.kdl";
 
-      # Niri configuration files
-      "niri/config.kdl".source = dots + "/niri/config.kdl";
+        # Kanshi configuration file
+        "kanshi/config".source = dots + "/kanshi/config";
 
-      # Kanshi configuration file
-      "kanshi/config".source = dots + "/kanshi/config";
+        # GTK configuration files
+        "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
 
-      # GTK configuration files
-      "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
-
-      # Noctalia configuration files
-      "noctalia/config.toml".source = dots + "/noctalia/config.toml";
-      "noctalia/wallpapers/mountains4k.jpg".source = dots + "/noctalia/wallpapers/mountains4k.jpg";
-      "noctalia/wallpapers/mountains.png".source = dots + "/noctalia/wallpapers/mountains.png";
-      "noctalia/wallpapers/wallhaven_p88g5j.jpg".source = dots + "/noctalia/wallpapers/wallhaven_p88g5j.jpg";
-      "noctalia/wallpapers/wallhaven_zm5pxv.jpg".source = dots + "/noctalia/wallpapers/wallhaven_zm5pxv.jpg";
-      "noctalia/wallpapers/wallpaper-blue.jpg".source = dots + "/noctalia/wallpapers/wallpaper-blue.jpg";
-    };
+        # Noctalia configuration files
+        "noctalia/config.toml".source = dots + "/noctalia/config.toml";
+      }
+      // wallpaperMappings;
 
     # SSH shortcuts (application desktop files)
     xdg.data.files = {

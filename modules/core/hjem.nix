@@ -7,24 +7,28 @@
 in {
   imports = [inputs.hjem.nixosModules.default];
 
-  hjem.extraModules = [inputs.hjem-impure.hjemModules.default];
+  hjem = {
+    extraModules = [inputs.hjem-impure.hjemModules.default];
 
-  hjem.users.${username} = {
-    impure = {
-      enable = true;
-      dotsDir = dots;
-      dotsDirImpure = "/home/${username}/nixconfig/modules/core/dots";
-    };
-    directory = "/home/${username}";
+    clobberByDefault = true;
 
-    xdg.config.files = {
-      # Beets configuration file (used by docker container)
-      "beets/config.yaml".source = dots + "/beets/config.yaml";
+    users.${username} = {
+      impure = {
+        enable = true;
+        dotsDir = dots;
+        dotsDirImpure = "/home/${username}/nixconfig/modules/core/dots";
+      };
+      directory = "/home/${username}";
 
-      # OpenCode configuration files
-      "opencode/opencode.json".source = dots + "/opencode/opencode.json";
-      "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
-      "opencode/agent/code-reviewer.md".source = dots + "/opencode/agent/code-reviewer.md";
+      xdg.config.files = {
+        # Beets configuration file (used by docker container)
+        "beets/config.yaml".source = dots + "/beets/config.yaml";
+
+        # OpenCode configuration files
+        "opencode/opencode.json".source = dots + "/opencode/opencode.json";
+        "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
+        "opencode/agent/code-reviewer.md".source = dots + "/opencode/agent/code-reviewer.md";
+      };
     };
   };
 }

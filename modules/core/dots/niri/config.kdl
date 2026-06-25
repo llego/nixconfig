@@ -61,11 +61,11 @@ window-rule {
 window-rule {
     match is-active=false
     draw-border-with-background false
-    opacity 0.600000
+    opacity 0.800000
 }
 window-rule {
-    match app-id="foot"
-    opacity 0.850000
+    match app-id="foot" is-active=true
+    opacity 0.950000
 }
 
 layer-rule {

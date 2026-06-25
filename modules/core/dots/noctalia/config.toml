@@ -14,12 +14,11 @@ builtin = "Rosé Pine"
 
     [theme.templates]
     builtin_ids = [ "btop", "gtk3", "gtk4", "niri" ]
-    community_ids = [ "zen-browser", "fuzzel" ]
+    community_ids = [ "zen-browser" ]
 
 [wallpaper]
 directory = "/home/llego/nixconfig/modules/core/dots/noctalia/wallpapers"
 transition = [ "wipe" ]
-transition_on_startup = true
 
 [widget.battery]
 capsule = true

@@ -76,6 +76,7 @@
       "docker compose logs *": "allow",
       "docker compose config": "allow",
       "docker compose config *": "allow",
+      "journalctl *": "allow",
       "systemctl status *": "allow",
       "systemctl is-active *": "allow",
       "systemctl is-enabled *": "allow",
