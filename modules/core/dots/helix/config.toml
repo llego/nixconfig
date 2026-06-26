@@ -1,4 +1,4 @@
-theme = "rose_pine"
+theme = "rose_pine_transparent"
 
 [keys.normal]
 C-right = "move_next_word_start"

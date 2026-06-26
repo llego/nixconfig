@@ -16,8 +16,11 @@ input {
     }
 }
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
 prefer-no-csd
+
 overview { workspace-shadow { off; }; }
+
 layout {
     gaps 16
     struts {
@@ -65,7 +68,10 @@ window-rule {
 }
 window-rule {
     match app-id="foot" is-active=true
-    opacity 0.950000
+    // opacity 0.950000
+    background-effect {
+      blur true
+    }
 }
 
 layer-rule {

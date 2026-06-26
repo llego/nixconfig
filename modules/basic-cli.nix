@@ -95,6 +95,7 @@ in {
     # Helix configuration files
     "helix/config.toml".source = dots + "/helix/config.toml";
     "helix/languages.toml".source = dots + "/helix/languages.toml";
+    "helix/themes/rose_pine_transparent.toml".source = dots + "/helix/themes/rose_pine_transparent.toml";
 
     # Yazi configuration files
     "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";

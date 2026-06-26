@@ -156,6 +156,9 @@
         indicator-position = "relative";
         indicator-format = "percentage";
       };
+      colors-dark = {
+        alpha = "0.90";
+      };
       cursor = {
         style = "block";
         blink = false;
