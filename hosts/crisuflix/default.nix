@@ -17,7 +17,7 @@ in {
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
     ./../../modules/hermes
-    ./../../modules/yle-sonarr-import.nix
+    # ./../../modules/yle-sonarr-import.nix
     ./../../modules/homepage.nix
     ./../../modules/opencloud.nix
     ./../../modules/restic-backup.nix
