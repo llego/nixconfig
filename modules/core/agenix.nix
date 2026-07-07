@@ -72,13 +72,13 @@
       }
       else if hostname == "crisuflix"
       then {
-        hermes-env = {
-          file = ./../../secrets/hermes-env.age;
-          path = "/var/lib/hermes/env";
-          mode = "0400";
-          owner = "hermes";
-          group = "hermes";
-        };
+        # hermes-env = {
+        #   file = ./../../secrets/hermes-env.age;
+        #   path = "/var/lib/hermes/env";
+        #   mode = "0400";
+        #   owner = "hermes";
+        #   group = "hermes";
+        # };
         yle-sonarr-import-env = {
           file = ./../../secrets/yle-sonarr-import-env.age;
           path = "/run/keys/yle-sonarr-import-env";
