@@ -407,7 +407,6 @@
         "noctalia": "noctalia",
         "raspberry-pi-nix": "raspberry-pi-nix",
         "ruuvi": "ruuvi",
-        "yle-sonarr-import": "yle-sonarr-import",
         "zen-browser": "zen-browser"
       }
     },
@@ -591,22 +590,6 @@
         "repo": "default",
         "type": "github"
       }
-    },
-    "yle-sonarr-import": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "path": "./pkgs/yle-sonarr-import",
-        "type": "path"
-      },
-      "original": {
-        "path": "./pkgs/yle-sonarr-import",
-        "type": "path"
-      },
-      "parent": []
     },
     "zen-browser": {
       "inputs": {

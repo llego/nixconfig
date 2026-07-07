@@ -181,6 +181,25 @@ in {
             userinfo_signed_response_alg = "none";
             token_endpoint_auth_method = "client_secret_post";
           }
+          # Immich
+          {
+            client_id = "immich";
+            client_name = "Immich";
+            client_secret = "$pbkdf2-sha512$310000$YCAyVXxUoWLPHkxJ6XaoOw$FWpSPMOzSnmqzRZW5TfwvsqBhzHOcDXWbjiqUj62ojzv73bs11n/Aj5YzgDrFhmQmjMzePms9WUh/8T7bcDMxA";
+            public = false;
+            require_pkce = false;
+            redirect_uris = [
+              "https://immich.cri.su/auth/login"
+              "https://immich.cri.su/user-settings"
+              "app.immich:///oauth-callback"
+            ];
+            scopes = ["openid" "profile" "email"];
+            response_types = ["code"];
+            grant_types = ["authorization_code"];
+            id_token_signed_response_alg = "RS256";
+            userinfo_signed_response_alg = "RS256";
+            token_endpoint_auth_method = "client_secret_post";
+          }
 
           # grimmory
           {

@@ -48,7 +48,7 @@ in {
       }
     ];
     protections = true; # enables protection settings in the systemd service. might cause permission problems with reading the api_key_file
-    api_key_file = "/run/credentials/hetzner_ddns.service/hetzner-dns-token";
+    api_key = "/run/credentials/hetzner_ddns.service/hetzner-dns-token";
   };
 
   systemd.services.hetzner_ddns.serviceConfig.LoadCredential = "hetzner-dns-token:${config.age.secrets.hetzner-dns-token.path}";

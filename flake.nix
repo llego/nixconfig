@@ -13,10 +13,6 @@
       url = "path:./pkgs/RuuviCollector";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    yle-sonarr-import = {
-      url = "path:./pkgs/yle-sonarr-import";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";

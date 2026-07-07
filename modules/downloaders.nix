@@ -5,7 +5,6 @@
 }: {
   environment.systemPackages = with pkgs; [
     # tidal-dl
-    yle-dl
     svtplay-dl
     mediainfo
     inputs.album-downloader.packages.${pkgs.stdenv.hostPlatform.system}.album-downloader
