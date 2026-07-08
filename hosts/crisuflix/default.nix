@@ -245,11 +245,9 @@ in {
   services.nfs.server = {
     enable = true;
     exports = ''
-      /mnt/veckjarvi/media/filmer 192.168.1.0/24(sec=sys,rw,anonuid=568,anongid=568,all_squash,no_subtree_check)
-      /mnt/veckjarvi/media/tv 192.168.1.0/24(sec=sys,rw,anonuid=568,anongid=568,all_squash,no_subtree_check)
-      /mnt/veckjarvi/backups/haos-backup 192.168.1.0/24(sec=sys,rw,anonuid=3001,all_squash,no_subtree_check)
-      /mnt/illby/docker/data 192.168.1.214(sec=sys,rw,anonuid=0,all_squash,no_subtree_check)
-      /mnt/illby/docker/stacks 192.168.1.214(sec=sys,rw,anonuid=0,anongid=0,all_squash,no_subtree_check)
+      /mnt/veckjarvi/media 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,no_subtree_check)
+      /mnt/veckjarvi/backups/haos-backup 100.64.0.0/10(sec=sys,rw,anonuid=3001,all_squash,no_subtree_check)
+      /mnt/illby/docker 100.64.0.0/10(sec=sys,rw,anonuid=0,anongid=0,all_squash,no_subtree_check)
     '';
   };
 
@@ -329,8 +327,6 @@ in {
       '';
       allowedTCPPorts = [
         22 # SSH
-        net.nfs.rpcbind.port # NFS rpcbind
-        net.nfs.port # NFS
         net.crisuflix.nut.port # NUT (UPS monitoring)
         5201 # iperf3
         net.crisuflix.musicAssistant.uiPort # Music Assistant (Web UI)
@@ -339,15 +335,21 @@ in {
         net.crisuflix.musicAssistant.streamPort # Music Assistant (Stream Server)
         net.crisuflix.homeAssistant.port # Home Assistant
         net.crisuflix.mosquitto.port # MQTT (Mosquitto)
-        net.nfs.mountd.port # NFS mountd
         net.crisuflix.homepage.port # Homepage dashboard (for VPS Traefik)
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];
-      allowedUDPPorts = [
-        net.nfs.rpcbind.port # NFS rpcbind
-        net.nfs.port # NFS
-        net.nfs.mountd.port # NFS mountd
-      ];
+      interfaces.tailscale0 = {
+        allowedTCPPorts = [
+          net.nfs.rpcbind.port # NFS rpcbind
+          net.nfs.port # NFS
+          net.nfs.mountd.port # NFS mountd
+        ];
+        allowedUDPPorts = [
+          net.nfs.rpcbind.port # NFS rpcbind
+          net.nfs.port # NFS
+          net.nfs.mountd.port # NFS mountd
+        ];
+      };
     };
   };
 
