@@ -86,6 +86,7 @@
     "d /mnt/crisuflix-docker 0755 root root -"
     "d /mnt/crisuflix-docker/data 0755 root root -"
     "d /mnt/crisuflix-docker/stacks 0755 root root -"
+    "d /mnt/crisuflix-media 0755 root root -"
   ];
   fileSystems."/mnt/crisuflix-docker/data" = {
     device = "crisuflix.home:/mnt/illby/docker/data";
@@ -101,6 +102,18 @@
 
   fileSystems."/mnt/crisuflix-docker/stacks" = {
     device = "crisuflix.home:/mnt/illby/docker/stacks";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=300"
+      "noatime"
+      "nfsvers=4.0"
+    ];
+  };
+
+  fileSystems."/mnt/crisuflix-media" = {
+    device = "crisuflix.home:/mnt/veckjarvi/media";
     fsType = "nfs";
     options = [
       "x-systemd.automount"
