@@ -17,6 +17,8 @@ in {
     curl
     dig
     helix # text editor
+    marksman # markdown language server
+    (mdformat.withPlugins (ps: [ps.mdformat-gfm])) # markdown formatter with table support
     yazi # file manager
     ueberzugpp # image preview for yazi on wayland
     lazygit # git

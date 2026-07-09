@@ -4,12 +4,12 @@ Multi-host NixOS flake for four systems. Dotfiles are managed with [hjem](https:
 
 ## Hosts
 
-| Host | Purpose | Main Roles |
-| --- | --- | --- |
-| `laptop` | Daily driver | Niri, Noctalia, Intel GPU, NFS mounts, Headscale |
-| `vps` / `christiansandberg` | Public edge | Traefik, Authelia, Redis, Gotify, Uptime Kuma, fail2ban, static site |
-| `crisuflix` | NAS and home services | ZFS, Docker, Home Assistant, Music Assistant, ESPHome, NFS, restic |
-| `rpi5` | Home Assistant kiosk | Cage, Chromium kiosk, nightly reboot |
+| Host                        | Purpose               | Main Roles                                                           |
+| --------------------------- | --------------------- | -------------------------------------------------------------------- |
+| `laptop`                    | Daily driver          | Niri, Noctalia, Intel GPU, NFS mounts, Headscale                     |
+| `vps` / `christiansandberg` | Public edge           | Traefik, Authelia, Redis, Gotify, Uptime Kuma, fail2ban, static site |
+| `crisuflix`                 | NAS and home services | ZFS, Docker, Home Assistant, Music Assistant, ESPHome, NFS, restic   |
+| `rpi5`                      | Home Assistant kiosk  | Cage, Chromium kiosk                                                 |
 
 ## Build And Deploy
 
