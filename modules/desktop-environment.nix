@@ -222,9 +222,6 @@
         # Niri configuration files
         "niri/config.kdl".source = dots + "/niri/config.kdl";
 
-        # Kanshi configuration file
-        "kanshi/config".source = dots + "/kanshi/config";
-
         # GTK configuration files
         "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
 

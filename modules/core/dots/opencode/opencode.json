@@ -136,6 +136,7 @@
       "nix build *": "ask",
       "nix run *": "ask",
       "nix flake check *": "ask",
+      "nixos-rebuild dry-build *": "allow",
       "nixos-rebuild *": "ask",
       "nh *": "ask",
       "git add *": "ask",

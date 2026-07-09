@@ -148,6 +148,9 @@ in {
     extraUpFlags = [
       "--advertise-routes=192.168.1.0/24,192.168.3.0/24"
     ];
+    extraSetFlags = [
+      "--ssh"
+    ];
   };
 
   # Docker
@@ -245,9 +248,8 @@ in {
   services.nfs.server = {
     enable = true;
     exports = ''
-      /mnt/veckjarvi/media 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,no_subtree_check)
-      /mnt/veckjarvi/backups/haos-backup 100.64.0.0/10(sec=sys,rw,anonuid=3001,all_squash,no_subtree_check)
-      /mnt/illby/docker 100.64.0.0/10(sec=sys,rw,anonuid=0,anongid=0,all_squash,no_subtree_check)
+      /mnt/veckjarvi/media 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,crossmnt,no_subtree_check)
+      /mnt/illby/docker 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,crossmnt,no_subtree_check)
     '';
   };
 
@@ -260,12 +262,6 @@ in {
       KbdInteractiveAuthentication = false;
     };
   };
-
-  # Use llego's SSH key for GitHub when running as root (e.g. sudo git push)
-  programs.ssh.extraConfig = ''
-    Host github.com
-      IdentityFile /home/llego/.ssh/id_ed25519
-  '';
 
   # fail2ban for SSH protection
   services.fail2ban = {

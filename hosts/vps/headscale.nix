@@ -1,6 +1,15 @@
-{config, ...}: let
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}: let
   net = config.networkVars;
 in {
+  disabledModules = ["services/networking/headplane.nix"];
+
+  imports = [inputs.headplane.nixosModules.headplane];
+
   services.headscale = {
     enable = true;
     address = "0.0.0.0";
@@ -37,6 +46,33 @@ in {
         v4 = "100.64.0.0/10";
         v6 = "fd7a:115c:a1e0::/48";
         allocation = "sequential";
+      };
+      policy = {
+        mode = "file";
+        path = pkgs.writeText "headscale-policy.hujson" ''
+          {
+            // Keep the existing tailnet behavior: all nodes may talk to all other
+            // nodes. Adding any policy file replaces Headscale's implicit defaults.
+            "acls": [
+              {
+                "action": "accept",
+                "src": ["*"],
+                "dst": ["*:*"]
+              }
+            ],
+
+            // Browser SSH/Tailscale SSH requires an explicit SSH rule. Limit it to
+            // same-owner devices and the local non-root account used on NixOS hosts.
+            "ssh": [
+              {
+                "action": "accept",
+                "src": ["autogroup:member"],
+                "dst": ["autogroup:self"],
+                "users": ["llego"]
+              }
+            ]
+          }
+        '';
       };
       oidc = {
         issuer = "https://auth.cri.su";
@@ -80,6 +116,8 @@ in {
     allowedUDPPorts = [53];
   };
 
+  nixpkgs.overlays = [inputs.headplane.overlays.default];
+
   services.headplane = {
     enable = true;
     settings = {
@@ -92,18 +130,24 @@ in {
       };
       headscale = {
         url = "https://headscale.cri.su";
+        public_url = "https://headscale.cri.su";
+        config_path = config.services.headscale.configFile;
+        api_key_path = config.age.secrets.headscale-api-key.path;
       };
       oidc = {
         issuer = "https://auth.cri.su";
         client_id = "headscale";
         client_secret_path = config.age.secrets.headscale-oidc-client-secret.path;
-        headscale_api_key_path = config.age.secrets.headscale-api-key.path;
         use_pkce = true;
         token_endpoint_auth_method = "client_secret_basic";
       };
       integration.agent = {
-        enabled = false;
+        enabled = true;
       };
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/headplane/agent 0700 headscale headscale - -"
+  ];
 }
