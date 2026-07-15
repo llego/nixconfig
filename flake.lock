@@ -163,11 +163,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783177857,
-        "narHash": "sha256-UMAGsrG2xfpgWlsDhf4aWJKoOrUbruucDNOhCJcYmQQ=",
+        "lastModified": 1783954843,
+        "narHash": "sha256-YzCt8b58dTjmhGEGOVMMwfjCDWkAD8c7lCSyknk4YeI=",
         "owner": "tale",
         "repo": "headplane",
-        "rev": "17e7b3547838a45101266e80f46722542a65e9b0",
+        "rev": "b3c0c1c691c721f2f3af4b84a18afccf8d9e4a24",
         "type": "github"
       },
       "original": {
