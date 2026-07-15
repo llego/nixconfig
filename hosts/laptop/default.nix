@@ -28,7 +28,12 @@
     LIBVA_DRIVER_NAME = "iHD";
   };
 
-  services.tailscale.authKeyFile = config.age.secrets.tailscale-preauth-laptop.path;
+  services.tailscale = {
+    authKeyFile = config.age.secrets.tailscale-preauth-laptop.path;
+    extraSetFlags = [
+      "--ssh"
+    ];
+  };
 
   hardware = {
     bluetooth.enable = true;
