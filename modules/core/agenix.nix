@@ -148,6 +148,12 @@
         # Hetzner DNS API token for Traefik DNS-01 challenge and cri.su DDNS
         hetzner-dns-token = {
           file = ./../../secrets/hetzner-dns-token.age;
+          mode = "0440";
+          owner = "root";
+          group = "hetzner-ddns";
+        };
+        hetzner-dns-token-env-variable = {
+          file = ./../../secrets/hetzner-dns-token-env-variable.age;
           mode = "0400";
           owner = "root";
           group = "root";

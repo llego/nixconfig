@@ -31,6 +31,7 @@ in {
 
   # Hetzner DNS API token (VPS Traefik DNS-01 + DDNS)
   "secrets/hetzner-dns-token.age".publicKeys = [vps userKey];
+  "secrets/hetzner-dns-token-env-variable.age".publicKeys = [vps userKey];
 
   # vps-specific secrets
   "secrets/tailscale-preauth-vps.age".publicKeys = [vps userKey];

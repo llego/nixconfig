@@ -71,7 +71,7 @@ in {
       fi
 
       # oh-my-posh prompt
-      eval "$(oh-my-posh init zsh --config /etc/oh-my-posh/config.json)"
+      eval "$(oh-my-posh init zsh --config /etc/oh-my-posh/config.json --print)"
 
       # Key bindings
       bindkey -e

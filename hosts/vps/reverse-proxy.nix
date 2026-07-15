@@ -34,8 +34,7 @@ in {
     # Also disable lego CNAME following to prevent zone-detection errors with apex domains
     environmentFiles = [
       config.age.secrets.desec-dns-token.path
-      config.age.secrets.hetzner-dns-token.path
-      config.age.secrets.hetzner-dns-token.path
+      config.age.secrets.hetzner-dns-token-env-variable.path
     ];
 
     staticConfigOptions = {

@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  lib,
   ...
 }: let
   net = config.networkVars;
@@ -47,9 +48,19 @@ in {
         records = [{name = "@";}];
       }
     ];
-    protections = true; # enables protection settings in the systemd service. might cause permission problems with reading the api_key_file
-    api_key = "/run/credentials/hetzner_ddns.service/hetzner-dns-token";
+    protections = true;
+    api_key = config.age.secrets.hetzner-dns-token.path;
   };
 
-  systemd.services.hetzner_ddns.serviceConfig.LoadCredential = "hetzner-dns-token:${config.age.secrets.hetzner-dns-token.path}";
+  users.groups.hetzner-ddns = {};
+  users.users.hetzner-ddns = {
+    isSystemUser = true;
+    group = "hetzner-ddns";
+  };
+
+  systemd.services.hetzner_ddns.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    User = "hetzner-ddns";
+    Group = "hetzner-ddns";
+  };
 }

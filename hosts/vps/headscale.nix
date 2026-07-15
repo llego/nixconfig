@@ -36,7 +36,7 @@ in {
             # Tailscale/Headscale extra_records do not wildcard-match; they only
             # answer the literal "*.llego.me" name. Send the whole zone to a
             # tailnet-only dnsmasq responder instead.
-            "llego.me." = ["100.64.0.4"];
+            # "llego.me." = ["100.64.0.4"];
             "home." = ["192.168.1.1"];
             "iot." = ["192.168.3.1"];
           };
@@ -87,34 +87,34 @@ in {
     };
   };
 
-  services.dnsmasq = {
-    enable = true;
-    resolveLocalQueries = false;
-    settings = {
-      # Only listen on the VPS tailnet interface; this DNS responder exists
-      # solely for Headscale split DNS clients.
-      interface = "tailscale0";
-      "bind-interfaces" = true;
-      "no-resolv" = true;
+  # services.dnsmasq = {
+  #   enable = true;
+  #   resolveLocalQueries = false;
+  #   settings = {
+  #     # Only listen on the VPS tailnet interface; this DNS responder exists
+  #     # solely for Headscale split DNS clients.
+  #     interface = "tailscale0";
+  #     "bind-interfaces" = true;
+  #     "no-resolv" = true;
 
-      # Wildcard the entire llego.me zone to crisuflix's tailnet IP so internal
-      # Traefik receives *.llego.me requests over Headscale instead of public DNS.
-      address = ["/llego.me/100.64.0.1"];
-    };
-  };
+  #     # Wildcard the entire llego.me zone to crisuflix's tailnet IP so internal
+  #     # Traefik receives *.llego.me requests over Headscale instead of public DNS.
+  #     address = ["/llego.me/100.64.0.1"];
+  #   };
+  # };
 
-  systemd.services.dnsmasq = {
-    # tailscale0 must exist before dnsmasq binds to it; if tailscaled restarts
-    # and recreates the interface, restart dnsmasq so it re-binds cleanly.
-    after = ["tailscaled.service"];
-    wants = ["tailscaled.service"];
-    partOf = ["tailscaled.service"];
-  };
+  # systemd.services.dnsmasq = {
+  #   # tailscale0 must exist before dnsmasq binds to it; if tailscaled restarts
+  #   # and recreates the interface, restart dnsmasq so it re-binds cleanly.
+  #   after = ["tailscaled.service"];
+  #   wants = ["tailscaled.service"];
+  #   partOf = ["tailscaled.service"];
+  # };
 
-  networking.firewall.interfaces.tailscale0 = {
-    allowedTCPPorts = [53];
-    allowedUDPPorts = [53];
-  };
+  # networking.firewall.interfaces.tailscale0 = {
+  #   allowedTCPPorts = [53];
+  #   allowedUDPPorts = [53];
+  # };
 
   nixpkgs.overlays = [inputs.headplane.overlays.default];
 
