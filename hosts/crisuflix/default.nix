@@ -156,6 +156,25 @@ in {
   # Docker
   virtualisation.docker.enable = true;
 
+  # Docker restores containers with restart=unless-stopped as soon as dockerd
+  # starts. Traefik binds 100.64.0.1:80/443 and traefik-kop publishes routes
+  # over tailscale0, so wait until Tailscale has restored the tailnet address.
+  systemd.services.docker = {
+    after = ["tailscaled.service" "tailscaled-set.service"];
+    wants = ["tailscaled.service" "tailscaled-set.service"];
+    preStart = ''
+      for _ in $(seq 1 120); do
+        if [ "$(${pkgs.tailscale}/bin/tailscale ip -4 2>/dev/null)" = "100.64.0.1" ]; then
+          exit 0
+        fi
+        sleep 1
+      done
+
+      echo "Timed out waiting for Tailscale IPv4 100.64.0.1"
+      exit 1
+    '';
+  };
+
   # Ensure the traefik Docker networks exists before any containers start.
   # All stacks reference them as external: true, so they must pre-exist.
   systemd.services.docker-network-traefik = {

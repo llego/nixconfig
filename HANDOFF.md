@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-15 18:41 UTC
+Last updated: 2026-07-15 19:08 UTC
 
 ## Current State
 
@@ -10,13 +10,21 @@ Headplane Browser SSH follow-up: Crisuflix advertises Tailscale SSH with `--ssh`
 
 Headscale now has a generated HuJSON policy in `hosts/vps/headscale.nix`: broad `acls` preserve the existing all-to-all tailnet behavior, and an `ssh` rule allows `autogroup:member` to `autogroup:self` as local user `llego` for Tailscale/Headplane Browser SSH. Local eval, generated policy inspection, and `nixos-rebuild dry-build --flake .#vps` succeed; VPS deploy is pending.
 
+Docker on crisuflix now waits for Tailscale before starting. `hosts/crisuflix/default.nix` orders `docker.service` after/wants `tailscaled.service` and `tailscaled-set.service`, and adds a `preStart` gate that waits up to 120 seconds for `tailscale ip -4` to return `100.64.0.1`. This prevents Docker from auto-restoring `restart=unless-stopped` containers before local Traefik can bind `100.64.0.1:80/443` and before traefik-kop can use `tailscale0`. Local eval and `nixos-rebuild dry-build --flake .#crisuflix` succeed; deploy/reboot verification is pending.
+
 NFS on crisuflix is tailnet-wide and firewall-scoped to `tailscale0`: `/mnt/veckjarvi/media`, `/mnt/veckjarvi/backups/haos-backup`, and `/mnt/illby/docker` are exported to `100.64.0.0/10`. Parent exports for media and docker use `crossmnt` so child ZFS datasets are visible. Laptop mounts media and docker via `crisuflix.tailnet.cri.su` using NFSv4.2; both crisuflix and laptop have been rebuilt and switched, and `/mnt/crisuflix-media` plus `/mnt/crisuflix-docker` are verified active on laptop.
 
 IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CUSTOM1), avahi reflector enabled on crisuflix for cross-subnet mDNS. `192.168.1.103` alias removed from br0 — Shelly devices migrated to `192.168.3.103`.
 
+## Architecture Principles
+
+- Services that bind to Tailnet IPs or publish over `tailscale0` must not rely on generic `network-online.target`; they need an explicit Tailscale readiness gate or service-level retry.
+
 ## Top 3 Next Actions
 
 - Wait for `tale/headplane#588` to merge, then run `nix flake lock --update-input headplane` and verify Browser SSH assets.
+- Deploy crisuflix with `nixos-rebuild switch --flake .#crisuflix`, then reboot and verify Docker starts after `tailscale ip -4` reports `100.64.0.1`.
+- After reboot, verify `traefik` binds `100.64.0.1:80/443` and `traefik-kop` publishes routes to VPS Redis for `llego.me` services.
 
 ## Blockers
 
