@@ -2,7 +2,9 @@
   config,
   lib,
   ...
-}: {
+}: let
+  net = config.networkVars;
+in {
   # Home Assistant OCI Container (Docker backend)
   virtualisation.oci-containers = {
     backend = "docker";
@@ -100,5 +102,37 @@
       workstation = true;
     };
     allowInterfaces = ["br0" "br1"];
+  };
+
+  local.homepageServices = {
+    "Home automation" = [
+      {
+        homeassistant = {
+          href = "https://ha.cri.su";
+          icon = "home-assistant";
+          description = "cri.su";
+          siteMonitor = "http://192.168.1.101:${toString net.crisuflix.homeAssistant.port}";
+        };
+      }
+      {
+        esphome = {
+          href = "https://esphome.llego.me";
+          icon = "esphome";
+          description = "llego.me";
+          siteMonitor = "http://192.168.1.101:6052";
+        };
+      }
+    ];
+
+    Media = [
+      {
+        music-assistant = {
+          href = "https://ma.cri.su";
+          icon = "music-assistant";
+          description = "cri.su";
+          siteMonitor = "http://192.168.1.101:${toString net.crisuflix.musicAssistant.uiPort}";
+        };
+      }
+    ];
   };
 }

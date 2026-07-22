@@ -28,7 +28,7 @@ in {
 
   # ── Secrets ───────────────────────────────────────────────────────────────
   age.secrets.opencloud-env = {
-    file = ../secrets/opencloud-env.age;
+    file = ../../secrets/opencloud-env.age;
     owner = "opencloud";
     group = "opencloud";
   };
@@ -197,4 +197,15 @@ in {
   networking.firewall.extraInputRules = lib.mkAfter ''
     ip saddr 100.0.0.0/8 tcp dport ${toString net.crisuflix.collabora.port} accept comment "Collabora: Tailscale only"
   '';
+
+  local.homepageServices.Media = [
+    {
+      opencloud = {
+        href = "https://cloud.cri.su";
+        icon = "sh-opencloud";
+        description = "cri.su";
+        siteMonitor = "https://cloud.cri.su";
+      };
+    }
+  ];
 }

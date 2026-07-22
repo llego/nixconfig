@@ -15,11 +15,12 @@ in {
     inputs.disko.nixosModules.disko
     ./../../modules/core
     ./../../modules/basic-cli.nix
-    ./../../modules/home-automation.nix
+    ./home-automation.nix
+    ./glances.nix
     # ./../../modules/hermes
-    ./../../modules/homepage.nix
-    ./../../modules/opencloud.nix
-    ./../../modules/restic-backup.nix
+    ./homepage.nix
+    ./opencloud.nix
+    ./restic-backup.nix
     ./disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -207,39 +208,6 @@ in {
     uid = 568;
     group = "apps";
     description = "Apps user for Docker containers";
-  };
-
-  # Glances monitoring (web UI)
-  services.glances = {
-    enable = true;
-    port = net.crisuflix.glances.port;
-    openFirewall = true;
-    extraArgs = ["--webserver" "--time" "5"];
-  };
-
-  # Override glances systemd service for Docker access and disk monitoring
-  systemd.services.glances = {
-    serviceConfig = {
-      # Run as apps user (568) to access docker socket
-      User = "apps";
-      Group = "apps";
-      DynamicUser = lib.mkForce false;
-
-      # Docker socket access
-      SupplementaryGroups = ["docker"];
-      BindReadOnlyPaths = [
-        "/var/run/docker.sock:/var/run/docker.sock"
-        "/:/rootfs:ro"
-      ];
-
-      # Disable filesystem protections for disk monitoring
-      ProtectSystem = lib.mkForce false;
-      ProtectHome = lib.mkForce false;
-      PrivateDevices = lib.mkForce false;
-
-      # Allow reading all filesystems
-      ReadWritePaths = lib.mkForce ["/var/log" "/" "/mnt"];
-    };
   };
 
   # Beszel monitoring agent (crisuflix-specific settings)

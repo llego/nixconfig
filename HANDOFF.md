@@ -1,8 +1,14 @@
 # HANDOFF
 
-Last updated: 2026-07-22 18:33 UTC
+Last updated: 2026-07-22 19:31 UTC
 
 ## Current State
+
+Host-specific services have been moved under their owning host directories. VPS-owned service/edge configs now live in `hosts/vps/`: `authelia-cri.su.nix`, `christiansandberg-website.nix`, `ddns.nix`, `gotify.nix`, `headscale.nix`, `reverse-proxy.nix`, and `uptime-kuma.nix`. Crisuflix-owned configs now live in `hosts/crisuflix/`: `homepage.nix`, `home-automation.nix`, `opencloud.nix`, and `restic-backup.nix`. Laptop-oriented modules remain in `modules/` because they may be reused by a future workstation. Targeted evals confirmed VPS Uptime Kuma routing, VPS Hetzner DDNS, crisuflix Homepage, and crisuflix OpenCloud. `nixos-rebuild dry-build --flake .#vps` and `nixos-rebuild dry-build --flake .#crisuflix` both succeed.
+
+Crisuflix Homepage entries are now contributed by service modules through local aggregation options in `hosts/crisuflix/homepage.nix`: `local.homepageServices` and `local.homepageWidgets`. `hosts/crisuflix/home-automation.nix` contributes Home Assistant, ESPHome, and Music Assistant entries; `hosts/crisuflix/opencloud.nix` contributes OpenCloud; new `hosts/crisuflix/glances.nix` owns the Glances service/systemd override and contributes both the Glances widget and service entry. VPS/external/manual entries such as Gotify, Uptime Kuma, Headplane, Traefik, Dockge, UniFi, and CUPS remain in `homepage.nix` because their owning service modules are not imported by crisuflix. Homepage service/widget evals pass, and dry builds for both `crisuflix` and `vps` succeed.
+
+Crisuflix was deployed with `sudo nixos-rebuild switch --flake .#crisuflix`. The first non-sudo switch built successfully but failed to set `/nix/var/nix/profiles/system` due to permissions; the sudo switch completed. Post-deploy checks: `homepage-dashboard.service`, `glances.service`, and `opencloud.service` are active; `http://127.0.0.1:3000` returns 200 for Homepage; Glances responds successfully to GET on `http://127.0.0.1:61208`.
 
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
@@ -22,6 +28,8 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 - Stable tailnet IPs remove MagicDNS races but do not prove the IP is assigned at boot; services binding those IPs still need a Tailscale readiness gate when temporary failure/retry is not acceptable.
 - Multi-service Docker stacks published through traefik-kop should set both `traefik.http.routers.<router>.service` and `traefik.http.services.<service>.loadbalancer.server.port` explicitly, avoiding generated service-name churn and stale Redis provider state.
 - VPS-local Traefik dynamic routes should live beside the service module that owns the backend. The VPS reverse proxy module should keep Traefik infrastructure, shared middlewares, and routes to services hosted elsewhere, such as crisuflix.
+- Host-specific service and edge configs belong under `hosts/<host>/`; only modules expected to be reused by more than one host should remain under `modules/`.
+- For Homepage, entries for services running on crisuflix should live beside the owning crisuflix service module and be merged through `local.homepageServices` / `local.homepageWidgets`; entries for external or VPS-owned services stay in `hosts/crisuflix/homepage.nix` unless a cross-host metadata layer is introduced.
 
 ## Top 3 Next Actions
 
