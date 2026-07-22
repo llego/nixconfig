@@ -49,7 +49,7 @@ layout {
     always-center-single-column
 }
 cursor {
-    xcursor-theme "default"
+    xcursor-theme "Numix-Cursor"
     xcursor-size 24
 }
 
@@ -83,19 +83,18 @@ spawn-at-startup "noctalia"
 spawn-at-startup "gotify-desktop"
 
 hotkey-overlay { skip-at-startup; }
-environment { DISPLAY ":12"; }
 binds {
-    Alt+C { spawn "codium"; }
     Alt+F { spawn "nautilus"; }
     Alt+N { spawn-sh "noctalia msg settings-toggle"; }
     Alt+Return { spawn "foot"; }
     Alt+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
     Alt+T { spawn "gnome-text-editor"; }
-    // Alt+W { spawn "firefox"; }
     Alt+W { spawn "zen"; }
-    Alt+M { spawn "thunderbird"; }
     Ctrl+Alt+Delete { spawn-sh "noctalia msg panel-toggle session"; }
-    Mod+Comma { consume-window-into-column; }
+    Mod+O repeat=false {toggle-overview; }
+    Mod+Comma { consume-or-expel-window-left; }
+    Mod+Period { consume-or-expel-window-right; }
+
     Mod+Ctrl+Down { move-window-down-or-to-workspace-down; }
     Mod+Ctrl+Left { move-column-left; }
     Mod+Ctrl+Right { move-column-right; }
@@ -110,9 +109,8 @@ binds {
     Mod+P { spawn "systemctl" "--user" "restart" "kanshi.service"; }
     "Mod+Page_Down" { focus-window-or-workspace-down; }
     "Mod+Page_Up" { focus-window-or-workspace-up; }
-    Mod+Period { expel-window-from-column; }
     Mod+Plus { set-column-width "+10%"; }
-    Mod+Q { close-window; }
+    Mod+Q repeat=false { close-window; }
     Mod+R { switch-preset-column-width; }
     Mod+Right { focus-column-right; }
     Mod+Shift+7 { show-hotkey-overlay; }
@@ -128,17 +126,11 @@ binds {
     Mod+V { toggle-window-floating; }
     Mod+W { toggle-column-tabbed-display; }
     Print { screenshot; }
-    // XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; }
-    // XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-    // XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    // XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+"; }
-    // XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
-    // XF86MonBrightnessUp { spawn "brightnessctl" "set" "5%+"; }
-    XF86AudioRaiseVolume { spawn-sh "noctalia msg volume-up"; }
-    XF86AudioLowerVolume { spawn-sh "noctalia msg volume-down"; }
-    XF86AudioMute { spawn-sh "noctalia msg volume-mute"; }
-    XF86MonBrightnessUp { spawn-sh "noctalia msg brightness-up"; }
-    XF86MonBrightnessDown { spawn-sh "noctalia msg brightness-down"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "noctalia msg volume-up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "noctalia msg volume-down"; }
+    XF86AudioMute allow-when-locked=true { spawn-sh "noctalia msg volume-mute"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn-sh "noctalia msg brightness-up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "noctalia msg brightness-down"; }
 }
 
 gestures { hot-corners { off; }; }
@@ -148,4 +140,3 @@ debug { honor-xdg-activation-with-invalid-serial; }
 
 
 include "./noctalia.kdl"
-

@@ -19,6 +19,7 @@
     wdisplays
     wl-clipboard
     kanshi # Config in dotfiles
+    kdePackages.qt6ct
     numix-cursor-theme
     papirus-icon-theme
     nwg-look # Needed for setting gtk theme in Noctalia
@@ -33,27 +34,10 @@
   environment.sessionVariables = {
     TERMINAL = "foot";
     NIXOS_OZONE_WL = "1"; # For electron applications such as vscode
-    QT_QPA_PLATFORMTHEME = "gtk3"; # In order to get icons working in Noctalia: https://docs.noctalia.dev/getting-started/faq/
-  };
-
-  # Extra Portal Configuration
-  # xdg-desktop-portal provides a portal frontend service for Flatpak, Snap, and possibly other desktop containment/sandboxing frameworks.
-  # Niri is not a wlroots compositor so xdg-desktop-portal-wlr is not used;
-  # programs.niri.enable routes portal interfaces to gnome/gtk backends.
-  xdg.portal = {
-    enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal
-    ];
-    configPackages = [
-      pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal
-    ];
+    QT_QPA_PLATFORMTHEME = "qt6ct"; # Let Noctalia's Qt/KColorScheme templates drive Qt appearance.
   };
 
   services = {
-    blueman.enable = true; # Bluetooth
     gvfs.enable = true; # Nautilus sftp
     greetd = {
       enable = true;

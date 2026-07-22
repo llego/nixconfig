@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-07-15 19:08 UTC
+Last updated: 2026-07-22 12:16 UTC
 
 ## Current State
+
+Laptop desktop environment cleanup is in progress: Niri cursor theme uses installed `Numix-Cursor`; the stale Niri `environment { DISPLAY ":12"; }` override was removed and the live Niri config was reloaded; manual `xdg.portal` overrides were removed so `programs.niri.enable` provides `gnome-keyring`, `xdg-desktop-portal-gnome`, `xdg-desktop-portal-gtk`, and `niri-portals.conf`; `services.blueman.enable` was removed so BlueZ remains enabled without the redundant Blueman GTK autostart applet. Qt theming was switched from `QT_QPA_PLATFORMTHEME=gtk3` to `qt6ct`, and `kdePackages.qt6ct` was added for Noctalia Qt/KColorScheme template use. Live GTK4 Noctalia state was cleaned so `gtk.css` and `gtk-dark.css` import only generated `noctalia.css`; fresh portal logs no longer show missing `libadwaita.css` parser errors.
 
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
