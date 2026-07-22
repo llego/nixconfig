@@ -21,6 +21,7 @@ in {
     ./homepage.nix
     ./opencloud.nix
     ./restic-backup.nix
+    ./ups.nix
     ./disk-config.nix
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -296,29 +297,10 @@ in {
     # Firewall
     firewall = {
       enable = true;
-      # Allow Yamaha MusicCast to send UDP push events (position updates, state changes)
-      # back to Music Assistant on its ephemeral UDP port. The Yamaha sends these as
-      # unsolicited packets which are otherwise blocked by the stateful firewall.
-      # Note: extraInputRules uses nftables syntax and is silently ignored when
-      # networking.nftables.enable is false (which it must be while Docker uses iptables).
-      # extraCommands/extraStopCommands use iptables syntax and work correctly here.
-      extraCommands = ''
-        iptables -A nixos-fw -p udp -s 192.168.1.247 -j nixos-fw-accept
-      '';
-      extraStopCommands = ''
-        iptables -D nixos-fw -p udp -s 192.168.1.247 -j nixos-fw-accept 2>/dev/null || true
-      '';
       allowedTCPPorts = [
         22 # SSH
-        net.crisuflix.nut.port # NUT (UPS monitoring)
         5201 # iperf3
-        net.crisuflix.musicAssistant.uiPort # Music Assistant (Web UI)
-        8098 # Music Assistant Web Socket
         net.crisuflix.jellyfin.port # Jellyfin
-        net.crisuflix.musicAssistant.streamPort # Music Assistant (Stream Server)
-        net.crisuflix.homeAssistant.port # Home Assistant
-        net.crisuflix.mosquitto.port # MQTT (Mosquitto)
-        net.crisuflix.homepage.port # Homepage dashboard (for VPS Traefik)
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];
       interfaces.tailscale0 = {
@@ -340,46 +322,5 @@ in {
   services.smartd = {
     enable = true;
     autodetect = true;
-  };
-
-  # UPS Configuration (NUT - Network UPS Tools)
-  power.ups = {
-    enable = true;
-    mode = "standalone";
-
-    ups."ups" = {
-      driver = "usbhid-ups";
-      port = "auto";
-    };
-
-    upsmon = {
-      monitor."ups" = {
-        user = "upsmon";
-        powerValue = 1;
-        system = "ups@localhost";
-      };
-
-      settings = {
-        # Shutdown configuration
-        FINALDELAY = 5; # Wait 5 seconds before actual shutdown
-
-        # Notifications
-        NOTIFYFLAG = [
-          ["ONLINE" "SYSLOG+WALL"]
-          ["ONBATT" "SYSLOG+WALL"]
-          ["LOWBATT" "SYSLOG+WALL+EXEC"] # Log, wall, and execute shutdown on low battery
-          ["FSD" "SYSLOG+WALL+EXEC"] # Forced shutdown signal
-          ["SHUTDOWN" "SYSLOG+WALL"]
-          ["REPLBATT" "SYSLOG+WALL"]
-        ];
-      };
-    };
-
-    users = {
-      upsmon = {
-        passwordFile = "/run/keys/nut-password";
-        upsmon = "primary";
-      };
-    };
   };
 }

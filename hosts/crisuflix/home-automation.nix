@@ -51,6 +51,27 @@ in {
   # JIT in nixpkgs (nixpkgs PR #344925).
   systemd.services.music-assistant.serviceConfig.MemoryDenyWriteExecute = lib.mkForce false;
 
+  networking.firewall = {
+    # Allow Yamaha MusicCast to send UDP push events (position updates, state
+    # changes) back to Music Assistant on its ephemeral UDP port. The Yamaha
+    # sends these as unsolicited packets which are otherwise blocked by the
+    # stateful firewall. Use iptables syntax because nftables extraInputRules is
+    # ignored while Docker uses iptables.
+    extraCommands = ''
+      iptables -A nixos-fw -p udp -s 192.168.1.247 -j nixos-fw-accept
+    '';
+    extraStopCommands = ''
+      iptables -D nixos-fw -p udp -s 192.168.1.247 -j nixos-fw-accept 2>/dev/null || true
+    '';
+
+    allowedTCPPorts = [
+      net.crisuflix.musicAssistant.uiPort # Music Assistant (Web UI)
+      net.crisuflix.musicAssistant.streamPort # Music Assistant (Stream Server)
+      net.crisuflix.homeAssistant.port # Home Assistant
+      net.crisuflix.mosquitto.port # MQTT (Mosquitto)
+    ];
+  };
+
   # ESPHome dashboard (native NixOS service)
   services.esphome = {
     enable = true;

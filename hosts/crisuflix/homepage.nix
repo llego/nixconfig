@@ -101,6 +101,10 @@ in {
       ];
     };
 
+    networking.firewall.allowedTCPPorts = [
+      net.crisuflix.homepage.port # Homepage dashboard (for VPS Traefik)
+    ];
+
     services.homepage-dashboard = {
       enable = true;
       listenPort = net.crisuflix.homepage.port;

@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-22 19:31 UTC
+Last updated: 2026-07-22 19:48 UTC
 
 ## Current State
 
@@ -9,6 +9,8 @@ Host-specific services have been moved under their owning host directories. VPS-
 Crisuflix Homepage entries are now contributed by service modules through local aggregation options in `hosts/crisuflix/homepage.nix`: `local.homepageServices` and `local.homepageWidgets`. `hosts/crisuflix/home-automation.nix` contributes Home Assistant, ESPHome, and Music Assistant entries; `hosts/crisuflix/opencloud.nix` contributes OpenCloud; new `hosts/crisuflix/glances.nix` owns the Glances service/systemd override and contributes both the Glances widget and service entry. VPS/external/manual entries such as Gotify, Uptime Kuma, Headplane, Traefik, Dockge, UniFi, and CUPS remain in `homepage.nix` because their owning service modules are not imported by crisuflix. Homepage service/widget evals pass, and dry builds for both `crisuflix` and `vps` succeed.
 
 Crisuflix was deployed with `sudo nixos-rebuild switch --flake .#crisuflix`. The first non-sudo switch built successfully but failed to set `/nix/var/nix/profiles/system` due to permissions; the sudo switch completed. Post-deploy checks: `homepage-dashboard.service`, `glances.service`, and `opencloud.service` are active; `http://127.0.0.1:3000` returns 200 for Homepage; Glances responds successfully to GET on `http://127.0.0.1:61208`.
+
+Home-automation-related firewall openings moved from `hosts/crisuflix/default.nix` into `hosts/crisuflix/home-automation.nix`: Home Assistant, MQTT/Mosquitto, Music Assistant UI/stream ports, and the Yamaha MusicCast UDP iptables allow rule. Homepage's firewall port moved into `hosts/crisuflix/homepage.nix`. UPS/NUT config moved into new `hosts/crisuflix/ups.nix`, including the NUT firewall port. Targeted evals for merged firewall ports and UPS config pass. `nixos-rebuild dry-build --flake .#crisuflix` succeeded, followed by `sudo nixos-rebuild switch --flake .#crisuflix`. Post-switch checks: `homepage-dashboard.service` and `glances.service` are active, Homepage returns 200 on `http://127.0.0.1:3000`, Glances GET succeeds on `http://127.0.0.1:61208`, and NUT units `upsd.service`, `upsdrv.service`, and `upsmon.service` are active.
 
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
@@ -30,6 +32,7 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 - VPS-local Traefik dynamic routes should live beside the service module that owns the backend. The VPS reverse proxy module should keep Traefik infrastructure, shared middlewares, and routes to services hosted elsewhere, such as crisuflix.
 - Host-specific service and edge configs belong under `hosts/<host>/`; only modules expected to be reused by more than one host should remain under `modules/`.
 - For Homepage, entries for services running on crisuflix should live beside the owning crisuflix service module and be merged through `local.homepageServices` / `local.homepageWidgets`; entries for external or VPS-owned services stay in `hosts/crisuflix/homepage.nix` unless a cross-host metadata layer is introduced.
+- Firewall openings should live beside the service that owns the listener where practical; keep only host-general ports in `hosts/<host>/default.nix`.
 
 ## Top 3 Next Actions
 
