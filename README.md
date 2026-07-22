@@ -20,9 +20,14 @@ git add .
 ```
 
 ```bash
-# VPS
+# VPS, when not already on crisuflix
 nixos-rebuild switch --flake .#vps \
   --build-host llego@crisuflix \
+  --target-host llego@christiansandberg.fi --sudo
+
+# VPS, when already on crisuflix
+# Omit --build-host to avoid self-SSH host key verification issues.
+nixos-rebuild switch --flake .#vps \
   --target-host llego@christiansandberg.fi --sudo
 
 # NAS, when not already on crisuflix

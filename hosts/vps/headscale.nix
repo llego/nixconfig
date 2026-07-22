@@ -94,35 +94,6 @@ in {
     };
   };
 
-  # services.dnsmasq = {
-  #   enable = true;
-  #   resolveLocalQueries = false;
-  #   settings = {
-  #     # Only listen on the VPS tailnet interface; this DNS responder exists
-  #     # solely for Headscale split DNS clients.
-  #     interface = "tailscale0";
-  #     "bind-interfaces" = true;
-  #     "no-resolv" = true;
-
-  #     # Wildcard the entire llego.me zone to crisuflix's tailnet IP so internal
-  #     # Traefik receives *.llego.me requests over Headscale instead of public DNS.
-  #     address = ["/llego.me/100.64.0.1"];
-  #   };
-  # };
-
-  # systemd.services.dnsmasq = {
-  #   # tailscale0 must exist before dnsmasq binds to it; if tailscaled restarts
-  #   # and recreates the interface, restart dnsmasq so it re-binds cleanly.
-  #   after = ["tailscaled.service"];
-  #   wants = ["tailscaled.service"];
-  #   partOf = ["tailscaled.service"];
-  # };
-
-  # networking.firewall.interfaces.tailscale0 = {
-  #   allowedTCPPorts = [53];
-  #   allowedUDPPorts = [53];
-  # };
-
   nixpkgs.overlays = [inputs.headplane.overlays.default];
 
   services.headplane = {
@@ -157,4 +128,51 @@ in {
   systemd.tmpfiles.rules = [
     "d /var/lib/headplane/agent 0700 headscale headscale - -"
   ];
+
+  services.traefik.dynamicConfigOptions.http = {
+    routers = {
+      headscale = {
+        rule = "Host(`headscale.cri.su`)";
+        entryPoints = ["websecure"];
+        service = "headscale";
+        tls.certResolver = "hetzner";
+        # Browser SSH runs from headplane.cri.su but needs direct browser
+        # access to Headscale's DERP/WebSocket endpoints on headscale.cri.su.
+        middlewares = ["headscale-cors"];
+      };
+      headplane = {
+        rule = "Host(`headplane.cri.su`)";
+        entryPoints = ["websecure"];
+        service = "headplane";
+        tls.certResolver = "hetzner";
+      };
+    };
+
+    services = {
+      headscale.loadBalancer = {
+        servers = [
+          {
+            url = "http://${net.hosts.loopback}:${toString net.vps.headscale.port}";
+          }
+        ];
+        passHostHeader = true;
+      };
+      headplane.loadBalancer.servers = [
+        {
+          url = "http://${net.hosts.loopback}:${toString net.vps.headplane.port}";
+        }
+      ];
+    };
+
+    middlewares.headscale-cors.headers = {
+      accessControlAllowOriginList = ["https://headplane.cri.su"];
+      accessControlAllowMethods = ["GET" "POST" "OPTIONS"];
+      accessControlAllowHeaders = [
+        "Content-Type"
+        "Upgrade"
+        "Sec-WebSocket-Protocol"
+      ];
+      addVaryHeader = true;
+    };
+  };
 }

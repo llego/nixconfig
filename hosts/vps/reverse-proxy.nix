@@ -125,52 +125,11 @@ in {
       serversTransport.insecureSkipVerify = true;
     };
 
-    # Dynamic configuration for native services (Authelia, Gotify, Uptime Kuma)
+    # Dynamic configuration for the VPS edge and services hosted on crisuflix.
+    # VPS-local service routes live beside their service definitions.
     dynamicConfigOptions = {
       http = {
         routers = {
-          authelia-cri-su = {
-            rule = "Host(`auth.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "authelia-cri-su";
-            tls.certResolver = "hetzner";
-          };
-          gotify = {
-            rule = "Host(`gotify.tailnet.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "gotify";
-            tls.certResolver = "hetzner";
-            middlewares = ["tailnet-only"];
-          };
-          uptime-kuma = {
-            rule = "Host(`uptime.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "uptime-kuma";
-            tls.certResolver = "hetzner";
-            middlewares = ["authelia-cri-su"];
-          };
-          # Hetzner-hosted domains
-          website = {
-            rule = "Host(`christiansandberg.fi`) || Host(`sandbergs.fi`) || Host(`crisusandberg.fi`) || Host(`csandberg.fi`)";
-            entryPoints = ["websecure"];
-            service = "website";
-            tls.certResolver = "hetzner";
-          };
-          # csandberg.consulting is on deSEC — needs its own resolver and wildcard cert
-          website-consulting = {
-            rule = "Host(`csandberg.consulting`)";
-            entryPoints = ["websecure"];
-            service = "website";
-            tls = {
-              certResolver = "desec";
-              domains = [
-                {
-                  main = "csandberg.consulting";
-                  sans = ["*.csandberg.consulting"];
-                }
-              ];
-            };
-          };
           homeassistant = {
             rule = "Host(`ha.cri.su`)";
             entryPoints = ["websecure"];
@@ -211,21 +170,6 @@ in {
             tls.certResolver = "hetzner";
             # No Authelia — WOPI requests from OpenCloud must pass through unauthenticated
           };
-          headscale = {
-            rule = "Host(`headscale.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "headscale";
-            tls.certResolver = "hetzner";
-            # Browser SSH runs from headplane.cri.su but needs direct browser
-            # access to Headscale's DERP/WebSocket endpoints on headscale.cri.su.
-            middlewares = ["headscale-cors"];
-          };
-          headplane = {
-            rule = "Host(`headplane.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "headplane";
-            tls.certResolver = "hetzner";
-          };
           traefik-dashboard = {
             rule = "Host(`traefik.cri.su`)";
             entryPoints = ["websecure"];
@@ -236,26 +180,6 @@ in {
         };
 
         services = {
-          authelia-cri-su.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.loopback}:${toString net.vps.authelia.port}";
-            }
-          ];
-          gotify.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.loopback}:${toString net.vps.gotify.port}";
-            }
-          ];
-          uptime-kuma.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.loopback}:${toString net.vps.uptimeKuma.port}";
-            }
-          ];
-          website.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.loopback}:${toString net.vps.website.port}";
-            }
-          ];
           homepage.loadBalancer.servers = [
             {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homepage.port}";
@@ -290,19 +214,6 @@ in {
             # Collabora uses WebSockets for real-time editing
             passHostHeader = true;
           };
-          headscale.loadBalancer = {
-            servers = [
-              {
-                url = "http://${net.hosts.loopback}:${toString net.vps.headscale.port}";
-              }
-            ];
-            passHostHeader = true;
-          };
-          headplane.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.loopback}:${toString net.vps.headplane.port}";
-            }
-          ];
           traefik-api.loadBalancer.servers = [
             {
               url = "http://${net.hosts.loopback}:${toString net.vps.traefik.port}";
@@ -312,25 +223,6 @@ in {
 
         middlewares = {
           tailnet-only.ipAllowList.sourceRange = ["100.64.0.0/10"];
-
-          # Allow Headplane Browser SSH's in-browser Tailscale node to reach
-          # Headscale across the headplane.cri.su -> headscale.cri.su origin boundary.
-          headscale-cors.headers = {
-            accessControlAllowOriginList = ["https://headplane.cri.su"];
-            accessControlAllowMethods = ["GET" "POST" "OPTIONS"];
-            accessControlAllowHeaders = [
-              "Content-Type"
-              "Upgrade"
-              "Sec-WebSocket-Protocol"
-            ];
-            addVaryHeader = true;
-          };
-
-          authelia-cri-su.forwardAuth = {
-            address = "http://${net.hosts.loopback}:${toString net.vps.authelia.port}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.cri.su%2F";
-            authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
-            trustForwardHeader = true;
-          };
         };
       };
     };

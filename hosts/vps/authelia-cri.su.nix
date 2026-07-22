@@ -434,4 +434,25 @@ in {
       AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE = config.age.secrets."authelia-cri.su-smtp".path;
     };
   };
+
+  services.traefik.dynamicConfigOptions.http = {
+    routers.authelia-cri-su = {
+      rule = "Host(`auth.cri.su`)";
+      entryPoints = ["websecure"];
+      service = "authelia-cri-su";
+      tls.certResolver = "hetzner";
+    };
+
+    services.authelia-cri-su.loadBalancer.servers = [
+      {
+        url = "http://${net.hosts.loopback}:${toString net.vps.authelia.port}";
+      }
+    ];
+
+    middlewares.authelia-cri-su.forwardAuth = {
+      address = "http://${net.hosts.loopback}:${toString net.vps.authelia.port}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.cri.su%2F";
+      authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];
+      trustForwardHeader = true;
+    };
+  };
 }

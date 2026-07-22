@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-22 17:46 UTC
+Last updated: 2026-07-22 18:33 UTC
 
 ## Current State
 
@@ -16,19 +16,13 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 
 ## Architecture Principles
 
-- Services that bind to Tailnet IPs or publish over `tailscale0` must not rely on generic `network-online.target`; they need an explicit Tailscale readiness gate or service-level retry.
-- Tailnet-only service hostnames under `tailnet.cri.su` should use exact Headscale DNS records plus service-level access controls; public `*.cri.su` routes should be removed when a service is intended to be tailnet-only.
 - Services that bind to or firewall tailnet endpoints should use stable tailnet IPs or explicit readiness gates instead of depending on MagicDNS during boot.
 - Traefik providers backed by local services should have explicit systemd ordering and should prefer local loopback endpoints where possible.
 - `networkVars.hosts.vps` and `networkVars.hosts.crisuflix` intentionally use stable tailnet IPs, not MagicDNS names, so boot-critical bind, firewall, and provider paths stay deterministic.
 - Stable tailnet IPs remove MagicDNS races but do not prove the IP is assigned at boot; services binding those IPs still need a Tailscale readiness gate when temporary failure/retry is not acceptable.
+- Multi-service Docker stacks published through traefik-kop should set both `traefik.http.routers.<router>.service` and `traefik.http.services.<service>.loadbalancer.server.port` explicitly, avoiding generated service-name churn and stale Redis provider state.
+- VPS-local Traefik dynamic routes should live beside the service module that owns the backend. The VPS reverse proxy module should keep Traefik infrastructure, shared middlewares, and routes to services hosted elsewhere, such as crisuflix.
 
 ## Top 3 Next Actions
 
-- Decide whether to add a simple `redis-traefik` `preStart` gate on VPS that waits for `tailscale ip -4` to equal `100.64.0.4`, eliminating the observed boot-time bind failures.
-- Deploy/reboot crisuflix later to verify Docker starts after Tailscale and local Traefik binds `100.64.0.1:80/443` reliably.
-- If the Redis `preStart` gate is added, deploy VPS again and reboot once more to verify clean boot logs and immediate traefik-kop route availability.
-
 ## Blockers
-
-- No hard blockers. VPS currently recovers automatically after reboot, but Redis has a temporary boot-time bind race until Tailscale assigns `100.64.0.4`.
