@@ -41,12 +41,6 @@
           owner = "llego";
           group = "users";
         };
-        supermemory-api-key = {
-          file = ./../../secrets/supermemory-api-key.age;
-          mode = "0400";
-          owner = "llego";
-          group = "users";
-        };
       }
       else {}
     )
@@ -59,6 +53,12 @@
           mode = "0400";
           owner = "root";
           group = "root";
+        };
+        gotify-desktop-token = {
+          file = ./../../secrets/gotify-desktop-token.age;
+          mode = "0400";
+          owner = "llego";
+          group = "users";
         };
       }
       else if hostname == "rpi5"
@@ -247,9 +247,6 @@
   environment.extraInit = lib.mkIf (builtins.elem hostname ["laptop" "crisuflix"]) ''
     if [ -r /run/agenix/ha-mcp-token ]; then
       export HA_MCP_TOKEN=$(cat /run/agenix/ha-mcp-token)
-    fi
-    if [ -r /run/agenix/supermemory-api-key ]; then
-      export SUPERMEMORY_API_KEY=$(cat /run/agenix/supermemory-api-key)
     fi
   '';
 }

@@ -13,17 +13,16 @@
     pavucontrol
     xwayland-satellite
     wayland-utils
-    # fuzzel # config in dotfiles
+    gotify-desktop # Config in dotfiles
     brightnessctl
     wlr-randr
     wdisplays
     wl-clipboard
-    kanshi # config in dotfiles
+    kanshi # Config in dotfiles
     numix-cursor-theme
     papirus-icon-theme
     nwg-look # Needed for setting gtk theme in Noctalia
     adw-gtk3 # Needed for setting gtk theme in Noctalia
-    # noctalia-shell # Noctalia shell
     inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
@@ -219,17 +218,11 @@
   in {
     xdg.config.files =
       {
-        # Niri configuration files
         "niri/config.kdl".source = dots + "/niri/config.kdl";
-
-        # Kanshi configuration file
         "kanshi/config".source = dots + "/kanshi/config";
-
-        # GTK configuration files
         "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
-
-        # Noctalia configuration files
         "noctalia/config.toml".source = dots + "/noctalia/config.toml";
+        "gotify-desktop/config.toml".source = dots + "/gotify-desktop/config.toml";
       }
       // wallpaperMappings;
 
