@@ -80,7 +80,7 @@ layer-rule {
 }
 
 spawn-at-startup "noctalia"
-
+spawn-at-startup "gotify-desktop"
 
 hotkey-overlay { skip-at-startup; }
 environment { DISPLAY ":12"; }

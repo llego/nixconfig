@@ -219,7 +219,7 @@
     xdg.config.files =
       {
         "niri/config.kdl".source = dots + "/niri/config.kdl";
-        "kanshi/config".source = dots + "/kanshi/config";
+        # "kanshi/config".source = dots + "/kanshi/config"; # Config moved from dotfile to laptop/default.nix
         "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
         "noctalia/config.toml".source = dots + "/noctalia/config.toml";
         "gotify-desktop/config.toml".source = dots + "/gotify-desktop/config.toml";

@@ -1,6 +1,6 @@
 [gotify]
 url = "wss://gotify.cri.su:443"
-token = { command = "cat ${config.age.secrets.gotify-desktop-token.path}" }
+token = { command = "cat /run/agenix/gotify-desktop-token" }
 
 # optional, if true, deletes messages that have been handled, defaults to false
 # auto_delete = true
