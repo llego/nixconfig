@@ -19,6 +19,13 @@
   cloudDomain = "cloud.cri.su";
   officeDomain = "office.cri.su";
 in {
+  # OpenCloud's current idp-web package in nixpkgs still builds with pnpm_9,
+  # which is marked insecure. Limit the exception to this module until nixpkgs
+  # moves that package to a fixed pnpm release.
+  nixpkgs.config.permittedInsecurePackages = [
+    "pnpm-9.15.9"
+  ];
+
   # ── Secrets ───────────────────────────────────────────────────────────────
   age.secrets.opencloud-env = {
     file = ../secrets/opencloud-env.age;

@@ -80,13 +80,13 @@ in {
           }
           {
             gotify = {
-              href = "https://gotify.cri.su";
+              href = "https://gotify.tailnet.cri.su";
               icon = "gotify";
-              description = "cri.su";
-              siteMonitor = "https://gotify.cri.su";
+              description = "tailnet.cri.su";
+              siteMonitor = "https://gotify.tailnet.cri.su";
               widget = {
                 type = "gotify";
-                url = "https://gotify.cri.su";
+                url = "https://gotify.tailnet.cri.su";
                 key = "{{HOMEPAGE_VAR_GOTIFY_KEY}}";
               };
             };

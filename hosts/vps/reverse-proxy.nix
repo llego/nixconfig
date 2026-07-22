@@ -132,10 +132,11 @@ in {
             tls.certResolver = "hetzner";
           };
           gotify = {
-            rule = "Host(`gotify.cri.su`)";
+            rule = "Host(`gotify.tailnet.cri.su`)";
             entryPoints = ["websecure"];
             service = "gotify";
             tls.certResolver = "hetzner";
+            middlewares = ["tailnet-only"];
           };
           uptime-kuma = {
             rule = "Host(`uptime.cri.su`)";
@@ -306,6 +307,8 @@ in {
         };
 
         middlewares = {
+          tailnet-only.ipAllowList.sourceRange = ["100.64.0.0/10"];
+
           # Allow Headplane Browser SSH's in-browser Tailscale node to reach
           # Headscale across the headplane.cri.su -> headscale.cri.su origin boundary.
           headscale-cors.headers = {

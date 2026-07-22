@@ -1,5 +1,5 @@
 [gotify]
-url = "wss://gotify.cri.su:443"
+url = "wss://gotify.tailnet.cri.su:443"
 token = { command = "cat /run/agenix/gotify-desktop-token" }
 
 # optional, if true, deletes messages that have been handled, defaults to false
