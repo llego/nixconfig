@@ -12,14 +12,14 @@
     hosts = {
       vps = lib.mkOption {
         type = lib.types.str;
-        default = "vps.tailnet.cri.su";
-        description = "VPS hostname (resolved via Headscale MagicDNS)";
+        default = "100.64.0.4";
+        description = "VPS stable tailnet IP";
       };
 
       crisuflix = lib.mkOption {
         type = lib.types.str;
-        default = "crisuflix.tailnet.cri.su";
-        description = "Crisuflix hostname (resolved via Headscale MagicDNS)";
+        default = "100.64.0.1";
+        description = "Crisuflix stable tailnet IP";
       };
 
       loopback = lib.mkOption {

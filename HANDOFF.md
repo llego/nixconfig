@@ -1,16 +1,14 @@
 # HANDOFF
 
-Last updated: 2026-07-22 13:10 UTC
+Last updated: 2026-07-22 17:46 UTC
 
 ## Current State
 
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
-Headplane Browser SSH follow-up: Crisuflix advertises Tailscale SSH with `--ssh` and local status shows `https://tailscale.com/cap/ssh`. `hosts/vps/reverse-proxy.nix` now attaches a `headscale-cors` Traefik headers middleware to the `headscale.cri.su` router so Browser SSH on `headplane.cri.su` can reach Headscale cross-origin. The Browser SSH button appears, but the deployed Headplane package currently shows `Browser SSH is not available` because the Nix build does not serve `/admin/hp_ssh.wasm` and `/admin/wasm_exec.js`. Upstream PR `tale/headplane#588` fixes the package by copying the WASM assets into `public/` and running `pnpm build`; it has passed checks, so the current decision is to wait for merge and then update the `headplane` flake input rather than carrying a local overlay. Local eval and `nixos-rebuild dry-build --flake .#vps` succeed for the current config.
-
-Headscale now has a generated HuJSON policy in `hosts/vps/headscale.nix`: broad `acls` preserve the existing all-to-all tailnet behavior, and an `ssh` rule allows `autogroup:member` to `autogroup:self` as local user `llego` for Tailscale/Headplane Browser SSH. Local eval, generated policy inspection, and `nixos-rebuild dry-build --flake .#vps` succeed; VPS deploy is pending.
-
 Docker on crisuflix now waits for Tailscale before starting. `hosts/crisuflix/default.nix` orders `docker.service` after/wants `tailscaled.service` and `tailscaled-set.service`, and adds a `preStart` gate that waits up to 120 seconds for `tailscale ip -4` to return `100.64.0.1`. This prevents Docker from auto-restoring `restart=unless-stopped` containers before local Traefik can bind `100.64.0.1:80/443` and before traefik-kop can use `tailscale0`. Local eval and `nixos-rebuild dry-build --flake .#crisuflix` succeed; deploy/reboot verification is pending.
+
+VPS traefik-kop reboot fix has been simplified in config: `networkVars.hosts.vps` is now the stable tailnet IP `100.64.0.4` and `networkVars.hosts.crisuflix` is now `100.64.0.1`, removing MagicDNS from Redis bind/provider/firewall paths. `hosts/vps/reverse-proxy.nix` now orders Traefik after/wants `redis-traefik.service`. Local eval confirms Redis binds `100.64.0.4`, Traefik uses Redis endpoint `100.64.0.4:6379`, and Traefik wants/starts after `redis-traefik.service`; `nixos-rebuild dry-build --flake .#vps` succeeds. VPS was deployed and rebooted. Runtime recovered without manual restarts: `tailscaled`, `headscale`, `redis-traefik`, and `traefik` are active; Redis listens on `100.64.0.4:6379`; Traefik has Redis-backed routers; crisuflix can reach Redis; `https://ai.cri.su` returns 200; `https://traefik.cri.su` redirects to Authelia. Boot logs still show Redis initially failed with `bind: Cannot assign requested address` until Tailscale acquired `100.64.0.4`, so add a simple Redis `preStart` gate if clean boot logs/no temporary outage are desired.
 
 NFS on crisuflix is tailnet-wide and firewall-scoped to `tailscale0`: `/mnt/veckjarvi/media`, `/mnt/veckjarvi/backups/haos-backup`, and `/mnt/illby/docker` are exported to `100.64.0.0/10`. Parent exports for media and docker use `crossmnt` so child ZFS datasets are visible. Laptop mounts media and docker via `crisuflix.tailnet.cri.su` using NFSv4.2; both crisuflix and laptop have been rebuilt and switched, and `/mnt/crisuflix-media` plus `/mnt/crisuflix-docker` are verified active on laptop.
 
@@ -20,10 +18,17 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 
 - Services that bind to Tailnet IPs or publish over `tailscale0` must not rely on generic `network-online.target`; they need an explicit Tailscale readiness gate or service-level retry.
 - Tailnet-only service hostnames under `tailnet.cri.su` should use exact Headscale DNS records plus service-level access controls; public `*.cri.su` routes should be removed when a service is intended to be tailnet-only.
+- Services that bind to or firewall tailnet endpoints should use stable tailnet IPs or explicit readiness gates instead of depending on MagicDNS during boot.
+- Traefik providers backed by local services should have explicit systemd ordering and should prefer local loopback endpoints where possible.
+- `networkVars.hosts.vps` and `networkVars.hosts.crisuflix` intentionally use stable tailnet IPs, not MagicDNS names, so boot-critical bind, firewall, and provider paths stay deterministic.
+- Stable tailnet IPs remove MagicDNS races but do not prove the IP is assigned at boot; services binding those IPs still need a Tailscale readiness gate when temporary failure/retry is not acceptable.
 
 ## Top 3 Next Actions
 
-- Deploy crisuflix with `nixos-rebuild switch --flake .#crisuflix`, then reboot and verify Docker starts after `tailscale ip -4` reports `100.64.0.1`.
-- After reboot, verify `traefik` binds `100.64.0.1:80/443` and `traefik-kop` publishes routes to VPS Redis for `llego.me` services.
+- Decide whether to add a simple `redis-traefik` `preStart` gate on VPS that waits for `tailscale ip -4` to equal `100.64.0.4`, eliminating the observed boot-time bind failures.
+- Deploy/reboot crisuflix later to verify Docker starts after Tailscale and local Traefik binds `100.64.0.1:80/443` reliably.
+- If the Redis `preStart` gate is added, deploy VPS again and reboot once more to verify clean boot logs and immediate traefik-kop route availability.
 
 ## Blockers
+
+- No hard blockers. VPS currently recovers automatically after reboot, but Redis has a temporary boot-time bind race until Tailscale assigns `100.64.0.4`.

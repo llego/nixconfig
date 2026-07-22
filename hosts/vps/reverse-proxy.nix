@@ -22,9 +22,13 @@ in {
     };
   };
 
-  systemd.services.traefik.serviceConfig.Environment = [
-    "LEGO_DISABLE_CNAME_SUPPORT=true"
-  ];
+  systemd.services.traefik = {
+    after = ["redis-traefik.service"];
+    wants = ["redis-traefik.service"];
+    serviceConfig.Environment = [
+      "LEGO_DISABLE_CNAME_SUPPORT=true"
+    ];
+  };
 
   # Traefik reverse proxy
   services.traefik = {
