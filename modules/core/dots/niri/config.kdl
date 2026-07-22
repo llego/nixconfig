@@ -103,10 +103,10 @@ binds {
     Mod+F { maximize-column; }
     // Mod+F { maximize-window-to-edges; }
     Mod+I { focus-workspace-up; }
-    Mod+L { spawn-sh "noctalia msg session lock"; }
+    Mod+L hotkey-overlay-title="Lock screen" { spawn-sh "noctalia msg session lock"; }
     Mod+Left { focus-column-left; }
     Mod+Minus { set-column-width "-10%"; }
-    Mod+P { spawn "systemctl" "--user" "restart" "kanshi.service"; }
+    Mod+P hotkey-overlay-title="Restart Kanshi" { spawn "systemctl" "--user" "restart" "kanshi.service"; }
     "Mod+Page_Down" { focus-window-or-workspace-down; }
     "Mod+Page_Up" { focus-window-or-workspace-up; }
     Mod+Plus { set-column-width "+10%"; }
@@ -118,7 +118,7 @@ binds {
     // Mod+Shift+F { fullscreen-window; }
     Mod+Shift+F  { maximize-window-to-edges; }
     Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+P { power-off-monitors; }
+    Mod+Shift+P hotkey-overlay-title="Turn off monitors" { power-off-monitors; }
     Mod+Shift+Plus { set-window-height "+10%"; }
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
     Mod+U { focus-workspace-down; }
