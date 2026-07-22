@@ -34,8 +34,7 @@ in {
     # Also disable lego CNAME following to prevent zone-detection errors with apex domains
     environmentFiles = [
       config.age.secrets.desec-dns-token.path
-      config.age.secrets.hetzner-dns-token.path
-      config.age.secrets.hetzner-dns-token.path
+      config.age.secrets.hetzner-dns-token-env-variable.path
     ];
 
     staticConfigOptions = {
@@ -212,6 +211,9 @@ in {
             entryPoints = ["websecure"];
             service = "headscale";
             tls.certResolver = "hetzner";
+            # Browser SSH runs from headplane.cri.su but needs direct browser
+            # access to Headscale's DERP/WebSocket endpoints on headscale.cri.su.
+            middlewares = ["headscale-cors"];
           };
           headplane = {
             rule = "Host(`headplane.cri.su`)";
@@ -304,6 +306,19 @@ in {
         };
 
         middlewares = {
+          # Allow Headplane Browser SSH's in-browser Tailscale node to reach
+          # Headscale across the headplane.cri.su -> headscale.cri.su origin boundary.
+          headscale-cors.headers = {
+            accessControlAllowOriginList = ["https://headplane.cri.su"];
+            accessControlAllowMethods = ["GET" "POST" "OPTIONS"];
+            accessControlAllowHeaders = [
+              "Content-Type"
+              "Upgrade"
+              "Sec-WebSocket-Protocol"
+            ];
+            addVaryHeader = true;
+          };
+
           authelia-cri-su.forwardAuth = {
             address = "http://${net.hosts.loopback}:${toString net.vps.authelia.port}/api/authz/forward-auth?authelia_url=https%3A%2F%2Fauth.cri.su%2F";
             authResponseHeaders = ["Remote-User" "Remote-Groups" "Remote-Email" "Remote-Name"];

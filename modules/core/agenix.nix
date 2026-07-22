@@ -72,20 +72,13 @@
       }
       else if hostname == "crisuflix"
       then {
-        hermes-env = {
-          file = ./../../secrets/hermes-env.age;
-          path = "/var/lib/hermes/env";
-          mode = "0400";
-          owner = "hermes";
-          group = "hermes";
-        };
-        yle-sonarr-import-env = {
-          file = ./../../secrets/yle-sonarr-import-env.age;
-          path = "/run/keys/yle-sonarr-import-env";
-          mode = "0400";
-          owner = "root";
-          group = "root";
-        };
+        # hermes-env = {
+        #   file = ./../../secrets/hermes-env.age;
+        #   path = "/var/lib/hermes/env";
+        #   mode = "0400";
+        #   owner = "hermes";
+        #   group = "hermes";
+        # };
         nut-password = {
           file = ./../../secrets/nut-password.age;
           path = "/run/keys/nut-password";
@@ -155,6 +148,12 @@
         # Hetzner DNS API token for Traefik DNS-01 challenge and cri.su DDNS
         hetzner-dns-token = {
           file = ./../../secrets/hetzner-dns-token.age;
+          mode = "0440";
+          owner = "root";
+          group = "hetzner-ddns";
+        };
+        hetzner-dns-token-env-variable = {
+          file = ./../../secrets/hetzner-dns-token-env-variable.age;
           mode = "0400";
           owner = "root";
           group = "root";

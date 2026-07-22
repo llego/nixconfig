@@ -4,7 +4,6 @@
   pkgs,
   modulesPath,
   inputs,
-  username,
   ...
 }: {
   system.stateVersion = "24.05";
@@ -29,7 +28,12 @@
     LIBVA_DRIVER_NAME = "iHD";
   };
 
-  services.tailscale.authKeyFile = config.age.secrets.tailscale-preauth-laptop.path;
+  services.tailscale = {
+    authKeyFile = config.age.secrets.tailscale-preauth-laptop.path;
+    extraSetFlags = [
+      "--ssh"
+    ];
+  };
 
   hardware = {
     bluetooth.enable = true;
@@ -84,35 +88,33 @@
 
   systemd.tmpfiles.rules = [
     "d /mnt/crisuflix-docker 0755 root root -"
-    "d /mnt/crisuflix-docker/data 0755 root root -"
-    "d /mnt/crisuflix-docker/stacks 0755 root root -"
+    "d /mnt/crisuflix-media 0755 root root -"
   ];
-  fileSystems."/mnt/crisuflix-docker/data" = {
-    device = "crisuflix.home:/mnt/illby/docker/data";
+  fileSystems."/mnt/crisuflix-docker" = {
+    device = "crisuflix.tailnet.cri.su:/mnt/illby/docker";
     fsType = "nfs";
     options = [
       "x-systemd.automount"
       "noauto"
       "x-systemd.idle-timeout=300"
       "noatime"
-      "nfsvers=4.0"
+      "nfsvers=4.2"
     ];
   };
 
-  fileSystems."/mnt/crisuflix-docker/stacks" = {
-    device = "crisuflix.home:/mnt/illby/docker/stacks";
+  fileSystems."/mnt/crisuflix-media" = {
+    device = "crisuflix.tailnet.cri.su:/mnt/veckjarvi/media";
     fsType = "nfs";
     options = [
       "x-systemd.automount"
       "noauto"
       "x-systemd.idle-timeout=300"
       "noatime"
-      "nfsvers=4.0"
+      "nfsvers=4.2"
     ];
   };
 
   boot = {
-    # Bootloader
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -129,7 +131,7 @@
       ];
       kernelModules = [];
       # Laptop has a hardware TPM2 chip but it is not enrolled in LUKS.
-      # Disable to prevent initrd TPM2 module errors (mirrors rpi5 fix).
+      # Disable to prevent initrd TPM2 module errors.
       systemd.tpm2.enable = false;
     };
     kernelModules = ["kvm-intel"];
@@ -154,12 +156,28 @@
   zramSwap = {
     enable = true;
     algorithm = "zstd";
-    memoryPercent = 100; # With 2-3x compression = 200-300% effective
+    memoryPercent = 100;
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  systemd.user.services.kanshi = {
+  systemd.user.services.kanshi = let
+    kanshiConfig = pkgs.writeText "kanshi-config" ''
+      profile undocked {
+        output eDP-1 enable scale 2.0
+      }
+
+      profile home_office_1 {
+        output DP-1 enable mode 3840x2160 scale 1.6
+        output eDP-1 disable
+      }
+
+      profile home_office_2 {
+        output DP-2 enable mode 3840x2160 scale 1.6
+        output eDP-1 disable
+      }
+    '';
+  in {
     enable = true;
     description = "Kanshi display auto-configuration";
     wantedBy = ["graphical-session.target"];
@@ -167,7 +185,7 @@
     after = ["graphical-session.target"];
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${pkgs.kanshi}/bin/kanshi -c /home/${username}/.config/kanshi/config";
+      ExecStart = "${pkgs.kanshi}/bin/kanshi -c ${kanshiConfig}";
       Restart = "on-failure";
       RestartSec = 3;
     };

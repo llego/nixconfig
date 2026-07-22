@@ -165,6 +165,21 @@ in {
         };
 
         clients = [
+          # Sparky
+          {
+            client_id = "sparky";
+            client_name = "Sparky";
+            client_secret = "$pbkdf2-sha512$310000$Y7642pQKzNOAWduaFNrGPw$6rpvk1luRb6ffdhUyz5mMyxH7txXRQihPwLg5Jlq1HZt6G/uBgmkKzkk9p5JUb63HYd1oiU1Dw9yRuntAgK.xA";
+            public = false;
+            authorization_policy = "two_factor";
+            redirect_uris = [
+              "https://sparky.cri.su/api/auth/sso/callback/authelia"
+            ];
+            scopes = ["openid" "profile" "email" "groups"];
+            id_token_signed_response_alg = "RS256";
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "client_secret_post";
+          }
           # Open-WebUI
           {
             client_id = "AGBx2j1MXj9U8E-L9H8MvL1dCWbH7KE30espMYWaZw8EV5gMWHYWfrNsLrZtUjWep0KJwK-d";
@@ -178,7 +193,29 @@ in {
               "https://ai.cri.su/oauth/oidc/callback"
             ];
             scopes = ["openid" "profile" "email" "groups"];
+            response_types = ["code"];
+            grant_types = ["authorization_code"];
+            access_token_signed_response_alg = "none";
             userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "client_secret_basic";
+          }
+          # Immich
+          {
+            client_id = "immich";
+            client_name = "Immich";
+            client_secret = "$pbkdf2-sha512$310000$YCAyVXxUoWLPHkxJ6XaoOw$FWpSPMOzSnmqzRZW5TfwvsqBhzHOcDXWbjiqUj62ojzv73bs11n/Aj5YzgDrFhmQmjMzePms9WUh/8T7bcDMxA";
+            public = false;
+            require_pkce = false;
+            redirect_uris = [
+              "https://immich.cri.su/auth/login"
+              "https://immich.cri.su/user-settings"
+              "app.immich:///oauth-callback"
+            ];
+            scopes = ["openid" "profile" "email"];
+            response_types = ["code"];
+            grant_types = ["authorization_code"];
+            id_token_signed_response_alg = "RS256";
+            userinfo_signed_response_alg = "RS256";
             token_endpoint_auth_method = "client_secret_post";
           }
 

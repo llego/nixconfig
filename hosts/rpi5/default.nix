@@ -16,7 +16,12 @@
     # inputs.ruuvi.nixosModules.default
   ];
 
-  services.tailscale.authKeyFile = config.age.secrets.tailscale-preauth-rpi5.path;
+  services.tailscale = {
+    authKeyFile = config.age.secrets.tailscale-preauth-rpi5.path;
+    extraSetFlags = [
+      "--ssh"
+    ];
+  };
 
   # System packages
   environment.systemPackages = with pkgs; [

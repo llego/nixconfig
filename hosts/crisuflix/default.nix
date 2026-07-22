@@ -16,8 +16,7 @@ in {
     ./../../modules/core
     ./../../modules/basic-cli.nix
     ./../../modules/home-automation.nix
-    ./../../modules/hermes
-    # ./../../modules/yle-sonarr-import.nix
+    # ./../../modules/hermes
     ./../../modules/homepage.nix
     ./../../modules/opencloud.nix
     ./../../modules/restic-backup.nix
@@ -149,10 +148,32 @@ in {
     extraUpFlags = [
       "--advertise-routes=192.168.1.0/24,192.168.3.0/24"
     ];
+    extraSetFlags = [
+      "--ssh"
+    ];
   };
 
   # Docker
   virtualisation.docker.enable = true;
+
+  # Docker restores containers with restart=unless-stopped as soon as dockerd
+  # starts. Traefik binds 100.64.0.1:80/443 and traefik-kop publishes routes
+  # over tailscale0, so wait until Tailscale has restored the tailnet address.
+  systemd.services.docker = {
+    after = ["tailscaled.service" "tailscaled-set.service"];
+    wants = ["tailscaled.service" "tailscaled-set.service"];
+    preStart = ''
+      for _ in $(seq 1 120); do
+        if [ "$(${pkgs.tailscale}/bin/tailscale ip -4 2>/dev/null)" = "100.64.0.1" ]; then
+          exit 0
+        fi
+        sleep 1
+      done
+
+      echo "Timed out waiting for Tailscale IPv4 100.64.0.1"
+      exit 1
+    '';
+  };
 
   # Ensure the traefik Docker networks exists before any containers start.
   # All stacks reference them as external: true, so they must pre-exist.
@@ -246,11 +267,8 @@ in {
   services.nfs.server = {
     enable = true;
     exports = ''
-      /mnt/veckjarvi/media/filmer 192.168.1.0/24(sec=sys,rw,anonuid=568,anongid=568,all_squash,no_subtree_check)
-      /mnt/veckjarvi/media/tv 192.168.1.0/24(sec=sys,rw,anonuid=568,anongid=568,all_squash,no_subtree_check)
-      /mnt/veckjarvi/backups/haos-backup 192.168.1.0/24(sec=sys,rw,anonuid=3001,all_squash,no_subtree_check)
-      /mnt/illby/docker/data 192.168.1.214(sec=sys,rw,anonuid=0,all_squash,no_subtree_check)
-      /mnt/illby/docker/stacks 192.168.1.214(sec=sys,rw,anonuid=0,anongid=0,all_squash,no_subtree_check)
+      /mnt/veckjarvi/media 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,crossmnt,no_subtree_check)
+      /mnt/illby/docker 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,crossmnt,no_subtree_check)
     '';
   };
 
@@ -263,12 +281,6 @@ in {
       KbdInteractiveAuthentication = false;
     };
   };
-
-  # Use llego's SSH key for GitHub when running as root (e.g. sudo git push)
-  programs.ssh.extraConfig = ''
-    Host github.com
-      IdentityFile /home/llego/.ssh/id_ed25519
-  '';
 
   # fail2ban for SSH protection
   services.fail2ban = {
@@ -330,8 +342,6 @@ in {
       '';
       allowedTCPPorts = [
         22 # SSH
-        net.nfs.rpcbind.port # NFS rpcbind
-        net.nfs.port # NFS
         net.crisuflix.nut.port # NUT (UPS monitoring)
         5201 # iperf3
         net.crisuflix.musicAssistant.uiPort # Music Assistant (Web UI)
@@ -340,15 +350,21 @@ in {
         net.crisuflix.musicAssistant.streamPort # Music Assistant (Stream Server)
         net.crisuflix.homeAssistant.port # Home Assistant
         net.crisuflix.mosquitto.port # MQTT (Mosquitto)
-        net.nfs.mountd.port # NFS mountd
         net.crisuflix.homepage.port # Homepage dashboard (for VPS Traefik)
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];
-      allowedUDPPorts = [
-        net.nfs.rpcbind.port # NFS rpcbind
-        net.nfs.port # NFS
-        net.nfs.mountd.port # NFS mountd
-      ];
+      interfaces.tailscale0 = {
+        allowedTCPPorts = [
+          net.nfs.rpcbind.port # NFS rpcbind
+          net.nfs.port # NFS
+          net.nfs.mountd.port # NFS mountd
+        ];
+        allowedUDPPorts = [
+          net.nfs.rpcbind.port # NFS rpcbind
+          net.nfs.port # NFS
+          net.nfs.mountd.port # NFS mountd
+        ];
+      };
     };
   };
 

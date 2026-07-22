@@ -13,10 +13,6 @@
       url = "path:./pkgs/RuuviCollector";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    yle-sonarr-import = {
-      url = "path:./pkgs/yle-sonarr-import";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -46,10 +42,10 @@
       url = "github:noctalia-dev/noctalia";
       # inputs.nixpkgs.follows = "nixpkgs";
     };
-    hermes-agent = {
-      url = "github:NousResearch/hermes-agent";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # hermes-agent = {
+    #   url = "github:NousResearch/hermes-agent";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     christiansandberg-website = {
       url = "git+ssh://git@github.com/llego/christiansandberg.fi.git";
       flake = false;
@@ -128,7 +124,10 @@
           inherit inputs;
           inherit username;
           hostname = "crisuflix";
-          pkgs-unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; };
+          pkgs-unstable = import inputs.nixpkgs-unstable {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
         };
       };
     };

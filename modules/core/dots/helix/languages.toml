@@ -2,6 +2,12 @@
 auto-format = true
 name = "nix"
 
+[[language]]
+auto-format = true
+formatter = {command = "mdformat", args = ["-"]}
+language-servers = ["marksman"]
+name = "markdown"
+
 [language-server.nixd]
 args = ["--semantic-tokens=true"]
 command = "nixd"

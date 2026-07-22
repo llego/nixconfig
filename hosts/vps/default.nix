@@ -6,16 +6,15 @@
   ...
 }: let
   net = config.networkVars;
-  website = pkgs.runCommand "christiansandberg-website" {} ''
-    mkdir -p $out
-    cp -r ${inputs.christiansandberg-website}/* $out/
-  '';
 in {
   system.stateVersion = "24.05";
 
-  services.tailscale.authKeyFile = config.age.secrets.tailscale-preauth-vps.path;
-
-  nixpkgs.overlays = [inputs.headplane.overlays.default];
+  services.tailscale = {
+    authKeyFile = config.age.secrets.tailscale-preauth-vps.path;
+    extraSetFlags = [
+      "--ssh"
+    ];
+  };
 
   imports = [
     inputs.disko.nixosModules.disko
@@ -80,7 +79,12 @@ in {
   };
 
   # Static website hosting via Static Web Server
-  services.static-web-server = {
+  services.static-web-server = let
+    website = pkgs.runCommand "christiansandberg-website" {} ''
+      mkdir -p $out
+      cp -r ${inputs.christiansandberg-website}/* $out/
+    '';
+  in {
     enable = true;
     listen = "${net.hosts.loopback}:${toString net.vps.website.port}";
     root = "${website}";

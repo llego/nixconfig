@@ -17,6 +17,8 @@ in {
     curl
     dig
     helix # text editor
+    marksman # markdown language server
+    (mdformat.withPlugins (ps: [ps.mdformat-gfm])) # markdown formatter with table support
     yazi # file manager
     ueberzugpp # image preview for yazi on wayland
     lazygit # git
@@ -69,7 +71,7 @@ in {
       fi
 
       # oh-my-posh prompt
-      eval "$(oh-my-posh init zsh --config /etc/oh-my-posh/config.json)"
+      eval "$(oh-my-posh init zsh --config /etc/oh-my-posh/config.json --print)"
 
       # Key bindings
       bindkey -e
