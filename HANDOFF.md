@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-22 19:48 UTC
+Last updated: 2026-07-24 20:07 UTC
 
 ## Current State
 
@@ -22,6 +22,8 @@ NFS on crisuflix is tailnet-wide and firewall-scoped to `tailscale0`: `/mnt/veck
 
 IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CUSTOM1), avahi reflector enabled on crisuflix for cross-subnet mDNS. `192.168.1.103` alias removed from br0 — Shelly devices migrated to `192.168.3.103`.
 
+Shared core Nix settings now trust the personal Cachix cache `https://llego.cachix.org` with public key `llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ=`. Laptop eval confirms the substituter and key are present. The built `album-downloader` and `bandsnatch` outputs were pushed to Cachix and their narinfo entries were verified, so matching laptop rebuilds should substitute them instead of compiling Rust locally.
+
 ## Architecture Principles
 
 - Services that bind to or firewall tailnet endpoints should use stable tailnet IPs or explicit readiness gates instead of depending on MagicDNS during boot.
@@ -33,7 +35,12 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 - Host-specific service and edge configs belong under `hosts/<host>/`; only modules expected to be reused by more than one host should remain under `modules/`.
 - For Homepage, entries for services running on crisuflix should live beside the owning crisuflix service module and be merged through `local.homepageServices` / `local.homepageWidgets`; entries for external or VPS-owned services stay in `hosts/crisuflix/homepage.nix` unless a cross-host metadata layer is introduced.
 - Firewall openings should live beside the service that owns the listener where practical; keep only host-general ports in `hosts/<host>/default.nix`.
+- Shared binary caches belong in `modules/core/default.nix` when all hosts may consume the same privately built closures.
 
 ## Top 3 Next Actions
 
+- Rebuild laptop with the committed Cachix settings and confirm `album-downloader`/`bandsnatch` substitute from `llego.cachix.org`.
+
 ## Blockers
+
+- None.
