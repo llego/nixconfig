@@ -14,6 +14,9 @@
         text = builtins.readFile ./album-downloader.sh;
         runtimeInputs = with pkgs; [
           bandcamp-collection-downloader
+          curl
+          jq
+          perl
           rsync
         ];
       };
