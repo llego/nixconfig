@@ -1,8 +1,16 @@
 {
   description = "Download albums from bandcamp and rsync to server";
 
+  inputs = {
+    bandsnatch = {
+      url = "github:Ovyerus/bandsnatch";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
   outputs = {
     self,
+    bandsnatch,
     nixpkgs,
   }: let
     system = "x86_64-linux";
@@ -13,7 +21,7 @@
         name = "album-downloader";
         text = builtins.readFile ./album-downloader.sh;
         runtimeInputs = with pkgs; [
-          bandcamp-collection-downloader
+          bandsnatch.packages.${system}.default
           curl
           jq
           perl

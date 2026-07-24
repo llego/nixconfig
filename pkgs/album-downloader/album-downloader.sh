@@ -112,8 +112,8 @@ fetch_bandcamp_pagedata() {
         | perl -0ne 'if (/id="pagedata"[^>]*data-blob="([^"]*)"/s) { my $x = $1; $x =~ s/&quot;/"/g; $x =~ s/&amp;/\&/g; $x =~ s/&#39;/\x27/g; print $x; exit }'
 }
 
-# This mirrors the collection API flow used by Bandcamp downloaders. Consider
-# switching the backend to bandsnatch later if it becomes the main downloader.
+# This mirrors the collection API flow used by Bandcamp downloaders, but avoids
+# bandsnatch dry-run work that fetches each uncached release page.
 show_available_albums() {
     echo -e "${GREEN}✔ Checking for new available Bandcamp albums${RESET}"
     sync_cache_from_remote
@@ -204,7 +204,7 @@ while true; do
             # Sync cache from central server before downloading.
             sync_cache_from_remote
 
-            bandcamp-collection-downloader -f flac -d "$BANDCAMP_MUSIC_PATH" -c "$COOKIE" llego202
+            bandsnatch run --format flac --output-folder "$BANDCAMP_MUSIC_PATH" --cookies "$COOKIE" llego202
 
             echo -e "\n${YELLOW}Note: Remember to sync cache to central server (option 3) when ready${RESET}"
             ;;
