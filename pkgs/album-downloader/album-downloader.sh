@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 # Set variables
-ALBUM_DOWNLOADER_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/album-downloader"
-CACHE="$ALBUM_DOWNLOADER_HOME/bandcamp-collection-downloader.cache"
 # Cookie is managed by agenix and decrypted at /run/agenix/bandcamp-cookie
 COOKIE="/run/agenix/bandcamp-cookie"
 
 BANDCAMP_MUSIC_PATH="${XDG_MUSIC_DIR:-$HOME/Music}/bandcamp"
+CACHE="$BANDCAMP_MUSIC_PATH/bandcamp-collection-downloader.cache"
 # Crisuflix import host
 REMOTE_HOST="llego@crisuflix.tailnet.cri.su"
 REMOTE_HOST_PATH="$REMOTE_HOST:/mnt/illby/transient/beets-import"
@@ -37,14 +36,45 @@ print_menu() {
     echo -e "${BOLD}${BLUE}======================================${RESET}"
 }
 
-# Create config dir if it does not exist
-mkdir -p "$ALBUM_DOWNLOADER_HOME" || exit 1
+merge_cache_into() {
+    local source="$1"
+    local destination="$2"
+    local destination_dir="${destination%/*}"
+    local id line
+
+    if [ ! -f "$source" ]; then
+        return
+    fi
+
+    mkdir -p "$destination_dir"
+    touch "$destination"
+
+    declare -A seen=()
+    while IFS= read -r line; do
+        id="${line%%|*}"
+        if [ -n "$id" ]; then
+            seen["$id"]=1
+        fi
+    done < "$destination"
+
+    while IFS= read -r line; do
+        id="${line%%|*}"
+        if [ -n "$id" ] && [ -z "${seen[$id]+x}" ]; then
+            printf '%s\n' "$line" >> "$destination"
+            seen["$id"]=1
+        fi
+    done < "$source"
+}
 
 # Function to sync cache from central server
 sync_cache_from_remote() {
     echo -e "${CYAN}Syncing cache from central server...${RESET}"
     if ssh -o ConnectTimeout=10 "$CENTRAL_CACHE_HOST" "test -f $CENTRAL_CACHE_PATH/bandcamp-collection-downloader.cache"; then
-        rsync -e "ssh -o ConnectTimeout=10" "$CENTRAL_CACHE_FILE" "$ALBUM_DOWNLOADER_HOME/"
+        local remote_cache
+        remote_cache="$(mktemp)"
+        rsync -e "ssh -o ConnectTimeout=10" "$CENTRAL_CACHE_FILE" "$remote_cache"
+        merge_cache_into "$remote_cache" "$CACHE"
+        rm -f "$remote_cache"
         echo -e "${GREEN}✔ Cache synced from central server${RESET}"
     else
         echo -e "${YELLOW}⚠ No cache found on central server (may be first run)${RESET}"
@@ -164,21 +194,16 @@ while true; do
     case $choice in
         1)
             echo -e "${GREEN}✔ Downloading new bandcamp albums${RESET}"
-            
-            # Sync cache from central server before downloading
-            sync_cache_from_remote
-               
+
             # Create music folder if it does not exist
             if [ ! -d "$BANDCAMP_MUSIC_PATH" ]; then
                 echo -e "Directory does not exist. Creating directory \n " "$BANDCAMP_MUSIC_PATH"
                 mkdir -p "$BANDCAMP_MUSIC_PATH"
             fi
-            
-            # Copy cache to music folder for bandcamp-collection-downloader
-            if [ -f "$CACHE" ]; then
-                cp "$CACHE" "$BANDCAMP_MUSIC_PATH/"
-            fi
-            
+
+            # Sync cache from central server before downloading.
+            sync_cache_from_remote
+
             bandcamp-collection-downloader -f flac -d "$BANDCAMP_MUSIC_PATH" -c "$COOKIE" llego202
 
             echo -e "\n${YELLOW}Note: Remember to sync cache to central server (option 3) when ready${RESET}"
