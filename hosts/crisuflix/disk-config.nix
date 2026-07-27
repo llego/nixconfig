@@ -1,9 +1,8 @@
 {lib, ...}: {
   disko.devices = {
     disk.boot = {
-      # This will wipe the TrueNAS boot-pool on nvme2n1
-      # All other disks (data pools) will be left untouched
-      device = lib.mkDefault "/dev/nvme2n1";
+      # Standalone NixOS boot/root disk. Do not point this at the illby NVMe mirror.
+      device = lib.mkDefault "/dev/disk/by-id/nvme-eui.0026b7282669e9f5";
       type = "disk";
       content = {
         type = "gpt";

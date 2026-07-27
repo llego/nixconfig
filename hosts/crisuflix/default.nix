@@ -96,6 +96,9 @@ in {
   # Required for ZFS - from existing TrueNAS
   networking.hostId = "447b046a";
 
+  fileSystems."/".device = lib.mkForce "/dev/disk/by-uuid/a0bbceb1-f3a4-482d-90b3-f9c029f5f151";
+  fileSystems."/boot".device = lib.mkForce "/dev/disk/by-uuid/83AD-3B37";
+
   # ZFS services
   services.zfs = {
     autoScrub = {
@@ -129,6 +132,7 @@ in {
         recursive = true;
       };
       "illby/transient" = {
+        recursive = true;
         autosnap = false;
         autoprune = false;
       };

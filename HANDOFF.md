@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-24 20:07 UTC
+Last updated: 2026-07-27 11:32 UTC
 
 ## Current State
 
@@ -24,6 +24,12 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 
 Shared core Nix settings now trust the personal Cachix cache `https://llego.cachix.org` with public key `llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ=`. Laptop eval confirms the substituter and key are present. The built `album-downloader` and `bandsnatch` outputs were pushed to Cachix and their narinfo entries were verified, so matching laptop rebuilds should substitute them instead of compiling Rust locally.
 
+Crisuflix mount robustness was corrected, deployed, and reboot-verified. `hosts/crisuflix/disk-config.nix` now targets the actual standalone boot/root NVMe by stable by-id path `/dev/disk/by-id/nvme-eui.0026b7282669e9f5` instead of `/dev/nvme2n1`, which is one member of the mirrored `illby` ZFS pool. `hosts/crisuflix/default.nix` now narrowly forces only the `/` and `/boot` filesystem devices to UUID paths matching the live ext4 root and vfat ESP, while Disko continues to own filesystem type and mount options. ZFS pools `illby` and `veckjarvi` remain ZFS-native via pool import; live `zpool status -P` shows their vdevs use `/dev/disk/by-id`. Evals confirmed the intended Disko disk and filesystem devices, `nixos-rebuild dry-build --flake .#crisuflix` succeeded, and `sudo nixos-rebuild switch --flake .#crisuflix` completed. Generated `/etc/fstab` uses UUID paths for `/` and `/boot`; after reboot `/` and `/boot` mount cleanly and both ZFS pools are ONLINE. `zpool upgrade illby veckjarvi` completed on OpenZFS 2.4.3 and both pools have no feature-upgrade warning.
+
+Sanoid snapshots are disabled recursively for `illby/transient` and its child datasets. `hosts/crisuflix/default.nix` sets `services.sanoid.datasets."illby/transient".recursive = true` with `autosnap = false` and `autoprune = false`, so the recursive `illby` snapshot rule no longer covers transient children. `nixos-rebuild dry-build --flake .#crisuflix` and `sudo nixos-rebuild switch --flake .#crisuflix` succeeded. Generated Sanoid config has `[illby/transient]` with `recursive=true`, `autosnap=false`, and `autoprune=false`; the 14:00 EEST Sanoid run completed without creating new `illby/transient` snapshots. Existing transient snapshots were intentionally left in place.
+
+`illby/transient` child mountpoints were converted to plain directories for live service paths and cleanup is complete. Contents of `beets-import`, `handbrake-output`, and `sabnzbd-downloads` were copied with `rsync -aHAX --delete --numeric-ids`, verified with dry-run rsync, and moved into place as normal directories under `/mnt/illby/transient`. After reboot, the detached old datasets `illby/transient/.old-beets-import-dataset`, `.old-handbrake-output-dataset`, and `.old-sabnzbd-downloads-dataset` were destroyed successfully. `zfs list -r illby/transient` now shows only the parent dataset, `findmnt -R /mnt/illby/transient` shows only the parent `illby/transient` ZFS mount, and containers `wireguard-mullvad`, `sabnzbd`, `handbrake`, and `beets-flask` are running.
+
 ## Architecture Principles
 
 - Services that bind to or firewall tailnet endpoints should use stable tailnet IPs or explicit readiness gates instead of depending on MagicDNS during boot.
@@ -36,6 +42,7 @@ Shared core Nix settings now trust the personal Cachix cache `https://llego.cach
 - For Homepage, entries for services running on crisuflix should live beside the owning crisuflix service module and be merged through `local.homepageServices` / `local.homepageWidgets`; entries for external or VPS-owned services stay in `hosts/crisuflix/homepage.nix` unless a cross-host metadata layer is introduced.
 - Firewall openings should live beside the service that owns the listener where practical; keep only host-general ports in `hosts/<host>/default.nix`.
 - Shared binary caches belong in `modules/core/default.nix` when all hosts may consume the same privately built closures.
+- Disko whole-disk targets should use `/dev/disk/by-id`; non-ZFS local filesystems should use UUID/PARTUUID-backed `fileSystems` entries; ZFS datasets should stay ZFS-native via pool imports with by-id vdev paths.
 
 ## Top 3 Next Actions
 
