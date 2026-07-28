@@ -19,32 +19,37 @@ Public `*.cri.su` services terminate at Traefik on `vps`. Docker containers on `
 %%{init: {"theme": "base", "themeVariables": {"fontFamily": "ui-sans-serif, system-ui, sans-serif", "primaryBorderColor": "#64748b", "lineColor": "#64748b"}}}%%
 flowchart TB
   classDef public fill:#eff6ff,stroke:#2563eb,color:#172554,stroke-width:2px
+  classDef dns fill:#f8fafc,stroke:#64748b,color:#334155,stroke-width:2px
   classDef auth fill:#fff7ed,stroke:#ea580c,color:#7c2d12,stroke-width:2px
   classDef data fill:#f5f3ff,stroke:#7c3aed,color:#2e1065,stroke-width:2px
 
-  subgraph PublicVPS[vps]
+  subgraph PublicVPS["☁️ <strong>vps</strong> - public edge"]
     direction TB
-    EdgeTraefik[Traefik<br/>public edge]
-    Authelia[Authelia<br/>selected routes]
-    Redis[(Redis<br/>Traefik dynamic config)]
+    EdgeTraefik["🚦 Traefik <br/> reverse proxy"]
+    Authelia["🔐 Authelia<br/>OIDC"]
+    Redis[("🗄️ Redis<br/>Traefik dynamic config")]
   end
 
-  subgraph PublicCrisuflix[crisuflix]
+  subgraph PublicCrisuflix["🏠 <strong>crisuflix</strong> - home server"]
     direction TB
-    Kop[traefik-kop<br/>kop.namespace=vps]
-    PublicContainers[Public Docker containers<br/>Host *.cri.su]
-    PublicLocalServices[Native/local services<br/>Home Assistant, Music Assistant]
+    Kop["🔁 traefik-kop<br/>kop.namespace=vps"]
+    PublicContainers["📦 Public Docker containers"]
+    PublicLocalServices["🧩 Native/local services<br/>Home Assistant, Music Assistant, ..."]
   end
 
-  PublicUsers[Public users] -->|HTTPS *.cri.su| Internet((Internet)) --> EdgeTraefik
-  PublicContainers -->|Docker labels| Kop
+
+  PublicUsers["🧑<br/>Public users"] -->|resolve *.cri.su| HetznerDNS["🌐 Hetzner DNS<br/>*.cri.su --> vps public IP"] --> EdgeTraefik
+  PublicContainers -->|connect to Docker containers with label <code>traefik.instance=public</code>| Kop
   Kop -->|writes routes over Tailscale| Redis
   EdgeTraefik -->|reads Redis provider| Redis
-  EdgeTraefik -->|optional middleware| Authelia
+  EdgeTraefik -->|middleware| Authelia
   EdgeTraefik -->|proxies over Tailscale| PublicContainers
   EdgeTraefik -->|static routes over Tailscale| PublicLocalServices
 
+  click Kop "https://github.com/jittering/traefik-kop" "Follow link"
+
   class PublicUsers,Internet,EdgeTraefik,PublicContainers,PublicLocalServices,Kop public
+  class HetznerDNS dns
   class Authelia auth
   class Redis data
 ```
@@ -56,25 +61,24 @@ flowchart TB
   classDef dns fill:#f8fafc,stroke:#64748b,color:#334155,stroke-width:2px
   classDef control fill:#fefce8,stroke:#ca8a04,color:#713f12,stroke-width:2px
 
-  subgraph TailnetVPS[vps]
+  subgraph TailnetVPS["☁️ <strong>vps</strong>"]
     direction TB
-    Headscale[Headscale<br/>control plane]
+    Headscale["🧭 Headscale<br/>control plane"]
   end
 
-  subgraph TailnetCrisuflix[crisuflix]
+  subgraph TailnetCrisuflix["🏠 <strong>crisuflix</strong> - home server"]
     direction TB
-    LocalTraefik[Traefik container<br/>tailnet reverse proxy]
-    InternalContainers[Tailnet-only Docker containers<br/>traefik.instance=internal<br/>Host *.llego.me]
-    InternalLocalServices[Native/local services<br/>Home Assistant, ESPHome, Dockge]
+    LocalTraefik["🚦 Traefik container<br/>tailnet reverse proxy"]
+    InternalContainers["🔒📦 Tailnet-only Docker containers"]
+    InternalLocalServices["🧩 Native/local services<br/>Home Assistant, ESPHome, Dockge"]
   end
 
-  TailnetUsers[Tailnet users] -->|resolve *.llego.me| HetznerDNS[Hetzner DNS<br/>*.llego.me]
-  TailnetUsers -->|Tailscale| Tailnet[Tailscale tailnet<br/>Headscale-controlled]
+  TailnetUsers["🧑<br/>Tailnet users"] -->|resolve *.llego.me| HetznerDNS["🌐 Hetzner DNS<br/>*.llego.me --> crisuflix tailnet IP"]
+  TailnetUsers -->|Tailscale| Tailnet["🕸️ Tailscale tailnet"]
   HetznerDNS --> Tailnet
   Headscale -. manages .-> Tailnet
-  Tailnet -->|HTTPS *.llego.me| LocalTraefik
-  Tailnet --> TailnetDNS[Tailnet hostnames<br/>*.tailnet.cri.su]
-  LocalTraefik -->|Docker provider| InternalContainers
+  Tailnet --> LocalTraefik
+  LocalTraefik -->|connect to Docker containers with label <code>traefik.instance=internal</code>| InternalContainers
   LocalTraefik -->|file provider| InternalLocalServices
 
   class TailnetUsers,Tailnet,LocalTraefik,InternalContainers,InternalLocalServices,TailnetDNS tailnet

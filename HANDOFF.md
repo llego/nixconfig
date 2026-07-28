@@ -1,10 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-07-28 12:02 UTC
+Last updated: 2026-07-28 17:20 UTC
 
 ## Current State
 
-README now includes a `Public And Tailnet Routing` section with two styled Mermaid diagrams for predictable vertical rendering: public `*.cri.su` routing through `vps` Traefik, Redis, traefik-kop, and optional Authelia; and tailnet `*.llego.me` routing through Hetzner DNS, Headscale/Tailscale, and the `crisuflix` Traefik container.
+README now includes a `Public And Tailnet Routing` section with two styled Mermaid diagrams for predictable vertical rendering: public `*.cri.su` routing through `vps` Traefik, Redis, traefik-kop, and optional Authelia; and tailnet `*.llego.me` routing through Hetzner DNS, Headscale/Tailscale, and the `crisuflix` Traefik container. Mermaid nodes now include descriptive emojis for quicker visual scanning.
 
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
