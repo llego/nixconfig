@@ -24,6 +24,7 @@ Read in this exact order:
   - top 3 next actions
   - blockers (if any)
   - confirm no secrets were added to tracked files
+- Don't update `HANDOFF.md` for minor changes or changes to documentation.
 
 ## Build And Deploy
 
@@ -62,10 +63,15 @@ nixos-rebuild boot --flake .#rpi5 \
 - Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) and [hjem-impure](https://github.com/Rexcrazy804/hjem-impure). Do not use home-manager. Keep durable architecture decisions here; keep current state in `HANDOFF.md`.
 
 - Keep host-specific config in `hosts/` and reusable config in `modules/`.
+
 - Keep service firewall openings and service-owned routing beside the service where practical.
+
 - Boot-critical services that bind tailnet addresses need explicit ordering or readiness gates.
+
 - Docker services exposed publicly should use explicit traefik-kop router/service labels.
+
 - Shared binary caches belong in shared modules only when all hosts may consume them.
+
 - Use stable disk identifiers: by-id for whole-disk targets, UUID/PARTUUID for local filesystems, and native ZFS imports for ZFS datasets.
 
 Expose a `crisuflix` container publicly with labels like:
