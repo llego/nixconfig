@@ -1,6 +1,6 @@
 # NixOS Configuration
 
-Multi-host NixOS flake. Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) and [hjem-impure](https://github.com/Rexcrazy804/hjem-impure). Do not use home-manager.
+Multi-host NixOS flake.
 
 ## Hosts
 
@@ -13,13 +13,15 @@ Multi-host NixOS flake. Dotfiles are managed with [hjem](https://github.com/feel
 
 ## Layout
 
-- `hosts/`: per-machine NixOS configs.
-- `modules/`: reusable NixOS modules.
-- `dots/`: user config sources.
-- `pkgs/`: local packages.
-- `secrets/`: agenix secrets.
-- `docs/`: long-form notes.
-- `HANDOFF.md`: current state and next actions.
+| Path         | Purpose                     |
+| ------------ | --------------------------- |
+| `hosts/`     | Per-machine NixOS configs   |
+| `modules/`   | Reusable NixOS modules      |
+| `dots/`      | User config sources         |
+| `pkgs/`      | Local packages              |
+| `secrets/`   | agenix secrets              |
+| `docs/`      | Long-form notes             |
+| `HANDOFF.md` | Current state, next actions |
 
 ## Secrets
 

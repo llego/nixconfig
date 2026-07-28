@@ -59,7 +59,8 @@ nixos-rebuild boot --flake .#rpi5 \
 
 ## Architecture
 
-- Keep durable architecture decisions here; keep current state in `HANDOFF.md`.
+- Dotfiles are managed with [hjem](https://github.com/feel-co/hjem) and [hjem-impure](https://github.com/Rexcrazy804/hjem-impure). Do not use home-manager. Keep durable architecture decisions here; keep current state in `HANDOFF.md`.
+
 - Keep host-specific config in `hosts/` and reusable config in `modules/`.
 - Keep service firewall openings and service-owned routing beside the service where practical.
 - Boot-critical services that bind tailnet addresses need explicit ordering or readiness gates.

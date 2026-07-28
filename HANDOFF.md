@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-28 10:20 UTC
+Last updated: 2026-07-28 10:36 UTC
 
 ## Current State
 
@@ -21,6 +21,8 @@ README was tightened to broad repo structure and now owns durable architecture d
 Local AGENTS now restores the session-end no-secrets check. Repo-managed global AGENTS now describes the inventory as four NixOS hosts plus UniFi and fixes the UniFi spelling; the active `~/.config/opencode/AGENTS.md` still points into `/nix/store` and will reflect the source after the dotfile config is reapplied. README gained a short durable architecture list distilled from the removed HANDOFF principles without restoring DNS/network implementation detail.
 
 Public-repo secret scan and history cleanup completed locally. Initial `gitleaks git . --redact --verbose` found 3 historical findings: OpenAI API key and Google/Youtube API key in old `modules/optional/home-manager/ai.nix`, plus a `curl -u` basic-auth style credential in old `HANDOFF.md`. Exact values were extracted locally into `/tmp/opencode/nixconfig-replacements.txt`, used with `git filter-repo --replace-text`, then that replacement file was deleted. Pre-filter mirror backup remains at `/tmp/opencode/nixconfig-pre-filter.git`. After rewrite, `gitleaks git . --redact --verbose` scanned 591 commits and found no leaks; `trufflehog git file://$PWD --only-verified --fail` found 0 verified and 0 unverified secrets. `git-filter-repo` removed the `origin` remote; re-add `git@github.com:llego/nixconfig.git` before force-pushing if continuing with the existing GitHub repo. Credentials should still be rotated before making the repo public.
+
+README layout section was converted from a bullet list to a compact path/purpose table.
 
 ## Top 3 Next Actions
 
