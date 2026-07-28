@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-28 10:16 UTC
+Last updated: 2026-07-28 10:20 UTC
 
 ## Current State
 
@@ -20,16 +20,16 @@ README was tightened to broad repo structure and now owns durable architecture d
 
 Local AGENTS now restores the session-end no-secrets check. Repo-managed global AGENTS now describes the inventory as four NixOS hosts plus UniFi and fixes the UniFi spelling; the active `~/.config/opencode/AGENTS.md` still points into `/nix/store` and will reflect the source after the dotfile config is reapplied. README gained a short durable architecture list distilled from the removed HANDOFF principles without restoring DNS/network implementation detail.
 
-Public-repo secret scan started. `gitleaks git . --redact --verbose` scanned 590 commits and found 3 historical findings: OpenAI API key and Google/Youtube API key in `modules/optional/home-manager/ai.nix` at commit `732a80140d3d4b47b1b4e03f4cde312ad561b64c`, plus a `curl -u` basic-auth style credential in `HANDOFF.md` at commit `92b0e4a2dcb0703bf287cdf7da741049ee18846f`. `trufflehog git file://$PWD --only-verified --fail` found 0 verified active secrets. Broad filename/keyword history search mostly surfaced encrypted `secrets/*.age` paths and repeated config references; historical `.tidal-dl.json` keys were checked without printing values and looked like non-secret preferences plus `apiKeyIndex`. A mirror backup exists at `/tmp/opencode/nixconfig-pre-filter.git`, and the pre-filter worktree diff was saved at `/tmp/opencode/nixconfig-pre-filter-worktree.diff`. Do not make the repo public until the exposed credentials are rotated and history is cleaned or intentionally replaced with a fresh public history.
+Public-repo secret scan and history cleanup completed locally. Initial `gitleaks git . --redact --verbose` found 3 historical findings: OpenAI API key and Google/Youtube API key in old `modules/optional/home-manager/ai.nix`, plus a `curl -u` basic-auth style credential in old `HANDOFF.md`. Exact values were extracted locally into `/tmp/opencode/nixconfig-replacements.txt`, used with `git filter-repo --replace-text`, then that replacement file was deleted. Pre-filter mirror backup remains at `/tmp/opencode/nixconfig-pre-filter.git`. After rewrite, `gitleaks git . --redact --verbose` scanned 591 commits and found no leaks; `trufflehog git file://$PWD --only-verified --fail` found 0 verified and 0 unverified secrets. `git-filter-repo` removed the `origin` remote; re-add `git@github.com:llego/nixconfig.git` before force-pushing if continuing with the existing GitHub repo. Credentials should still be rotated before making the repo public.
 
 ## Top 3 Next Actions
 
 - Rebuild laptop with the committed Cachix settings and confirm `album-downloader`/`bandsnatch` substitute from `llego.cachix.org`.
-- Commit this HANDOFF update, then rewrite history with `git-filter-repo` redactions and re-run `gitleaks` plus TruffleHog on the cleaned result.
 - Rotate historical OpenAI, Google/Youtube, and `curl -u` credentials before making the repo public.
+- Re-add the `origin` remote and force-push the rewritten history only after deciding the cleaned history is final.
 
 ## Blockers
 
-- Repo should not be made public until the historical secret findings are remediated.
+- Repo should not be made public until the historical OpenAI, Google/Youtube, and `curl -u` credentials are rotated.
 
-No secrets were added to tracked files during this scan; only redacted scanner output was printed. Exact historical secret values still need to be extracted locally for the replacement file and must not be printed in chat or committed.
+No secrets were added to tracked files during this scan or rewrite; only redacted scanner output was printed, and the temporary replacement file containing exact historical values was deleted.
