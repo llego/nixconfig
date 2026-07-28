@@ -3,14 +3,16 @@
 ### Session Start
 
 Read in this exact order:
+
 1. `README.md`
-2. `HANDOFF.md`
+1. `HANDOFF.md`
 
 ### During Work
 
 - Keep `HANDOFF.md` aligned with current status and next actions.
-- Record durable decisions in the `Architecture Principles` section of `HANDOFF.md`.
+- Record durable architecture decisions in `README.md`, keeping them tight and stable.
 - Update `HANDOFF.md` mid-session if significant decisions are made.
+- When creating git commits, include a short subject plus a body that explains the purpose of the change and the user/system outcome, not just which files changed.
 
 ### Session End
 
@@ -19,4 +21,4 @@ Read in this exact order:
   - current state
   - top 3 next actions
   - blockers (if any)
-- Confirm no secrets were added to tracked files.
+  - confirm no secrets were added to tracked files
