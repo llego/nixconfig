@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-28 08:20 UTC
+Last updated: 2026-07-28 08:44 UTC
 
 ## Current State
 
@@ -24,9 +24,7 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 
 Shared core Nix settings now trust the personal Cachix cache `https://llego.cachix.org` with public key `llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ=`. Laptop eval confirms the substituter and key are present. The built `album-downloader` and `bandsnatch` outputs were pushed to Cachix and their narinfo entries were verified, so matching laptop rebuilds should substitute them instead of compiling Rust locally.
 
-Yazi now has a repo-managed `zfs.yazi` plugin under `modules/core/dots/yazi/plugins/zfs.yazi/main.lua`. `modules/basic-cli.nix` exposes it through hjem, `yazi.toml` registers it as a directory fetcher, and `init.lua` loads it. The plugin reads `/proc/self/mountinfo`, caches exact local ZFS mountpoints, and appends a cyan `ZFS` linemode badge only to directories that are dataset roots. Lua syntax validation passed, `nix eval .#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath` succeeds, and `sudo nixos-rebuild switch --flake .#crisuflix` completed. The activated plugin file exists at `~/.config/yazi/plugins/zfs.yazi/main.lua`, and manual Yazi testing confirmed the badge works.
-
-Yazi also now uses nixpkgs `pkgs.yaziPlugins.git` managed through hjem. `modules/basic-cli.nix` symlinks the packaged `git.yazi` files into `~/.config/yazi/plugins/git.yazi/`, `init.lua` loads it with `order = 1400`, and `yazi.toml` registers both file and directory git fetchers. Lua syntax validation passed, `nix eval .#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath` succeeds, `sudo nixos-rebuild switch --flake .#crisuflix` completed, and the activated `main.lua`, `types.lua`, and `LICENSE` files exist under `~/.config/yazi/plugins/git.yazi/`.
+Yazi is now owned by `modules/core/yazi.nix`, imported from `modules/core/default.nix`. The module uses `programs.yazi` for the package, generated `yazi.toml`/`theme.toml` settings, packaged `pkgs.yaziPlugins.git`, inline custom `zfs.yazi`, inline `init.lua`, and inline Eldritch flavor. `modules/basic-cli.nix` no longer installs `yazi` or manages Yazi dotfiles through hjem. The old source files under `modules/core/dots/yazi/` were removed. `nix eval .#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath` succeeds, `sudo nixos-rebuild switch --flake .#crisuflix` completed, Yazi still launches, and old `~/.config/yazi` hjem symlinks for Yazi config/plugin files are absent.
 
 ## Architecture Principles
 
@@ -41,7 +39,7 @@ Yazi also now uses nixpkgs `pkgs.yaziPlugins.git` managed through hjem. `modules
 - Firewall openings should live beside the service that owns the listener where practical; keep only host-general ports in `hosts/<host>/default.nix`.
 - Shared binary caches belong in `modules/core/default.nix` when all hosts may consume the same privately built closures.
 - Disko whole-disk targets should use `/dev/disk/by-id`; non-ZFS local filesystems should use UUID/PARTUUID-backed `fileSystems` entries; ZFS datasets should stay ZFS-native via pool imports with by-id vdev paths.
-- Yazi extensions should be managed as repo-owned dotfiles through hjem when they are small/local customizations, instead of using `ya pkg` outside Nix control.
+- Yazi configuration should use the NixOS `programs.yazi` module: `settings` for generated TOML, `plugins` for packaged and local plugins, `flavors` for themes, and `initLua` for startup Lua. Avoid `ya pkg` and avoid parallel hjem-managed Yazi config files.
 
 ## Top 3 Next Actions
 

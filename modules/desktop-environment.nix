@@ -191,8 +191,8 @@
 
   # Desktop environment dotfiles
   hjem.users.${username} = let
-    dots = "${./core/dots}";
-    wallpaperDir = ./core/dots/noctalia/wallpapers;
+    dots = "${../dots}";
+    wallpaperDir = ../dots/noctalia/wallpapers;
     wallpaperFiles = builtins.attrNames (lib.filterAttrs (_: type: type == "regular") (builtins.readDir wallpaperDir));
     wallpaperMappings = builtins.listToAttrs (map (file: {
         name = "noctalia/wallpapers/${file}";

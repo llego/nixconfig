@@ -12,7 +12,7 @@
     inputs.disko.nixosModules.disko
     ./disk-config.nix
     ./../../modules/core
-    ./../../modules/basic-cli.nix
+    ./../../modules/cli
     ./../../modules/apps.nix
     ./../../modules/desktop-environment.nix
     ./../../modules/printer.nix

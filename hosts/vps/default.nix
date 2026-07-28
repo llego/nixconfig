@@ -24,7 +24,7 @@
     ./gotify.nix
     ./uptime-kuma.nix
     ./../../modules/core
-    ./../../modules/basic-cli.nix
+    ./../../modules/cli
 
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")

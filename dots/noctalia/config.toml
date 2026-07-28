@@ -17,7 +17,7 @@ builtin = "Rosé Pine"
     community_ids = [ "zen-browser" ]
 
 [wallpaper]
-directory = "/home/llego/nixconfig/modules/core/dots/noctalia/wallpapers"
+directory = "/home/llego/nixconfig/dots/noctalia/wallpapers"
 transition = [ "wipe" ]
 
 [widget.battery]

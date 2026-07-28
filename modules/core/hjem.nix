@@ -3,7 +3,7 @@
   username,
   ...
 }: let
-  dots = "${./dots}";
+  dots = "${../../dots}";
 in {
   imports = [inputs.hjem.nixosModules.default];
 
@@ -16,7 +16,7 @@ in {
       impure = {
         enable = true;
         dotsDir = dots;
-        dotsDirImpure = "/home/${username}/nixconfig/modules/core/dots";
+        dotsDirImpure = "/home/${username}/nixconfig/dots";
       };
       directory = "/home/${username}";
 

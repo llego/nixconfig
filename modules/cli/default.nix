@@ -3,9 +3,10 @@
   username,
   ...
 }: let
-  dots = "${./core/dots}";
-  gitYazi = pkgs.yaziPlugins.git;
+  dots = "${../../dots}";
 in {
+  imports = [./yazi.nix];
+
   environment.systemPackages = with pkgs; [
     htop
     screen
@@ -20,11 +21,21 @@ in {
     helix # text editor
     marksman # markdown language server
     (mdformat.withPlugins (ps: [ps.mdformat-gfm])) # markdown formatter with table support
-    yazi # file manager
     ueberzugpp # image preview for yazi on wayland
     lazygit # git
     oh-my-posh
     fzf
+    dig
+    parted
+    nitch
+    usbutils
+    atool
+    opencode
+    # claude-code
+
+    # Nix stuff
+    nixd
+    alejandra
   ];
 
   environment.sessionVariables = {
@@ -99,16 +110,5 @@ in {
     "helix/config.toml".source = dots + "/helix/config.toml";
     "helix/languages.toml".source = dots + "/helix/languages.toml";
     "helix/themes/rose_pine_transparent.toml".source = dots + "/helix/themes/rose_pine_transparent.toml";
-
-    # Yazi configuration files
-    "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";
-    "yazi/init.lua".source = dots + "/yazi/init.lua";
-    "yazi/theme.toml".source = dots + "/yazi/theme.toml";
-    "yazi/plugins/git.yazi/LICENSE".source = gitYazi + "/LICENSE";
-    "yazi/plugins/git.yazi/README.md".source = gitYazi + "/README.md";
-    "yazi/plugins/git.yazi/main.lua".source = gitYazi + "/main.lua";
-    "yazi/plugins/git.yazi/types.lua".source = gitYazi + "/types.lua";
-    "yazi/plugins/zfs.yazi/main.lua".source = dots + "/yazi/plugins/zfs.yazi/main.lua";
-    "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
   };
 }
