@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-07-28 10:36 UTC
+Last updated: 2026-07-28 12:02 UTC
 
 ## Current State
+
+README now includes a `Public And Tailnet Routing` section with two styled Mermaid diagrams for predictable vertical rendering: public `*.cri.su` routing through `vps` Traefik, Redis, traefik-kop, and optional Authelia; and tailnet `*.llego.me` routing through Hetzner DNS, Headscale/Tailscale, and the `crisuflix` Traefik container.
 
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
@@ -16,22 +18,13 @@ IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CU
 
 Shared core Nix settings now trust the personal Cachix cache `https://llego.cachix.org` with public key `llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ=`. Laptop eval confirms the substituter and key are present. The built `album-downloader` and `bandsnatch` outputs were pushed to Cachix and their narinfo entries were verified, so matching laptop rebuilds should substitute them instead of compiling Rust locally.
 
-README was tightened to broad repo structure and now owns durable architecture decisions. `AGENTS.md` now instructs agents to keep durable architecture decisions in `README.md` and to write git commits with a subject plus purpose/outcome body. The old `Architecture Principles` section was removed from `HANDOFF.md`; handoff should stay focused on current state and next actions.
-
-Local AGENTS now restores the session-end no-secrets check. Repo-managed global AGENTS now describes the inventory as four NixOS hosts plus UniFi and fixes the UniFi spelling; the active `~/.config/opencode/AGENTS.md` still points into `/nix/store` and will reflect the source after the dotfile config is reapplied. README gained a short durable architecture list distilled from the removed HANDOFF principles without restoring DNS/network implementation detail.
-
-Public-repo secret scan and history cleanup completed locally. Initial `gitleaks git . --redact --verbose` found 3 historical findings: OpenAI API key and Google/Youtube API key in old `modules/optional/home-manager/ai.nix`, plus a `curl -u` basic-auth style credential in old `HANDOFF.md`. Exact values were extracted locally into `/tmp/opencode/nixconfig-replacements.txt`, used with `git filter-repo --replace-text`, then that replacement file was deleted. Pre-filter mirror backup remains at `/tmp/opencode/nixconfig-pre-filter.git`. After rewrite, `gitleaks git . --redact --verbose` scanned 591 commits and found no leaks; `trufflehog git file://$PWD --only-verified --fail` found 0 verified and 0 unverified secrets. `git-filter-repo` removed the `origin` remote; re-add `git@github.com:llego/nixconfig.git` before force-pushing if continuing with the existing GitHub repo. Credentials should still be rotated before making the repo public.
-
-README layout section was converted from a bullet list to a compact path/purpose table.
-
 ## Top 3 Next Actions
 
 - Rebuild laptop with the committed Cachix settings and confirm `album-downloader`/`bandsnatch` substitute from `llego.cachix.org`.
-- Rotate historical OpenAI, Google/Youtube, and `curl -u` credentials before making the repo public.
-- Re-add the `origin` remote and force-push the rewritten history only after deciding the cleaned history is final.
+- Review the rendered GitHub README Mermaid diagram after pushing to confirm the layout is readable.
 
 ## Blockers
 
-- Repo should not be made public until the historical OpenAI, Google/Youtube, and `curl -u` credentials are rotated.
+- None for the README diagram change.
 
-No secrets were added to tracked files during this scan or rewrite; only redacted scanner output was printed, and the temporary replacement file containing exact historical values was deleted.
+No secrets were added to tracked files.
