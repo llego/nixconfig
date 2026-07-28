@@ -4,12 +4,12 @@ Multi-host NixOS flake.
 
 ## Hosts
 
-| Host                        | Purpose               |
-| --------------------------- | --------------------- |
-| `laptop`                    | Daily driver          |
-| `vps` / `christiansandberg` | Public edge           |
-| `crisuflix`                 | NAS and home services |
-| `rpi5`                      | Home Assistant kiosk  |
+| Host        | Purpose               |
+| ----------- | --------------------- |
+| `laptop`    | Daily driver          |
+| `vps`       | Public edge           |
+| `crisuflix` | NAS and home services |
+| `rpi5`      | Home Assistant kiosk  |
 
 ## Layout
 
