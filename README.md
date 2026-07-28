@@ -15,7 +15,7 @@ Docker Compose files are not available in a public repo.
 
 ## Public And Tailnet Routing
 
-Public `*.cri.su` services terminate at Traefik on `vps`. Selected Docker containers on `crisuflix` are published via (traefik-kop)[https://github.com/jittering/traefik-kop] using Docker labels with into Redis on `vps`, over the Headscale-managed Tailscale network. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. A separate Traefik instance on `crisuflix` publishes `*.llego.me` services to tailnet users. Authelia protects public routes, while private services stay reachable only through Tailscale.
+Public `*.cri.su` services terminate at Traefik on `vps`. Selected Docker containers on `crisuflix` are published via [traefik-kopc])(https://github.com/jittering/traefik-kop) using Docker labels with into Redis on `vps`, over the Headscale-managed Tailscale network. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. A separate Traefik instance on `crisuflix` publishes `*.llego.me` services to tailnet users. Authelia protects public routes, while private services stay reachable only through Tailscale.
 
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"fontFamily": "ui-sans-serif, system-ui, sans-serif", "primaryBorderColor": "#64748b", "lineColor": "#64748b"}}}%%
@@ -41,7 +41,7 @@ flowchart TB
 
 
   PublicUsers["🧑<br/>Public users"] -->|resolve *.cri.su| HetznerDNS["🌐 Hetzner DNS<br/>*.cri.su --> vps public IP"] --> EdgeTraefik
-  PublicContainers -->|connect to Docker containers with label <code>traefik.instance=public</code>| Kop
+  PublicContainers -->|expose Docker containers by label <code>traefik.instance=public</code>| Kop
   Kop -->|traefik-kop writes routes to redis| Redis
   EdgeTraefik -->|traefik reads redis provider| Redis
   EdgeTraefik -->|middleware| Authelia
