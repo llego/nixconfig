@@ -1,3 +1,7 @@
+require("git"):setup {
+	order = 1400,
+}
+
 require("zfs"):setup()
 
 Status:children_add(function()

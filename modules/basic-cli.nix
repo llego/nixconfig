@@ -4,6 +4,7 @@
   ...
 }: let
   dots = "${./core/dots}";
+  gitYazi = pkgs.yaziPlugins.git;
 in {
   environment.systemPackages = with pkgs; [
     htop
@@ -103,6 +104,10 @@ in {
     "yazi/yazi.toml".source = dots + "/yazi/yazi.toml";
     "yazi/init.lua".source = dots + "/yazi/init.lua";
     "yazi/theme.toml".source = dots + "/yazi/theme.toml";
+    "yazi/plugins/git.yazi/LICENSE".source = gitYazi + "/LICENSE";
+    "yazi/plugins/git.yazi/README.md".source = gitYazi + "/README.md";
+    "yazi/plugins/git.yazi/main.lua".source = gitYazi + "/main.lua";
+    "yazi/plugins/git.yazi/types.lua".source = gitYazi + "/types.lua";
     "yazi/plugins/zfs.yazi/main.lua".source = dots + "/yazi/plugins/zfs.yazi/main.lua";
     "yazi/flavors/eldritch.yazi/flavor.toml".source = dots + "/yazi/flavors/eldritch.yazi/flavor.toml";
   };
