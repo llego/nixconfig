@@ -2,7 +2,7 @@
 
 This is my overly complex nixconfig which covers basically all of my machines. Most of the configuration is AI generated.
 
-Docker Compose files are not available in a public repo.
+Docker Compose files are not available in this repo.
 
 ## Hosts
 
@@ -15,7 +15,7 @@ Docker Compose files are not available in a public repo.
 
 ## Public And Tailnet Routing
 
-Public `*.cri.su` services terminate at Traefik on `vps`. Selected Docker containers on `crisuflix` are published via [traefik-kop](https://github.com/jittering/traefik-kop) using Docker labels with into Redis on `vps`, over the Headscale-managed Tailscale network. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. A separate Traefik instance on `crisuflix` publishes `*.llego.me` services to tailnet users. Authelia protects public routes, while private services stay reachable only through Tailscale.
+Public `*.cri.su` services terminate at Traefik on `vps`. Selected Docker containers on `crisuflix` are published via [traefik-kop](https://github.com/jittering/traefik-kop) using Docker labels into Redis on `vps`, over a tailnet. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. A separate Traefik instance on `crisuflix` publishes `*.llego.me` services to tailnet users. Authelia protects public routes, while private services stay reachable only inside the tailnet.
 
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"fontFamily": "ui-sans-serif, system-ui, sans-serif", "primaryBorderColor": "#64748b", "lineColor": "#64748b"}}}%%
@@ -88,11 +88,6 @@ flowchart TB
   class Headscale control
 ```
 
-- Public `*.cri.su` routes are served by `vps` Traefik and may use Authelia middleware.
-- Tailnet `*.llego.me` routes are served by the Traefik container on `crisuflix`.
-- Docker services on `crisuflix` use local Traefik labels for `*.llego.me` or `kop.namespace=vps` labels for the Redis-backed `vps` Traefik path.
-- Tailnet-only services avoid public routers and are reachable through Tailscale, including `*.llego.me` and `*.tailnet.cri.su` names.
-- Headscale runs on `vps` and provides the control plane for the tailnet that links the hosts.
 
 ## Layout
 
