@@ -1,6 +1,8 @@
 # NixOS Configuration
 
-Multi-host NixOS flake.
+This is my overly complex nixconfig which covers basically all of my machines. Most of the configuration is AI generated.
+
+Docker Compose files are not available in a public repo.
 
 ## Hosts
 
@@ -13,7 +15,7 @@ Multi-host NixOS flake.
 
 ## Public And Tailnet Routing
 
-Public `*.cri.su` services terminate at Traefik on `vps`. Docker containers on `crisuflix` can publish selected Traefik labels with traefik-kop into Redis on `vps`, over the Headscale-managed Tailscale network. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. A separate Traefik container on `crisuflix` publishes `*.llego.me` services to tailnet users; DNS for `*.llego.me` is managed in Hetzner. Authelia protects selected public routes, while private services stay reachable only through Tailscale.
+Public `*.cri.su` services terminate at Traefik on `vps`. Selected Docker containers on `crisuflix` are published via (traefik-kop)[https://github.com/jittering/traefik-kop] using Docker labels with into Redis on `vps`, over the Headscale-managed Tailscale network. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. A separate Traefik instance on `crisuflix` publishes `*.llego.me` services to tailnet users. Authelia protects public routes, while private services stay reachable only through Tailscale.
 
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"fontFamily": "ui-sans-serif, system-ui, sans-serif", "primaryBorderColor": "#64748b", "lineColor": "#64748b"}}}%%
@@ -25,7 +27,7 @@ flowchart TB
 
   subgraph PublicVPS["☁️ <strong>vps</strong> - public edge"]
     direction TB
-    EdgeTraefik["🚦 Traefik <br/> reverse proxy"]
+    EdgeTraefik["🚦 Traefik <br/> public reverse proxy"]
     Authelia["🔐 Authelia<br/>OIDC"]
     Redis[("🗄️ Redis<br/>Traefik dynamic config")]
   end
@@ -34,17 +36,17 @@ flowchart TB
     direction TB
     Kop["🔁 traefik-kop<br/>kop.namespace=vps"]
     PublicContainers["📦 Public Docker containers"]
-    PublicLocalServices["🧩 Native/local services<br/>Home Assistant, Music Assistant, ..."]
+    PublicLocalServices["🧩 Public systemd services<br/>Home Assistant, Music Assistant, ..."]
   end
 
 
   PublicUsers["🧑<br/>Public users"] -->|resolve *.cri.su| HetznerDNS["🌐 Hetzner DNS<br/>*.cri.su --> vps public IP"] --> EdgeTraefik
   PublicContainers -->|connect to Docker containers with label <code>traefik.instance=public</code>| Kop
-  Kop -->|writes routes over Tailscale| Redis
-  EdgeTraefik -->|reads Redis provider| Redis
+  Kop -->|traefik-kop writes routes to redis| Redis
+  EdgeTraefik -->|traefik reads redis provider| Redis
   EdgeTraefik -->|middleware| Authelia
-  EdgeTraefik -->|proxies over Tailscale| PublicContainers
-  EdgeTraefik -->|static routes over Tailscale| PublicLocalServices
+  EdgeTraefik -->|vps traefik proxies to Docker containers on crisuflix| PublicContainers
+  EdgeTraefik -->|vps traefik proxies to systemd services on crisuflix| PublicLocalServices
 
   click Kop "https://github.com/jittering/traefik-kop" "Follow link"
 
@@ -68,7 +70,7 @@ flowchart TB
 
   subgraph TailnetCrisuflix["🏠 <strong>crisuflix</strong> - home server"]
     direction TB
-    LocalTraefik["🚦 Traefik container<br/>tailnet reverse proxy"]
+    LocalTraefik["🚦 Traefik <br/> tailnet reverse proxy"]
     InternalContainers["🔒📦 Tailnet-only Docker containers"]
     InternalLocalServices["🧩 Native/local services<br/>Home Assistant, ESPHome, Dockge"]
   end
