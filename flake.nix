@@ -9,10 +9,6 @@
       url = "path:./pkgs/album-downloader";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ruuvi = {
-      url = "path:./pkgs/RuuviCollector";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";

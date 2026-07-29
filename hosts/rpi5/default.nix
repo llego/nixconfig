@@ -13,7 +13,6 @@
     inputs.raspberry-pi-nix.nixosModules.sd-image
     ./../../modules/core
     ./../../modules/wifi-networks.nix
-    # inputs.ruuvi.nixosModules.default
   ];
 
   services.tailscale = {
@@ -28,17 +27,6 @@
     wlr-randr
     cage
   ];
-
-  # services.ruuvi-collector = {
-  #   enable = true;
-  #   influxUrl = "http://192.168.1.101:8086";
-  #   influxDatabase = "ruuvi";
-  #   tagNames = {
-  #     "D4EE9FE30B24" = "Kylskåpet";
-  #     "FFE65BB31904" = "Vardagsrummet";
-  #   };
-  #   filterMode = "named"; # Only collect from named tags
-  # };
 
   programs.chromium = {
     enable = true;
@@ -90,8 +78,7 @@
     '';
   };
 
-  # Disable bluetoothd so hcitool has raw HCI access for ruuvi-collector
-  # raspberry-pi-nix enables bluetooth by default; mkForce overrides it
+  # raspberry-pi-nix enables bluetooth by default; mkForce overrides it.
   hardware.bluetooth = {
     enable = lib.mkForce false;
     powerOnBoot = lib.mkForce false;
@@ -123,7 +110,6 @@
           };
           dt-overlays = {
             vc4-kms-v3d.enable = true;
-            # Bluetooth enabled for RuuviCollector
             # disable-bt = {
             #   enable = true;
             #   params = {};

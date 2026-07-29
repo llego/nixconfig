@@ -18,7 +18,6 @@
     ./../../modules/printer.nix
     ./../../modules/wifi-networks.nix
     ./../../modules/downloaders.nix
-    # inputs.ruuvi.nixosModules.default
 
     # hardware-configuration.nix
     (modulesPath + "/installer/scan/not-detected.nix")

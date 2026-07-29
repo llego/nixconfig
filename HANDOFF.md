@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-29 07:00 UTC
+Last updated: 2026-07-29 07:30 UTC
 
 ## Current State
 
@@ -15,6 +15,10 @@ NFS on crisuflix is tailnet-wide and firewall-scoped to `tailscale0`: `/mnt/veck
 IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CUSTOM1), avahi reflector enabled on crisuflix for cross-subnet mDNS. `192.168.1.103` alias removed from br0 — Shelly devices migrated to `192.168.3.103`.
 
 Shared core Nix settings now trust the personal Cachix cache `https://llego.cachix.org` with public key `llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ=`. Laptop eval confirms the substituter and key are present. The built `album-downloader` and `bandsnatch` outputs were pushed to Cachix and their narinfo entries were verified, so matching laptop rebuilds should substitute them instead of compiling Rust locally.
+
+A removed ebook downloader package has been fully deleted from the repo. Its stale commented reference in `modules/downloaders.nix` and its standalone local package flake/scripts were deleted. A repository-wide reference search is clean, and `nix eval .#nixosConfigurations.crisuflix.config.system.name` succeeds. No secrets were added to tracked files.
+
+A removed sensor collector package has been fully deleted from the repo. Its flake input and lock node, stale commented host imports/service snippets, and standalone local package tree were deleted. A repository-wide reference search is clean, and `nix eval` succeeds for `crisuflix`, `laptop`, and `rpi5`. No secrets were added to tracked files.
 
 ## Top 3 Next Actions
 
