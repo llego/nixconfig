@@ -2,7 +2,7 @@
 
 This is my overly complex nixconfig which covers basically all of my machines. Most of the configuration is AI generated.
 
-Docker Compose files are not available in this repo.
+Docker Compose files are not available in a public repo.
 
 ## Hosts
 
@@ -25,7 +25,9 @@ Notable pieces of software in my infrastructure that bring me joy:
 
 ## Public And Tailnet Routing
 
-Public `*.cri.su` services terminate at Traefik on `vps`. Selected Docker containers on `crisuflix` are published via [traefik-kop](https://github.com/jittering/traefik-kop) using Docker labels into Redis on `vps`, over a tailnet. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. A separate Traefik instance on `crisuflix` publishes `*.llego.me` services to tailnet users. Authelia protects public routes, while private services stay reachable only inside the tailnet.
+Public `*.cri.su` services terminate at Traefik on `vps`. Selected Docker containers on `crisuflix` are published via [traefik-kop](https://github.com/jittering/traefik-kop) using Docker labels with into Redis on `vps`, over the Headscale-managed Tailscale network. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. A separate Traefik instance on `crisuflix` publishes `*.llego.me` services to tailnet users. Authelia protects public routes, while private services stay reachable only through Tailscale.
+
+### Public users accessing \*.cri.su
 
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"fontFamily": "ui-sans-serif, system-ui, sans-serif", "primaryBorderColor": "#64748b", "lineColor": "#64748b"}}}%%
@@ -66,6 +68,8 @@ flowchart TB
   class Redis data
 ```
 
+### Tailnet users accessing \*.llego.me
+
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"fontFamily": "ui-sans-serif, system-ui, sans-serif", "primaryBorderColor": "#64748b", "lineColor": "#64748b"}}}%%
 flowchart TB
@@ -97,7 +101,6 @@ flowchart TB
   class HetznerDNS dns
   class Headscale control
 ```
-
 
 ## Layout
 
