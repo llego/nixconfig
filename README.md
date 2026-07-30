@@ -1,8 +1,8 @@
 # NixOS Configuration
 
-This is my overly complex nixconfig which covers basically all of my machines. Most of the configuration is AI generated.
+This is my (perhaps overly complex) nixconfig which covers basically all of my machines. Most of the configuration is AI generated.
 
-Docker Compose files are not available in a public repo.
+My Docker Compose files are not available in this repo.
 
 ## Hosts
 
@@ -49,7 +49,7 @@ flowchart TB
     direction TB
     Kop["🔁 traefik-kop<br/>kop.namespace=vps"]
     PublicContainers["📦 Public Docker containers"]
-    PublicLocalServices["🧩 Public systemd services<br/>Home Assistant, Music Assistant, ..."]
+    PublicLocalServices["🧩 Systemd services<br/>Home Assistant, Music Assistant, ..."]
   end
 
 
@@ -87,7 +87,7 @@ flowchart TB
     direction TB
     LocalTraefik["🚦 Traefik <br/> tailnet reverse proxy"]
     InternalContainers["🔒📦 Tailnet-only Docker containers"]
-    InternalLocalServices["🧩 Native/local services<br/>Home Assistant, ESPHome, Dockge"]
+    InternalLocalServices["🧩 Systemd services<br/>Home Assistant, ESPHome, Dockge"]
   end
 
   TailnetUsers["🧑<br/>Tailnet users"] -->|resolve *.llego.me| HetznerDNS["🌐 Hetzner DNS<br/>*.llego.me --> crisuflix tailnet IP"]
@@ -109,8 +109,8 @@ flowchart TB
 | ------------ | --------------------------- |
 | `hosts/`     | Per-machine NixOS configs   |
 | `modules/`   | Reusable NixOS modules      |
-| `dots/`      | User config sources         |
-| `pkgs/`      | Local packages              |
+| `dots/`      | Userspace dotfiles          |
+| `pkgs/`      | Custom packages             |
 | `secrets/`   | agenix secrets              |
 | `docs/`      | Long-form notes             |
 | `HANDOFF.md` | Current state, next actions |
