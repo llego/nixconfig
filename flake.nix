@@ -36,12 +36,7 @@
     };
     noctalia = {
       url = "github:noctalia-dev/noctalia/cachix";
-      # inputs.nixpkgs.follows = "nixpkgs";
     };
-    # hermes-agent = {
-    #   url = "github:NousResearch/hermes-agent";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
     christiansandberg-website = {
       url = "git+ssh://git@github.com/llego/christiansandberg.fi.git";
       flake = false;
@@ -70,9 +65,7 @@
 
       laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [
-          ./hosts/laptop
-        ];
+        modules = [./hosts/laptop];
         specialArgs = {
           inherit inputs;
           inherit username;
@@ -80,12 +73,9 @@
         };
       };
 
-      # nixos-rebuild switch --flake .#vps --sudo --target-host "llego@christiansandberg.fi"
       vps = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [
-          ./hosts/vps
-        ];
+        modules = [./hosts/vps];
         specialArgs = {
           inherit inputs;
           inherit username;
@@ -96,13 +86,9 @@
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux
       # zstd -dc ..linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
-
-      # To rebuild: nixos-rebuild boot --flake .#rpi5 --target-host llego@rpi5.home --sudo
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
-        modules = [
-          ./hosts/rpi5
-        ];
+        modules = [./hosts/rpi5];
         specialArgs = {
           inherit inputs;
           inherit username;
@@ -110,12 +96,9 @@
         };
       };
 
-      # nixos-rebuild switch --flake .#crisuflix --target-host "llego@crisuflix.home" --sudo
       crisuflix = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [
-          ./hosts/crisuflix
-        ];
+        modules = [./hosts/crisuflix];
         specialArgs = {
           inherit inputs;
           inherit username;
