@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-07-29 07:30 UTC
+Last updated: 2026-07-30 17:55 UTC
 
 ## Current State
 
@@ -20,8 +20,11 @@ A removed ebook downloader package has been fully deleted from the repo. Its sta
 
 A removed sensor collector package has been fully deleted from the repo. Its flake input and lock node, stale commented host imports/service snippets, and standalone local package tree were deleted. A repository-wide reference search is clean, and `nix eval` succeeds for `crisuflix`, `laptop`, and `rpi5`. No secrets were added to tracked files.
 
+Agenix secret definitions were consolidated into `secrets/_registry.nix`. Root `secrets.nix` now remains as the agenix CLI compatibility file and generates recipient rules from the registry, so `agenix -e secrets/foo.age`, `agenix -d secrets/foo.age`, and `agenix -r` still use the default rules path. `modules/core/agenix.nix` now generates host-filtered `age.secrets` from the same registry, and `hosts/crisuflix/opencloud.nix` no longer carries a duplicate `opencloud-env` declaration. Unused `secrets/hermes-env.age` and `secrets/frigate-env.age` were removed from the registry and repo. `agenix -r` was run manually by the user and the rekeyed `.age` files are included in the commit. `nix eval` succeeds for `laptop`, `vps`, `crisuflix`, and `rpi5`; generated runtime secret lists were checked for each host before the unused secret removal. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded and activated `/nix/store/fkvzq4kl10sdlxln2lhkf9hkabafg09w-nixos-system-crisuflix-26.05.20260719.fd14620`; agenix decrypted the expected crisuflix secrets and did not decrypt Hermes/Frigate secrets. `nixos-rebuild switch --flake .#laptop --target-host llego@laptop --sudo` from crisuflix succeeded and activated `/nix/store/i1v72sdv3m02840s9vl2gaym87zxq8l9-nixos-system-laptop-26.05.20260719.fd14620`. The laptop rebuild did not substitute `bandsnatch`/`album-downloader` from `https://llego.cachix.org`: the log shows local builds for `bandsnatch-deps-0.3.3`, `bandsnatch-0.3.3`, and `album-downloader`, and `nix path-info --store https://llego.cachix.org` reports the resulting output paths absent. The new registry contains public SSH keys and runtime metadata only; no plaintext secrets were added to tracked files.
+
 ## Top 3 Next Actions
 
-- Rebuild laptop with the committed Cachix settings and confirm `album-downloader`/`bandsnatch` substitute from `llego.cachix.org`.
+- Push the current `bandsnatch` and `album-downloader` outputs to `llego.cachix.org` if future laptop rebuilds should substitute them instead of compiling Rust locally.
+- Rebuild `vps` and `rpi5` when ready to deploy the agenix registry refactor there; `crisuflix` and `laptop` have been switched.
 
 ## Blockers

@@ -26,13 +26,6 @@ in {
     "pnpm-9.15.9"
   ];
 
-  # ── Secrets ───────────────────────────────────────────────────────────────
-  age.secrets.opencloud-env = {
-    file = ../../secrets/opencloud-env.age;
-    owner = "opencloud";
-    group = "opencloud";
-  };
-
   # ── OpenCloud ─────────────────────────────────────────────────────────────
   services.opencloud = {
     enable = true;
