@@ -127,3 +127,11 @@ agenix -r
 ## Custom Packages
 
 Packages in `pkgs/` are standalone flakes with `inputs.nixpkgs.follows = "nixpkgs"`.
+
+`pkgs/album-downloader` exposes both the cheap `album-downloader` shell wrapper and the expensive `bandsnatch` Rust package. `bandsnatch` keeps its own pinned dependency graph so root `nixpkgs` updates do not churn its store path. If that package flake changes, prime `llego.cachix.org` from inside the package flake before rebuilding clean hosts:
+
+```bash
+cd pkgs/album-downloader
+nix build .#bandsnatch
+cachix push llego ./result
+```
