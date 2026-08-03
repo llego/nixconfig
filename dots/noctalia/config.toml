@@ -2,33 +2,53 @@
 enabled = false
 
 [bar.default]
-end = [ "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "session" ]
+background_opacity = 0.8
+center = []
+end = [ "cpu", "ram", "brightness", "volume", "battery", "network", "clock" ]
+font_family = "Inter Variable"
+margin_edge = 8
+margin_ends = 15
 start = [ "workspaces", "active_window" ]
+widget_spacing = 12
 
 
 [shell]
 niri_overview_type_to_launch_enabled = true
+polkit_agent = true
 
 [theme]
 builtin = "Rosé Pine"
-
-    [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "niri" ]
-    community_ids = [ "zen-browser" ]
+community_palette = "Oxocarbon"
+mode = "dark"
+source = "wallpaper"
+wallpaper_scheme = "m3-rainbow"
 
 [wallpaper]
 directory = "/home/llego/nixconfig/dots/noctalia/wallpapers"
 transition = [ "wipe" ]
+transition_on_startup = true
+
+
+[widget.active_window]
+max_length = 566
 
 [widget.battery]
-capsule = true
+capsule = false
 display_mode = "graphic"
+show_label = false
 
 [widget.brightness]
-capsule = true
+capsule = false
+
+[widget.cpu]
+display = "graph"
+
+[widget.ram]
+display = "graph"
+stat = "ram_pct"
 
 [widget.network]
 show_label = false
 
 [widget.volume]
-capsule = true
+capsule = false
