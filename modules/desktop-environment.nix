@@ -6,30 +6,55 @@
   dots,
   ...
 }: {
-  environment.systemPackages = with pkgs; [
-    nautilus
-    gnome-text-editor
-    evince
-    loupe
-    pavucontrol
-    xwayland-satellite
-    wayland-utils
-    gotify-desktop # Config in dotfiles
-    brightnessctl
-    wlr-randr
-    wdisplays
-    wl-clipboard
-    kanshi # Config in dotfiles
-    kdePackages.qt6ct
-    numix-cursor-theme
-    papirus-icon-theme
-    nwg-look # Needed for setting gtk theme in Noctalia
-    adw-gtk3 # Needed for setting gtk theme in Noctalia
-    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
+  imports = [
+    inputs.noctalia-greeter.nixosModules.default
   ];
 
-  # Niri window manager, config in dotfiles
-  programs.niri.enable = true;
+  environment.systemPackages =
+    (with pkgs; [
+      nautilus
+      gnome-text-editor
+      evince
+      loupe
+      pavucontrol
+      xwayland-satellite
+      wayland-utils
+      gotify-desktop # Config in dotfiles
+      brightnessctl
+      wlr-randr
+      wdisplays
+      wl-clipboard
+      kanshi # Config in dotfiles
+      kdePackages.qt6ct
+      numix-cursor-theme
+      papirus-icon-theme
+      nwg-look # Needed for setting gtk theme in Noctalia
+      adw-gtk3 # Needed for setting gtk theme in Noctalia
+    ])
+    ++ [
+      inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
+    ];
+  environment.pathsToLink = ["/share/wayland-sessions"];
+
+  programs = {
+    # Niri window manager, config in dotfiles
+    niri.enable = true;
+
+    noctalia-greeter = {
+      enable = true;
+      settings = {
+        session.default = "Niri";
+        user.default = username;
+        cursor = {
+          theme = "Numix-Cursor";
+          size = 24;
+          path = "${pkgs.numix-cursor-theme}/share/icons";
+        };
+        keyboard.layout = "fi";
+        idle.timeout = 300;
+      };
+    };
+  };
 
   # Environment variables
   environment.sessionVariables = {
@@ -44,24 +69,9 @@
       enable = true;
       settings.default_session = {
         user = "greeter";
-        command = ''
-          ${pkgs.tuigreet}/bin/tuigreet \
-            --time \
-            --asterisks \
-            --remember \
-            --remember-session \
-            --user-menu \
-            --cmd niri-session \
-            --theme 'border=#c4a7e7;text=#e0def4;prompt=#9ccfd8;time=#6e6a86;action=#31748f;button=#f6c177;container=#191724;input=#eb6f92'
-        '';
       };
     };
   };
-
-  # Cache directory for tuigreet --remember functionality
-  systemd.tmpfiles.rules = [
-    "d /var/cache/tuigreet 0755 greeter greeter -"
-  ];
 
   # MIME type associations
   xdg.mime = {

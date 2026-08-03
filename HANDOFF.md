@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-08-03 18:09 UTC
+Last updated: 2026-08-03 20:21 UTC
 
 ## Current State
+
+Branch `feature/noctalia-greeter` configures Noctalia Greeter for `laptop`. `flake.nix` adds `inputs.noctalia-greeter` following root `nixpkgs`, and `modules/desktop-environment.nix` imports the upstream NixOS module, enables `programs.noctalia-greeter`, and removes the previous `tuigreet` command/cache config. Greeter settings are intentionally minimal and sync-friendly: default session `Niri`, default user `llego`, Numix cursor path, Finnish keyboard layout, and 300-second idle blanking. `environment.pathsToLink` includes `/share/wayland-sessions` so `programs.niri.enable`'s package-provided `niri.desktop` is linked into the system profile for Noctalia Greeter session discovery. Verification: `alejandra flake.nix modules/desktop-environment.nix`, `nixos-rebuild dry-build --flake .#laptop`, and `nix build .#nixosConfigurations.laptop.config.system.build.toplevel --no-link` succeeded. The built system path contains `share/wayland-sessions/niri.desktop` with `Name=Niri`. Laptop was rebuilt with `sudo nixos-rebuild switch --flake .#laptop`; the active generation is `/nix/store/mqqpny9cqmjg0haqc809g8drhd1zjsf2-nixos-system-laptop-26.05.20260719.fd14620`. Niri login worked. Manual Noctalia Settings -> Security -> Polkit agent made Greeter Sync Now work; `dots/noctalia/config.toml` now declares `shell.polkit_agent = true`, the selected bar layout/style, bar widget settings, theme source/mode, and the wallpaper directory under `dots/noctalia/wallpapers`. Theme template selections are intentionally not declarative. Matching GUI-managed overrides were pruned from `~/.local/state/noctalia/settings.toml`, and the invalid `wallpaper.monitors.DP-1` path override was removed. `noctalia config validate` succeeds, `~/.config/noctalia/config.toml` points to the new Nix store config, and Noctalia Greeter Sync Now was retested successfully after the declarative polkit-agent change. No secrets were added to tracked files.
 
 Flake path args were centralized: `flake.nix` now defines `reporoot = ./.` and `dots = reporoot + "/dots"`, passes them through shared `commonSpecialArgs`, and modules use those args instead of relative `../dots` / `../../secrets` references. `dots` remains a path for file sources; `modules/core/hjem.nix` stringifies it only for `hjem-impure.dotsDir`, which requires a string-wrapped path. `nix eval` succeeded for `laptop`, `vps`, `crisuflix`, `rpi5`, and `laptop-installer` (`--impure` for installer due SSH key access). No secrets were added to tracked files.
 
@@ -14,7 +16,9 @@ VPS traefik-kop reboot fix has been simplified in config: `networkVars.hosts.vps
 
 ## Top 3 Next Actions
 
-- Rebuild `vps` and `rpi5` when ready to deploy the agenix registry refactor there; `crisuflix` and `laptop` have been switched.
+- Review and commit the feature branch.
+- Consider whether any remaining GUI-managed Noctalia state in `~/.local/state/noctalia/settings.toml` should be promoted to declarative config later.
+- If needed, do a reboot-cycle smoke test for greeter startup and Niri login before merging.
 
 ## Blockers
 
