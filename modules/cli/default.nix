@@ -1,10 +1,9 @@
 {
   pkgs,
   username,
+  dots,
   ...
-}: let
-  dots = "${../../dots}";
-in {
+}: {
   imports = [./yazi.nix];
 
   environment.systemPackages = with pkgs; [
@@ -105,9 +104,7 @@ in {
   environment.etc."oh-my-posh/config.json".text = builtins.readFile (dots + "/oh-my-posh/config.json");
 
   # CLI application dotfiles
-  hjem.users.${username}.xdg.config.files = let
-    dots = "${../../dots}";
-  in {
+  hjem.users.${username}.xdg.config.files = {
     # Helix configuration files
     "helix/config.toml".source = dots + "/helix/config.toml";
     "helix/languages.toml".source = dots + "/helix/languages.toml";

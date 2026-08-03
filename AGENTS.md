@@ -46,11 +46,11 @@ nixos-rebuild switch --flake .#vps \
   --target-host llego@christiansandberg.fi --sudo
 
 # NAS, when not already on crisuflix
-nixos-rebuild switch --flake .#crisuflix \
+sudo nixos-rebuild switch --flake .#crisuflix \
   --build-host llego@crisuflix
 
 # NAS, when already on crisuflix
-nixos-rebuild switch --flake .#crisuflix
+sudo nixos-rebuild switch --flake .#crisuflix
 
 # Raspberry Pi 5, use boot for remote safety
 nixos-rebuild boot --flake .#rpi5 \

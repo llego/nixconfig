@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-07-30 18:56 UTC
+Last updated: 2026-08-03 18:09 UTC
 
 ## Current State
+
+Flake path args were centralized: `flake.nix` now defines `reporoot = ./.` and `dots = reporoot + "/dots"`, passes them through shared `commonSpecialArgs`, and modules use those args instead of relative `../dots` / `../../secrets` references. `dots` remains a path for file sources; `modules/core/hjem.nix` stringifies it only for `hjem-impure.dotsDir`, which requires a string-wrapped path. `nix eval` succeeded for `laptop`, `vps`, `crisuflix`, `rpi5`, and `laptop-installer` (`--impure` for installer due SSH key access). No secrets were added to tracked files.
 
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
@@ -10,22 +12,10 @@ Docker on crisuflix now waits for Tailscale before starting. `hosts/crisuflix/de
 
 VPS traefik-kop reboot fix has been simplified in config: `networkVars.hosts.vps` is now the stable tailnet IP `100.64.0.4` and `networkVars.hosts.crisuflix` is now `100.64.0.1`, removing MagicDNS from Redis bind/provider/firewall paths. `hosts/vps/reverse-proxy.nix` now orders Traefik after/wants `redis-traefik.service`. Local eval confirms Redis binds `100.64.0.4`, Traefik uses Redis endpoint `100.64.0.4:6379`, and Traefik wants/starts after `redis-traefik.service`; `nixos-rebuild dry-build --flake .#vps` succeeds. VPS was deployed and rebooted. Runtime recovered without manual restarts: `tailscaled`, `headscale`, `redis-traefik`, and `traefik` are active; Redis listens on `100.64.0.4:6379`; Traefik has Redis-backed routers; crisuflix can reach Redis; `https://ai.cri.su` returns 200; `https://traefik.cri.su` redirects to Authelia. Boot logs still show Redis initially failed with `bind: Cannot assign requested address` until Tailscale acquired `100.64.0.4`, so add a simple Redis `preStart` gate if clean boot logs/no temporary outage are desired.
 
-NFS on crisuflix is tailnet-wide and firewall-scoped to `tailscale0`: `/mnt/veckjarvi/media`, `/mnt/veckjarvi/backups/haos-backup`, and `/mnt/illby/docker` are exported to `100.64.0.0/10`. Parent exports for media and docker use `crossmnt` so child ZFS datasets are visible. Laptop mounts media and docker via `crisuflix.tailnet.cri.su` using NFSv4.2; both crisuflix and laptop have been rebuilt and switched, and `/mnt/crisuflix-media` plus `/mnt/crisuflix-docker` are verified active on laptop.
-
-IoT network isolation completed: UniFi `192.168.3.0/24` moved to custom zone (CUSTOM1), avahi reflector enabled on crisuflix for cross-subnet mDNS. `192.168.1.103` alias removed from br0 — Shelly devices migrated to `192.168.3.103`.
-
-Shared core Nix settings trust the personal Cachix cache `https://llego.cachix.org` with public key `llego.cachix.org-1:WzO82OCKQr+mNapPewBwEeN5Ui5vPjduTIYfrD0YFwQ=`. `bandsnatch` is no longer a root flake input and no longer follows root `nixpkgs`; it is owned by `pkgs/album-downloader/flake.nix` with an independent pinned dependency graph, reducing cache churn on root `nixpkgs` updates. The root flake no longer exposes `.#bandsnatch` or `.#album-downloader`; NixOS installs `album-downloader` through `inputs.album-downloader.packages.${system}.album-downloader`. Cache priming, when the package flake changes, is done from `pkgs/album-downloader` with `nix build .#bandsnatch && cachix push llego ./result`. The current independently pinned `bandsnatch` path is `/nix/store/72lgkdg8bvaq2fg9nw6p5ilpf2fxckds-bandsnatch-0.3.3`, and `nix path-info --option narinfo-cache-negative-ttl 0 --store https://llego.cachix.org /nix/store/72lgkdg8bvaq2fg9nw6p5ilpf2fxckds-bandsnatch-0.3.3` succeeds. No secrets were added to tracked files.
-
-A removed ebook downloader package has been fully deleted from the repo. Its stale commented reference in `modules/downloaders.nix` and its standalone local package flake/scripts were deleted. A repository-wide reference search is clean, and `nix eval .#nixosConfigurations.crisuflix.config.system.name` succeeds. No secrets were added to tracked files.
-
-A removed sensor collector package has been fully deleted from the repo. Its flake input and lock node, stale commented host imports/service snippets, and standalone local package tree were deleted. A repository-wide reference search is clean, and `nix eval` succeeds for `crisuflix`, `laptop`, and `rpi5`. No secrets were added to tracked files.
-
-Agenix secret definitions were consolidated into `secrets/_registry.nix`. Root `secrets.nix` now remains as the agenix CLI compatibility file and generates recipient rules from the registry, so `agenix -e secrets/foo.age`, `agenix -d secrets/foo.age`, and `agenix -r` still use the default rules path. `modules/core/agenix.nix` now generates host-filtered `age.secrets` from the same registry, and `hosts/crisuflix/opencloud.nix` no longer carries a duplicate `opencloud-env` declaration. Unused `secrets/hermes-env.age` and `secrets/frigate-env.age` were removed from the registry and repo. `agenix -r` was run manually by the user and the rekeyed `.age` files are included in the commit. `nix eval` succeeds for `laptop`, `vps`, `crisuflix`, and `rpi5`; generated runtime secret lists were checked for each host before the unused secret removal. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded and activated `/nix/store/fkvzq4kl10sdlxln2lhkf9hkabafg09w-nixos-system-crisuflix-26.05.20260719.fd14620`; agenix decrypted the expected crisuflix secrets and did not decrypt Hermes/Frigate secrets. `nixos-rebuild switch --flake .#laptop --target-host llego@laptop --sudo` from crisuflix succeeded and activated `/nix/store/i1v72sdv3m02840s9vl2gaym87zxq8l9-nixos-system-laptop-26.05.20260719.fd14620`. The laptop rebuild did not substitute `bandsnatch`/`album-downloader` from `https://llego.cachix.org`: the log shows local builds for `bandsnatch-deps-0.3.3`, `bandsnatch-0.3.3`, and `album-downloader`, and `nix path-info --store https://llego.cachix.org` reports the resulting output paths absent. The new registry contains public SSH keys and runtime metadata only; no plaintext secrets were added to tracked files.
-
 ## Top 3 Next Actions
 
-- Rebuild `laptop` to confirm independently pinned `bandsnatch` substitutes from Cachix on a clean target rather than compiling Rust locally.
 - Rebuild `vps` and `rpi5` when ready to deploy the agenix registry refactor there; `crisuflix` and `laptop` have been switched.
-- For future `pkgs/album-downloader` flake updates, prime Cachix from that directory with `nix build .#bandsnatch && cachix push llego ./result` before rebuilding clean hosts.
 
 ## Blockers
+
+- None.

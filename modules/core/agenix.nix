@@ -3,9 +3,10 @@
   pkgs,
   hostname,
   lib,
+  reporoot,
   ...
 }: let
-  registry = import ../../secrets/_registry.nix;
+  registry = import (reporoot + "/secrets/_registry.nix");
 
   secretsForHost =
     lib.filterAttrs (
@@ -15,7 +16,7 @@
 
   runtimeSecret = name: secret:
     {
-      file = ../../secrets + "/${name}.age";
+      file = reporoot + "/secrets/${name}.age";
     }
     // builtins.removeAttrs secret ["publicKeys" "hosts"];
 in {

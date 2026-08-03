@@ -49,6 +49,11 @@
 
   outputs = {nixpkgs, ...} @ inputs: let
     username = "llego";
+    reporoot = ./.;
+    dots = reporoot + "/dots";
+    commonSpecialArgs = {
+      inherit inputs username reporoot dots;
+    };
   in {
     nixosConfigurations = {
       # nix build --impure .#nixosConfigurations.laptop-installer.config.system.build.isoImage
@@ -57,30 +62,27 @@
       laptop-installer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [./hosts/installer];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-        };
+        specialArgs = commonSpecialArgs;
       };
 
       laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [./hosts/laptop];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "laptop";
-        };
+        specialArgs =
+          commonSpecialArgs
+          // {
+            hostname = "laptop";
+          };
       };
 
       vps = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [./hosts/vps];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "vps";
-        };
+        specialArgs =
+          commonSpecialArgs
+          // {
+            hostname = "vps";
+          };
       };
 
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux
@@ -89,25 +91,25 @@
       rpi5 = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [./hosts/rpi5];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "rpi5";
-        };
+        specialArgs =
+          commonSpecialArgs
+          // {
+            hostname = "rpi5";
+          };
       };
 
       crisuflix = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [./hosts/crisuflix];
-        specialArgs = {
-          inherit inputs;
-          inherit username;
-          hostname = "crisuflix";
-          pkgs-unstable = import inputs.nixpkgs-unstable {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
+        specialArgs =
+          commonSpecialArgs
+          // {
+            hostname = "crisuflix";
+            pkgs-unstable = import inputs.nixpkgs-unstable {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            };
           };
-        };
       };
     };
   };

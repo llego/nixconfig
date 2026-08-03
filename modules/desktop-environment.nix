@@ -3,6 +3,7 @@
   pkgs,
   username,
   inputs,
+  dots,
   ...
 }: {
   environment.systemPackages = with pkgs; [
@@ -191,8 +192,7 @@
 
   # Desktop environment dotfiles
   hjem.users.${username} = let
-    dots = "${../dots}";
-    wallpaperDir = ../dots/noctalia/wallpapers;
+    wallpaperDir = dots + "/noctalia/wallpapers";
     wallpaperFiles = builtins.attrNames (lib.filterAttrs (_: type: type == "regular") (builtins.readDir wallpaperDir));
     wallpaperMappings = builtins.listToAttrs (map (file: {
         name = "noctalia/wallpapers/${file}";
