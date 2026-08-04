@@ -1,10 +1,8 @@
 # HANDOFF
 
-Last updated: 2026-08-03 20:21 UTC
+Last updated: 2026-08-03 20:42 UTC
 
 ## Current State
-
-Branch `feature/noctalia-greeter` configures Noctalia Greeter for `laptop`. `flake.nix` adds `inputs.noctalia-greeter` following root `nixpkgs`, and `modules/desktop-environment.nix` imports the upstream NixOS module, enables `programs.noctalia-greeter`, and removes the previous `tuigreet` command/cache config. Greeter settings are intentionally minimal and sync-friendly: default session `Niri`, default user `llego`, Numix cursor path, Finnish keyboard layout, and 300-second idle blanking. `environment.pathsToLink` includes `/share/wayland-sessions` so `programs.niri.enable`'s package-provided `niri.desktop` is linked into the system profile for Noctalia Greeter session discovery. Verification: `alejandra flake.nix modules/desktop-environment.nix`, `nixos-rebuild dry-build --flake .#laptop`, and `nix build .#nixosConfigurations.laptop.config.system.build.toplevel --no-link` succeeded. The built system path contains `share/wayland-sessions/niri.desktop` with `Name=Niri`. Laptop was rebuilt with `sudo nixos-rebuild switch --flake .#laptop`; the active generation is `/nix/store/mqqpny9cqmjg0haqc809g8drhd1zjsf2-nixos-system-laptop-26.05.20260719.fd14620`. Niri login worked. Manual Noctalia Settings -> Security -> Polkit agent made Greeter Sync Now work; `dots/noctalia/config.toml` now declares `shell.polkit_agent = true`, the selected bar layout/style, bar widget settings, theme source/mode, and the wallpaper directory under `dots/noctalia/wallpapers`. Theme template selections are intentionally not declarative. Matching GUI-managed overrides were pruned from `~/.local/state/noctalia/settings.toml`, and the invalid `wallpaper.monitors.DP-1` path override was removed. `noctalia config validate` succeeds, `~/.config/noctalia/config.toml` points to the new Nix store config, and Noctalia Greeter Sync Now was retested successfully after the declarative polkit-agent change. No secrets were added to tracked files.
 
 Flake path args were centralized: `flake.nix` now defines `reporoot = ./.` and `dots = reporoot + "/dots"`, passes them through shared `commonSpecialArgs`, and modules use those args instead of relative `../dots` / `../../secrets` references. `dots` remains a path for file sources; `modules/core/hjem.nix` stringifies it only for `hjem-impure.dotsDir`, which requires a string-wrapped path. `nix eval` succeeded for `laptop`, `vps`, `crisuflix`, `rpi5`, and `laptop-installer` (`--impure` for installer due SSH key access). No secrets were added to tracked files.
 
@@ -15,10 +13,6 @@ Docker on crisuflix now waits for Tailscale before starting. `hosts/crisuflix/de
 VPS traefik-kop reboot fix has been simplified in config: `networkVars.hosts.vps` is now the stable tailnet IP `100.64.0.4` and `networkVars.hosts.crisuflix` is now `100.64.0.1`, removing MagicDNS from Redis bind/provider/firewall paths. `hosts/vps/reverse-proxy.nix` now orders Traefik after/wants `redis-traefik.service`. Local eval confirms Redis binds `100.64.0.4`, Traefik uses Redis endpoint `100.64.0.4:6379`, and Traefik wants/starts after `redis-traefik.service`; `nixos-rebuild dry-build --flake .#vps` succeeds. VPS was deployed and rebooted. Runtime recovered without manual restarts: `tailscaled`, `headscale`, `redis-traefik`, and `traefik` are active; Redis listens on `100.64.0.4:6379`; Traefik has Redis-backed routers; crisuflix can reach Redis; `https://ai.cri.su` returns 200; `https://traefik.cri.su` redirects to Authelia. Boot logs still show Redis initially failed with `bind: Cannot assign requested address` until Tailscale acquired `100.64.0.4`, so add a simple Redis `preStart` gate if clean boot logs/no temporary outage are desired.
 
 ## Top 3 Next Actions
-
-- Review and commit the feature branch.
-- Consider whether any remaining GUI-managed Noctalia state in `~/.local/state/noctalia/settings.toml` should be promoted to declarative config later.
-- If needed, do a reboot-cycle smoke test for greeter startup and Niri login before merging.
 
 ## Blockers
 

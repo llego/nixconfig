@@ -118,9 +118,14 @@
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    plymouth.enable = true;
+
+    plymouth = {
+      enable = true;
+      theme = "spinner";
+    };
 
     initrd = {
+      verbose = false;
       availableKernelModules = [
         "xhci_pci"
         "nvme"
