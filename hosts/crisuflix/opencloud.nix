@@ -58,6 +58,16 @@ in {
       PROXY_USER_CS3_CLAIM = "username";
       GRAPH_USERNAME_MATCH = "none"; # allow any username characters
       WEB_OIDC_SCOPE = "openid profile email groups";
+
+      # OpenCloud clients discover their OIDC client IDs and scopes via WebFinger.
+      WEBFINGER_WEB_OIDC_CLIENT_ID = "web";
+      WEBFINGER_WEB_OIDC_CLIENT_SCOPES = "openid profile email groups";
+      WEBFINGER_ANDROID_OIDC_CLIENT_ID = "OpenCloudAndroid";
+      WEBFINGER_ANDROID_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
+      WEBFINGER_IOS_OIDC_CLIENT_ID = "OpenCloudIOS";
+      WEBFINGER_IOS_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
+      WEBFINGER_DESKTOP_OIDC_CLIENT_ID = "OpenCloudDesktop";
+      WEBFINGER_DESKTOP_OIDC_CLIENT_SCOPES = "openid profile email groups offline_access";
     };
 
     environmentFile = config.age.secrets.opencloud-env.path;

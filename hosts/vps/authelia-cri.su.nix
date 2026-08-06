@@ -135,6 +135,12 @@ in {
           allowed_origins_from_client_redirect_uris = true;
         };
 
+        lifespans.custom.opencloud_native = {
+          access_token = "1h";
+          id_token = "1h";
+          refresh_token = "365d";
+        };
+
         # Custom claims policies for OIDC clients
         claims_policies = {
           sftpgo = {
@@ -324,7 +330,7 @@ in {
               "https://cloud.cri.su/oidc-silent-redirect.html"
             ];
             scopes = ["openid" "profile" "email" "groups"];
-            grant_types = ["authorization_code" "refresh_token"];
+            grant_types = ["authorization_code"];
             response_types = ["code"];
             response_modes = ["form_post" "query" "fragment"];
             userinfo_signed_response_alg = "none";
@@ -341,6 +347,7 @@ in {
             pkce_challenge_method = "S256";
             consent_mode = "pre-configured";
             pre_configured_consent_duration = "1w";
+            lifespan = "opencloud_native";
             redirect_uris = [
               "http://127.0.0.1"
               "http://localhost"
@@ -362,6 +369,7 @@ in {
             pkce_challenge_method = "S256";
             consent_mode = "pre-configured";
             pre_configured_consent_duration = "1y";
+            lifespan = "opencloud_native";
             redirect_uris = ["oc://android.opencloud.eu"];
             scopes = ["openid" "profile" "email" "groups" "offline_access"];
             grant_types = ["authorization_code" "refresh_token"];
@@ -380,6 +388,7 @@ in {
             pkce_challenge_method = "S256";
             consent_mode = "pre-configured";
             pre_configured_consent_duration = "1y";
+            lifespan = "opencloud_native";
             redirect_uris = ["oc://ios.opencloud.eu"];
             scopes = ["openid" "profile" "email" "groups" "offline_access"];
             grant_types = ["authorization_code" "refresh_token"];

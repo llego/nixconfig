@@ -1,8 +1,16 @@
 # HANDOFF
 
-Last updated: 2026-08-03 20:42 UTC
+Last updated: 2026-08-06 18:20 UTC
 
 ## Current State
+
+Music Assistant Yamaha/MusicCast debugging is active on `crisuflix`. `hosts/crisuflix/home-automation.nix` now sets `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so the explicit `--config /var/lib/music-assistant` must stay while debug logging is enabled. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded after staging the file, and `systemctl status music-assistant.service` shows MA running as `/nix/store/.../.mass-wrapped --config /var/lib/music-assistant --log-level debug`. A first incorrect rebuild briefly started MA with only `--log-level debug`, which put MA into setup mode with empty storage; it was immediately corrected and rebuilt. No tracked secrets were added.
+
+OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state; monitor whether the app stays logged in. No tracked secrets were added.
+
+Current Yamaha diagnostic facts: AVR direct API at `http://192.168.1.247/YamahaExtendedControl/v1/main/getStatus` returns `"power":"standby"`; model is RX-V6A, firmware/system version `1.80`, API `2.17`, device id `4C22F3A99400`. Music Assistant 2.8.7 uses `aiomusiccast==0.15.0` and polls MusicCast every 10 seconds. The native HA Yamaha MusicCast config entry `01JXA892330HV501YMC2SYPY21` is already disabled by user and `state="not_loaded"`, so it is unlikely to be actively competing. After the corrected MA restart, MA logs show MusicCast loaded and `4C22F3A99400___main/Yamaha MASS` registered at `2026-08-05 09:42:06` local time. HA initially kept `media_player.yamaha_mass` as `unavailable` because HA needed reauthentication to MA; user reauthenticated HA -> MA, and HA now sees `media_player.yamaha_mass` again (`playing` at `2026-08-05 09:49` local time). Remaining investigation is only the Yamaha manual-power-off stale state.
+
+Manual-power-off test with debug logging active did not reproduce the stale-on bug. User played a song on Yamaha MASS, manually powered off the Yamaha, and MA correctly showed the Yamaha as off. Evidence: HA logbook shows `media_player.yamaha_mass` `playing` at `2026-08-05 09:48:21` local time and `off` at `09:50:30`; direct Yamaha API simultaneously returned `"power":"standby"`; MA debug logs show playback started on Yamaha MASS through native MusicCast at `09:45:58` and the Yamaha stream request came from `192.168.1.247`. Leave debug logging active only if more reproduction attempts are desired.
 
 Flake path args were centralized: `flake.nix` now defines `reporoot = ./.` and `dots = reporoot + "/dots"`, passes them through shared `commonSpecialArgs`, and modules use those args instead of relative `../dots` / `../../secrets` references. `dots` remains a path for file sources; `modules/core/hjem.nix` stringifies it only for `hjem-impure.dotsDir`, which requires a string-wrapped path. `nix eval` succeeded for `laptop`, `vps`, `crisuflix`, `rpi5`, and `laptop-installer` (`--impure` for installer due SSH key access). No secrets were added to tracked files.
 
@@ -14,6 +22,11 @@ VPS traefik-kop reboot fix has been simplified in config: `networkVars.hosts.vps
 
 ## Top 3 Next Actions
 
+- Monitor whether the OpenCloud Android app stays logged in with the new 365-day native-client refresh token lifespan.
+- Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
+- If Yamaha stale-on recurs, capture the exact window with direct Yamaha API, HA state, MA UI state, and `journalctl -u music-assistant.service` around the event.
+
 ## Blockers
 
-- None.
+- Root cause not proven yet; needs a fresh reproduction while debug logging is active.
+- OpenCloud Android fix is deployed and initial login succeeded; long-term retention still needs time-based verification.
