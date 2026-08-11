@@ -49,6 +49,8 @@
     };
   };
 
+  services.blueman.enable = true;
+
   security.rtkit.enable = true;
 
   services = {
