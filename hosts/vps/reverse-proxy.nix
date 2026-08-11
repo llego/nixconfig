@@ -149,6 +149,27 @@ in {
             tls.certResolver = "hetzner";
             middlewares = ["authelia-cri-su"];
           };
+          sonarr-tailnet = {
+            rule = "Host(`sonarr.tailnet.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "sonarr-tailnet";
+            tls.certResolver = "hetzner";
+            middlewares = ["tailnet-only"];
+          };
+          radarr-tailnet = {
+            rule = "Host(`radarr.tailnet.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "radarr-tailnet";
+            tls.certResolver = "hetzner";
+            middlewares = ["tailnet-only"];
+          };
+          sabnzbd-tailnet = {
+            rule = "Host(`sabnzbd.tailnet.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "sabnzbd-tailnet";
+            tls.certResolver = "hetzner";
+            middlewares = ["tailnet-only"];
+          };
           homepage = {
             rule = "Host(`cri.su`)";
             entryPoints = ["websecure"];
@@ -200,6 +221,22 @@ in {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.glances.port}";
             }
           ];
+          sonarr-tailnet.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.crisuflix}:8989";
+            }
+          ];
+          radarr-tailnet.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.crisuflix}:7878";
+            }
+          ];
+          sabnzbd-tailnet.loadBalancer.servers = [
+            {
+              url = "https://sabnzbd.llego.me";
+            }
+          ];
+          sabnzbd-tailnet.loadBalancer.passHostHeader = false;
           opencloud.loadBalancer.servers = [
             {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.opencloud.port}";

@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-08-06 18:20 UTC
+Last updated: 2026-08-11 19:39 UTC
 
 ## Current State
 
@@ -20,13 +20,16 @@ Docker on crisuflix now waits for Tailscale before starting. `hosts/crisuflix/de
 
 VPS traefik-kop reboot fix has been simplified in config: `networkVars.hosts.vps` is now the stable tailnet IP `100.64.0.4` and `networkVars.hosts.crisuflix` is now `100.64.0.1`, removing MagicDNS from Redis bind/provider/firewall paths. `hosts/vps/reverse-proxy.nix` now orders Traefik after/wants `redis-traefik.service`. Local eval confirms Redis binds `100.64.0.4`, Traefik uses Redis endpoint `100.64.0.4:6379`, and Traefik wants/starts after `redis-traefik.service`; `nixos-rebuild dry-build --flake .#vps` succeeds. VPS was deployed and rebooted. Runtime recovered without manual restarts: `tailscaled`, `headscale`, `redis-traefik`, and `traefik` are active; Redis listens on `100.64.0.4:6379`; Traefik has Redis-backed routers; crisuflix can reach Redis; `https://ai.cri.su` returns 200; `https://traefik.cri.su` redirects to Authelia. Boot logs still show Redis initially failed with `bind: Cannot assign requested address` until Tailscale acquired `100.64.0.4`, so add a simple Redis `preStart` gate if clean boot logs/no temporary outage are desired.
 
+Pixel 10 with workplace Microsoft Defender cannot use direct `*.llego.me` because Defender owns Android's VPN slot, so browser traffic cannot route to `100.64.0.1`. Added Headscale DNS `extra_records` for `sonarr.tailnet.cri.su`, `radarr.tailnet.cri.su`, and `sabnzbd.tailnet.cri.su`, all pointing to VPS tailnet IP `100.64.0.4`. Added VPS Traefik routes for those names with `tailnet-only` middleware and no Authelia. Sonarr/Radarr proxy directly to `http://100.64.0.1:8989` and `http://100.64.0.1:7878`. Tried a crisuflix `tailscale0` firewall opening for SABnzbd `6790`, but `http://100.64.0.1:6790` still timed out, so the final deployed route proxies SABnzbd via the existing crisuflix Traefik route `https://sabnzbd.llego.me` with `passHostHeader = false`. `crisuflix` and `vps` were rebuilt successfully. Verification: all three new names resolve to `100.64.0.4`; `https://sonarr.tailnet.cri.su` and `https://radarr.tailnet.cri.su` return `401`; `https://sabnzbd.tailnet.cri.su` returns `200`; all three present valid Let's Encrypt certs with matching single-name SANs. No tracked secrets were added.
+
 ## Top 3 Next Actions
 
 - Monitor whether the OpenCloud Android app stays logged in with the new 365-day native-client refresh token lifespan.
+- Test `sonarr.tailnet.cri.su`, `radarr.tailnet.cri.su`, and `sabnzbd.tailnet.cri.su` from Pixel 10 while Defender is active.
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
-- If Yamaha stale-on recurs, capture the exact window with direct Yamaha API, HA state, MA UI state, and `journalctl -u music-assistant.service` around the event.
 
 ## Blockers
 
 - Root cause not proven yet; needs a fresh reproduction while debug logging is active.
 - OpenCloud Android fix is deployed and initial login succeeded; long-term retention still needs time-based verification.
+- Direct `100.64.0.1:6790` to SABnzbd remains unreachable; use the existing `sabnzbd.llego.me` Traefik route as the backend for `sabnzbd.tailnet.cri.su`.
