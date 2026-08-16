@@ -1,10 +1,12 @@
 # HANDOFF
 
-Last updated: 2026-08-11 19:53 UTC
+Last updated: 2026-08-16 10:15 UTC
 
 ## Current State
 
 Music Assistant Yamaha/MusicCast debugging is active on `crisuflix`. `hosts/crisuflix/home-automation.nix` now sets `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so the explicit `--config /var/lib/music-assistant` must stay while debug logging is enabled. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded after staging the file, and `systemctl status music-assistant.service` shows MA running as `/nix/store/.../.mass-wrapped --config /var/lib/music-assistant --log-level debug`. A first incorrect rebuild briefly started MA with only `--log-level debug`, which put MA into setup mode with empty storage; it was immediately corrected and rebuilt. No tracked secrets were added.
+
+Noctalia laptop config was migrated from the symlinked `dots/noctalia/config.toml` into the Noctalia hjem module in `modules/desktop-environment.nix`. The Noctalia hjem module is imported only inside `hjem.users.${username}` in `desktop-environment.nix`, keeping it laptop-local because only the laptop uses that module. Manual Noctalia package installation was removed because the hjem module owns installation. `dots/noctalia/config.toml` was deleted. CPU/RAM widgets were migrated to the current v5 `sysmon` shape (`visualization = "graph"`). `nix eval '.#nixosConfigurations.laptop.config.system.build.toplevel.drvPath'` succeeded on host `laptop`. The eval refreshed `flake.lock` for Noctalia and its nixpkgs input because the Noctalia `cachix` branch moved. No tracked secrets were added.
 
 OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
 
@@ -26,6 +28,7 @@ Pixel 10 with workplace Microsoft Defender cannot use direct `*.llego.me` becaus
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 - Decide whether to investigate direct `100.64.0.1:6790` reachability for SABnzbd or keep the working `sabnzbd.llego.me` Traefik backend for `sabnzbd.tailnet.cri.su`.
+- Rebuild `laptop` when ready so Noctalia starts using the hjem-managed module config.
 
 ## Blockers
 

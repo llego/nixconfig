@@ -7,53 +7,35 @@
   ...
 }: {
   imports = [
-    inputs.noctalia-greeter.nixosModules.default
+    ./foot.nix
+    ./noctalia.nix
   ];
 
-  environment.systemPackages =
-    (with pkgs; [
-      nautilus
-      gnome-text-editor
-      evince
-      loupe
-      pavucontrol
-      xwayland-satellite
-      wayland-utils
-      gotify-desktop # Config in dotfiles
-      brightnessctl
-      wlr-randr
-      wdisplays
-      wl-clipboard
-      kanshi # Config in dotfiles
-      kdePackages.qt6ct
-      numix-cursor-theme
-      papirus-icon-theme
-      nwg-look # Needed for setting gtk theme in Noctalia
-      adw-gtk3 # Needed for setting gtk theme in Noctalia
-    ])
-    ++ [
-      inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ];
+  environment.systemPackages = with pkgs; [
+    nautilus
+    gnome-text-editor
+    evince
+    loupe
+    pavucontrol
+    xwayland-satellite
+    wayland-utils
+    gotify-desktop # Config in dotfiles
+    brightnessctl
+    wlr-randr
+    wdisplays
+    wl-clipboard
+    kanshi # Config in dotfiles
+    kdePackages.qt6ct
+    numix-cursor-theme
+    papirus-icon-theme
+    nwg-look # Needed for setting gtk theme in Noctalia
+    adw-gtk3 # Needed for setting gtk theme in Noctalia
+  ];
   environment.pathsToLink = ["/share/wayland-sessions"];
 
   programs = {
     # Niri window manager, config in dotfiles
     niri.enable = true;
-
-    noctalia-greeter = {
-      enable = true;
-      settings = {
-        session.default = "Niri";
-        user.default = username;
-        cursor = {
-          theme = "Numix-Cursor";
-          size = 24;
-          path = "${pkgs.numix-cursor-theme}/share/icons";
-        };
-        keyboard.layout = "fi";
-        idle.timeout = 300;
-      };
-    };
   };
 
   # Environment variables
@@ -131,68 +113,6 @@
     };
   };
 
-  programs.foot = {
-    enable = true;
-    theme = "rose-pine";
-    settings = {
-      main = {
-        font = "Maple Mono NF Light:size=10";
-        pad = "10x10";
-        title = "foot";
-        app-id = "foot";
-      };
-      bell = {
-        urgent = false;
-        notify = false;
-      };
-      scrollback = {
-        lines = 250000;
-        indicator-position = "relative";
-        indicator-format = "percentage";
-      };
-      colors-dark = {
-        alpha = "0.90";
-      };
-      cursor = {
-        style = "block";
-        blink = false;
-      };
-      mouse = {
-        hide-when-typing = true;
-      };
-      csd = {
-        preferred = "server";
-        size = 26;
-      };
-      key-bindings = {
-        scrollback-up-page = "Shift+Page_Up";
-        scrollback-down-page = "Shift+Page_Down";
-        scrollback-up-line = "Shift+Up";
-        scrollback-down-line = "Shift+Down";
-        clipboard-copy = "Control+Shift+c";
-        clipboard-paste = "Control+Shift+v";
-        primary-paste = "Shift+Insert";
-        search-start = "Control+Shift+f";
-        font-increase = "Control+plus Control+equal";
-        font-decrease = "Control+minus";
-        font-reset = "Control+0";
-        spawn-terminal = "Control+Shift+n";
-        show-urls-launch = "Control+Shift+o";
-        quit = "Control+Shift+q";
-      };
-      search-bindings = {
-        cancel = "Escape";
-        commit = "Return";
-        find-prev = "Control+Shift+n";
-        find-next = "Control+n";
-      };
-      url-bindings = {
-        cancel = "Escape Control+c";
-        toggle-url-visible = "Control+Shift+u";
-      };
-    };
-  };
-
   # nautilus-open-any-terminal
   # https://github.com/Stunkymonkey/nautilus-open-any-terminal
   programs.nautilus-open-any-terminal = {
@@ -213,9 +133,7 @@
     xdg.config.files =
       {
         "niri/config.kdl".source = dots + "/niri/config.kdl";
-        # "kanshi/config".source = dots + "/kanshi/config"; # Config moved from dotfile to laptop/default.nix
         "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
-        "noctalia/config.toml".source = dots + "/noctalia/config.toml";
         "gotify-desktop/config.toml".source = dots + "/gotify-desktop/config.toml";
       }
       // wallpaperMappings;

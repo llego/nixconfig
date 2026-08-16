@@ -14,7 +14,7 @@
     ./../../modules/core
     ./../../modules/cli
     ./../../modules/apps.nix
-    ./../../modules/desktop-environment.nix
+    ./../../modules/desktop-environment
     ./../../modules/printer.nix
     ./../../modules/wifi-networks.nix
     ./../../modules/downloaders.nix
