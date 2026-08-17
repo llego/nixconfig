@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-08-16 10:15 UTC
+Last updated: 2026-08-17 10:34 UTC
 
 ## Current State
+
+Anchor Notes OIDC setup is deployed and verified on web and Android. `hosts/vps/authelia-cri.su.nix` now has an Authelia OIDC public PKCE client `anchor` / `Anchor Notes` with callbacks `https://anchor.cri.su/api/auth/oidc/callback` and `anchor://oidc/callback`, scopes `openid profile email`, authorization-code grant, and `token_endpoint_auth_method = "none"`. It was first deployed as a confidential web-only client, then Android failed because the app uses native redirect `anchor://oidc/callback`; the client was converted to public PKCE and the container `.env` `OIDC_CLIENT_SECRET` line was removed without printing the secret. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded before both deploys, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix` and restarted `authelia-cri.su.service`. Anchor was restarted/recreated in `/mnt/illby/docker/stacks/anchor`; container is healthy and traefik-kop published `http://100.64.0.1:3040`, confirming the existing `3040` service label is correct for the VPS-over-tailnet topology. Verification: `https://anchor.cri.su` returns 200, `https://anchor.cri.su/api/auth/oidc/config` returns OIDC enabled for issuer `https://auth.cri.su` and client `anchor`, browser `/api/auth/oidc/initiate?redirect=/dashboard` returns 302 to Authelia with the web callback, and a direct native authorization request with `redirect_uri=anchor://oidc/callback` returns 302 into an Authelia OIDC flow. User confirmed the Android app works. Note: Anchor startup logs include `[anchor] Generated new JWT_SECRET`; consider setting a persistent JWT secret if sessions should survive container recreation. No tracked plaintext secrets were added; the initial tracked PBKDF2 hash was removed when the client became public.
 
 Music Assistant Yamaha/MusicCast debugging is active on `crisuflix`. `hosts/crisuflix/home-automation.nix` now sets `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so the explicit `--config /var/lib/music-assistant` must stay while debug logging is enabled. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded after staging the file, and `systemctl status music-assistant.service` shows MA running as `/nix/store/.../.mass-wrapped --config /var/lib/music-assistant --log-level debug`. A first incorrect rebuild briefly started MA with only `--log-level debug`, which put MA into setup mode with empty storage; it was immediately corrected and rebuilt. No tracked secrets were added.
 
@@ -26,9 +28,9 @@ Pixel 10 with workplace Microsoft Defender cannot use direct `*.llego.me` becaus
 
 ## Top 3 Next Actions
 
+- Consider setting a persistent Anchor `JWT_SECRET` in `/mnt/illby/docker/stacks/anchor/.env` so sessions are not invalidated on container recreation.
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 - Decide whether to investigate direct `100.64.0.1:6790` reachability for SABnzbd or keep the working `sabnzbd.llego.me` Traefik backend for `sabnzbd.tailnet.cri.su`.
-- Rebuild `laptop` when ready so Noctalia starts using the hjem-managed module config.
 
 ## Blockers
 
