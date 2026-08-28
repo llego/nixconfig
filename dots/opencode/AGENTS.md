@@ -11,6 +11,7 @@
 - Do not suggest or use home-manager.
 - Root-owned files require `sudo tee` to write.
 - Home directory (`~/`) is owned by `llego` — no sudo needed for files there.
+- Use nix-shell or nix-develop for packages not available on the system.
 
 ## Infrastructure
 
