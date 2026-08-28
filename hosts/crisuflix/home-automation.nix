@@ -28,6 +28,12 @@ in {
   # Music Assistant
   services.music-assistant = {
     enable = true;
+    extraOptions = [
+      "--config"
+      "/var/lib/music-assistant"
+      "--log-level"
+      "debug"
+    ];
     providers = [
       "chromecast"
       "hass"
