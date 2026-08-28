@@ -8,15 +8,6 @@
   ...
 }: let
   net = config.networkVars;
-  beetsConfigPath = "/mnt/illby/appstorage/beets/config.yaml";
-  beetsConfigured = pkgs.symlinkJoin {
-    name = "beets-configured";
-    paths = [pkgs.beets];
-    nativeBuildInputs = [pkgs.makeWrapper];
-    postBuild = ''
-      wrapProgram $out/bin/beet --add-flags "--config ${beetsConfigPath}"
-    '';
-  };
 in {
   system.stateVersion = "24.05";
 
@@ -24,6 +15,7 @@ in {
     inputs.disko.nixosModules.disko
     ./../../modules/core
     ./../../modules/cli
+    ./beets.nix
     ./home-automation.nix
     ./glances.nix
     # ./../../modules/hermes
@@ -43,9 +35,6 @@ in {
     lm_sensors
     nfs-utils
 
-    # Music management
-    beetsConfigured
-
     # Other apps
     opencode
     # ollama-cpu
@@ -57,10 +46,6 @@ in {
     nixd
     alejandra
   ];
-
-  system.activationScripts.beetsConfig = ''
-    install -D -m 0644 ${./../../dots/beets/config.yaml} ${beetsConfigPath}
-  '';
 
   # Hardware configuration
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
