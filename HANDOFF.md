@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-08-17 10:34 UTC
+Last updated: 2026-08-28 09:39 UTC
 
 ## Current State
 
@@ -14,14 +14,21 @@ Current Yamaha diagnostic facts: AVR direct API at `http://192.168.1.247/YamahaE
 
 Manual-power-off test with debug logging active did not reproduce the stale-on bug. User played a song on Yamaha MASS, manually powered off the Yamaha, and MA correctly showed the Yamaha as off. Evidence: HA logbook shows `media_player.yamaha_mass` `playing` at `2026-08-05 09:48:21` local time and `off` at `09:50:30`; direct Yamaha API simultaneously returned `"power":"standby"`; MA debug logs show playback started on Yamaha MASS through native MusicCast at `09:45:58` and the Yamaha stream request came from `192.168.1.247`. Leave debug logging active only if more reproduction attempts are desired.
 
+Flake path args were centralized: `flake.nix` now defines `reporoot = ./.` and `dots = reporoot + "/dots"`, passes them through shared `commonSpecialArgs`, and modules use those args instead of relative `../dots` / `../../secrets` references. `dots` remains a path for file sources; `modules/core/hjem.nix` stringifies it only for `hjem-impure.dotsDir`, which requires a string-wrapped path. `nix eval` succeeded for `laptop`, `vps`, `crisuflix`, `rpi5`, and `laptop-installer` (`--impure` for installer due SSH key access). No secrets were added to tracked files.
+
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
 Docker on crisuflix now waits for Tailscale before starting. `hosts/crisuflix/default.nix` orders `docker.service` after/wants `tailscaled.service` and `tailscaled-set.service`, and adds a `preStart` gate that waits up to 120 seconds for `tailscale ip -4` to return `100.64.0.1`. This prevents Docker from auto-restoring `restart=unless-stopped` containers before local Traefik can bind `100.64.0.1:80/443` and before traefik-kop can use `tailscale0`. Local eval and `nixos-rebuild dry-build --flake .#crisuflix` succeeded. After reboot, `tailscaled.service` is active, `tailscaled-set.service` completed before Docker started, Docker is active, the `traefik` container is bound to `100.64.0.1:80/443`, `traefik-kop` publishes routes using `100.64.0.1`, and `https://ai.cri.su` returns 200.
 
 VPS traefik-kop reboot fix has been simplified in config: `networkVars.hosts.vps` is now the stable tailnet IP `100.64.0.4` and `networkVars.hosts.crisuflix` is now `100.64.0.1`, removing MagicDNS from Redis bind/provider/firewall paths. `hosts/vps/reverse-proxy.nix` now orders Traefik after/wants `redis-traefik.service`. Local eval confirms Redis binds `100.64.0.4`, Traefik uses Redis endpoint `100.64.0.4:6379`, and Traefik wants/starts after `redis-traefik.service`; `nixos-rebuild dry-build --flake .#vps` succeeds. VPS was deployed and rebooted. Runtime recovered without manual restarts: `tailscaled`, `headscale`, `redis-traefik`, and `traefik` are active; Redis listens on `100.64.0.4:6379`; Traefik has Redis-backed routers; crisuflix can reach Redis; `https://ai.cri.su` returns 200; `https://traefik.cri.su` redirects to Authelia. Boot logs still show Redis initially failed with `bind: Cannot assign requested address` until Tailscale acquired `100.64.0.4`, so add a simple Redis `preStart` gate if clean boot logs/no temporary outage are desired.
 
+Pixel 10 with workplace Microsoft Defender cannot use direct `*.llego.me` because Defender owns Android's VPN slot, so browser traffic cannot route to `100.64.0.1`. Added Headscale DNS `extra_records` for `sonarr.tailnet.cri.su`, `radarr.tailnet.cri.su`, and `sabnzbd.tailnet.cri.su`, all pointing to VPS tailnet IP `100.64.0.4`. Added VPS Traefik routes for those names with `tailnet-only` middleware and no Authelia. Sonarr/Radarr proxy directly to `http://100.64.0.1:8989` and `http://100.64.0.1:7878`. Tried a crisuflix `tailscale0` firewall opening for SABnzbd `6790`, but `http://100.64.0.1:6790` still timed out, so the final deployed route proxies SABnzbd via the existing crisuflix Traefik route `https://sabnzbd.llego.me` with `passHostHeader = false`. `crisuflix` and `vps` were rebuilt successfully. Verification: all three new names resolve to `100.64.0.4`; `https://sonarr.tailnet.cri.su` and `https://radarr.tailnet.cri.su` return `401`; `https://sabnzbd.tailnet.cri.su` returns `200`; all three present valid Let's Encrypt certs with matching single-name SANs; user verified Sonarr, Radarr, and SABnzbd are accessible from the Pixel 10 phone. No tracked secrets were added.
+
 ## Top 3 Next Actions
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
+- Decide whether to investigate direct `100.64.0.1:6790` reachability for SABnzbd or keep the working `sabnzbd.llego.me` Traefik backend for `sabnzbd.tailnet.cri.su`.
 
 ## Blockers
+
+- Direct `100.64.0.1:6790` to SABnzbd remains unreachable; use the existing `sabnzbd.llego.me` Traefik route as the backend for `sabnzbd.tailnet.cri.su`.
