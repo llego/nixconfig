@@ -71,7 +71,13 @@ asciify_paths: yes
 fetchart:
     minwidth: 500
     enforce_ratio: 10px
-    sources: coverart filesystem itunes amazon spotify albumart fanarttv
+    sources:
+        - coverart
+        - filesystem
+        - itunes
+        - amazon
+        - albumart
+        - fanarttv
 
 embedart:
     auto: yes

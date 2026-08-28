@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-08-28 09:39 UTC
+Last updated: 2026-08-28 11:16 UTC
 
 ## Current State
 
@@ -11,6 +11,8 @@ Noctalia laptop config was migrated from the symlinked `dots/noctalia/config.tom
 OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
 
 Current Yamaha diagnostic facts: AVR direct API at `http://192.168.1.247/YamahaExtendedControl/v1/main/getStatus` returns `"power":"standby"`; model is RX-V6A, firmware/system version `1.80`, API `2.17`, device id `4C22F3A99400`. Music Assistant 2.8.7 uses `aiomusiccast==0.15.0` and polls MusicCast every 10 seconds. The native HA Yamaha MusicCast config entry `01JXA892330HV501YMC2SYPY21` is already disabled by user and `state="not_loaded"`, so it is unlikely to be actively competing. After the corrected MA restart, MA logs show MusicCast loaded and `4C22F3A99400___main/Yamaha MASS` registered at `2026-08-05 09:42:06` local time. HA initially kept `media_player.yamaha_mass` as `unavailable` because HA needed reauthentication to MA; user reauthenticated HA -> MA, and HA now sees `media_player.yamaha_mass` again (`playing` at `2026-08-05 09:49` local time). Remaining investigation is only the Yamaha manual-power-off stale state.
+
+Beets config was unified on `crisuflix`. `dots/beets/config.yaml` remains the Git source of truth, and `hosts/crisuflix/default.nix` now copies it on activation to `/mnt/illby/appstorage/beets/config.yaml`. The system `beet` command is wrapped to pass `--config /mnt/illby/appstorage/beets/config.yaml`. `modules/core/hjem.nix` no longer deploys `~/.config/beets/config.yaml`; `beet config -p` still lists that default path, but the file is absent. `/mnt/illby/docker/stacks/beets-flask/compose.yaml` now bind-mounts `/mnt/illby/appstorage/beets/config.yaml` read-only over `/config/beets/config.yaml`. `fetchart.sources` was changed from a scalar to a YAML list and `spotify` was removed because the current `pspitzner/beets-flask:stable` image has beets 2.5.1 without BeautifulSoup. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded, `docker compose up -d beets-flask` recreated the container, and both host `beet ls nethering` and `docker exec beets-flask beet ls nethering` succeed without the fetchart error. No tracked secrets were added.
 
 Manual-power-off test with debug logging active did not reproduce the stale-on bug. User played a song on Yamaha MASS, manually powered off the Yamaha, and MA correctly showed the Yamaha as off. Evidence: HA logbook shows `media_player.yamaha_mass` `playing` at `2026-08-05 09:48:21` local time and `off` at `09:50:30`; direct Yamaha API simultaneously returned `"power":"standby"`; MA debug logs show playback started on Yamaha MASS through native MusicCast at `09:45:58` and the Yamaha stream request came from `192.168.1.247`. Leave debug logging active only if more reproduction attempts are desired.
 
@@ -28,6 +30,7 @@ Pixel 10 with workplace Microsoft Defender cannot use direct `*.llego.me` becaus
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 - Decide whether to investigate direct `100.64.0.1:6790` reachability for SABnzbd or keep the working `sabnzbd.llego.me` Traefik backend for `sabnzbd.tailnet.cri.su`.
+- If beets-flask is later upgraded to an image with BeautifulSoup support, decide whether to re-add `spotify` to `fetchart.sources`.
 
 ## Blockers
 
