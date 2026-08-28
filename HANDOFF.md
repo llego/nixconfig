@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-08-16 10:15 UTC
+Last updated: 2026-08-28 09:39 UTC
 
 ## Current State
 
@@ -28,7 +28,6 @@ Pixel 10 with workplace Microsoft Defender cannot use direct `*.llego.me` becaus
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 - Decide whether to investigate direct `100.64.0.1:6790` reachability for SABnzbd or keep the working `sabnzbd.llego.me` Traefik backend for `sabnzbd.tailnet.cri.su`.
-- Rebuild `laptop` when ready so Noctalia starts using the hjem-managed module config.
 
 ## Blockers
 
