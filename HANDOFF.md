@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-08-28 11:51 UTC
+Last updated: 2026-08-29 20:58 UTC
 
 ## Current State
 
@@ -26,12 +26,14 @@ VPS traefik-kop reboot fix has been simplified in config: `networkVars.hosts.vps
 
 Pixel 10 with workplace Microsoft Defender cannot use direct `*.llego.me` because Defender owns Android's VPN slot, so browser traffic cannot route to `100.64.0.1`. Added Headscale DNS `extra_records` for `sonarr.tailnet.cri.su`, `radarr.tailnet.cri.su`, and `sabnzbd.tailnet.cri.su`, all pointing to VPS tailnet IP `100.64.0.4`. Added VPS Traefik routes for those names with `tailnet-only` middleware and no Authelia. Sonarr/Radarr proxy directly to `http://100.64.0.1:8989` and `http://100.64.0.1:7878`. Tried a crisuflix `tailscale0` firewall opening for SABnzbd `6790`, but `http://100.64.0.1:6790` still timed out, so the final deployed route proxies SABnzbd via the existing crisuflix Traefik route `https://sabnzbd.llego.me` with `passHostHeader = false`. `crisuflix` and `vps` were rebuilt successfully. Verification: all three new names resolve to `100.64.0.4`; `https://sonarr.tailnet.cri.su` and `https://radarr.tailnet.cri.su` return `401`; `https://sabnzbd.tailnet.cri.su` returns `200`; all three present valid Let's Encrypt certs with matching single-name SANs; user verified Sonarr, Radarr, and SABnzbd are accessible from the Pixel 10 phone. No tracked secrets were added.
 
+Tailnet Docker publishing was expanded through Headscale and traefik-kop. `hosts/vps/headscale.nix` now generates `extra_records` for `gotify`, `sonarr`, `radarr`, `prowlarr`, `sabnzbd`, `dozzle`, `frigate`, `esphome`, `beets-flask`, `handbrake`, `kms-gui`, `zfdash`, and `dockge`, all pointing at VPS tailnet IP `100.64.0.4`. The previous static `sonarr-tailnet`, `radarr-tailnet`, and `sabnzbd-tailnet` VPS Traefik routes were removed from `hosts/vps/reverse-proxy.nix`; those are now served from Docker labels via traefik-kop. SABnzbd, which runs behind `wireguard-mullvad`, needed a WireGuard `PostUp` route exception for `100.64.0.0/10` via the Docker gateway and SABnzbd `local_ranges` restored to include loopback/private ranges plus tailnet. These SABnzbd Compose/runtime config edits live under `/mnt/illby/docker/...`, outside this git repo. Verification on `crisuflix`: `http://127.0.0.1:6790`, `http://100.64.0.1:6790`, and `https://sabnzbd.tailnet.cri.su` return `200`; `dozzle.tailnet.cri.su`, `radarr.tailnet.cri.su`, and `sonarr.tailnet.cri.su` route correctly. `prowlarr.tailnet.cri.su` routes correctly but currently serves Traefik's default cert because ACME failed for that new identifier and hit a temporary Let's Encrypt failed-authorization rate limit. No tracked secrets were added.
+
 ## Top 3 Next Actions
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
-- Decide whether to investigate direct `100.64.0.1:6790` reachability for SABnzbd or keep the working `sabnzbd.llego.me` Traefik backend for `sabnzbd.tailnet.cri.su`.
+- After the Let's Encrypt failed-authorization rate limit expires, retry/fix certificate issuance for `prowlarr.tailnet.cri.su`; routing already returns HTTP `200` but the cert is Traefik's default cert.
 - If beets-flask is later upgraded to an image with BeautifulSoup support, decide whether to re-add `spotify` to `fetchart.sources`.
 
 ## Blockers
 
-- Direct `100.64.0.1:6790` to SABnzbd remains unreachable; use the existing `sabnzbd.llego.me` Traefik route as the backend for `sabnzbd.tailnet.cri.su`.
+- `prowlarr.tailnet.cri.su` certificate issuance is temporarily blocked by Let's Encrypt failed-authorization rate limiting after ACME DNS-01 failures; wait for the retry window before reattempting.

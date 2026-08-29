@@ -35,8 +35,16 @@ in {
             "gotify"
             "sonarr"
             "radarr"
+            "prowlarr"
             "sabnzbd"
             "dozzle"
+            "frigate"
+            "esphome"
+            "beets-flask"
+            "handbrake"
+            "kms-gui"
+            "zfdash"
+            "dockge"
           ];
         # extra_records = [
         #   {
