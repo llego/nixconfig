@@ -26,28 +26,40 @@ in {
         magic_dns = true;
         base_domain = "tailnet.cri.su";
         search_domains = ["tailnet.cri.su"];
-        extra_records = [
-          {
-            name = "gotify.tailnet.cri.su";
+        extra_records =
+          map (name: {
+            name = "${name}.tailnet.cri.su";
             type = "A";
             value = "100.64.0.4";
-          }
-          {
-            name = "sonarr.tailnet.cri.su";
-            type = "A";
-            value = "100.64.0.4";
-          }
-          {
-            name = "radarr.tailnet.cri.su";
-            type = "A";
-            value = "100.64.0.4";
-          }
-          {
-            name = "sabnzbd.tailnet.cri.su";
-            type = "A";
-            value = "100.64.0.4";
-          }
-        ];
+          }) [
+            "gotify"
+            "sonarr"
+            "radarr"
+            "sabnzbd"
+            "dozzle"
+          ];
+        # extra_records = [
+        #   {
+        #     name = "gotify.tailnet.cri.su";
+        #     type = "A";
+        #     value = "100.64.0.4";
+        #   }
+        #   {
+        #     name = "sonarr.tailnet.cri.su";
+        #     type = "A";
+        #     value = "100.64.0.4";
+        #   }
+        #   {
+        #     name = "radarr.tailnet.cri.su";
+        #     type = "A";
+        #     value = "100.64.0.4";
+        #   }
+        #   {
+        #     name = "sabnzbd.tailnet.cri.su";
+        #     type = "A";
+        #     value = "100.64.0.4";
+        #   }
+        # ];
         nameservers = {
           global = [
             "https://dns.controld.com/wrpogws0c1"
