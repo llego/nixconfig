@@ -51,7 +51,7 @@ in {
 
       Infra = [
         {
-          "dockge@llego.me" = {
+          "dockge" = {
             href = "https://dockge.llego.me";
             icon = "dockge";
             description = "llego.me";

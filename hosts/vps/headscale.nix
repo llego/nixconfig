@@ -46,28 +46,6 @@ in {
             "zfdash"
             "dockge"
           ];
-        # extra_records = [
-        #   {
-        #     name = "gotify.tailnet.cri.su";
-        #     type = "A";
-        #     value = "100.64.0.4";
-        #   }
-        #   {
-        #     name = "sonarr.tailnet.cri.su";
-        #     type = "A";
-        #     value = "100.64.0.4";
-        #   }
-        #   {
-        #     name = "radarr.tailnet.cri.su";
-        #     type = "A";
-        #     value = "100.64.0.4";
-        #   }
-        #   {
-        #     name = "sabnzbd.tailnet.cri.su";
-        #     type = "A";
-        #     value = "100.64.0.4";
-        #   }
-        # ];
         nameservers = {
           global = [
             "https://dns.controld.com/wrpogws0c1"
