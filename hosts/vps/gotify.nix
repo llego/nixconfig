@@ -18,7 +18,7 @@ in {
 
   services.traefik.dynamicConfigOptions.http = {
     routers.gotify = {
-      rule = "Host(`gotify.tailnet.cri.su`)";
+      rule = "Host(`gotify.vpn.cri.su`)";
       entryPoints = ["websecure"];
       service = "gotify";
       tls.certResolver = "hetzner";

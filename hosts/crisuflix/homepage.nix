@@ -36,13 +36,13 @@ in {
       "Home automation" = [
         {
           gotify = {
-            href = "https://gotify.tailnet.cri.su";
+            href = "https://gotify.vpn.cri.su";
             icon = "gotify";
-            description = "tailnet.cri.su";
-            siteMonitor = "https://gotify.tailnet.cri.su";
+            description = "vpn.cri.su";
+            siteMonitor = "https://gotify.vpn.cri.su";
             widget = {
               type = "gotify";
-              url = "https://gotify.tailnet.cri.su";
+              url = "https://gotify.vpn.cri.su";
               key = "{{HOMEPAGE_VAR_GOTIFY_KEY}}";
             };
           };
@@ -50,13 +50,6 @@ in {
       ];
 
       Infra = [
-        {
-          "dockge" = {
-            href = "https://dockge.llego.me";
-            icon = "dockge";
-            description = "llego.me";
-          };
-        }
         {
           headplane = {
             href = "https://headplane.cri.su/admin/";
@@ -73,9 +66,9 @@ in {
         }
         {
           traefik = {
-            href = "https://traefik.cri.su";
+            href = "https://traefik.vpn.cri.su";
             icon = "traefik";
-            description = "cri.su - vps";
+            description = "vpn.cri.su";
           };
         }
       ];

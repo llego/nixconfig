@@ -26,26 +26,6 @@ in {
         magic_dns = true;
         base_domain = "tailnet.cri.su";
         search_domains = ["tailnet.cri.su"];
-        extra_records =
-          map (name: {
-            name = "${name}.tailnet.cri.su";
-            type = "A";
-            value = "100.64.0.4";
-          }) [
-            "gotify"
-            "sonarr"
-            "radarr"
-            "prowlarr"
-            "sabnzbd"
-            "dozzle"
-            "frigate"
-            "esphome"
-            "beets-flask"
-            "handbrake"
-            "kms-gui"
-            "zfdash"
-            "dockge"
-          ];
         nameservers = {
           global = [
             "https://dns.controld.com/wrpogws0c1"
@@ -53,10 +33,10 @@ in {
             # "9.9.9.9"
           ];
           split = {
-            # Tailscale/Headscale extra_records do not wildcard-match; they only
-            # answer the literal "*.llego.me" name. Send the whole zone to a
-            # tailnet-only dnsmasq responder instead.
-            # "llego.me." = ["100.64.0.4"];
+            # Headscale extra_records do not wildcard-match. Route the private
+            # service namespace to dnsmasq, which answers *.vpn.cri.su with the
+            # VPS tailnet IP while keeping the public cri.su zone untouched.
+            "vpn.cri.su." = [net.hosts.vps];
             "home." = ["192.168.1.1"];
             "iot." = ["192.168.3.1"];
           };
@@ -104,6 +84,48 @@ in {
           method = "S256";
         };
       };
+    };
+  };
+
+  services.dnsmasq = {
+    enable = true;
+    resolveLocalQueries = false;
+    settings = {
+      # Serve split DNS only on the tailnet; public DNS for cri.su remains with
+      # Hetzner. This lets Docker services use *.vpn.cri.su labels without
+      # adding one Headscale DNS record per service.
+      interface = "tailscale0";
+      bind-interfaces = true;
+      listen-address = net.hosts.vps;
+      address = ["/vpn.cri.su/${net.hosts.vps}"];
+
+      # Forward anything outside the split zone if a client queries this
+      # resolver directly.
+      server = ["76.76.2.22"];
+    };
+  };
+
+  networking.firewall.interfaces.tailscale0 = {
+    allowedTCPPorts = [53];
+    allowedUDPPorts = [53];
+  };
+
+  systemd.services.dnsmasq = {
+    after = ["tailscaled.service"];
+    wants = ["tailscaled.service"];
+    preStart = ''
+      for _ in $(seq 1 60); do
+        if ${pkgs.iproute2}/bin/ip addr show tailscale0 | ${pkgs.gnugrep}/bin/grep -q ${net.hosts.vps}; then
+          exit 0
+        fi
+        sleep 1
+      done
+      echo "Timed out waiting for ${net.hosts.vps} on tailscale0" >&2
+      exit 1
+    '';
+    serviceConfig = {
+      Restart = "on-failure";
+      RestartSec = "5s";
     };
   };
 

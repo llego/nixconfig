@@ -100,6 +100,12 @@
         description = "Music Assistant Stream Server port";
       };
 
+      esphome.uiPort = lib.mkOption {
+        type = lib.types.port;
+        default = 6052;
+        description = "esphome Web UI port";
+      };
+
       jellyfin.port = lib.mkOption {
         type = lib.types.port;
         default = 8096;

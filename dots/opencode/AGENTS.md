@@ -37,4 +37,4 @@ Crisuflix is the Docker host:
 
 ## Home Assistant
 
-- MCP server at `https://ha-mcp.llego.me/mcp` (requires `HA_MCP_TOKEN` env var)
+- MCP server at `https://ha-mcp.vpn.cri.su/mcp` (requires `HA_MCP_TOKEN` env var)

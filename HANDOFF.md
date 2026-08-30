@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-08-29 20:58 UTC
+Last updated: 2026-08-30 17:41 UTC
 
 ## Current State
 
@@ -28,10 +28,12 @@ Pixel 10 with workplace Microsoft Defender cannot use direct `*.llego.me` becaus
 
 Tailnet Docker publishing was expanded through Headscale and traefik-kop. `hosts/vps/headscale.nix` now generates `extra_records` for `gotify`, `sonarr`, `radarr`, `prowlarr`, `sabnzbd`, `dozzle`, `frigate`, `esphome`, `beets-flask`, `handbrake`, `kms-gui`, `zfdash`, and `dockge`, all pointing at VPS tailnet IP `100.64.0.4`. The previous static `sonarr-tailnet`, `radarr-tailnet`, and `sabnzbd-tailnet` VPS Traefik routes were removed from `hosts/vps/reverse-proxy.nix`; those are now served from Docker labels via traefik-kop. SABnzbd, which runs behind `wireguard-mullvad`, needed a WireGuard `PostUp` route exception for `100.64.0.0/10` via the Docker gateway and SABnzbd `local_ranges` restored to include loopback/private ranges plus tailnet. These SABnzbd Compose/runtime config edits live under `/mnt/illby/docker/...`, outside this git repo. Verification on `crisuflix`: `http://127.0.0.1:6790`, `http://100.64.0.1:6790`, and `https://sabnzbd.tailnet.cri.su` return `200`; `dozzle.tailnet.cri.su`, `radarr.tailnet.cri.su`, and `sonarr.tailnet.cri.su` route correctly. `prowlarr.tailnet.cri.su` routes correctly but currently serves Traefik's default cert because ACME failed for that new identifier and hit a temporary Let's Encrypt failed-authorization rate limit. No tracked secrets were added.
 
+Private Docker publishing is moving from explicit `*.tailnet.cri.su` Headscale records to wildcard split DNS under `*.vpn.cri.su`. `hosts/vps/headscale.nix` now routes the `vpn.cri.su.` split DNS zone to VPS tailnet IP `100.64.0.4` and runs `dnsmasq` for that zone on `tailscale0`; `dnsmasq` answers `/vpn.cri.su/100.64.0.4` so new service names do not need per-service Headscale `extra_records`. `hosts/vps/reverse-proxy.nix` now includes a Traefik ACME domain for `vpn.cri.su` with SAN `*.vpn.cri.su`. `vps` was rebuilt successfully from `crisuflix` after setting `services.dnsmasq.resolveLocalQueries = false`. Final verification: `dnsmasq`, `headscale`, `traefik`, and `redis-traefik` are active; `systemctl --failed` reports no failed units; logs after the final switch show no warnings/errors; rendered dnsmasq config has `address=/vpn.cri.su/100.64.0.4`; rendered Traefik config has `main = "vpn.cri.su"` and `sans = ["*.vpn.cri.su"]`; `radarr.vpn.cri.su` and arbitrary `*.vpn.cri.su` names resolve to `100.64.0.4` from `crisuflix`. Docker Compose labels were intentionally not edited in this repo/session; update container router rules to `Host(\`service.vpn.cri.su\`)` and keep `tailnet-only@file` middleware on private routers. No tracked secrets were added.
+
 ## Top 3 Next Actions
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
-- After the Let's Encrypt failed-authorization rate limit expires, retry/fix certificate issuance for `prowlarr.tailnet.cri.su`; routing already returns HTTP `200` but the cert is Traefik's default cert.
+- Update crisuflix Docker Compose labels from `*.tailnet.cri.su` to `*.vpn.cri.su`, keeping `tailnet-only@file` middleware on private routers, then deploy/restart affected containers.
 - If beets-flask is later upgraded to an image with BeautifulSoup support, decide whether to re-add `spotify` to `fetchart.sources`.
 
 ## Blockers

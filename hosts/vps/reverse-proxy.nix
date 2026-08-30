@@ -65,6 +65,10 @@ in {
                 sans = ["*.cri.su"];
               }
               {
+                main = "vpn.cri.su";
+                sans = ["*.vpn.cri.su"];
+              }
+              {
                 main = "christiansandberg.fi";
                 sans = ["*.christiansandberg.fi"];
               }
@@ -142,12 +146,19 @@ in {
             service = "musicassistant";
             tls.certResolver = "hetzner";
           };
+          esphome = {
+            rule = "Host(`esphome.vpn.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "esphome";
+            tls.certResolver = "hetzner";
+            middlewares = ["tailnet-only"];
+          };
           glances = {
-            rule = "Host(`glances.cri.su`)";
+            rule = "Host(`glances.vpn.cri.su`)";
             entryPoints = ["websecure"];
             service = "glances";
             tls.certResolver = "hetzner";
-            middlewares = ["authelia-cri-su"];
+            middlewares = ["tailnet-only"];
           };
           homepage = {
             rule = "Host(`cri.su`)";
@@ -171,11 +182,11 @@ in {
             # No Authelia — WOPI requests from OpenCloud must pass through unauthenticated
           };
           traefik-dashboard = {
-            rule = "Host(`traefik.cri.su`)";
+            rule = "Host(`traefik.vpn.cri.su`)";
             entryPoints = ["websecure"];
             service = "traefik-api";
             tls.certResolver = "hetzner";
-            middlewares = ["authelia-cri-su"];
+            middlewares = ["tailnet-only"];
           };
         };
 
@@ -193,6 +204,11 @@ in {
           musicassistant.loadBalancer.servers = [
             {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.musicAssistant.uiPort}";
+            }
+          ];
+          esphome.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.esphome.uiPort}";
             }
           ];
           glances.loadBalancer.servers = [

@@ -4,7 +4,7 @@
   "mcp": {
       "ha-mcp": {
         "type": "remote",
-        "url": "https://ha-mcp.llego.me/mcp",
+        "url": "https://ha-mcp.vpn.cri.su/mcp",
         "enabled": true,
         "headers": {
           "Authorization": "{env:HA_MCP_TOKEN}"

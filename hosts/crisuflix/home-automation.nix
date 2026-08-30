@@ -82,7 +82,7 @@ in {
   services.esphome = {
     enable = true;
     address = "0.0.0.0";
-    port = 6052;
+    port = net.crisuflix.esphome.uiPort;
     openFirewall = true;
     usePing = true;
   };
@@ -143,10 +143,10 @@ in {
       }
       {
         esphome = {
-          href = "https://esphome.llego.me";
+          href = "https://esphome.vpn.cri.su";
           icon = "esphome";
-          description = "llego.me";
-          siteMonitor = "http://192.168.1.101:6052";
+          description = "vpn.cri.su";
+          siteMonitor = "http://192.168.1.101:${toString net.crisuflix.esphome.uiPort}";
         };
       }
     ];

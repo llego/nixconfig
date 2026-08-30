@@ -31,7 +31,7 @@ in {
   local.homepageWidgets = [
     {
       glances = {
-        href = "https://glances.cri.su";
+        href = "https://glances.vpn.cri.su";
         url = "http://192.168.1.101:${toString net.crisuflix.glances.port}";
         version = 4;
         cpu = true;
@@ -47,10 +47,10 @@ in {
   local.homepageServices.Monitoring = [
     {
       glances = {
-        href = "https://glances.cri.su";
+        href = "https://glances.vpn.cri.su";
         icon = "glances";
-        description = "cri.su";
-        siteMonitor = "https://glances.cri.su";
+        description = "vpn.cri.su";
+        siteMonitor = "https://glances.vpn.cri.su";
       };
     }
   ];
