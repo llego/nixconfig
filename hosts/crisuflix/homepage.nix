@@ -52,10 +52,10 @@ in {
       Infra = [
         {
           headplane = {
-            href = "https://headplane.cri.su/admin/";
+            href = "https://headplane.vpn.cri.su/admin/";
             icon = "headscale";
-            description = "cri.su";
-            siteMonitor = "https://headplane.cri.su/admin/login";
+            description = "vpn.cri.su";
+            siteMonitor = "https://headplane.vpn.cri.su/admin/login";
           };
         }
         {

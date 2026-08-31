@@ -447,7 +447,7 @@ in {
             pkce_challenge_method = "S256";
             redirect_uris = [
               "https://headscale.cri.su/oidc/callback"
-              "https://headplane.cri.su/admin/oidc/callback"
+              "https://headplane.vpn.cri.su/admin/oidc/callback"
             ];
             scopes = ["openid" "profile" "email" "groups"];
             response_types = ["code"];

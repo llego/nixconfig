@@ -137,7 +137,7 @@ in {
       server = {
         host = "127.0.0.1";
         port = net.vps.headplane.port;
-        base_url = "https://headplane.cri.su";
+        base_url = "https://headplane.vpn.cri.su";
         cookie_secure = true;
         cookie_secret_path = config.age.secrets.headplane-cookie-secret.path;
       };
@@ -171,15 +171,16 @@ in {
         entryPoints = ["websecure"];
         service = "headscale";
         tls.certResolver = "hetzner";
-        # Browser SSH runs from headplane.cri.su but needs direct browser
+        # Browser SSH runs from headplane.vpn.cri.su but needs direct browser
         # access to Headscale's DERP/WebSocket endpoints on headscale.cri.su.
         middlewares = ["headscale-cors"];
       };
       headplane = {
-        rule = "Host(`headplane.cri.su`)";
+        rule = "Host(`headplane.vpn.cri.su`)";
         entryPoints = ["websecure"];
         service = "headplane";
         tls.certResolver = "hetzner";
+        middlewares = ["tailnet-only"];
       };
     };
 
@@ -200,7 +201,7 @@ in {
     };
 
     middlewares.headscale-cors.headers = {
-      accessControlAllowOriginList = ["https://headplane.cri.su"];
+      accessControlAllowOriginList = ["https://headplane.vpn.cri.su"];
       accessControlAllowMethods = ["GET" "POST" "OPTIONS"];
       accessControlAllowHeaders = [
         "Content-Type"
