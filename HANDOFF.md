@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-08-31 09:20 UTC
+Last updated: 2026-08-31 09:47 UTC
 
 ## Current State
 
@@ -32,10 +32,12 @@ Private Docker publishing is moving from explicit `*.tailnet.cri.su` Headscale r
 
 `crisuflix` firewall now opens TCP `1688` only on LAN bridge `br0` for KMS activation from local Windows clients. This is declarative in `hosts/crisuflix/default.nix` under `networking.firewall.interfaces.br0.allowedTCPPorts`. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally. Verification: `systemctl --failed` reports no failed units; `firewall.service`, `docker.service`, and `tailscaled.service` are active; iptables has `-A nixos-fw -i br0 -p tcp -m tcp --dport 1688 -j nixos-fw-accept`; `ss -ltn` shows KMS listening on `0.0.0.0:1688` and `[::]:1688`. No tracked secrets were added.
 
+Headplane has been moved from public `headplane.cri.su` to tailnet-only `headplane.vpn.cri.su`. `hosts/vps/headscale.nix` sets Headplane `server.base_url` to `https://headplane.vpn.cri.su`, changes the Traefik router host to `headplane.vpn.cri.su`, adds `tailnet-only` middleware to that router, and updates Headscale CORS to allow `https://headplane.vpn.cri.su`. `hosts/vps/authelia-cri.su.nix` keeps the shared `headscale` OIDC client and replaces the Headplane redirect URI with `https://headplane.vpn.cri.su/admin/oidc/callback`; the Headscale callback remains `https://headscale.cri.su/oidc/callback`. `hosts/crisuflix/homepage.nix` now points the Headplane Homepage link/monitor to `headplane.vpn.cri.su`. `vps` was rebuilt successfully from `crisuflix`; user also rebuilt `crisuflix` for the Homepage link change. Verification: no failed VPS units; `headplane`, `headscale`, `authelia-cri.su`, `traefik`, `dnsmasq`, and `redis-traefik` are active; recent warning logs are empty; `headplane.vpn.cri.su` resolves to `100.64.0.4`, returns `302` to `/admin/login`, and serves a valid Let's Encrypt `*.vpn.cri.su` certificate; `headplane.cri.su/admin/` returns `404` on the public IP. No tracked secrets were added.
+
 ## Top 3 Next Actions
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
-- Test KMS activation from the Windows client with `slmgr /skms 192.168.1.101:1688` and `slmgr /ato`.
+- Verify an interactive Headplane login redirects back to `https://headplane.vpn.cri.su/admin/oidc/callback`.
 - If beets-flask is later upgraded to an image with BeautifulSoup support, decide whether to re-add `spotify` to `fetchart.sources`.
 
 ## Blockers
