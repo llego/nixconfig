@@ -38,7 +38,7 @@ in {
           gotify = {
             href = "https://gotify.vpn.cri.su";
             icon = "gotify";
-            description = "vpn.cri.su";
+            description = "vpn.cri.su · tailnet-only";
             siteMonitor = "https://gotify.vpn.cri.su";
             widget = {
               type = "gotify";
@@ -54,7 +54,7 @@ in {
           headplane = {
             href = "https://headplane.vpn.cri.su/admin/";
             icon = "headscale";
-            description = "vpn.cri.su";
+            description = "vpn.cri.su · tailnet-only";
             siteMonitor = "https://headplane.vpn.cri.su/admin/login";
           };
         }
@@ -68,7 +68,7 @@ in {
           traefik = {
             href = "https://traefik.vpn.cri.su";
             icon = "traefik";
-            description = "vpn.cri.su";
+            description = "vpn.cri.su · tailnet-only";
           };
         }
       ];
@@ -78,7 +78,7 @@ in {
           uptime-kuma = {
             href = "https://uptime.cri.su";
             icon = "uptime-kuma";
-            description = "cri.su";
+            description = "cri.su · authelia";
             siteMonitor = "https://uptime.cri.su";
           };
         }

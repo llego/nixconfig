@@ -206,7 +206,7 @@ in {
       opencloud = {
         href = "https://cloud.cri.su";
         icon = "sh-opencloud";
-        description = "cri.su";
+        description = "cri.su · authelia oidc";
         siteMonitor = "https://cloud.cri.su";
       };
     }

@@ -137,7 +137,7 @@ in {
         homeassistant = {
           href = "https://ha.cri.su";
           icon = "home-assistant";
-          description = "cri.su";
+          description = "cri.su · app auth";
           siteMonitor = "http://192.168.1.101:${toString net.crisuflix.homeAssistant.port}";
         };
       }
@@ -145,7 +145,7 @@ in {
         esphome = {
           href = "https://esphome.vpn.cri.su";
           icon = "esphome";
-          description = "vpn.cri.su";
+          description = "vpn.cri.su · tailnet-only";
           siteMonitor = "http://192.168.1.101:${toString net.crisuflix.esphome.uiPort}";
         };
       }
@@ -156,7 +156,7 @@ in {
         music-assistant = {
           href = "https://ma.cri.su";
           icon = "music-assistant";
-          description = "cri.su";
+          description = "cri.su · app auth";
           siteMonitor = "http://192.168.1.101:${toString net.crisuflix.musicAssistant.uiPort}";
         };
       }

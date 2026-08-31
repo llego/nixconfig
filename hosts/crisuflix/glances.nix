@@ -49,7 +49,7 @@ in {
       glances = {
         href = "https://glances.vpn.cri.su";
         icon = "glances";
-        description = "vpn.cri.su";
+        description = "vpn.cri.su · tailnet-only";
         siteMonitor = "https://glances.vpn.cri.su";
       };
     }

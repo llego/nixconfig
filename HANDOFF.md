@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-08-31 09:47 UTC
+Last updated: 2026-08-31 11:52 UTC
 
 ## Current State
+
+Homepage service security labels are deployed on `crisuflix` using plain Homepage `description` text, matching Docker label usage. Repo-defined service descriptions now include: Home Assistant/Music Assistant `cri.su · app auth`, OpenCloud `cri.su · authelia oidc`, Uptime Kuma `cri.su · authelia`, and Gotify/Headplane/Traefik/ESPHome/Glances `vpn.cri.su · tailnet-only`. `nix eval '.#nixosConfigurations.crisuflix.config.services.homepage-dashboard.services' --json` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded on `crisuflix`, `homepage-dashboard.service` is active, and `/etc/homepage-dashboard/services.yaml` contains the descriptions. No tracked secrets were added.
 
 Music Assistant Yamaha/MusicCast debugging is active on `crisuflix`. `hosts/crisuflix/home-automation.nix` now sets `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so the explicit `--config /var/lib/music-assistant` must stay while debug logging is enabled. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded after staging the file, and `systemctl status music-assistant.service` shows MA running as `/nix/store/.../.mass-wrapped --config /var/lib/music-assistant --log-level debug`. A first incorrect rebuild briefly started MA with only `--log-level debug`, which put MA into setup mode with empty storage; it was immediately corrected and rebuilt. No tracked secrets were added.
 
@@ -36,9 +38,9 @@ Headplane has been moved from public `headplane.cri.su` to tailnet-only `headpla
 
 ## Top 3 Next Actions
 
+- Add matching security descriptions to Docker auto-discovered Homepage services in `/mnt/illby/docker/...` labels if desired.
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 - Verify an interactive Headplane login redirects back to `https://headplane.vpn.cri.su/admin/oidc/callback`.
-- If beets-flask is later upgraded to an image with BeautifulSoup support, decide whether to re-add `spotify` to `fetchart.sources`.
 
 ## Blockers
 
