@@ -317,6 +317,9 @@ in {
           net.nfs.mountd.port # NFS mountd
         ];
       };
+      interfaces.br0.allowedTCPPorts = [
+        1688 # KMS activation, LAN only
+      ];
     };
   };
 

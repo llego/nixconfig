@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-08-30 17:41 UTC
+Last updated: 2026-08-31 09:20 UTC
 
 ## Current State
 
@@ -30,10 +30,12 @@ Tailnet Docker publishing was expanded through Headscale and traefik-kop. `hosts
 
 Private Docker publishing is moving from explicit `*.tailnet.cri.su` Headscale records to wildcard split DNS under `*.vpn.cri.su`. `hosts/vps/headscale.nix` now routes the `vpn.cri.su.` split DNS zone to VPS tailnet IP `100.64.0.4` and runs `dnsmasq` for that zone on `tailscale0`; `dnsmasq` answers `/vpn.cri.su/100.64.0.4` so new service names do not need per-service Headscale `extra_records`. `hosts/vps/reverse-proxy.nix` now includes a Traefik ACME domain for `vpn.cri.su` with SAN `*.vpn.cri.su`. `vps` was rebuilt successfully from `crisuflix` after setting `services.dnsmasq.resolveLocalQueries = false`. Final verification: `dnsmasq`, `headscale`, `traefik`, and `redis-traefik` are active; `systemctl --failed` reports no failed units; logs after the final switch show no warnings/errors; rendered dnsmasq config has `address=/vpn.cri.su/100.64.0.4`; rendered Traefik config has `main = "vpn.cri.su"` and `sans = ["*.vpn.cri.su"]`; `radarr.vpn.cri.su` and arbitrary `*.vpn.cri.su` names resolve to `100.64.0.4` from `crisuflix`. Docker Compose labels were intentionally not edited in this repo/session; update container router rules to `Host(\`service.vpn.cri.su\`)` and keep `tailnet-only@file` middleware on private routers. No tracked secrets were added.
 
+`crisuflix` firewall now opens TCP `1688` only on LAN bridge `br0` for KMS activation from local Windows clients. This is declarative in `hosts/crisuflix/default.nix` under `networking.firewall.interfaces.br0.allowedTCPPorts`. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally. Verification: `systemctl --failed` reports no failed units; `firewall.service`, `docker.service`, and `tailscaled.service` are active; iptables has `-A nixos-fw -i br0 -p tcp -m tcp --dport 1688 -j nixos-fw-accept`; `ss -ltn` shows KMS listening on `0.0.0.0:1688` and `[::]:1688`. No tracked secrets were added.
+
 ## Top 3 Next Actions
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
-- Update crisuflix Docker Compose labels from `*.tailnet.cri.su` to `*.vpn.cri.su`, keeping `tailnet-only@file` middleware on private routers, then deploy/restart affected containers.
+- Test KMS activation from the Windows client with `slmgr /skms 192.168.1.101:1688` and `slmgr /ato`.
 - If beets-flask is later upgraded to an image with BeautifulSoup support, decide whether to re-add `spotify` to `fetchart.sources`.
 
 ## Blockers
