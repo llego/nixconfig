@@ -5,17 +5,16 @@ in {
   # Redis for traefik-kop (crisuflix publishes container routes here)
   services.redis.servers.traefik = {
     enable = true;
-    bind = net.hosts.vps;
+    bind = null;
     port = net.vps.redis.port;
+    requirePassFile = config.age.secrets.traefik-redis-password.path;
     settings = {
       protected-mode = "no";
     };
   };
 
-  # Ensure Redis waits for network to be online (including Tailscale)
+  # Redis can start before tailscale0 has its address; the firewall limits remote access to crisuflix.
   systemd.services.redis-traefik = {
-    after = ["network-online.target" "tailscaled.service"];
-    wants = ["network-online.target" "tailscaled.service"];
     serviceConfig = {
       Restart = "on-failure";
       RestartSec = "5s";
@@ -39,6 +38,7 @@ in {
     environmentFiles = [
       config.age.secrets.desec-dns-token.path
       config.age.secrets.hetzner-dns-token-env-variable.path
+      config.age.secrets.traefik-redis-env-vps.path
     ];
 
     staticConfigOptions = {
@@ -121,7 +121,8 @@ in {
 
       providers = {
         redis = {
-          endpoints = ["${net.hosts.vps}:${toString net.vps.redis.port}"];
+          endpoints = ["${net.hosts.loopback}:${toString net.vps.redis.port}"];
+          password = "$TRAEFIK_REDIS_PASSWORD";
           rootKey = "traefik";
         };
       };

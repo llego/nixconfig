@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-03 07:04 UTC
+Last updated: 2026-09-03 08:25 UTC
 
 ## Current State
 
@@ -16,8 +16,15 @@ Manual-power-off test with debug logging active did not reproduce the stale-on b
 
 Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
 
+VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix`. After the switch, `redis-traefik.service` and `traefik.service` were active, and Traefik logs since restart showed only startup messages with no Redis provider errors. No tracked secrets were added.
+
+VPS Redis authentication for Traefik is configured and deployed. `secrets/_registry.nix` registers `traefik-redis-password` and `traefik-redis-env-vps` for `vps`; both encrypted files were created under `secrets/` and staged so flakes can see them. `hosts/vps/reverse-proxy.nix` sets `services.redis.servers.traefik.requirePassFile = config.age.secrets.traefik-redis-password.path`, adds `traefik-redis-env-vps` to `services.traefik.environmentFiles`, and sets `providers.redis.password = "$TRAEFIK_REDIS_PASSWORD"`. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix`. After deployment, both `redis-traefik.service` and `traefik.service` were active, Redis no longer logged the no-auth warning, and logs since the post-auth restart showed only clean startup messages. User manually added `REDIS_PASS` to `traefik-kop` and restarted the container; `traefik-kop` logs showed successful route publishing, Redis client list showed a client from `100.64.0.1`, and `ss` on `vps` showed Traefik connected to Redis over loopback. Temporary plaintext helper files under `/tmp/opencode` were removed. No plaintext secrets were added to tracked files.
+
 ## Top 3 Next Actions
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
+- Monitor the next `vps` rebuild for Redis provider errors; expected result is no manual Redis restart needed.
 
 ## Blockers
+
+None.

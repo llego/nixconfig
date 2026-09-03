@@ -178,6 +178,22 @@ in {
       group = "root";
     };
 
+    traefik-redis-password = {
+      publicKeys = [vps user];
+      hosts = ["vps"];
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+
+    traefik-redis-env-vps = {
+      publicKeys = [vps user];
+      hosts = ["vps"];
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+
     esphome-dashboard-env = {
       publicKeys = [crisuflix user];
       hosts = ["crisuflix"];
