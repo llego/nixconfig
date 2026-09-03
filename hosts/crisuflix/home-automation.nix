@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   net = config.networkVars;
@@ -78,7 +79,7 @@ in {
     ];
   };
 
-  # ESPHome dashboard (native NixOS service)
+  # ESPHome Device Builder dashboard (native NixOS service)
   services.esphome = {
     enable = true;
     address = "0.0.0.0";
@@ -97,6 +98,7 @@ in {
         "/mnt/illby/appstorage/esphome:/var/lib/esphome"
       ];
       EnvironmentFile = config.age.secrets.esphome-dashboard-env.path;
+      ExecStart = lib.mkForce "${pkgs.esphome-device-builder}/bin/esphome-device-builder --host 0.0.0.0 --port ${toString net.crisuflix.esphome.uiPort} /var/lib/esphome";
     };
   };
 
