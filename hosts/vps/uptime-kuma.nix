@@ -11,11 +11,11 @@ in {
 
   services.traefik.dynamicConfigOptions.http = {
     routers.uptime-kuma = {
-      rule = "Host(`uptime.cri.su`)";
+      rule = "Host(`uptime.vpn.cri.su`)";
       entryPoints = ["websecure"];
       service = "uptime-kuma";
       tls.certResolver = "hetzner";
-      middlewares = ["authelia-cri-su"];
+      middlewares = ["tailnet-only"];
     };
 
     services.uptime-kuma.loadBalancer.servers = [

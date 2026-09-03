@@ -62,6 +62,7 @@ in {
           unifi = {
             href = "https://unifi";
             icon = "unifi";
+            description = "unifi · app auth";
           };
         }
         {
@@ -76,10 +77,10 @@ in {
       Monitoring = [
         {
           uptime-kuma = {
-            href = "https://uptime.cri.su";
+            href = "https://uptime.vpn.cri.su";
             icon = "uptime-kuma";
-            description = "cri.su · authelia";
-            siteMonitor = "https://uptime.cri.su";
+            description = "cri.su · tailnet-only";
+            siteMonitor = "https://uptime.vpn.cri.su";
           };
         }
       ];
