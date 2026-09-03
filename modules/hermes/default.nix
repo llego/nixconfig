@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  pkgs-unstable,
+  pkgs,
   inputs,
   ...
 }: {
@@ -16,7 +16,7 @@
     configFile = ./config.yaml;
     environmentFiles = [config.age.secrets.hermes-env.path];
     addToSystemPackages = true;
-    extraPackages = [pkgs-unstable.signal-cli];
+    extraPackages = [pkgs.signal-cli];
     extraDependencyGroups = ["messaging" "mcp"];
   };
 

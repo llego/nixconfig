@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-03 08:51 UTC
+Last updated: 2026-09-03 09:23 UTC
 
 ## Current State
 
@@ -24,10 +24,13 @@ Docker live-restore is enabled and deployed on `crisuflix`. `hosts/crisuflix/def
 
 OpenCloud on `crisuflix` now avoids the Tailscale-address startup race. `hosts/crisuflix/opencloud.nix` binds OpenCloud to `0.0.0.0` instead of `100.64.0.1` and removes the `opencloud.service` `tailscaled-set.service` readiness loop. Access is constrained by active iptables firewall rules: `100.64.0.4/32` may reach OpenCloud port `9200`, and `100.0.0.0/8` may reach Collabora port `9980`. During this work it was confirmed that `networking.nftables.enable = false` on `crisuflix`, so the previous `extraInputRules` Collabora rule was ineffective; it was moved to iptables-backed `networking.firewall.extraCommands`/`extraStopCommands` alongside the new OpenCloud rule. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, `opencloud.service` and `firewall.service` are active, `ss` shows OpenCloud listening on `*:9200`, `iptables -S nixos-fw` shows the expected OpenCloud and Collabora allow rules, direct VPS-to-OpenCloud over Tailscale returns HTTP 200, and `https://cloud.cri.su` returns HTTP 200. No secrets were added.
 
+Default Nixpkgs branch migration is implemented but not deployed. `flake.nix` now sets root `nixpkgs` to `nixos-unstable`, adds `nixpkgs-stable` as `nixos-26.05`, passes `pkgs-stable` through `specialArgsFor`, and builds only `rpi5` with `nixpkgs-stable.lib.nixosSystem`; `laptop`, `laptop-installer`, `vps`, and `crisuflix` use unstable by default. `modules/hermes/default.nix` and `modules/hermes/signal.nix` now use `pkgs.signal-cli` instead of `pkgs-unstable.signal-cli`; no `pkgs-unstable` or `nixpkgs-unstable` references remain. `README.md` documents the policy. `nix flake lock` updated the lock file. Evaluations succeeded for `crisuflix`, `vps`, `laptop`, `rpi5`, and `laptop-installer` with `--impure`; `crisuflix` now resolves `services.opencloud.package.version` to `7.5.0`, while `rpi5` still reports NixOS release `26.05` and `crisuflix` reports `26.11`. Not rebuilt yet. No secrets were added.
+
 ## Top 3 Next Actions
 
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 - Monitor the next `vps` rebuild for Redis provider errors; expected result is no manual Redis restart needed.
+- Deploy the Nixpkgs branch migration cautiously: rebuild `crisuflix` first, then `vps`, then `laptop`; keep `rpi5` on stable and use `boot` for remote deployment.
 
 ## Blockers
 

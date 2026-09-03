@@ -130,6 +130,10 @@ agenix -e secrets/initial-password.age
 agenix -r
 ```
 
+## Nixpkgs Policy
+
+`nixpkgs` follows `nixos-unstable` by default. Use `pkgs-stable` for explicit stable package or service overrides. `rpi5` is the exception: it is built from `nixpkgs-stable` for safer remote Raspberry Pi updates.
+
 ## Custom Packages
 
 Packages in `pkgs/` are standalone flakes with `inputs.nixpkgs.follows = "nixpkgs"`.

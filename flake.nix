@@ -2,8 +2,8 @@
   description = "llego's nix config";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
     album-downloader = {
       url = "path:./pkgs/album-downloader";
@@ -51,12 +51,20 @@
     };
   };
 
-  outputs = {nixpkgs, ...} @ inputs: let
+  outputs = {
+    nixpkgs,
+    nixpkgs-stable,
+    ...
+  } @ inputs: let
     username = "llego";
     reporoot = ./.;
     dots = reporoot + "/dots";
-    commonSpecialArgs = {
+    specialArgsFor = system: {
       inherit inputs username reporoot dots;
+      pkgs-stable = import nixpkgs-stable {
+        inherit system;
+        config.allowUnfree = true;
+      };
     };
   in {
     nixosConfigurations = {
@@ -66,14 +74,14 @@
       laptop-installer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [./hosts/installer];
-        specialArgs = commonSpecialArgs;
+        specialArgs = specialArgsFor "x86_64-linux";
       };
 
       laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [./hosts/laptop];
         specialArgs =
-          commonSpecialArgs
+          specialArgsFor "x86_64-linux"
           // {
             hostname = "laptop";
           };
@@ -83,7 +91,7 @@
         system = "x86_64-linux";
         modules = [./hosts/vps];
         specialArgs =
-          commonSpecialArgs
+          specialArgsFor "x86_64-linux"
           // {
             hostname = "vps";
           };
@@ -92,11 +100,11 @@
       # nix build '.#nixosConfigurations.rpi5.config.system.build.sdImage' --system aarch64-linux
       # zstd -dc ..linux.img.zst | sudo dd of=/dev/sdX bs=4M status=progress oflag=sync
       # https://nixos.wiki/wiki/Creating_a_NixOS_live_CD
-      rpi5 = nixpkgs.lib.nixosSystem {
+      rpi5 = nixpkgs-stable.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [./hosts/rpi5];
         specialArgs =
-          commonSpecialArgs
+          specialArgsFor "aarch64-linux"
           // {
             hostname = "rpi5";
           };
@@ -106,13 +114,9 @@
         system = "x86_64-linux";
         modules = [./hosts/crisuflix];
         specialArgs =
-          commonSpecialArgs
+          specialArgsFor "x86_64-linux"
           // {
             hostname = "crisuflix";
-            pkgs-unstable = import inputs.nixpkgs-unstable {
-              system = "x86_64-linux";
-              config.allowUnfree = true;
-            };
           };
       };
     };

@@ -1,12 +1,11 @@
 {
   config,
   pkgs,
-  pkgs-unstable,
   ...
 }: let
   net = config.networkVars;
 in {
-  environment.systemPackages = [pkgs-unstable.signal-cli];
+  environment.systemPackages = [pkgs.signal-cli];
 
   # signal-cli HTTP daemon — required by the hermes Signal adapter.
   # Reads SIGNAL_ACCOUNT from the hermes env secret at runtime.
@@ -35,7 +34,7 @@ in {
       User = "hermes";
       Group = "hermes";
       EnvironmentFile = config.age.secrets.hermes-env.path;
-      ExecStart = "${pkgs.bash}/bin/bash -c 'exec ${pkgs-unstable.signal-cli}/bin/signal-cli --config /var/lib/hermes/signal-cli --account \"$SIGNAL_ACCOUNT\" daemon --http 127.0.0.1:${toString net.crisuflix.signalCli.port}'";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'exec ${pkgs.signal-cli}/bin/signal-cli --config /var/lib/hermes/signal-cli --account \"$SIGNAL_ACCOUNT\" daemon --http 127.0.0.1:${toString net.crisuflix.signalCli.port}'";
       Restart = "always";
       RestartSec = 10;
       StateDirectory = "hermes/signal-cli";
