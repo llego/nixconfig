@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-08-31 11:52 UTC
+Last updated: 2026-09-03 07:04 UTC
 
 ## Current State
+
+OpenCloud failed after the flake input update because nixpkgs moved OpenCloud from 7.0.0 to 7.2.3. The observed sequence was `opencloud.service` starting before Tailscale restored `100.64.0.1`, causing `listen tcp 100.64.0.1:9200: bind: cannot assign requested address`; OpenCloud's internal proxy restart then hit an upstream 7.2.3 CSP reload panic (`config: Cannot set options after data has been loaded`). `hosts/crisuflix/opencloud.nix` now orders `opencloud.service` after/wants `tailscaled.service` and `tailscaled-set.service`, and adds a `preStart` gate that waits up to 120 seconds for `tailscale ip -4` to return `100.64.0.1`. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded on `crisuflix`; `systemctl reset-failed opencloud.service && systemctl restart opencloud.service` succeeded; `opencloud.service` is active; `systemctl --failed` reports no failed units; `https://cloud.cri.su` returns `HTTP/2 200` with `x-web-version: 7.2.3+nixos`. No tracked secrets were added.
 
 Homepage service security labels are deployed on `crisuflix` using plain Homepage `description` text, matching Docker label usage. Repo-defined service descriptions now include: Home Assistant/Music Assistant `cri.su · app auth`, OpenCloud `cri.su · authelia oidc`, Uptime Kuma `cri.su · authelia`, and Gotify/Headplane/Traefik/ESPHome/Glances `vpn.cri.su · tailnet-only`. `nix eval '.#nixosConfigurations.crisuflix.config.services.homepage-dashboard.services' --json` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded on `crisuflix`, `homepage-dashboard.service` is active, and `/etc/homepage-dashboard/services.yaml` contains the descriptions. No tracked secrets were added.
 
@@ -38,7 +40,7 @@ Headplane has been moved from public `headplane.cri.su` to tailnet-only `headpla
 
 ## Top 3 Next Actions
 
-- Add matching security descriptions to Docker auto-discovered Homepage services in `/mnt/illby/docker/...` labels if desired.
+- Reboot `crisuflix` during a safe window to verify `opencloud.service` cleanly waits for Tailscale and starts without the bind/CSP failure sequence.
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 - Verify an interactive Headplane login redirects back to `https://headplane.vpn.cri.su/admin/oidc/callback`.
 

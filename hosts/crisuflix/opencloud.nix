@@ -87,6 +87,25 @@ in {
     # 6.1.0, run: sudo sed -i '/^sharing:$/a\  service_account:\n    service_account_id: <id>\n    service_account_secret: <secret>' /etc/opencloud/opencloud.yaml
   };
 
+  # OpenCloud binds the Tailscale address directly for VPS Traefik. If it
+  # starts before tailscaled restores 100.64.0.1, OpenCloud 7.2.3 can hit an
+  # internal proxy restart path that panics while reloading CSP config.
+  systemd.services.opencloud = {
+    after = ["tailscaled.service" "tailscaled-set.service"];
+    wants = ["tailscaled.service" "tailscaled-set.service"];
+    preStart = ''
+      for _ in $(seq 1 120); do
+        if [ "$(${pkgs.tailscale}/bin/tailscale ip -4 2>/dev/null)" = "${net.hosts.crisuflix}" ]; then
+          exit 0
+        fi
+        sleep 1
+      done
+
+      echo "Timed out waiting for Tailscale IPv4 ${net.hosts.crisuflix}"
+      exit 1
+    '';
+  };
+
   # ── CSP config file ───────────────────────────────────────────────────────
   # The proxy service reads CSP from a separate YAML file (csp_config_file_location).
   # Inlining `csp:` under settings.proxy does not work — the key is unknown to the
