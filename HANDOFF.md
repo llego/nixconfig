@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-03 08:37 UTC
+Last updated: 2026-09-03 08:51 UTC
 
 ## Current State
 
@@ -21,6 +21,8 @@ VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix`
 VPS Redis authentication for Traefik is configured and deployed. `secrets/_registry.nix` registers `traefik-redis-password` and `traefik-redis-env-vps` for `vps`; both encrypted files were created under `secrets/` and staged so flakes can see them. `hosts/vps/reverse-proxy.nix` sets `services.redis.servers.traefik.requirePassFile = config.age.secrets.traefik-redis-password.path`, adds `traefik-redis-env-vps` to `services.traefik.environmentFiles`, and sets `providers.redis.password = "$TRAEFIK_REDIS_PASSWORD"`. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix`. After deployment, both `redis-traefik.service` and `traefik.service` were active, Redis no longer logged the no-auth warning, and logs since the post-auth restart showed only clean startup messages. User manually added `REDIS_PASS` to `traefik-kop` and restarted the container; `traefik-kop` logs showed successful route publishing, Redis client list showed a client from `100.64.0.1`, and `ss` on `vps` showed Traefik connected to Redis over loopback. Temporary plaintext helper files under `/tmp/opencode` were removed. No plaintext secrets were added to tracked files.
 
 Docker live-restore is enabled and deployed on `crisuflix`. `hosts/crisuflix/default.nix` now sets `virtualisation.docker.daemon.settings.live-restore = true` while keeping the existing `docker.service` Tailscale readiness gate for cold boot/container restore safety. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, and `docker info --format '{{json .LiveRestoreEnabled}}'` returned `true`. No tracked secrets were added.
+
+OpenCloud on `crisuflix` now avoids the Tailscale-address startup race. `hosts/crisuflix/opencloud.nix` binds OpenCloud to `0.0.0.0` instead of `100.64.0.1` and removes the `opencloud.service` `tailscaled-set.service` readiness loop. Access is constrained by active iptables firewall rules: `100.64.0.4/32` may reach OpenCloud port `9200`, and `100.0.0.0/8` may reach Collabora port `9980`. During this work it was confirmed that `networking.nftables.enable = false` on `crisuflix`, so the previous `extraInputRules` Collabora rule was ineffective; it was moved to iptables-backed `networking.firewall.extraCommands`/`extraStopCommands` alongside the new OpenCloud rule. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, `opencloud.service` and `firewall.service` are active, `ss` shows OpenCloud listening on `*:9200`, `iptables -S nixos-fw` shows the expected OpenCloud and Collabora allow rules, direct VPS-to-OpenCloud over Tailscale returns HTTP 200, and `https://cloud.cri.su` returns HTTP 200. No secrets were added.
 
 ## Top 3 Next Actions
 
