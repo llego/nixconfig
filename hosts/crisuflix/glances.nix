@@ -27,31 +27,4 @@ in {
     PrivateDevices = lib.mkForce false;
     ReadWritePaths = lib.mkForce ["/var/log" "/" "/mnt"];
   };
-
-  local.homepageWidgets = [
-    {
-      glances = {
-        href = "https://glances.vpn.cri.su";
-        url = "http://192.168.1.101:${toString net.crisuflix.glances.port}";
-        version = 4;
-        cpu = true;
-        mem = true;
-        cputemp = true;
-        uptime = true;
-        diskUnits = "bytes";
-        expanded = true;
-      };
-    }
-  ];
-
-  local.homepageServices.Monitoring = [
-    {
-      glances = {
-        href = "https://glances.vpn.cri.su";
-        icon = "glances";
-        description = "vpn.cri.su · tailnet-only";
-        siteMonitor = "https://glances.vpn.cri.su";
-      };
-    }
-  ];
 }

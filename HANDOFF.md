@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-03 11:04 UTC
+Last updated: 2026-09-03 12:31 UTC
 
 ## Current State
 
@@ -26,11 +26,13 @@ OpenCloud on `crisuflix` now avoids the Tailscale-address startup race. `hosts/c
 
 Default Nixpkgs branch migration is committed as `450f874 default to unstable nixpkgs` and deployed on `crisuflix`. `crisuflix` was manually rebuilt/rebooted by the user and reports NixOS `26.11.20260902.3ed67ec`; OpenCloud serves `7.5.0` and `https://cloud.cri.su`, `https://ha.cri.su`, and `https://ma.cri.su` return HTTP 200. Post-reboot checks found `esphome.service` failed because ESPHome `2026.8.0` removed the built-in `esphome dashboard` command. `hosts/crisuflix/home-automation.nix` now overrides the generated ESPHome service `ExecStart` to run `pkgs.esphome-device-builder` on the existing port/state directory, and `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally. `esphome.service` is active, `http://127.0.0.1:6052` and `https://esphome.vpn.cri.su` return HTTP 200, and `systemctl --failed` reports zero failed units. This ESPHome fix is not committed yet. No secrets were added.
 
+Homepage has been migrated from `crisuflix` to `vps`. `hosts/vps/homepage.nix` now owns the Homepage dashboard config and reads Docker labels from the user-provided docker-socket-proxy at `http://100.64.0.1:2375`; `hosts/vps/reverse-proxy.nix` routes `cri.su` to local `127.0.0.1:3000`; `hosts/crisuflix/homepage.nix` was removed and old Homepage contributions were removed from `crisuflix` service modules. `homepage-unifi-password` and `homepage-gotify-key` are now vps-targeted agenix secrets and were rekeyed. `nix eval` succeeded for `vps` and `crisuflix`; `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded; `sudo nixos-rebuild switch --flake .#crisuflix` succeeded and stopped the old Homepage service. Runtime checks: `homepage-dashboard.service` and `traefik.service` are active on `vps`, old `homepage-dashboard.service` is inactive on `crisuflix`, `vps` can reach `http://100.64.0.1:2375/version`, `vps` can reach UniFi at `https://192.168.1.1`, and `https://cri.su` redirects to Authelia. User updated Docker Homepage labels that still pointed widgets at `localhost`, and widgets are now working. No plaintext secrets were added to tracked files.
+
 ## Top 3 Next Actions
 
-- Commit the uncommitted ESPHome Device Builder service fix if the dashboard looks good in the browser.
-- Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
+- Inspect `https://cri.su` in the browser after Authelia login and commit the Homepage migration if it looks good.
 - Continue the Nixpkgs branch migration cautiously: rebuild `vps`, then `laptop`; keep `rpi5` on stable and use `boot` for remote deployment.
+- Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 
 ## Blockers
 

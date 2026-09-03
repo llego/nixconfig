@@ -132,36 +132,4 @@ in {
     };
     allowInterfaces = ["br0" "br1"];
   };
-
-  local.homepageServices = {
-    "Home automation" = [
-      {
-        homeassistant = {
-          href = "https://ha.cri.su";
-          icon = "home-assistant";
-          description = "cri.su · app auth";
-          siteMonitor = "http://192.168.1.101:${toString net.crisuflix.homeAssistant.port}";
-        };
-      }
-      {
-        esphome = {
-          href = "https://esphome.vpn.cri.su";
-          icon = "esphome";
-          description = "vpn.cri.su · tailnet-only";
-          siteMonitor = "http://192.168.1.101:${toString net.crisuflix.esphome.uiPort}";
-        };
-      }
-    ];
-
-    Media = [
-      {
-        music-assistant = {
-          href = "https://ma.cri.su";
-          icon = "music-assistant";
-          description = "cri.su · app auth";
-          siteMonitor = "http://192.168.1.101:${toString net.crisuflix.musicAssistant.uiPort}";
-        };
-      }
-    ];
-  };
 }

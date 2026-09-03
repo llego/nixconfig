@@ -194,7 +194,7 @@ in {
         services = {
           homepage.loadBalancer.servers = [
             {
-              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homepage.port}";
+              url = "http://${net.hosts.loopback}:${toString net.vps.homepage.port}";
             }
           ];
           homeassistant.loadBalancer.servers = [

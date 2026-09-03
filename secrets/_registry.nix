@@ -252,16 +252,16 @@ in {
     };
 
     homepage-unifi-password = {
-      publicKeys = [crisuflix user];
-      hosts = ["crisuflix"];
+      publicKeys = [vps user];
+      hosts = ["vps"];
       mode = "0400";
       owner = "root";
       group = "root";
     };
 
     homepage-gotify-key = {
-      publicKeys = [crisuflix user];
-      hosts = ["crisuflix"];
+      publicKeys = [vps user];
+      hosts = ["vps"];
       mode = "0400";
       owner = "root";
       group = "root";

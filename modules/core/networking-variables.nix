@@ -78,6 +78,12 @@
         default = 8080;
         description = "Traefik API/dashboard port";
       };
+
+      homepage.port = lib.mkOption {
+        type = lib.types.port;
+        default = 3000;
+        description = "Homepage dashboard port";
+      };
     };
 
     # Crisuflix Service Ports
@@ -140,12 +146,6 @@
         type = lib.types.port;
         default = 9980;
         description = "Collabora Online (coolwsd) port";
-      };
-
-      homepage.port = lib.mkOption {
-        type = lib.types.port;
-        default = 3000;
-        description = "Homepage dashboard port";
       };
 
       signalCli.port = lib.mkOption {

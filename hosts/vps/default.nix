@@ -18,6 +18,7 @@
     ./disk-config.nix
     ./ddns.nix
     ./reverse-proxy.nix
+    ./homepage.nix
     ./headscale.nix
     ./authelia-cri.su.nix
     ./christiansandberg-website.nix

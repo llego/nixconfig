@@ -206,15 +206,4 @@ in {
       iptables -w -D nixos-fw -p tcp -s 100.0.0.0/8 --dport ${toString net.crisuflix.collabora.port} -j nixos-fw-accept 2>/dev/null || true
     '';
   };
-
-  local.homepageServices.Media = [
-    {
-      opencloud = {
-        href = "https://cloud.cri.su";
-        icon = "sh-opencloud";
-        description = "cri.su · authelia oidc";
-        siteMonitor = "https://cloud.cri.su";
-      };
-    }
-  ];
 }

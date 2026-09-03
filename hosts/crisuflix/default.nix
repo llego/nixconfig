@@ -19,7 +19,6 @@ in {
     ./home-automation.nix
     ./glances.nix
     # ./../../modules/hermes
-    ./homepage.nix
     ./opencloud.nix
     ./restic-backup.nix
     ./ups.nix
