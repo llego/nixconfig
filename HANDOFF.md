@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-03 08:25 UTC
+Last updated: 2026-09-03 08:37 UTC
 
 ## Current State
 
@@ -19,6 +19,8 @@ Headplane on VPS has been migrated in config from the nixpkgs `services.headplan
 VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix`. After the switch, `redis-traefik.service` and `traefik.service` were active, and Traefik logs since restart showed only startup messages with no Redis provider errors. No tracked secrets were added.
 
 VPS Redis authentication for Traefik is configured and deployed. `secrets/_registry.nix` registers `traefik-redis-password` and `traefik-redis-env-vps` for `vps`; both encrypted files were created under `secrets/` and staged so flakes can see them. `hosts/vps/reverse-proxy.nix` sets `services.redis.servers.traefik.requirePassFile = config.age.secrets.traefik-redis-password.path`, adds `traefik-redis-env-vps` to `services.traefik.environmentFiles`, and sets `providers.redis.password = "$TRAEFIK_REDIS_PASSWORD"`. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix`. After deployment, both `redis-traefik.service` and `traefik.service` were active, Redis no longer logged the no-auth warning, and logs since the post-auth restart showed only clean startup messages. User manually added `REDIS_PASS` to `traefik-kop` and restarted the container; `traefik-kop` logs showed successful route publishing, Redis client list showed a client from `100.64.0.1`, and `ss` on `vps` showed Traefik connected to Redis over loopback. Temporary plaintext helper files under `/tmp/opencode` were removed. No plaintext secrets were added to tracked files.
+
+Docker live-restore is enabled and deployed on `crisuflix`. `hosts/crisuflix/default.nix` now sets `virtualisation.docker.daemon.settings.live-restore = true` while keeping the existing `docker.service` Tailscale readiness gate for cold boot/container restore safety. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, and `docker info --format '{{json .LiveRestoreEnabled}}'` returned `true`. No tracked secrets were added.
 
 ## Top 3 Next Actions
 

@@ -158,7 +158,10 @@ in {
   };
 
   # Docker
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    daemon.settings.live-restore = true;
+  };
 
   # Docker restores containers with restart=unless-stopped as soon as dockerd
   # starts. Traefik binds 100.64.0.1:80/443 and traefik-kop publishes routes
