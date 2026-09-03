@@ -79,7 +79,7 @@ in {
           uptime-kuma = {
             href = "https://uptime.vpn.cri.su";
             icon = "uptime-kuma";
-            description = "cri.su · tailnet-only";
+            description = "vpn.cri.su · tailnet-only";
             siteMonitor = "https://uptime.vpn.cri.su";
           };
         }
