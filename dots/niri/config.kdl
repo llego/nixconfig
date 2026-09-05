@@ -89,7 +89,7 @@ binds {
     Alt+Return { spawn "foot"; }
     Alt+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
     Alt+T { spawn "gnome-text-editor"; }
-    Alt+W { spawn "zen"; }
+    Alt+W { spawn "chromium"; }
     Ctrl+Alt+Delete { spawn-sh "noctalia msg panel-toggle session"; }
     Mod+O repeat=false {toggle-overview; }
     Mod+Comma { consume-or-expel-window-left; }
