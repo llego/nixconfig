@@ -217,7 +217,11 @@ in {
 
   # Beszel monitoring agent (crisuflix-specific settings)
   services.beszel.agent = {
-    extraPath = [pkgs.nvtopPackages.intel];
+    extraPath = [pkgs.intel-gpu-tools];
+    environment = {
+      GPU_COLLECTOR = "intel_gpu_top";
+      INTEL_GPU_DEVICE = "drm:/dev/dri/card0";
+    };
     smartmon = {
       enable = true;
       deviceAllow = [
@@ -234,6 +238,17 @@ in {
         "/dev/nvme2"
       ];
     };
+  };
+
+  systemd.services.beszel-agent.serviceConfig = {
+    AmbientCapabilities = lib.mkAfter ["CAP_PERFMON"];
+    CapabilityBoundingSet = lib.mkAfter ["CAP_PERFMON"];
+    SystemCallFilter = lib.mkAfter ["perf_event_open"];
+    SupplementaryGroups = lib.mkAfter ["render" "video"];
+    DeviceAllow = lib.mkAfter [
+      "/dev/dri/card0 r"
+      "/dev/dri/renderD128 rw"
+    ];
   };
 
   # NFS Server

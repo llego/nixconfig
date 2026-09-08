@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-09-03 12:31 UTC
+Last updated: 2026-09-08 19:39 UTC
 
 ## Current State
+
+Beszel agent GPU visibility fix is deployed on `crisuflix`. `hosts/crisuflix/default.nix` now forces `GPU_COLLECTOR=intel_gpu_top`, sets `INTEL_GPU_DEVICE=drm:/dev/dri/card0`, uses `pkgs.intel-gpu-tools` in the agent path, adds `CAP_PERFMON`, allows `perf_event_open` through the service `SystemCallFilter`, adds `render`/`video` supplementary groups, and allows `/dev/dri/card0` plus `/dev/dri/renderD128` through `DeviceAllow`. The first GPU-access attempt only added `/dev/dri` and groups, which made Beszel spawn `nvtop` but still report zero; forcing `intel_gpu_top` then exposed that the service syscall sandbox blocked `perf_event_open`. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally after the final fix; `beszel-agent.service` is active, the child collector is `intel_gpu_top -s 3300 -l -d drm:/dev/dri/card0`, and current logs show no new `Error collecting Intel GPU data` warnings after the syscall fix. Manual transient-systemd tests confirmed `intel_gpu_top` fails with `SystemCallFilter=@system-service` alone and succeeds once `perf_event_open` is added. No tracked secrets were added.
 
 Music Assistant Yamaha/MusicCast debugging is active on `crisuflix`. `hosts/crisuflix/home-automation.nix` now sets `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so the explicit `--config /var/lib/music-assistant` must stay while debug logging is enabled. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded after staging the file, and `systemctl status music-assistant.service` shows MA running as `/nix/store/.../.mass-wrapped --config /var/lib/music-assistant --log-level debug`. A first incorrect rebuild briefly started MA with only `--log-level debug`, which put MA into setup mode with empty storage; it was immediately corrected and rebuilt. No tracked secrets were added.
 
@@ -30,8 +32,8 @@ Homepage has been migrated from `crisuflix` to `vps`. `hosts/vps/homepage.nix` n
 
 ## Top 3 Next Actions
 
+- Check Beszel UI after the next Jellyfin transcode to confirm Intel GPU usage is no longer stuck at zero.
 - Inspect `https://cri.su` in the browser after Authelia login and commit the Homepage migration if it looks good.
-- Continue the Nixpkgs branch migration cautiously: rebuild `vps`, then `laptop`; keep `rpi5` on stable and use `boot` for remote deployment.
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 
 ## Blockers
