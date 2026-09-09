@@ -163,20 +163,20 @@ in {
   };
 
   # Docker restores containers with restart=unless-stopped as soon as dockerd
-  # starts. Traefik binds 100.64.0.1:80/443 and traefik-kop publishes routes
+  # starts. Traefik binds the tailnet IP on 80/443 and traefik-kop publishes routes
   # over tailscale0, so wait until Tailscale has restored the tailnet address.
   systemd.services.docker = {
     after = ["tailscaled.service" "tailscaled-set.service"];
     wants = ["tailscaled.service" "tailscaled-set.service"];
     preStart = ''
       for _ in $(seq 1 120); do
-        if [ "$(${pkgs.tailscale}/bin/tailscale ip -4 2>/dev/null)" = "100.64.0.1" ]; then
+        if [ "$(${pkgs.tailscale}/bin/tailscale ip -4 2>/dev/null)" = "${net.tailnetIPs.crisuflix}" ]; then
           exit 0
         fi
         sleep 1
       done
 
-      echo "Timed out waiting for Tailscale IPv4 100.64.0.1"
+      echo "Timed out waiting for Tailscale IPv4 ${net.tailnetIPs.crisuflix}"
       exit 1
     '';
   };

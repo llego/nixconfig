@@ -1,8 +1,10 @@
 # HANDOFF
 
-Last updated: 2026-09-08 20:15 UTC
+Last updated: 2026-09-09 08:03 UTC
 
 ## Current State
+
+Headscale `crisuflix` IPv4 was moved from `100.64.0.1` to `100.64.10.1` on `vps` to avoid Android work-profile VPN conflicts. Headscale 0.29.3 has no supported node-IP edit CLI; after schema inspection, `/var/lib/headscale/db.sqlite` was backed up to `/var/lib/headscale/db.sqlite.20260909_075030.bak`, `headscale.service` was stopped, and only `nodes.ipv4` for node ID 13 (`hostname='crisuflix'`, `given_name='crisuflix'`) was updated. Headscale restarted healthy. `crisuflix.tailnet.cri.su` resolves to `100.64.10.1` from both `crisuflix` and `vps`, and `tailscale ip -4` on `crisuflix` reports `100.64.10.1`. `nixconfig` now uses `crisuflix.tailnet.cri.su` as the reusable `networkVars.hosts.crisuflix` value and keeps `networkVars.tailnetIPs.crisuflix = "100.64.10.1"` only for IP-literal consumers. `nix eval` and `nix build --no-link` succeeded for `vps` and `crisuflix`; both hosts were rebuilt/switched successfully. Running Docker stacks with stale `100.64.0.1` references were updated and recreated with `sudo docker compose`: `docker-socket-proxy` now binds `100.64.10.1:2375`, and `jellyfin-official`, `arr`, and `sabnzbd` Homepage widget URLs now use `crisuflix.tailnet.cri.su`; the `traefik-kop` stale `BIND_IP` comment was updated. The non-running `/mnt/illby/docker/stacks/traefik/compose.yaml` stack still contains `100.64.0.1` bind lines and was intentionally left unchanged per user instruction to update only currently up stacks. `traefik-kop` republished Redis routes with `100.64.10.1`; `http://crisuflix.tailnet.cri.su:8096`, `https://jellyfin.cri.su`, and `http://crisuflix.tailnet.cri.su:2375/version` all return healthy responses. No new Homepage errors appeared after the container restart window. No tracked secrets were added.
 
 Jellyfin public playback through `jellyfin.cri.su` was stopping after a few minutes while direct LAN playback at `http://192.168.1.101:8096` stayed stable. Investigation showed Jellyfin/FFmpeg were healthy and encoding faster than realtime; FFmpeg exited only after Jellyfin sent `q`, matching browser HLS segment requests stopping. `traefik-kop` logs showed `Redis seems to have restarted and needs to be updated` plus full route republishing every ~300 seconds, while VPS Redis logs showed only normal persistence saves and no actual Redis restart. Root cause was `/mnt/illby/docker/stacks/traefik-kop/compose.yaml` explicitly setting `REDIS_TTL=300`; this was changed to `REDIS_TTL=0` (upstream default/no expiry), then `docker compose -f /mnt/illby/docker/stacks/traefik-kop/compose.yaml up -d` recreated `traefik-kop`. After waiting past the old 300-second boundary, `traefik-kop` did not log the false Redis-restart/republish cycle, VPS Traefik logs showed no new Jellyfin/Redis route errors, and the user confirmed `jellyfin.cri.su` playback is now stable. This Docker stack lives outside the git repo. No tracked secrets were added.
 
@@ -28,6 +30,7 @@ Default Nixpkgs branch migration is committed as `450f874 default to unstable ni
 
 ## Top 3 Next Actions
 
+- If `/mnt/illby/docker/stacks/traefik/compose.yaml` is used again, update its stale `100.64.0.1:80/443` binds first; it was not running and was not changed.
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 
 ## Blockers

@@ -16,10 +16,10 @@ in {
       allowedTCPPorts = [22 80 443];
       # Allow crisuflix (via Tailscale) to reach Redis for traefik-kop
       extraCommands = ''
-        iptables -w -I nixos-fw -p tcp -s ${net.hosts.crisuflix} --dport ${toString net.vps.redis.port} -j nixos-fw-accept
+        iptables -w -I nixos-fw -p tcp -s ${net.tailnetIPs.crisuflix} --dport ${toString net.vps.redis.port} -j nixos-fw-accept
       '';
       extraStopCommands = ''
-        iptables -w -D nixos-fw -p tcp -s ${net.hosts.crisuflix} --dport ${toString net.vps.redis.port} -j nixos-fw-accept 2>/dev/null || true
+        iptables -w -D nixos-fw -p tcp -s ${net.tailnetIPs.crisuflix} --dport ${toString net.vps.redis.port} -j nixos-fw-accept 2>/dev/null || true
       '';
     };
   };

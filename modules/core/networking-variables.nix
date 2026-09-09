@@ -8,7 +8,8 @@
       description = "Domain for all services";
     };
 
-    # IP Addresses by host
+    # Stable tailnet hostnames by host. Prefer these for service URLs so node
+    # address changes only need Headscale/DNS updates.
     hosts = {
       vps = lib.mkOption {
         type = lib.types.str;
@@ -18,14 +19,24 @@
 
       crisuflix = lib.mkOption {
         type = lib.types.str;
-        default = "100.64.0.1";
-        description = "Crisuflix stable tailnet IP";
+        default = "crisuflix.tailnet.cri.su";
+        description = "Crisuflix stable tailnet hostname";
       };
 
       loopback = lib.mkOption {
         type = lib.types.str;
         default = "127.0.0.1";
         description = "Loopback address for native services (Authelia, Gotify, etc.)";
+      };
+    };
+
+    # IP literals for consumers that cannot use hostnames, such as firewall
+    # source matches and local bind/readiness checks.
+    tailnetIPs = {
+      crisuflix = lib.mkOption {
+        type = lib.types.str;
+        default = "100.64.10.1";
+        description = "Crisuflix Headscale IPv4 address";
       };
     };
 
