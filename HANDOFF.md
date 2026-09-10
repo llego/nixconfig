@@ -30,7 +30,6 @@ Default Nixpkgs branch migration is committed as `450f874 default to unstable ni
 
 ## Top 3 Next Actions
 
-- If `/mnt/illby/docker/stacks/traefik/compose.yaml` is used again, update its stale `100.64.0.1:80/443` binds first; it was not running and was not changed.
 - Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 
 ## Blockers
