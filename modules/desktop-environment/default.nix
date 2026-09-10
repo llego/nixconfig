@@ -2,7 +2,6 @@
   lib,
   pkgs,
   username,
-  inputs,
   dots,
   ...
 }: {
@@ -31,12 +30,11 @@
     nwg-look # Needed for setting gtk theme in Noctalia
     adw-gtk3 # Needed for setting gtk theme in Noctalia
   ];
+
   environment.pathsToLink = ["/share/wayland-sessions"];
 
-  programs = {
-    # Niri window manager, config in dotfiles
-    niri.enable = true;
-  };
+  # Window manager
+  programs.niri.enable = true;
 
   # Environment variables
   environment.sessionVariables = {
@@ -59,14 +57,14 @@
   xdg.mime = {
     enable = true;
     defaultApplications = {
-      # Web browser (Zen)
-      "default-web-browser" = "zen.desktop";
-      "text/html" = "zen.desktop";
-      "application/xhtml+xml" = "zen.desktop";
-      "x-scheme-handler/http" = "zen.desktop";
-      "x-scheme-handler/https" = "zen.desktop";
-      "x-scheme-handler/about" = "zen.desktop";
-      "x-scheme-handler/unknown" = "zen.desktop";
+      # Web browser (chromium)
+      "default-web-browser" = "chromium.desktop";
+      "text/html" = "chromium.desktop";
+      "application/xhtml+xml" = "chromium.desktop";
+      "x-scheme-handler/http" = "chromium.desktop";
+      "x-scheme-handler/https" = "chromium.desktop";
+      "x-scheme-handler/about" = "chromium.desktop";
+      "x-scheme-handler/unknown" = "chromium.desktop";
 
       # Text files (GNOME Text Editor)
       "text/plain" = "org.gnome.TextEditor.desktop";
