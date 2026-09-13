@@ -42,12 +42,9 @@
       zigpy_config:
         ota:
           otau_directory: /config/zigpy_ota
-          ikea_provider: true
-          inovelli_provider: true
-          ledvance_provider: true
-          salus_provider: true
-          sonoff_provider: true
-          thirdreality_provider: true
+          extra_providers:
+            - type: ikea
+            - type: salus
   '';
 in {
   # Home Assistant OCI Container (Docker backend)
@@ -69,6 +66,8 @@ in {
       extraOptions = [
         "--network=host"
         "--device=/dev/ttyUSB0:/dev/ttyUSB0"
+        "--cap-add=NET_ADMIN"
+        "--cap-add=NET_RAW"
       ];
     };
   };

@@ -1,38 +1,80 @@
 # HANDOFF
 
-Last updated: 2026-09-12 10:39 UTC
+Last updated: 2026-09-13 11:29 EET
 
 ## Current State
 
+### Home Assistant
+
+Home Assistant runs on `crisuflix` as a Docker-backed NixOS OCI container. The top-level `/config/configuration.yaml` is generated from `hosts/crisuflix/home-automation.nix` and mounted read-only; writable runtime config remains under `/mnt/illby/appstorage/homeassistant` for includes, `.storage`, themes, blueprints, automations, scripts, scenes, and helper-owned state. The deployed container has the Bluetooth recovery capabilities `CAP_NET_ADMIN` and `CAP_NET_RAW`; ZHA OTA config uses the current `extra_providers` form.
+
+Custom integrations that should be HACS-managed are now HACS-managed: `places`, `garo_wallbox`, `frigate`, `myskoda`, `fmi`, `reitti`, `bubble_card_tools`, and `hacs`. The unused manual `hpprinter` component was removed from active `custom_components`; printing uses the built-in Internet Printing Protocol integration instead. Useful rollback points from the cleanup are full HA backups `9d07c6ad` (`Before_Places_v3_migration_20260913`) and `89640a25` (`Before_Frigate_HACS_HPPrinter_cleanup_20260913`), plus filesystem copies under `/mnt/illby/appstorage/homeassistant/custom_components.backups/`.
+
+Places v3 is migrated. The three active Places entries are `Enyaq stadsdel`, `Crisu ort`, and `Ona ort`; current at-home display is intended to show `Hemma, Rastböle`. Wallmount uses only the three main Places badges (`sensor.crisu_ort`, `sensor.ona_ort`, `sensor.enyaq_stadsdel`). The Enyaq started-driving notification automation now uses the native `places_state_update` event.
+
+Known remaining HA work is limited to operational cleanup: missing Ruuvi/InfluxDB data is likely dead batteries in `Vardagsrummet`, `Kylskåpet`, and `Alvars_rum`; MySkoda still logs a `via_device` deprecation warning that must be fixed upstream before HA 2027.8.
+
+#### Top 3 Next Actions
+
+- Change batteries in the missing Ruuvi tags (`Vardagsrummet`, `Kylskåpet`, `Alvars_rum`), then verify InfluxDB rows and HA sensor recovery.
+- Continue custom-integration maintenance for MySkoda deprecation warnings before HA 2027.8.
+- Optionally verify a real away-from-home or driving Places update to confirm the `driving` token and fallback fields.
+
+### Headscale And Headplane
+
 Headscale `crisuflix` IPv4 was moved from `100.64.0.1` to `100.64.10.1` on `vps` to avoid Android work-profile VPN conflicts. Headscale 0.29.3 has no supported node-IP edit CLI; after schema inspection, `/var/lib/headscale/db.sqlite` was backed up to `/var/lib/headscale/db.sqlite.20260909_075030.bak`, `headscale.service` was stopped, and only `nodes.ipv4` for node ID 13 (`hostname='crisuflix'`, `given_name='crisuflix'`) was updated. Headscale restarted healthy. `crisuflix.tailnet.cri.su` resolves to `100.64.10.1` from both `crisuflix` and `vps`, and `tailscale ip -4` on `crisuflix` reports `100.64.10.1`. `nixconfig` now uses `crisuflix.tailnet.cri.su` as the reusable `networkVars.hosts.crisuflix` value and keeps `networkVars.tailnetIPs.crisuflix = "100.64.10.1"` only for IP-literal consumers. `nix eval` and `nix build --no-link` succeeded for `vps` and `crisuflix`; both hosts were rebuilt/switched successfully. Running Docker stacks with stale `100.64.0.1` references were updated and recreated with `sudo docker compose`: `docker-socket-proxy` now binds `100.64.10.1:2375`, and `jellyfin-official`, `arr`, and `sabnzbd` Homepage widget URLs now use `crisuflix.tailnet.cri.su`; the `traefik-kop` stale `BIND_IP` comment was updated. The non-running `/mnt/illby/docker/stacks/traefik/compose.yaml` stack still contains `100.64.0.1` bind lines and was intentionally left unchanged per user instruction to update only currently up stacks. `traefik-kop` republished Redis routes with `100.64.10.1`; `http://crisuflix.tailnet.cri.su:8096`, `https://jellyfin.cri.su`, and `http://crisuflix.tailnet.cri.su:2375/version` all return healthy responses. No new Homepage errors appeared after the container restart window. No tracked secrets were added.
+
+Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. This note was already truncated in the handoff.
+
+#### Top 3 Next Actions
+
+- No immediate follow-up recorded.
+
+### Jellyfin And Traefik
 
 Jellyfin public playback through `jellyfin.cri.su` was stopping after a few minutes while direct LAN playback at `http://192.168.1.101:8096` stayed stable. Investigation showed Jellyfin/FFmpeg were healthy and encoding faster than realtime; FFmpeg exited only after Jellyfin sent `q`, matching browser HLS segment requests stopping. `traefik-kop` logs showed `Redis seems to have restarted and needs to be updated` plus full route republishing every ~300 seconds, while VPS Redis logs showed only normal persistence saves and no actual Redis restart. Root cause was `/mnt/illby/docker/stacks/traefik-kop/compose.yaml` explicitly setting `REDIS_TTL=300`; this was changed to `REDIS_TTL=0` (upstream default/no expiry), then `docker compose -f /mnt/illby/docker/stacks/traefik-kop/compose.yaml up -d` recreated `traefik-kop`. After waiting past the old 300-second boundary, `traefik-kop` did not log the false Redis-restart/republish cycle, VPS Traefik logs showed no new Jellyfin/Redis route errors, and the user confirmed `jellyfin.cri.su` playback is now stable. This Docker stack lives outside the git repo. No tracked secrets were added.
 
+#### Top 3 Next Actions
+
+- No immediate follow-up recorded.
+
+### Music Assistant
+
 Music Assistant Yamaha/MusicCast debugging is active on `crisuflix`. `hosts/crisuflix/home-automation.nix` now sets `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so the explicit `--config /var/lib/music-assistant` must stay while debug logging is enabled. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded after staging the file, and `systemctl status music-assistant.service` shows MA running as `/nix/store/.../.mass-wrapped --config /var/lib/music-assistant --log-level debug`. A first incorrect rebuild briefly started MA with only `--log-level debug`, which put MA into setup mode with empty storage; it was immediately corrected and rebuilt. No tracked secrets were added.
-
-Noctalia laptop config was migrated from the symlinked `dots/noctalia/config.toml` into the Noctalia hjem module in `modules/desktop-environment.nix`. The Noctalia hjem module is imported only inside `hjem.users.${username}` in `desktop-environment.nix`, keeping it laptop-local because only the laptop uses that module. Manual Noctalia package installation was removed because the hjem module owns installation. `dots/noctalia/config.toml` was deleted. CPU/RAM widgets were migrated to the current v5 `sysmon` shape (`visualization = "graph"`). `nix eval '.#nixosConfigurations.laptop.config.system.build.toplevel.drvPath'` succeeded on host `laptop`. The eval refreshed `flake.lock` for Noctalia and its nixpkgs input because the Noctalia `cachix` branch moved. No tracked secrets were added.
-
-OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
 
 Current Yamaha diagnostic facts: AVR direct API at `http://192.168.1.247/YamahaExtendedControl/v1/main/getStatus` returns `"power":"standby"`; model is RX-V6A, firmware/system version `1.80`, API `2.17`, device id `4C22F3A99400`. Music Assistant 2.8.7 uses `aiomusiccast==0.15.0` and polls MusicCast every 10 seconds. The native HA Yamaha MusicCast config entry `01JXA892330HV501YMC2SYPY21` is already disabled by user and `state="not_loaded"`, so it is unlikely to be actively competing. After the corrected MA restart, MA logs show MusicCast loaded and `4C22F3A99400___main/Yamaha MASS` registered at `2026-08-05 09:42:06` local time. HA initially kept `media_player.yamaha_mass` as `unavailable` because HA needed reauthentication to MA; user reauthenticated HA -> MA, and HA now sees `media_player.yamaha_mass` again (`playing` at `2026-08-05 09:49` local time). Remaining investigation is only the Yamaha manual-power-off stale state.
 
 Manual-power-off test with debug logging active did not reproduce the stale-on bug. User played a song on Yamaha MASS, manually powered off the Yamaha, and MA correctly showed the Yamaha as off. Evidence: HA logbook shows `media_player.yamaha_mass` `playing` at `2026-08-05 09:48:21` local time and `off` at `09:50:30`; direct Yamaha API simultaneously returned `"power":"standby"`; MA debug logs show playback started on Yamaha MASS through native MusicCast at `09:45:58` and the Yamaha stream request came from `192.168.1.247`. Leave debug logging active only if more reproduction attempts are desired.
 
-Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. Local
+#### Top 3 Next Actions
 
-VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix`. After the switch, `redis-traefik.service` and `traefik.service` were active, and Traefik logs since restart showed only startup messages with no Redis provider errors. No tracked secrets were added.
+- Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
 
-Docker live-restore is enabled and deployed on `crisuflix`. `hosts/crisuflix/default.nix` now sets `virtualisation.docker.daemon.settings.live-restore = true` while keeping the existing `docker.service` Tailscale readiness gate for cold boot/container restore safety. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, and `docker info --format '{{json .LiveRestoreEnabled}}'` returned `true`. No tracked secrets were added.
+### OpenCloud
 
-Home Assistant top-level `configuration.yaml` is now generated from `hosts/crisuflix/home-automation.nix` as `homeAssistantConfiguration = pkgs.writeText ...` and mounted into the Docker container at `/config/configuration.yaml:ro`, while `/mnt/illby/appstorage/homeassistant:/config` remains mounted so included files such as `automations.yaml`, `scripts.yaml`, `scenes.yaml`, themes, blueprints, and `.storage` stay writable by Home Assistant. The generated top-level YAML mirrors the previous `/mnt/illby/appstorage/homeassistant/configuration.yaml` contents, including `default_config`, `intent`, themes/customizations includes, trusted-network auth providers, the existing include files, and ZHA OTA config. The old host-side YAML content was removed; Docker recreates `/mnt/illby/appstorage/homeassistant/configuration.yaml` as an empty lower-layer placeholder for the file bind mount, while the container reads the Nix store file. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, `docker inspect` confirms the Nix store file is mounted read-only at `/config/configuration.yaml`, HA is `RUNNING`, `ha_get_system_health(include="config_check")` reports valid config, and `python -m homeassistant --script check_config -c /config` inside the container completed successfully. HA system-log searches for `yaml` and `configuration.yaml` returned no entries. Existing unrelated HA issues remain: Bluetooth container capabilities, Shelly/template sensors with unavailable inputs, deprecated ZHA OTA provider keys, and custom-integration deprecation warnings. No tracked secrets were added.
+OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
 
 OpenCloud on `crisuflix` now avoids the Tailscale-address startup race. `hosts/crisuflix/opencloud.nix` binds OpenCloud to `0.0.0.0` instead of `100.64.0.1` and removes the `opencloud.service` `tailscaled-set.service` readiness loop. Access is constrained by active iptables firewall rules: `100.64.0.4/32` may reach OpenCloud port `9200`, and `100.0.0.0/8` may reach Collabora port `9980`. During this work it was confirmed that `networking.nftables.enable = false` on `crisuflix`, so the previous `extraInputRules` Collabora rule was ineffective; it was moved to iptables-backed `networking.firewall.extraCommands`/`extraStopCommands` alongside the new OpenCloud rule. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, `opencloud.service` and `firewall.service` are active, `ss` shows OpenCloud listening on `*:9200`, `iptables -S nixos-fw` shows the expected OpenCloud and Collabora allow rules, direct VPS-to-OpenCloud over Tailscale returns HTTP 200, and `https://cloud.cri.su` returns HTTP 200. No secrets were added.
 
-Default Nixpkgs branch migration is committed as `450f874 default to unstable nixpkgs` and deployed on `crisuflix`. `crisuflix` was manually rebuilt/rebooted by the user and reports NixOS `26.11.20260902.3ed67ec`; OpenCloud serves `7.5.0` and `https://cloud.cri.su`, `https://ha.cri.su`, and `https://ma.cri.su` return HTTP 200. Post-reboot checks found `esphome.service` failed because ESPHome `2026.8.0` removed the built-in `esphome dashboard` command. `hosts/crisuflix/home-automation.nix` now overrides the generated ESPHome service `ExecStart` to run `pkgs.esphome-device-builder` on the existing port/state directory, and `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally. `esphome.service` is active, `http://127.0.0.1:6052` and `https://esphome.vpn.cri.su` return HTTP 200, and `systemctl --failed` reports zero failed units. This ESPHome fix is not committed yet. No secrets were added.
+#### Top 3 Next Actions
 
-## Top 3 Next Actions
+- No immediate follow-up recorded.
 
-- Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
+### VPS Reverse Proxy
+
+VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix`. After the switch, `redis-traefik.service` and `traefik.service` were active, and Traefik logs since restart showed only startup messages with no Redis provider errors. No tracked secrets were added.
+
+#### Top 3 Next Actions
+
+- No immediate follow-up recorded.
+
+### Docker
+
+Docker live-restore is enabled and deployed on `crisuflix`. `hosts/crisuflix/default.nix` now sets `virtualisation.docker.daemon.settings.live-restore = true` while keeping the existing `docker.service` Tailscale readiness gate for cold boot/container restore safety. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, and `docker info --format '{{json .LiveRestoreEnabled}}'` returned `true`. No tracked secrets were added.
+
+#### Top 3 Next Actions
+
+- No immediate follow-up recorded.
 
 ## Blockers
 
