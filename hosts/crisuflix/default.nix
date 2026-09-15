@@ -257,6 +257,7 @@ in {
     exports = ''
       /mnt/veckjarvi/media 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,crossmnt,no_subtree_check)
       /mnt/illby/docker 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,crossmnt,no_subtree_check)
+      /mnt/illby/transient 100.64.0.0/10(sec=sys,rw,anonuid=568,anongid=568,all_squash,crossmnt,no_subtree_check)
     '';
   };
 
