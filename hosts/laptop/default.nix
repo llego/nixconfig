@@ -73,11 +73,10 @@
     fstrim.enable = true;
 
     # Reduce systemd journal writes
-    # journald.extraConfig = ''
-    journald.settings.Journal = ''
-      SystemMaxUse=100M
-      MaxRetentionSec=7day
-    '';
+    journald.settings.Journal = {
+      SystemMaxUse = "100M";
+      MaxRetentionSec = "7day";
+    };
 
     # Prevent system freeze when running out of memory
     earlyoom = {
