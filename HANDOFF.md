@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-13 11:29 EET
+Last updated: 2026-09-14 14:00 UTC
 
 ## Current State
 
@@ -10,7 +10,7 @@ Home Assistant runs on `crisuflix` as a Docker-backed NixOS OCI container. The t
 
 Custom integrations that should be HACS-managed are now HACS-managed: `places`, `garo_wallbox`, `frigate`, `myskoda`, `fmi`, `reitti`, `bubble_card_tools`, and `hacs`. The unused manual `hpprinter` component was removed from active `custom_components`; printing uses the built-in Internet Printing Protocol integration instead. Useful rollback points from the cleanup are full HA backups `9d07c6ad` (`Before_Places_v3_migration_20260913`) and `89640a25` (`Before_Frigate_HACS_HPPrinter_cleanup_20260913`), plus filesystem copies under `/mnt/illby/appstorage/homeassistant/custom_components.backups/`.
 
-Places v3 is migrated. The three active Places entries are `Enyaq stadsdel`, `Crisu ort`, and `Ona ort`; current at-home display is intended to show `Hemma, Rastböle`. Wallmount uses only the three main Places badges (`sensor.crisu_ort`, `sensor.ona_ort`, `sensor.enyaq_stadsdel`). The Enyaq started-driving notification automation now uses the native `places_state_update` event.
+Places v3 is migrated. The three active Places entries are `Enyaq ort`, `Crisu ort`, and `Ona ort`; their display options now use an advanced OSM composition that preserves the at-home display `Hemma, Rastböle` and adds the OSM place name, category, type, address, and locality outside `zone.home`. Wallmount uses only the three main Places badges (`sensor.crisu_ort`, `sensor.ona_ort`, `sensor.enyaq_ort`). The enabled Enyaq started-driving notification automation uses the native `places_state_update` event for `Enyaq ort`; its `conversation.process` prompt reads the current `sensor.enyaq_ort` state and falls back to `en okänd plats` if that entity is unavailable.
 
 Known remaining HA work is limited to operational cleanup: missing Ruuvi/InfluxDB data is likely dead batteries in `Vardagsrummet`, `Kylskåpet`, and `Alvars_rum`; MySkoda still logs a `via_device` deprecation warning that must be fixed upstream before HA 2027.8.
 
@@ -18,7 +18,7 @@ Known remaining HA work is limited to operational cleanup: missing Ruuvi/InfluxD
 
 - Change batteries in the missing Ruuvi tags (`Vardagsrummet`, `Kylskåpet`, `Alvars_rum`), then verify InfluxDB rows and HA sensor recovery.
 - Continue custom-integration maintenance for MySkoda deprecation warnings before HA 2027.8.
-- Optionally verify a real away-from-home or driving Places update to confirm the `driving` token and fallback fields.
+- Optionally verify a real away-from-home or driving Places update to confirm the `driving` token, conversation prompt, and fallback fields.
 
 ### Headscale And Headplane
 
@@ -78,4 +78,4 @@ Docker live-restore is enabled and deployed on `crisuflix`. `hosts/crisuflix/def
 
 ## Blockers
 
-None.
+None. No secrets were added to tracked files.
