@@ -1,7 +1,6 @@
 {pkgs, ...}: {
   # System packages
   environment.systemPackages = with pkgs; [
-    # inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     ungoogled-chromium
     baobab
     vlc
