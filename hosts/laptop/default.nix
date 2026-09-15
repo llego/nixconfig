@@ -73,7 +73,8 @@
     fstrim.enable = true;
 
     # Reduce systemd journal writes
-    journald.extraConfig = ''
+    # journald.extraConfig = ''
+    journald.settings.Journal = ''
       SystemMaxUse=100M
       MaxRetentionSec=7day
     '';
