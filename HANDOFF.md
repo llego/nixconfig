@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-14 14:00 UTC
+Last updated: 2026-09-16 05:53 UTC
 
 ## Current State
 
@@ -75,6 +75,16 @@ Docker live-restore is enabled and deployed on `crisuflix`. `hosts/crisuflix/def
 #### Top 3 Next Actions
 
 - No immediate follow-up recorded.
+
+### Yazi
+
+The embedded ZFS fetcher in `modules/cli/yazi.nix` was migrated to Yazi's dynamic fetcher API. It now returns a `ya.co` continuation and yields one status for every file; its minimum supported Yazi version is `26.8.15`. The laptop system derivation built successfully with Yazi `26.9.1`, and an isolated PTY run using the generated configuration at `/mnt/illby` rendered `ZFS` markers without the previous `error converting Lua boolean to function`. The laptop configuration was not deployed or switched. No tracked secrets were added.
+
+#### Top 3 Next Actions
+
+- Deploy the laptop configuration through the normal NixOS switch when convenient.
+- Open a ZFS mount in the laptop's Yazi session and verify the marker remains visible without errors.
+- Decide separately whether to refresh the stale `zen-browser` entries in `flake.lock`; they are unrelated to this fix.
 
 ## Blockers
 

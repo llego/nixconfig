@@ -22,7 +22,7 @@
   '';
 
   zfsYazi = pkgs.writeTextDir "main.lua" ''
-    --- @since 26.5.6
+    --- @since 26.8.15
 
     local ZFS_SIGN = "ZFS"
 
@@ -91,16 +91,18 @@
     end
 
     local function fetch(_, job)
-      local mounts = zfs_mounts()
-      local items = {}
+      return ya.co(function()
+        local mounts = zfs_mounts()
+        local items = {}
 
-      for _, file in ipairs(job.files) do
-        local path = tostring(file.url)
-        items[path] = file.cha.is_dir and mounts[path] or false
-      end
+        for _, file in ipairs(job.files) do
+          local path = tostring(file.url)
+          items[path] = file.cha.is_dir and mounts[path] or false
+          coroutine.yield(file, {})
+        end
 
-      add(items)
-      return true
+        add(items)
+      end)
     end
 
     return { setup = setup, fetch = fetch }
