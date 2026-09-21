@@ -29,6 +29,7 @@
     nitch
     usbutils
     atool
+    gh
     opencode
     # claude-code
 

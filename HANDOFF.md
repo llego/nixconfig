@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-16 05:53 UTC
+Last updated: 2026-09-21 07:34 UTC
 
 ## Current State
 
@@ -52,13 +52,19 @@ Manual-power-off test with debug logging active did not reproduce the stale-on b
 
 ### OpenCloud
 
+As of 2026-09-21, the active service and the repository's evaluated package are both OpenCloud 7.5.0. Upstream has released 8.0.1, but nixos-unstable still lists 7.5.0; no 8.0.x update PR was found during this check. No upgrade or reindex was performed.
+
+Mandatory after upgrading from 7.x to 8.x: run `opencloud search index --all-spaces --force-rescan --insecure` once with the upgraded binary. This is a native NixOS service, not Docker: run as `opencloud:opencloud`, with the same configuration and environment as `opencloud.service` (including `/run/agenix/opencloud-env`) and working directory `/mnt/illby/appstorage/opencloud`. The command shown is the CLI operation, not a complete environment-loading wrapper; inspect the deployed unit when executing it. Do not run it now as an 8.x migration on 7.5.0. Reindexing can run while the service remains available; existing untouched files will not appear in the new search index until reindexed. Verify older files are searchable before removing obsolete indexes, and preserve the current versioned index. Prefer 8.0.1 over 8.0.0 because it fixes a reindex timeout. See the [8.x upgrade guide](https://docs.opencloud.eu/docs/admin/maintenance/upgrade/upgrade-8.x.x). No secrets were added to tracked files.
+
 OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
 
 OpenCloud on `crisuflix` now avoids the Tailscale-address startup race. `hosts/crisuflix/opencloud.nix` binds OpenCloud to `0.0.0.0` instead of `100.64.0.1` and removes the `opencloud.service` `tailscaled-set.service` readiness loop. Access is constrained by active iptables firewall rules: `100.64.0.4/32` may reach OpenCloud port `9200`, and `100.0.0.0/8` may reach Collabora port `9980`. During this work it was confirmed that `networking.nftables.enable = false` on `crisuflix`, so the previous `extraInputRules` Collabora rule was ineffective; it was moved to iptables-backed `networking.firewall.extraCommands`/`extraStopCommands` alongside the new OpenCloud rule. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, `opencloud.service` and `firewall.service` are active, `ss` shows OpenCloud listening on `*:9200`, `iptables -S nixos-fw` shows the expected OpenCloud and Collabora allow rules, direct VPS-to-OpenCloud over Tailscale returns HTTP 200, and `https://cloud.cri.su` returns HTTP 200. No secrets were added.
 
 #### Top 3 Next Actions
 
-- No immediate follow-up recorded.
+- When 8.x becomes available and an upgrade is planned, back up OpenCloud configuration and data before updating the flake lock and deploying.
+- After deploying 8.x, run the one-time search reindex above with the upgraded service's user, configuration, and environment.
+- Verify older files appear in Web Client search, then remove only obsolete search indexes per the upgrade guide.
 
 ### VPS Reverse Proxy
 
