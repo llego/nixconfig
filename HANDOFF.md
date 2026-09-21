@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-21 07:34 UTC
+Last updated: 2026-09-21 19:11 UTC
 
 ## Current State
 
@@ -24,11 +24,13 @@ Known remaining HA work is limited to operational cleanup: missing Ruuvi/InfluxD
 
 Headscale `crisuflix` IPv4 was moved from `100.64.0.1` to `100.64.10.1` on `vps` to avoid Android work-profile VPN conflicts. Headscale 0.29.3 has no supported node-IP edit CLI; after schema inspection, `/var/lib/headscale/db.sqlite` was backed up to `/var/lib/headscale/db.sqlite.20260909_075030.bak`, `headscale.service` was stopped, and only `nodes.ipv4` for node ID 13 (`hostname='crisuflix'`, `given_name='crisuflix'`) was updated. Headscale restarted healthy. `crisuflix.tailnet.cri.su` resolves to `100.64.10.1` from both `crisuflix` and `vps`, and `tailscale ip -4` on `crisuflix` reports `100.64.10.1`. `nixconfig` now uses `crisuflix.tailnet.cri.su` as the reusable `networkVars.hosts.crisuflix` value and keeps `networkVars.tailnetIPs.crisuflix = "100.64.10.1"` only for IP-literal consumers. `nix eval` and `nix build --no-link` succeeded for `vps` and `crisuflix`; both hosts were rebuilt/switched successfully. Running Docker stacks with stale `100.64.0.1` references were updated and recreated with `sudo docker compose`: `docker-socket-proxy` now binds `100.64.10.1:2375`, and `jellyfin-official`, `arr`, and `sabnzbd` Homepage widget URLs now use `crisuflix.tailnet.cri.su`; the `traefik-kop` stale `BIND_IP` comment was updated. The non-running `/mnt/illby/docker/stacks/traefik/compose.yaml` stack still contains `100.64.0.1` bind lines and was intentionally left unchanged per user instruction to update only currently up stacks. `traefik-kop` republished Redis routes with `100.64.10.1`; `http://crisuflix.tailnet.cri.su:8096`, `https://jellyfin.cri.su`, and `http://crisuflix.tailnet.cri.su:2375/version` all return healthy responses. No new Homepage errors appeared after the container restart window. No tracked secrets were added.
 
-Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. This note was already truncated in the handoff.
+Headplane on VPS now uses the nixpkgs package and NixOS module. The upstream `tale/headplane` flake input, overlay, module import, and nixpkgs module exclusion were removed. The shared nixpkgs pin was updated to `44a91898084f46797b5fac650c7e8c9ac38c43d4`; Headplane and its agent both evaluate to 0.7.1. Existing OIDC, API-key, agent settings, and the agent-directory tmpfiles rule are retained. The user rebuilt and restarted VPS; post-deployment checks confirmed Headplane 0.7.1 is running, Headplane and Headscale are active, and `http://127.0.0.1:8086/admin/login` returns HTTP 200. Full browser OIDC login and agent functionality remain to be checked. No secrets were added to tracked files.
 
 #### Top 3 Next Actions
 
-- No immediate follow-up recorded.
+- Verify browser OIDC login at `https://headplane.vpn.cri.su/admin/`.
+- Verify Headplane agent connectivity and node information in the UI.
+- Apply the shared nixpkgs update to other unstable-based hosts during their next planned rebuild.
 
 ### Jellyfin And Traefik
 

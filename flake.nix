@@ -41,10 +41,6 @@
       url = "git+ssh://git@github.com/llego/christiansandberg.fi.git";
       flake = false;
     };
-    headplane = {
-      url = "github:tale/headplane";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {
