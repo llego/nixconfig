@@ -47,6 +47,7 @@
       "git version *": "allow",
       "gh issue view *": "allow",
       "gh issue list *": "allow",
+      "gh search issues *": "allow",
       "gh pr list *": "allow",
       "nix flake show *": "allow",
       "nix flake metadata*": "allow",
