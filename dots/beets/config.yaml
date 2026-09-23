@@ -2,7 +2,8 @@
 #                                      BEETS CONFIG                                    #
 # ------------------------------------------------------------------------------------ #
 # Shared beets configuration for CLI and beets-flask web interface.
-# Managed by hjem at ~/.config/beets/config.yaml
+# Installed to /mnt/illby/appstorage/beets/config.yaml by NixOS activation.
+# Shared ownership: rely on group-writable files, not the permissions plugin's chmod.
 
 plugins: [
         info,
@@ -20,8 +21,7 @@ plugins: [
         fromfilename,
         inline,
         edit,
-        musicbrainz,
-        permissions
+        musicbrainz
     ]
 
 directory: /mnt/veckjarvi/media/musik/album
@@ -41,10 +41,6 @@ paths:
     singleton: $artist/Singles/$artist - $title
     comp: Compilations/$album%aunique{}/$track - $title
     albumtype_soundtrack: Soundtracks/$album/$track $title
-
-permissions:
-    file: 774
-    dir: 774
 
 ui:
     color: yes
@@ -111,3 +107,6 @@ musicbrainz:
         deezer: yes
         beatport: yes
         tidal: yes
+
+lastgenre:
+    source: album

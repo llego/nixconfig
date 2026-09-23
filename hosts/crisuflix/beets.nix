@@ -7,7 +7,8 @@
     paths = [pkgs.beets];
     nativeBuildInputs = [pkgs.makeWrapper];
     postBuild = ''
-      wrapProgram $out/bin/beet --add-flags "--config ${beetsConfigPath}"
+      # Keep CLI-created files writable by the shared apps group.
+      wrapProgram $out/bin/beet --run 'umask 0002' --add-flags "--config ${beetsConfigPath}"
     '';
   };
 in {
