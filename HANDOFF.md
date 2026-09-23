@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-21 19:11 UTC
+Last updated: 2026-09-23 19:05 UTC
 
 ## Current State
 
@@ -12,15 +12,17 @@ Last updated: 2026-09-21 19:11 UTC
 
 ### Music Assistant
 
-Music Assistant Yamaha/MusicCast debugging is active on `crisuflix`. `hosts/crisuflix/home-automation.nix` now sets `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so the explicit `--config /var/lib/music-assistant` must stay while debug logging is enabled. `sudo nixos-rebuild switch --flake .#crisuflix` succeeded after staging the file, and `systemctl status music-assistant.service` shows MA running as `/nix/store/.../.mass-wrapped --config /var/lib/music-assistant --log-level debug`. A first incorrect rebuild briefly started MA with only `--log-level debug`, which put MA into setup mode with empty storage; it was immediately corrected and rebuilt. No tracked secrets were added.
+Music Assistant is now running **2.10.3** on `crisuflix`, verified from the active systemd command after its restart at 2026-09-23 21:48 EEST (18:48 UTC). Persistent data remains at `/mnt/illby/appstorage/music-assistant`, mounted at `/var/lib/music-assistant` inside the service. `hosts/crisuflix/home-automation.nix` retains `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so preserve the explicit config path; omitting it previously caused MA to start with empty storage in setup mode.
 
-Current Yamaha diagnostic facts: AVR direct API at `http://192.168.1.247/YamahaExtendedControl/v1/main/getStatus` returns `"power":"standby"`; model is RX-V6A, firmware/system version `1.80`, API `2.17`, device id `4C22F3A99400`. Music Assistant 2.8.7 uses `aiomusiccast==0.15.0` and polls MusicCast every 10 seconds. The native HA Yamaha MusicCast config entry `01JXA892330HV501YMC2SYPY21` is already disabled by user and `state="not_loaded"`, so it is unlikely to be actively competing. After the corrected MA restart, MA logs show MusicCast loaded and `4C22F3A99400___main/Yamaha MASS` registered at `2026-08-05 09:42:06` local time. HA initially kept `media_player.yamaha_mass` as `unavailable` because HA needed reauthentication to MA; user reauthenticated HA -> MA, and HA now sees `media_player.yamaha_mass` again (`playing` at `2026-08-05 09:49` local time). Remaining investigation is only the Yamaha manual-power-off stale state.
+Yamaha MASS (`4C22F3A99400___main`, RX-V6A at `192.168.1.247`) repeatedly became unavailable **inside Music Assistant itself**, requiring a MusicCast provider reload. Logs show unavailability and rediscovery on September 20, then a provider reload at September 21 21:11:27 EEST followed by playback at 21:11:34. Source inspection of the then-installed 2.9.13 found that rediscovered replacement players were not marked initialized, excluding them from normal player listings; 2.10.3 fixes that registration path. It also removes the busy-lock early return that could silently skip MusicCast polling (upstream PR #5517). These are relevant fixes, but the exact incident cause and successful long-term recovery after the upgrade remain unverified. If it recurs, capture MA availability/logs and direct Yamaha HTTP/UPnP reachability before reloading. Native HA MusicCast was previously disabled; the earlier HA-to-MA reauthentication issue was separate.
 
-Manual-power-off test with debug logging active did not reproduce the stale-on bug. User played a song on Yamaha MASS, manually powered off the Yamaha, and MA correctly showed the Yamaha as off. Evidence: HA logbook shows `media_player.yamaha_mass` `playing` at `2026-08-05 09:48:21` local time and `off` at `09:50:30`; direct Yamaha API simultaneously returned `"power":"standby"`; MA debug logs show playback started on Yamaha MASS through native MusicCast at `09:45:58` and the Yamaha stream request came from `192.168.1.247`. Leave debug logging active only if more reproduction attempts are desired.
+**TIDAL is blocked after the upgrade:** both saved-token refresh and new login fail with HTTP 400, `invalid_request, Missing parameters: client_id`. The installed 2.10.3 expects bundled application credentials, but its `app_secrets.json` is absent; the current nixos-unstable recipe builds from GitHub source without provisioning that bundle. [nixpkgs PR #564869](https://github.com/NixOS/nixpkgs/pull/564869), “music-assistant: fix librespot patch, fix missing client_id”, was still open/unmerged when checked on September 23. **User chose to wait for the upstream fix** rather than apply a local workaround. Updating nixpkgs again will help only once the fix reaches nixos-unstable. No local credential overrides or service changes were made during this investigation.
 
 #### Top 3 Next Actions
 
-- Decide whether to keep Music Assistant debug logging temporarily or remove `--log-level debug` from `services.music-assistant.extraOptions` and rebuild `crisuflix`.
+- Wait for PR #564869 to merge and reach nixos-unstable; then update the nixpkgs input and rebuild/deploy `crisuflix`.
+- Verify TIDAL's saved session refreshes with the fixed package; reauthenticate only if still required, then test playback.
+- Verify Yamaha standby/wake and reconnection recovery on 2.10.3; retain debug logs until checked, then consider removing debug logging while preserving `--config /var/lib/music-assistant`.
 
 ### OpenCloud
 
@@ -43,3 +45,8 @@ VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix`
 #### Top 3 Next Actions
 
 - No immediate follow-up recorded.
+
+## Blockers
+
+- TIDAL authentication awaits the upstream nixpkgs packaging fix described above.
+- No secrets were added to tracked files.
