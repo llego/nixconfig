@@ -1,42 +1,14 @@
 # HANDOFF
 
-Last updated: 2026-09-16 05:53 UTC
+Last updated: 2026-09-21 19:11 UTC
 
 ## Current State
 
 ### Home Assistant
 
-Home Assistant runs on `crisuflix` as a Docker-backed NixOS OCI container. The top-level `/config/configuration.yaml` is generated from `hosts/crisuflix/home-automation.nix` and mounted read-only; writable runtime config remains under `/mnt/illby/appstorage/homeassistant` for includes, `.storage`, themes, blueprints, automations, scripts, scenes, and helper-owned state. The deployed container has the Bluetooth recovery capabilities `CAP_NET_ADMIN` and `CAP_NET_RAW`; ZHA OTA config uses the current `extra_providers` form.
-
-Custom integrations that should be HACS-managed are now HACS-managed: `places`, `garo_wallbox`, `frigate`, `myskoda`, `fmi`, `reitti`, `bubble_card_tools`, and `hacs`. The unused manual `hpprinter` component was removed from active `custom_components`; printing uses the built-in Internet Printing Protocol integration instead. Useful rollback points from the cleanup are full HA backups `9d07c6ad` (`Before_Places_v3_migration_20260913`) and `89640a25` (`Before_Frigate_HACS_HPPrinter_cleanup_20260913`), plus filesystem copies under `/mnt/illby/appstorage/homeassistant/custom_components.backups/`.
-
-Places v3 is migrated. The three active Places entries are `Enyaq ort`, `Crisu ort`, and `Ona ort`; their display options now use an advanced OSM composition that preserves the at-home display `Hemma, Rastböle` and adds the OSM place name, category, type, address, and locality outside `zone.home`. Wallmount uses only the three main Places badges (`sensor.crisu_ort`, `sensor.ona_ort`, `sensor.enyaq_ort`). The enabled Enyaq started-driving notification automation uses the native `places_state_update` event for `Enyaq ort`; its `conversation.process` prompt reads the current `sensor.enyaq_ort` state and falls back to `en okänd plats` if that entity is unavailable.
-
-Known remaining HA work is limited to operational cleanup: missing Ruuvi/InfluxDB data is likely dead batteries in `Vardagsrummet`, `Kylskåpet`, and `Alvars_rum`; MySkoda still logs a `via_device` deprecation warning that must be fixed upstream before HA 2027.8.
-
 #### Top 3 Next Actions
 
 - Change batteries in the missing Ruuvi tags (`Vardagsrummet`, `Kylskåpet`, `Alvars_rum`), then verify InfluxDB rows and HA sensor recovery.
-- Continue custom-integration maintenance for MySkoda deprecation warnings before HA 2027.8.
-- Optionally verify a real away-from-home or driving Places update to confirm the `driving` token, conversation prompt, and fallback fields.
-
-### Headscale And Headplane
-
-Headscale `crisuflix` IPv4 was moved from `100.64.0.1` to `100.64.10.1` on `vps` to avoid Android work-profile VPN conflicts. Headscale 0.29.3 has no supported node-IP edit CLI; after schema inspection, `/var/lib/headscale/db.sqlite` was backed up to `/var/lib/headscale/db.sqlite.20260909_075030.bak`, `headscale.service` was stopped, and only `nodes.ipv4` for node ID 13 (`hostname='crisuflix'`, `given_name='crisuflix'`) was updated. Headscale restarted healthy. `crisuflix.tailnet.cri.su` resolves to `100.64.10.1` from both `crisuflix` and `vps`, and `tailscale ip -4` on `crisuflix` reports `100.64.10.1`. `nixconfig` now uses `crisuflix.tailnet.cri.su` as the reusable `networkVars.hosts.crisuflix` value and keeps `networkVars.tailnetIPs.crisuflix = "100.64.10.1"` only for IP-literal consumers. `nix eval` and `nix build --no-link` succeeded for `vps` and `crisuflix`; both hosts were rebuilt/switched successfully. Running Docker stacks with stale `100.64.0.1` references were updated and recreated with `sudo docker compose`: `docker-socket-proxy` now binds `100.64.10.1:2375`, and `jellyfin-official`, `arr`, and `sabnzbd` Homepage widget URLs now use `crisuflix.tailnet.cri.su`; the `traefik-kop` stale `BIND_IP` comment was updated. The non-running `/mnt/illby/docker/stacks/traefik/compose.yaml` stack still contains `100.64.0.1` bind lines and was intentionally left unchanged per user instruction to update only currently up stacks. `traefik-kop` republished Redis routes with `100.64.10.1`; `http://crisuflix.tailnet.cri.su:8096`, `https://jellyfin.cri.su`, and `http://crisuflix.tailnet.cri.su:2375/version` all return healthy responses. No new Homepage errors appeared after the container restart window. No tracked secrets were added.
-
-Headplane on VPS has been migrated in config from the nixpkgs `services.headplane` module to the upstream pinned `tale/headplane` NixOS module. `hosts/vps/headscale.nix` disables the nixpkgs Headplane module, imports `inputs.headplane.nixosModules.headplane`, uses upstream `headscale.api_key_path`, removes old agent preauth config, and declares `/var/lib/headplane/agent` as `headscale:headscale` via tmpfiles. This note was already truncated in the handoff.
-
-#### Top 3 Next Actions
-
-- No immediate follow-up recorded.
-
-### Jellyfin And Traefik
-
-Jellyfin public playback through `jellyfin.cri.su` was stopping after a few minutes while direct LAN playback at `http://192.168.1.101:8096` stayed stable. Investigation showed Jellyfin/FFmpeg were healthy and encoding faster than realtime; FFmpeg exited only after Jellyfin sent `q`, matching browser HLS segment requests stopping. `traefik-kop` logs showed `Redis seems to have restarted and needs to be updated` plus full route republishing every ~300 seconds, while VPS Redis logs showed only normal persistence saves and no actual Redis restart. Root cause was `/mnt/illby/docker/stacks/traefik-kop/compose.yaml` explicitly setting `REDIS_TTL=300`; this was changed to `REDIS_TTL=0` (upstream default/no expiry), then `docker compose -f /mnt/illby/docker/stacks/traefik-kop/compose.yaml up -d` recreated `traefik-kop`. After waiting past the old 300-second boundary, `traefik-kop` did not log the false Redis-restart/republish cycle, VPS Traefik logs showed no new Jellyfin/Redis route errors, and the user confirmed `jellyfin.cri.su` playback is now stable. This Docker stack lives outside the git repo. No tracked secrets were added.
-
-#### Top 3 Next Actions
-
-- No immediate follow-up recorded.
 
 ### Music Assistant
 
@@ -52,13 +24,17 @@ Manual-power-off test with debug logging active did not reproduce the stale-on b
 
 ### OpenCloud
 
-OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
+As of 2026-09-21, the active service and the repository's evaluated package are both OpenCloud 7.5.0. Upstream has released 8.0.1, but nixos-unstable still lists 7.5.0; no 8.0.x update PR was found during this check. No upgrade or reindex was performed.
 
-OpenCloud on `crisuflix` now avoids the Tailscale-address startup race. `hosts/crisuflix/opencloud.nix` binds OpenCloud to `0.0.0.0` instead of `100.64.0.1` and removes the `opencloud.service` `tailscaled-set.service` readiness loop. Access is constrained by active iptables firewall rules: `100.64.0.4/32` may reach OpenCloud port `9200`, and `100.0.0.0/8` may reach Collabora port `9980`. During this work it was confirmed that `networking.nftables.enable = false` on `crisuflix`, so the previous `extraInputRules` Collabora rule was ineffective; it was moved to iptables-backed `networking.firewall.extraCommands`/`extraStopCommands` alongside the new OpenCloud rule. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, `opencloud.service` and `firewall.service` are active, `ss` shows OpenCloud listening on `*:9200`, `iptables -S nixos-fw` shows the expected OpenCloud and Collabora allow rules, direct VPS-to-OpenCloud over Tailscale returns HTTP 200, and `https://cloud.cri.su` returns HTTP 200. No secrets were added.
+Mandatory after upgrading from 7.x to 8.x: run `opencloud search index --all-spaces --force-rescan --insecure` once with the upgraded binary. This is a native NixOS service, not Docker: run as `opencloud:opencloud`, with the same configuration and environment as `opencloud.service` (including `/run/agenix/opencloud-env`) and working directory `/mnt/illby/appstorage/opencloud`. The command shown is the CLI operation, not a complete environment-loading wrapper; inspect the deployed unit when executing it. Do not run it now as an 8.x migration on 7.5.0. Reindexing can run while the service remains available; existing untouched files will not appear in the new search index until reindexed. Verify older files are searchable before removing obsolete indexes, and preserve the current versioned index. Prefer 8.0.1 over 8.0.0 because it fixes a reindex timeout. See the [8.x upgrade guide](https://docs.opencloud.eu/docs/admin/maintenance/upgrade/upgrade-8.x.x). No secrets were added to tracked files.
+
+OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
 
 #### Top 3 Next Actions
 
-- No immediate follow-up recorded.
+- When 8.x becomes available and an upgrade is planned, back up OpenCloud configuration and data before updating the flake lock and deploying.
+- After deploying 8.x, run the one-time search reindex above with the upgraded service's user, configuration, and environment.
+- Verify older files appear in Web Client search, then remove only obsolete search indexes per the upgrade guide.
 
 ### VPS Reverse Proxy
 
@@ -67,25 +43,3 @@ VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix`
 #### Top 3 Next Actions
 
 - No immediate follow-up recorded.
-
-### Docker
-
-Docker live-restore is enabled and deployed on `crisuflix`. `hosts/crisuflix/default.nix` now sets `virtualisation.docker.daemon.settings.live-restore = true` while keeping the existing `docker.service` Tailscale readiness gate for cold boot/container restore safety. `nix eval '.#nixosConfigurations.crisuflix.config.system.build.toplevel.drvPath'` succeeded, `sudo nixos-rebuild switch --flake .#crisuflix` succeeded locally on `crisuflix`, and `docker info --format '{{json .LiveRestoreEnabled}}'` returned `true`. No tracked secrets were added.
-
-#### Top 3 Next Actions
-
-- No immediate follow-up recorded.
-
-### Yazi
-
-The embedded ZFS fetcher in `modules/cli/yazi.nix` was migrated to Yazi's dynamic fetcher API. It now returns a `ya.co` continuation and yields one status for every file; its minimum supported Yazi version is `26.8.15`. The laptop system derivation built successfully with Yazi `26.9.1`, and an isolated PTY run using the generated configuration at `/mnt/illby` rendered `ZFS` markers without the previous `error converting Lua boolean to function`. The laptop configuration was not deployed or switched. No tracked secrets were added.
-
-#### Top 3 Next Actions
-
-- Deploy the laptop configuration through the normal NixOS switch when convenient.
-- Open a ZFS mount in the laptop's Yazi session and verify the marker remains visible without errors.
-- Decide separately whether to refresh the stale `zen-browser` entries in `flake.lock`; they are unrelated to this fix.
-
-## Blockers
-
-None. No secrets were added to tracked files.

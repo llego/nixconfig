@@ -1,15 +1,10 @@
 {
   config,
-  inputs,
   pkgs,
   ...
 }: let
   net = config.networkVars;
 in {
-  disabledModules = ["services/networking/headplane.nix"];
-
-  imports = [inputs.headplane.nixosModules.headplane];
-
   services.headscale = {
     enable = true;
     address = "0.0.0.0";
@@ -128,8 +123,6 @@ in {
       RestartSec = "5s";
     };
   };
-
-  nixpkgs.overlays = [inputs.headplane.overlays.default];
 
   services.headplane = {
     enable = true;
