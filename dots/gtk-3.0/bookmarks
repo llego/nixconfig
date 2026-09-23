@@ -1,3 +1,6 @@
+file:///mnt/crisuflix-transient
+file:///mnt/crisuflix-media
+file:///mnt/crisuflix-docker
 sftp://llego@crisuflix.home/mnt/veckjarvi veckjarvi
 sftp://llego@crisuflix.home/mnt/illby illby
 davs://cloud.cri.su/remote.php/dav/spaces/c63d0cb2-2500-4e38-8e90-47a638c43a42$6afa5f83-2fff-4a87-8779-4f5fea4eb7ec webdav
