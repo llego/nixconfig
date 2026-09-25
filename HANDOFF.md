@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-23 19:15 UTC
+Last updated: 2026-09-25 23:45 UTC
 
 ## Current State
 
@@ -12,17 +12,17 @@ Last updated: 2026-09-23 19:15 UTC
 
 ### Music Assistant
 
-Music Assistant is now running **2.10.3** on `crisuflix`, verified from the active systemd command after its restart at 2026-09-23 21:48 EEST (18:48 UTC). Persistent data remains at `/mnt/illby/appstorage/music-assistant`, mounted at `/var/lib/music-assistant` inside the service. `hosts/crisuflix/home-automation.nix` retains `services.music-assistant.extraOptions = [ "--config" "/var/lib/music-assistant" "--log-level" "debug" ];`. Important: `extraOptions` replaces the NixOS module default, so preserve the explicit config path; omitting it previously caused MA to start with empty storage in setup mode.
+Music Assistant is now running **2.10.4** in Docker Compose at `/mnt/illby/docker/stacks/music-assistant` on `crisuflix`. The container uses host networking with `/mnt/illby/appstorage/music-assistant` bind-mounted at `/data`, preserving the existing ZFS dataset and library. `ma.cri.su` is routed via traefik-kop Docker labels; the static VPS route was removed. Automatic stable updates are handled by Watchtower.
 
-Yamaha MASS (`4C22F3A99400___main`, RX-V6A at `192.168.1.247`) repeatedly became unavailable **inside Music Assistant itself**, requiring a MusicCast provider reload. Logs show unavailability and rediscovery on September 20, then a provider reload at September 21 21:11:27 EEST followed by playback at 21:11:34. Source inspection of the then-installed 2.9.13 found that rediscovered replacement players were not marked initialized, excluding them from normal player listings; 2.10.3 fixes that registration path. It also removes the busy-lock early return that could silently skip MusicCast polling (upstream PR #5517). These are relevant fixes, but the exact incident cause and successful long-term recovery after the upgrade remain unverified. If it recurs, capture MA availability/logs and direct Yamaha HTTP/UPnP reachability before reloading. Native HA MusicCast was previously disabled; the earlier HA-to-MA reauthentication issue was separate.
+Yamaha MASS (`4C22F3A99400___main`, RX-V6A at `192.168.1.247`) is **discovered and controllable** — actively playing at verification time. The previous "identical name" mDNS error was caused by both UniFi's mDNS Proxy and `crisuflix`'s Avahi reflector forwarding between Home/IoT VLANs. Fixed by disabling the Avahi reflector (`reflector = false`) on `crisuflix`; UniFi's proxy now handles cross-VLAN discovery. Chromecast (Nest Audio, Android TV) discovery works across VLANs through UniFi's proxy.
 
-**TIDAL is blocked after the upgrade:** both saved-token refresh and new login fail with HTTP 400, `invalid_request, Missing parameters: client_id`. The installed 2.10.3 expects bundled application credentials, but its `app_secrets.json` is absent; the current nixos-unstable recipe builds from GitHub source without provisioning that bundle. [nixpkgs PR #564869](https://github.com/NixOS/nixpkgs/pull/564869), “music-assistant: fix librespot patch, fix missing client_id”, was still open/unmerged when checked on September 23. **User chose to wait for the upstream fix** rather than apply a local workaround. Updating nixpkgs again will help only once the fix reaches nixos-unstable. No local credential overrides or service changes were made during this investigation.
+**TIDAL remains disabled** in settings. The official 2.10.4 image includes the bundled `app_secrets.json` that was missing from the NixOS package, so the upstream PR #564869 is no longer a blocker for the Docker deployment. TIDAL authentication should be tested by enabling the provider in the MA UI.
 
 #### Top 3 Next Actions
 
-- Wait for PR #564869 to merge and reach nixos-unstable; then update the nixpkgs input and rebuild/deploy `crisuflix`.
-- Verify TIDAL's saved session refreshes with the fixed package; reauthenticate only if still required, then test playback.
-- Verify Yamaha standby/wake and reconnection recovery on 2.10.3; retain debug logs until checked, then consider removing debug logging while preserving `--config /var/lib/music-assistant`.
+- Enable TIDAL provider in MA UI and verify login/playback with the Docker image's bundled credentials.
+- Verify Yamaha standby/wake and long-term reconnection recovery on 2.10.4; consider reducing log level from debug.
+- Confirm no regression after next nixpkgs update (the native service is fully removed).
 
 ### OpenCloud
 
