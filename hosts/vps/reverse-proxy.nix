@@ -141,12 +141,6 @@ in {
             service = "homeassistant";
             tls.certResolver = "hetzner";
           };
-          musicassistant = {
-            rule = "Host(`ma.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "musicassistant";
-            tls.certResolver = "hetzner";
-          };
           esphome = {
             rule = "Host(`esphome.vpn.cri.su`)";
             entryPoints = ["websecure"];
@@ -200,11 +194,6 @@ in {
           homeassistant.loadBalancer.servers = [
             {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homeAssistant.port}";
-            }
-          ];
-          musicassistant.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.musicAssistant.uiPort}";
             }
           ];
           esphome.loadBalancer.servers = [

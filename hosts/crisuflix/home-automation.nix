@@ -72,37 +72,9 @@ in {
     };
   };
 
-  # Music Assistant
-  services.music-assistant = {
-    enable = true;
-    extraOptions = [
-      "--config"
-      "/var/lib/music-assistant"
-      "--log-level"
-      "debug"
-    ];
-    providers = [
-      "chromecast"
-      "hass"
-      "jellyfin"
-      "musiccast"
-      "sendspin"
-      "sonos" # required by musiccast/provider.py (imports sonos.helpers which needs aiosonos)
-      "tidal"
-    ];
-  };
-
-  # Store MA data on illby ZFS dataset instead of the boot drive.
-  # BindPaths overlays the illby dataset onto the StateDirectory before service start.
-  systemd.services.music-assistant.serviceConfig.BindPaths = [
-    "/mnt/illby/appstorage/music-assistant:/var/lib/music-assistant"
-  ];
-
-  # Smart Fades uses librosa -> numba -> llvmlite (LLVM JIT), which requires
-  # allocating W+X memory pages. MemoryDenyWriteExecute=yes (set by systemd
-  # hardening defaults) blocks this with EPERM. Same fix applied to PostgreSQL
-  # JIT in nixpkgs (nixpkgs PR #344925).
-  systemd.services.music-assistant.serviceConfig.MemoryDenyWriteExecute = lib.mkForce false;
+  # Music Assistant runs in /mnt/illby/docker/stacks/music-assistant with
+  # host networking and /mnt/illby/appstorage/music-assistant mounted at /data.
+  # Its host firewall rules remain here; ma.cri.su is routed via traefik-kop.
 
   networking.firewall = {
     # Allow Yamaha MusicCast to send UDP push events (position updates, state
@@ -167,10 +139,11 @@ in {
   };
 
   # Avahi for mDNS/Zeroconf (Chromecast discovery)
+  # reflector disabled to avoid duplicate mDNS paths with UniFi mDNS Proxy
   services.avahi = {
     enable = true;
     nssmdns4 = true;
-    reflector = true;
+    reflector = false;
     publish = {
       enable = true;
       addresses = true;
