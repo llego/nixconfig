@@ -79,6 +79,15 @@ layer-rule {
     place-within-backdrop true
 }
 
+layer-rule {
+    match namespace="^noctalia-bar-.*"
+
+    background-effect {
+        blur false
+        xray false
+    }
+}
+
 spawn-at-startup "noctalia"
 spawn-at-startup "gotify-desktop"
 
