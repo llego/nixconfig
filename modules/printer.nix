@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     system-config-printer
-    #hplipWithPlugin
+    hplipWithPlugin
   ];
 
   # Enable CUPS to print documents
