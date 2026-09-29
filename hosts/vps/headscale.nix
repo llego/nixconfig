@@ -24,8 +24,6 @@ in {
         nameservers = {
           global = [
             "https://dns.controld.com/wrpogws0c1"
-            "76.76.2.22"
-            # "9.9.9.9"
           ];
           split = {
             # Headscale extra_records do not wildcard-match. Route the private

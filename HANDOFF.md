@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-25 23:45 UTC
+Last updated: 2026-09-29 09:13 UTC
 
 ## Current State
 
@@ -45,6 +45,16 @@ VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix`
 #### Top 3 Next Actions
 
 - No immediate follow-up recorded.
+
+### Headscale DNS
+
+Headscale now advertises only the Control D DoH endpoint `https://dns.controld.com/wrpogws0c1` as its global resolver. The redundant `76.76.2.22` resolver was removed because multiple global resolvers can bypass Control D restrictions. The VPS was rebuilt using `crisuflix` as the build host and deployed successfully on 2026-09-29. Both the VPS and laptop now report the single Control D resolver; split DNS routes remain unchanged. No tracked secrets were added.
+
+#### Top 3 Next Actions
+
+- Re-test the ad hostname `tpc.googlesyndication.com` after DNS cache expiry and confirm the Control D dashboard query result.
+- If it still resolves, add a narrow Control D block rule for that hostname or review the Balanced profile rules.
+- Check browser-level DNS settings if queries are absent from Control D statistics.
 
 ## Blockers
 
