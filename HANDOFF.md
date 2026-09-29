@@ -16,13 +16,9 @@ Music Assistant is now running **2.10.4** in Docker Compose at `/mnt/illby/docke
 
 Yamaha MASS (`4C22F3A99400___main`, RX-V6A at `192.168.1.247`) is **discovered and controllable** — actively playing at verification time. The previous "identical name" mDNS error was caused by both UniFi's mDNS Proxy and `crisuflix`'s Avahi reflector forwarding between Home/IoT VLANs. Fixed by disabling the Avahi reflector (`reflector = false`) on `crisuflix`; UniFi's proxy now handles cross-VLAN discovery. Chromecast (Nest Audio, Android TV) discovery works across VLANs through UniFi's proxy.
 
-**TIDAL remains disabled** in settings. The official 2.10.4 image includes the bundled `app_secrets.json` that was missing from the NixOS package, so the upstream PR #564869 is no longer a blocker for the Docker deployment. TIDAL authentication should be tested by enabling the provider in the MA UI.
-
 #### Top 3 Next Actions
 
-- Enable TIDAL provider in MA UI and verify login/playback with the Docker image's bundled credentials.
 - Verify Yamaha standby/wake and long-term reconnection recovery on 2.10.4; consider reducing log level from debug.
-- Confirm no regression after next nixpkgs update (the native service is fully removed).
 
 ### OpenCloud
 
@@ -50,13 +46,4 @@ VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix`
 
 Headscale now advertises only the Control D DoH endpoint `https://dns.controld.com/wrpogws0c1` as its global resolver. The redundant `76.76.2.22` resolver was removed because multiple global resolvers can bypass Control D restrictions. The VPS was rebuilt using `crisuflix` as the build host and deployed successfully on 2026-09-29. Both the VPS and laptop now report the single Control D resolver; split DNS routes remain unchanged. No tracked secrets were added.
 
-#### Top 3 Next Actions
-
-- Re-test the ad hostname `tpc.googlesyndication.com` after DNS cache expiry and confirm the Control D dashboard query result.
-- If it still resolves, add a narrow Control D block rule for that hostname or review the Balanced profile rules.
-- Check browser-level DNS settings if queries are absent from Control D statistics.
-
 ## Blockers
-
-- TIDAL authentication awaits the upstream nixpkgs packaging fix described above.
-- No secrets were added to tracked files.
