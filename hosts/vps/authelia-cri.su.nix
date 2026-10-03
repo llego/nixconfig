@@ -268,6 +268,7 @@ in {
             public = false;
             authorization_policy = "two_factor";
             redirect_uris = [
+              "https://beszel.cri.su/"
               "https://beszel.cri.su/api/oauth2-redirect"
             ];
             scopes = ["openid" "email" "profile"];
