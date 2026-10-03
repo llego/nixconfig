@@ -23,7 +23,6 @@
         # OpenCode configuration files
         "opencode/opencode.json".source = dots + "/opencode/opencode.json";
         "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";
-        "opencode/agent/code-reviewer.md".source = dots + "/opencode/agent/code-reviewer.md";
       };
     };
   };
