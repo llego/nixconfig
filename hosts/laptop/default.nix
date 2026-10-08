@@ -116,6 +116,18 @@
     ];
   };
 
+  fileSystems."/mnt/crisuflix-wallpapers" = {
+    device = "crisuflix.tailnet.cri.su:/mnt/veckjarvi/fotografier/wallpapers";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=300"
+      "noatime"
+      "nfsvers=4.2"
+    ];
+  };
+
   fileSystems."/mnt/crisuflix-transient" = {
     device = "crisuflix.tailnet.cri.su:/mnt/illby/transient";
     fsType = "nfs";
