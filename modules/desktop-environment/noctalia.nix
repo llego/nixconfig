@@ -1,7 +1,6 @@
 {
   pkgs,
   username,
-  dots,
   inputs,
   ...
 }: {
@@ -9,7 +8,7 @@
     inputs.noctalia-greeter.nixosModules.default
   ];
 
-  programs.noctalia-greeter = {
+  services.displayManager.noctalia-greeter = {
     enable = true;
     settings = {
       session.default = "Niri";
@@ -33,45 +32,39 @@
       settings = {
         backdrop.enabled = false;
 
-        bar.default = {
-          background_opacity = 0.8;
-          center = [];
-          end = ["cpu" "ram" "brightness" "volume" "battery" "network" "clock"];
-          font_family = "Inter Variable";
-          margin_edge = 8;
-          margin_ends = 15;
-          start = ["workspaces" "active_window"];
-          widget_spacing = 12;
-        };
-
-        shell = {
-          niri_overview_type_to_launch_enabled = true;
-          polkit_agent = true;
-        };
-
-        theme = {
-          builtin = "Rosé Pine";
-          community_palette = "Oxocarbon";
-          mode = "dark";
-          source = "wallpaper";
-          wallpaper_scheme = "m3-rainbow";
-        };
-
-        wallpaper = {
-          directory = "${dots}/noctalia/wallpapers";
-          transition = ["wipe"];
-          transition_on_startup = true;
+        bar = {
+          default = {
+            start = [
+              "taskbar"
+            ];
+            center = [
+              "active_window"
+            ];
+            end = [
+              "cpu"
+              "ram"
+              "brightness"
+              "volume"
+              "battery"
+              "network"
+              "bar"
+              "clock"
+            ];
+            background_opacity = 0.7;
+            margin_edge = 8;
+            margin_ends = 15;
+            shadow = false;
+            widget_spacing = 12;
+          };
         };
 
         widget = {
           active_window.max_length = 566;
           battery = {
             type = "battery";
-            capsule = false;
             display_mode = "graphic";
             show_label = false;
           };
-          brightness.capsule = false;
           cpu = {
             type = "sysmon";
             stat = "cpu_usage";
@@ -83,7 +76,69 @@
             visualization = "graph";
           };
           network.show_label = false;
-          volume.capsule = false;
+          taskbar = {
+            group_by_workspace = true;
+            hide_empty_workspaces = true;
+            show_workspace_label = false;
+          };
+          bar = {
+            show_count = false;
+            type = "rylos/tailnet:bar";
+          };
+        };
+
+        plugins.enabled = ["rylos/tailnet"];
+
+        idle = {
+          behavior = {
+            lock = {
+              action = "lock";
+              enabled = true;
+              timeout = 600.0;
+            };
+            lock-and-suspend = {
+              action = "lock_and_suspend";
+              enabled = true;
+              timeout = 900.0;
+            };
+            screen-off = {
+              action = "screen_off";
+              enabled = true;
+              timeout = 600.0;
+            };
+          };
+          behavior_order = [
+            "screen-off"
+            "lock"
+            "lock-and-suspend"
+          ];
+        };
+
+        shell = {
+          niri_overview_type_to_launch_enabled = true;
+          polkit_agent = true;
+        };
+
+        theme = {
+          mode = "dark";
+          templates = {
+            builtin_ids = [
+              "btop"
+              "gtk3"
+              "niri"
+            ];
+            community_ids = [
+              "fuzzel"
+              "bat"
+              "lazygit"
+            ];
+          };
+        };
+
+        wallpaper = {
+          directory = "/mnt/crisuflix-wallpapers";
+          transition = ["wipe"];
+          transition_on_startup = true;
         };
       };
     };
