@@ -139,7 +139,7 @@
       ];
     };
     # Required by nixd (LSP) when using flakes
-    nixPath = ["nixpkgs=${inputs.nixpkgs}"];
+    nix-path = ["nixpkgs=${inputs.nixpkgs}"];
   };
 
   # not another nix helper
