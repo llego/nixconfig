@@ -119,22 +119,12 @@
   };
 
   # Desktop environment dotfiles
-  hjem.users.${username} = let
-    wallpaperDir = dots + "/noctalia/wallpapers";
-    wallpaperFiles = builtins.attrNames (lib.filterAttrs (_: type: type == "regular") (builtins.readDir wallpaperDir));
-    wallpaperMappings = builtins.listToAttrs (map (file: {
-        name = "noctalia/wallpapers/${file}";
-        value.source = dots + "/noctalia/wallpapers/${file}";
-      })
-      wallpaperFiles);
-  in {
-    xdg.config.files =
-      {
-        "niri/config.kdl".source = dots + "/niri/config.kdl";
-        "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
-        "gotify-desktop/config.toml".source = dots + "/gotify-desktop/config.toml";
-      }
-      // wallpaperMappings;
+  hjem.users.${username} = {
+    xdg.config.files = {
+      "niri/config.kdl".source = dots + "/niri/config.kdl";
+      "gtk-3.0/bookmarks".source = dots + "/gtk-3.0/bookmarks";
+      "gotify-desktop/config.toml".source = dots + "/gotify-desktop/config.toml";
+    };
 
     # SSH shortcuts (application desktop files)
     xdg.data.files = {
