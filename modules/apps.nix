@@ -7,6 +7,7 @@
     # rpi-imager
     calibre
     signal-desktop
+    bitwarden-cli
 
     # Libre Office
     libreoffice
