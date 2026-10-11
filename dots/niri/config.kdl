@@ -79,67 +79,86 @@ layer-rule {
     place-within-backdrop true
 }
 
-layer-rule {
-    match namespace="^noctalia-bar-.*"
+// layer-rule {
+//     match namespace="^noctalia-bar-.*"
 
-    background-effect {
-        blur false
-        xray false
-    }
-}
+//     background-effect {
+//         blur false
+//         xray false
+//     }
+// }
 
 spawn-at-startup "noctalia"
 spawn-at-startup "gotify-desktop"
 
 hotkey-overlay { skip-at-startup; }
 binds {
+    // Launch programs
     Alt+F { spawn "nautilus"; }
     Alt+N { spawn-sh "noctalia msg settings-toggle"; }
     Alt+Return { spawn "foot"; }
     Alt+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
     Alt+T { spawn "gnome-text-editor"; }
     Alt+W { spawn "chromium"; }
-    Ctrl+Alt+Delete { spawn-sh "noctalia msg panel-toggle session"; }
-    Mod+O repeat=false {toggle-overview; }
-    Mod+Comma { consume-or-expel-window-left; }
-    Mod+Period { consume-or-expel-window-right; }
 
-    Mod+Ctrl+Down { move-window-down-or-to-workspace-down; }
+    // Move focus
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Down { focus-window-or-workspace-down; }
+    Mod+Up { focus-window-or-workspace-up; }
+    Mod+C { center-column; }
+    Mod+Ctrl+C { center-visible-columns; }
+
+    // Move windows
     Mod+Ctrl+Left { move-column-left; }
     Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+Down { move-window-down-or-to-workspace-down; }
     Mod+Ctrl+Up { move-window-up-or-to-workspace-up; }
-    Mod+Down { focus-window-or-workspace-down; }
-    Mod+F { maximize-column; }
-    // Mod+F { maximize-window-to-edges; }
-    Mod+I { focus-workspace-up; }
-    Mod+L hotkey-overlay-title="Lock screen" { spawn-sh "noctalia msg session lock"; }
-    Mod+Left { focus-column-left; }
-    Mod+Minus { set-column-width "-10%"; }
-    Mod+P hotkey-overlay-title="Restart Kanshi" { spawn "systemctl" "--user" "restart" "kanshi.service"; }
-    "Mod+Page_Down" { focus-window-or-workspace-down; }
-    "Mod+Page_Up" { focus-window-or-workspace-up; }
-    Mod+Plus { set-column-width "+10%"; }
+
+    // Basics
     Mod+Q repeat=false { close-window; }
-    Mod+R { switch-preset-column-width; }
-    Mod+Right { focus-column-right; }
-    Mod+Shift+7 { show-hotkey-overlay; }
-    Mod+Shift+E { quit; }
-    // Mod+Shift+F { fullscreen-window; }
-    Mod+Shift+F  { maximize-window-to-edges; }
-    Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+P hotkey-overlay-title="Turn off monitors" { power-off-monitors; }
-    Mod+Shift+Plus { set-window-height "+10%"; }
-    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
-    Mod+U { focus-workspace-down; }
-    Mod+Up { focus-window-or-workspace-up; }
-    Mod+V { toggle-window-floating; }
-    Mod+W { toggle-column-tabbed-display; }
+    Mod+V { spawn-sh "noctalia msg panel-toggle clipboard"; }
     Print { screenshot; }
+    Alt+Print { screenshot-window; }
+
+    // Session and power 
+    Ctrl+Alt+Delete { spawn-sh "noctalia msg panel-toggle session"; }
+    Mod+L hotkey-overlay-title="Lock screen" { spawn-sh "noctalia msg session lock"; }
+    Mod+P hotkey-overlay-title="Restart Kanshi" { spawn "systemctl" "--user" "restart" "kanshi.service"; }
+    Mod+Shift+P hotkey-overlay-title="Turn off monitors" { power-off-monitors; }
+    Mod+Shift+E { quit; }
+
+    // Overview and hotkey overlay
+    Mod+O repeat=false {toggle-overview; }
+    Mod+Shift+7 { show-hotkey-overlay; }
+
+    // Column width
+    Mod+F { maximize-column; }
+    Mod+Shift+F  { maximize-window-to-edges; }
+    Mod+R { switch-preset-column-width; }
+    Mod+Comma { consume-or-expel-window-left; }
+    Mod+Period { consume-or-expel-window-right; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Plus { set-column-width "+10%"; }
+
+    // Column height
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Plus { set-window-height "+10%"; }
+
+    // Tiling and floating behaviour
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    Mod+Shift+Space { toggle-window-floating; }
+    Mod+W { toggle-column-tabbed-display; }
+    
+    // Volume and brightness
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "noctalia msg volume-up"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "noctalia msg volume-down"; }
     XF86AudioMute allow-when-locked=true { spawn-sh "noctalia msg volume-mute"; }
     XF86MonBrightnessUp allow-when-locked=true { spawn-sh "noctalia msg brightness-up"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn-sh "noctalia msg brightness-down"; }
+
+    // Keyboard shortcut safety
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 }
 
 gestures { hot-corners { off; }; }
