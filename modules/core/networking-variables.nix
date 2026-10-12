@@ -147,18 +147,6 @@
         description = "Glances monitoring web UI port";
       };
 
-      opencloud.port = lib.mkOption {
-        type = lib.types.port;
-        default = 9200;
-        description = "OpenCloud proxy port";
-      };
-
-      collabora.port = lib.mkOption {
-        type = lib.types.port;
-        default = 9980;
-        description = "Collabora Online (coolwsd) port";
-      };
-
       signalCli.port = lib.mkOption {
         type = lib.types.port;
         default = 8089;

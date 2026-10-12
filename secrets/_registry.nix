@@ -244,13 +244,6 @@ in {
       group = "root";
     };
 
-    opencloud-env = {
-      publicKeys = [crisuflix user];
-      hosts = ["crisuflix"];
-      owner = "opencloud";
-      group = "opencloud";
-    };
-
     homepage-unifi-password = {
       publicKeys = [vps user];
       hosts = ["vps"];

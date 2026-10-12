@@ -54,14 +54,6 @@
           siteMonitor = "http://${net.hosts.crisuflix}:${toString net.crisuflix.musicAssistant.uiPort}";
         };
       }
-      {
-        opencloud = {
-          href = "https://cloud.cri.su";
-          icon = "sh-opencloud";
-          description = "cri.su · authelia oidc";
-          siteMonitor = "https://cloud.cri.su";
-        };
-      }
     ];
 
     "Home automation" = [

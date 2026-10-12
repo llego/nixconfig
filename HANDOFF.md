@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-09-29 09:13 UTC
+Last updated: 2026-10-12 19:04 UTC
 
 ## Current State
 
@@ -22,17 +22,21 @@ Yamaha MASS (`4C22F3A99400___main`, RX-V6A at `192.168.1.247`) is **discovered a
 
 ### OpenCloud
 
-As of 2026-09-21, the active service and the repository's evaluated package are both OpenCloud 7.5.0. Upstream has released 8.0.1, but nixos-unstable still lists 7.5.0; no 8.0.x update PR was found during this check. No upgrade or reindex was performed.
+As of 2026-10-12, OpenCloud 7.5.0 and Collabora Online run in Docker Compose at `/mnt/illby/docker/stacks/opencloud` on `crisuflix`. OpenCloud uses `opencloudeu/opencloud-rolling:7.5.0`; Collabora currently uses `collabora/code:latest` (26.04.5.1). Both use host networking and traefik-kop labels (`kop.namespace=vps`), with routes publishing `100.64.10.1:9200` and `:9980`. Compose owns the stack's `.env` and reads configuration from `/mnt/illby/docker/data/opencloud/config`; `.env` is mode 0600. The OpenCloud agenix entry and encrypted file, Nix service module, port options, and host UID/GID account have been removed; the obsolete `/etc/opencloud` copy was removed after config hashes matched the Compose copy. Authelia's OIDC client/lifespan settings remain in its NixOS configuration because they configure the separate Authelia identity provider. No OpenCloud service secret/config remains in agenix or tracked Nix files. The original data remains at `/mnt/illby/appstorage/opencloud`, and a ZFS snapshot `illby/appstorage/opencloud@pre-docker-migration-2026-10-12` was taken before migration. Local OpenCloud and Collabora endpoints return HTTP 200; public hostnames also return 200 through the currently active VPS routes.
 
-Mandatory after upgrading from 7.x to 8.x: run `opencloud search index --all-spaces --force-rescan --insecure` once with the upgraded binary. This is a native NixOS service, not Docker: run as `opencloud:opencloud`, with the same configuration and environment as `opencloud.service` (including `/run/agenix/opencloud-env`) and working directory `/mnt/illby/appstorage/opencloud`. The command shown is the CLI operation, not a complete environment-loading wrapper; inspect the deployed unit when executing it. Do not run it now as an 8.x migration on 7.5.0. Reindexing can run while the service remains available; existing untouched files will not appear in the new search index until reindexed. Verify older files are searchable before removing obsolete indexes, and preserve the current versioned index. Prefer 8.0.1 over 8.0.0 because it fixes a reindex timeout. See the [8.x upgrade guide](https://docs.opencloud.eu/docs/admin/maintenance/upgrade/upgrade-8.x.x). No secrets were added to tracked files.
+OpenCloud's Homepage card is now defined by Compose labels (`homepage.group/name/description/icon/href`) and the static item was removed from `hosts/vps/homepage.nix`. The running container's labels were verified. The Homepage Nix change is not deployed yet, so its existing static card may remain until a safe VPS rebuild.
 
-OpenCloud Android repeated-login issue: OpenCloud external IdP config was aligned with the upstream docs. `hosts/crisuflix/opencloud.nix` now explicitly sets `WEBFINGER_*_OIDC_CLIENT_ID` and `WEBFINGER_*_OIDC_CLIENT_SCOPES` for web, Android, iOS, and desktop clients. `hosts/vps/authelia-cri.su.nix` now defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"` and assigns it to OpenCloud Desktop/Android/iOS. The OpenCloud web client now uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. `crisuflix` and `vps` were rebuilt successfully; OpenCloud is active, `cloud.cri.su` returns 200, and Authelia is active. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
+The VPS static routes have been removed from `hosts/vps/reverse-proxy.nix` but this change has **not yet been deployed**. The running VPS Traefik still has the old static routes. Deployment is intentionally waiting until it will not interrupt a friend's Jellyfin stream. When safe, rebuild the VPS from `crisuflix`, then verify both public hosts are served by the Redis/KOP routes and test an actual document edit.
+
+Mandatory after upgrading from 7.x to 8.x: run `docker compose run --rm opencloud search index --all-spaces --force-rescan --insecure` once with the upgraded image and its Compose environment/config. Do not run this as an 8.x migration on 7.5.0. Reindexing can run while the service remains available; existing untouched files will not appear in the new search index until reindexed. Verify older files are searchable before removing obsolete indexes, and preserve the current versioned index. Prefer 8.0.1 over 8.0.0 because it fixes a reindex timeout. See the [8.x upgrade guide](https://docs.opencloud.eu/docs/admin/maintenance/upgrade/upgrade-8.x.x). No secrets were added to tracked files.
+
+OpenCloud Android repeated-login issue: OpenCloud's WebFinger client IDs/scopes are set in the Compose stack for web, Android, iOS, and desktop. Authelia remains a separate NixOS-managed OIDC provider and defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"`, used by its OpenCloud Desktop/Android/iOS clients. The OpenCloud web client uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
 
 #### Top 3 Next Actions
 
-- When 8.x becomes available and an upgrade is planned, back up OpenCloud configuration and data before updating the flake lock and deploying.
-- After deploying 8.x, run the one-time search reindex above with the upgraded service's user, configuration, and environment.
-- Verify older files appear in Web Client search, then remove only obsolete search indexes per the upgrade guide.
+- After the current Jellyfin viewing session, deploy the VPS reverse-proxy change that removes the static OpenCloud/Collabora routes; verify cloud.cri.su and office.cri.su are served by traefik-kop/Redis.
+- Test document editing end-to-end (including Collabora WebSockets), and confirm existing files and mobile/native client sign-in still work.
+- Before any later OpenCloud 8.x upgrade, back up configuration/data; then run the required one-time `opencloud search index --all-spaces --force-rescan --insecure` and verify older files are searchable before removing obsolete indexes.
 
 ### VPS Reverse Proxy
 
