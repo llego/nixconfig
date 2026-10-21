@@ -20,6 +20,9 @@
       directory = "/home/${username}";
 
       xdg.config.files = {
+        # Git SSH commit signature verification
+        "git/allowed_signers".source = dots + "/git/allowed_signers";
+
         # OpenCode configuration files
         "opencode/opencode.json".source = dots + "/opencode/opencode.json";
         "opencode/AGENTS.md".source = dots + "/opencode/AGENTS.md";

@@ -33,6 +33,14 @@ in {
       group = "users";
     };
 
+    git-signing-key = {
+      publicKeys = all;
+      hosts = ["laptop" "crisuflix" "vps" "rpi5"];
+      mode = "0400";
+      owner = "llego";
+      group = "users";
+    };
+
     bandcamp-cookie = {
       publicKeys = all;
       hosts = ["laptop" "crisuflix" "vps" "rpi5"];

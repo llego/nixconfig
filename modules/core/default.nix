@@ -21,6 +21,10 @@
         name = "${username}";
       };
       init.defaultBranch = "main";
+      gpg.format = "ssh";
+      gpg.ssh.allowedSignersFile = "/home/${username}/.config/git/allowed_signers";
+      user.signingkey = "/run/agenix/git-signing-key";
+      commit.gpgsign = true;
     };
   };
 

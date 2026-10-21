@@ -1,6 +1,16 @@
 # HANDOFF
 
-Last updated: 2026-10-12 19:04 UTC
+Last updated: 2026-10-21 19:02 UTC
+
+## Git Commit Signing
+
+SSH commit signing is configured in the shared core module for `laptop`, `crisuflix`, `vps`, and `rpi5`. A dedicated key is encrypted as `secrets/git-signing-key.age`, and Git signs commits automatically with `/run/agenix/git-signing-key`. The public signing key fingerprint is `SHA256:JP9GsAqW7bAaB7JH57MSA2i8RS3o+M92mq1oiQkvYLw`. A local signed-commit verification test passed, GitHub key ID `1262827`.
+
+### Top 3 Next Actions
+
+- Rebuild the remaining hosts so agenix deploys the signing key and Git configuration there.
+- Create and push a signed commit, then verify GitHub marks it as verified.
+- Confirm the GitHub account recognizes the first pushed commit as verified.
 
 ## Current State
 

@@ -130,6 +130,12 @@ agenix -e secrets/initial-password.age
 agenix -r
 ```
 
+## Git Commit Signing
+
+Git commits use one dedicated SSH signing key on every NixOS host. The private key is distributed through agenix as `git-signing-key.age`; Git is configured by `modules/core/default.nix` to sign commits automatically and verify signatures using `dots/git/allowed_signers`. The public key fingerprint is `SHA256:JP9GsAqW7bAaB7JH57MSA2i8RS3o+M92mq1oiQkvYLw`.
+
+The public key must also be added to GitHub as an account signing key before GitHub can display commits as verified.
+
 ## Nixpkgs Policy
 
 `nixpkgs` follows `nixos-unstable` by default. Use `pkgs-stable` for explicit stable package or service overrides. `rpi5` is the exception: it is built from `nixpkgs-stable` for safer remote Raspberry Pi updates.
