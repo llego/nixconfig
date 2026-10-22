@@ -35,5 +35,8 @@ in {
     if [ -r /run/agenix/ha-mcp-token ]; then
       export HA_MCP_TOKEN=$(cat /run/agenix/ha-mcp-token)
     fi
+    if [ -r /run/agenix/homelable-mcp-api-key ]; then
+      export HOMELABLE_MCP_API_KEY="$(cat /run/agenix/homelable-mcp-api-key)"
+    fi
   '';
 }

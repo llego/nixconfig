@@ -33,6 +33,14 @@ in {
       group = "users";
     };
 
+    homelable-mcp-api-key = {
+      publicKeys = all;
+      hosts = ["laptop" "crisuflix"];
+      mode = "0400";
+      owner = "llego";
+      group = "users";
+    };
+
     git-signing-key = {
       publicKeys = all;
       hosts = ["laptop" "crisuflix" "vps" "rpi5"];
