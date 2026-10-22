@@ -103,7 +103,6 @@ in {
     address = "0.0.0.0";
     port = net.crisuflix.esphome.uiPort;
     openFirewall = true;
-    usePing = true;
   };
 
   # Keep ESPHome state on dedicated ZFS dataset.
@@ -143,12 +142,14 @@ in {
   services.avahi = {
     enable = true;
     nssmdns4 = true;
-    reflector = false;
-    publish = {
-      enable = true;
-      addresses = true;
-      workstation = true;
+    settings = {
+      reflector.enable-reflector = false;
+      publish = {
+        "disable-publishing" = false;
+        publish-addresses = true;
+        publish-workstation = true;
+      };
+      server.allow-interfaces = ["br0" "br1"];
     };
-    allowInterfaces = ["br0" "br1"];
   };
 }
