@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-10-21 19:02 UTC
+Last updated: 2026-10-22 10:58 UTC
 
 ## Git Commit Signing
 
@@ -36,16 +36,26 @@ OpenCloud Android repeated-login issue: OpenCloud's WebFinger client IDs/scopes 
 
 #### Top 3 Next Actions
 
-### VPS Reverse Proxy
+### Homelable
 
-VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. `nix eval '.#nixosConfigurations.vps.config.system.build.toplevel.drvPath'` succeeded, and `nixos-rebuild switch --flake .#vps --target-host llego@christiansandberg.fi --sudo` succeeded from `crisuflix`. After the switch, `redis-traefik.service` and `traefik.service` were active, and Traefik logs since restart showed only startup messages with no Redis provider errors. No tracked secrets were added.
+Homelable is running from `/mnt/illby/docker/stacks/homelable` on `crisuflix`. The public frontend is `https://homelable.cri.su`; Homelable performs its own Authelia OIDC login with a two-factor client policy, and the client is deployed on the VPS. Live View is enabled with a generated key; obtain its URL from the root-only `.env`, and do not put the key in shared notes.
+
+The backend uses host networking on port `8020` for LAN scanning (`8000` is occupied by Readeck). Frontend and MCP proxy to it through `host.docker.internal`; the custom frontend Nginx config preserves Host and X-Forwarded-Proto. The Compose bridge is pinned to `172.19.0.0/16` and named `br-homelable`. MCP is served at `https://homelable-mcp.vpn.cri.su/mcp/`, protected by the tailnet-only Traefik middleware and an API key; its host port binds only to `100.64.10.1:8021`. Public frontend, Live View, OIDC initiation, unauthenticated MCP rejection, and authenticated MCP initialization were verified.
+
+`hosts/crisuflix/default.nix` uses the existing NixOS firewall interface configuration to allow TCP 8020 only on `br-homelable`; this rule has been deployed. No plaintext credentials were added to tracked files. The Authelia client-secret digest is tracked, while its plaintext and app keys remain in the mode-600 external `.env`.
 
 #### Top 3 Next Actions
 
-- No immediate follow-up recorded.
+- Complete an interactive Authelia 2FA login and verify authenticated app use and Live View in a browser.
+- Configure the intended MCP client with the tailnet URL and `MCP_API_KEY` from the protected `.env`, then verify tool calls.
+- Run a Homelable network scan and confirm expected devices/MAC addresses are discovered.
+
+### VPS Reverse Proxy
+
+VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. No immediate follow-up recorded.
 
 ### Headscale DNS
 
-Headscale now advertises only the Control D DoH endpoint `https://dns.controld.com/wrpogws0c1` as its global resolver. The redundant `76.76.2.22` resolver was removed because multiple global resolvers can bypass Control D restrictions. The VPS was rebuilt using `crisuflix` as the build host and deployed successfully on 2026-09-29. Both the VPS and laptop now report the single Control D resolver; split DNS routes remain unchanged. No tracked secrets were added.
+Headscale now advertises only the Control D DoH endpoint `https://dns.controld.com/wrpogws0c1` as its global resolver. The redundant `76.76.2.22` resolver was removed because multiple global resolvers can bypass Control D restrictions. Both the VPS and laptop now report the single Control D resolver; split DNS routes remain unchanged. No tracked secrets were added.
 
 ## Blockers

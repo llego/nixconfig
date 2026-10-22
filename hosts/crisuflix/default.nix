@@ -335,6 +335,11 @@ in {
           net.nfs.mountd.port # NFS mountd
         ];
       };
+      # Homelable's scanner needs the backend on host networking (TCP 8020) to
+      # discover LAN MAC addresses. Its frontend and MCP reach that backend
+      # through this dedicated Docker bridge, so allow the port on this
+      # interface only—not on the LAN or tailnet interfaces.
+      interfaces.br-homelable.allowedTCPPorts = [8020];
       interfaces.br0.allowedTCPPorts = [
         1688 # KMS activation, LAN only
       ];
