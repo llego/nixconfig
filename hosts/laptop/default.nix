@@ -152,7 +152,6 @@
     };
 
     initrd = {
-      verbose = false;
       availableKernelModules = [
         "xhci_pci"
         "nvme"
