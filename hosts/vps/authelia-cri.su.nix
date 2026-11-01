@@ -171,6 +171,17 @@ in {
         };
 
         clients = [
+          # Home Assistant
+          {
+            client_id = "homeassistant";
+            client_name = "Home Assistant";
+            public = true;
+            require_pkce = true;
+            pkce_challenge_method = "S256";
+            redirect_uris = [
+              "https://ha.cri.su/auth/oidc/callback"
+            ];
+          }
           # Homelable
           {
             client_id = "homelable";
