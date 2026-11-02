@@ -14,7 +14,8 @@ in {
   imports = [
     inputs.disko.nixosModules.disko
     ./../../modules/core
-    ./../../modules/cli
+    ./../../modules/cli-basic.nix
+    ./../../modules/cli-apps.nix
     ./beets.nix
     ./home-automation.nix
     ./glances.nix
@@ -32,17 +33,6 @@ in {
     smartmontools
     lm_sensors
     nfs-utils
-
-    # Other apps
-    opencode
-    # ollama-cpu
-    atool
-    nitch
-    usbutils
-
-    # Nix stuff
-    nixd
-    alejandra
   ];
 
   # Hardware configuration

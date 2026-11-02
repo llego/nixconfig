@@ -12,8 +12,9 @@
     inputs.disko.nixosModules.disko
     ./disk-config.nix
     ./../../modules/core
-    ./../../modules/cli
-    ./../../modules/apps.nix
+    ./../../modules/cli-basic.nix
+    ./../../modules/cli-apps.nix.nix
+    ./../../modules/gui-apps.nix
     ./../../modules/desktop-environment
     ./../../modules/printer.nix
     ./../../modules/wifi-networks.nix

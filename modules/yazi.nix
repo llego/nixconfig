@@ -259,6 +259,10 @@
     ]
   '';
 in {
+  environment.systemPackages = with pkgs; [
+    ueberzugpp # image preview for yazi on wayland
+  ];
+
   programs.yazi = {
     enable = true;
     initLua = initLua;

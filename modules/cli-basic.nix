@@ -4,38 +4,19 @@
   dots,
   ...
 }: {
-  imports = [./yazi.nix];
-
   environment.systemPackages = with pkgs; [
     htop
     screen
-    btop
     bat
     lsd
-    ncdu
     jq
     wget
     curl
     dig
     helix # text editor
-    marksman # markdown language server
-    (mdformat.withPlugins (ps: [ps.mdformat-gfm])) # markdown formatter with table support
-    ueberzugpp # image preview for yazi on wayland
-    lazygit # git
     oh-my-posh
     fzf
     dig
-    parted
-    nitch
-    usbutils
-    atool
-    gh
-    opencode
-    # claude-code
-
-    # Nix stuff
-    nixd
-    alejandra
   ];
 
   environment.sessionVariables = {
