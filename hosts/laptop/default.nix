@@ -13,7 +13,7 @@
     ./disk-config.nix
     ./../../modules/core
     ./../../modules/cli-basic.nix
-    ./../../modules/cli-apps.nix.nix
+    ./../../modules/cli-apps.nix
     ./../../modules/gui-apps.nix
     ./../../modules/desktop-environment
     ./../../modules/printer.nix

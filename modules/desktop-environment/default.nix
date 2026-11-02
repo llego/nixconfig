@@ -23,6 +23,7 @@
     wdisplays
     wl-clipboard
     kanshi # Config in dotfiles
+    nirimod
     kdePackages.qt6ct
     numix-cursor-theme
     papirus-icon-theme
