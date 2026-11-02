@@ -39,15 +39,6 @@ in {
         experimental_enable_passkey_uv_two_factors = true;
       };
 
-      # User attribute definitions for custom OIDC claims
-      definitions = {
-        user_attributes = {
-          sftpgo_role = {
-            expression = ''"sftpgo_admins" in groups ? "admin" : "sftpgo_managers" in groups ? "manager" : "user"'';
-          };
-        };
-      };
-
       authentication_backend = {
         password_reset = {
           disable = false;
@@ -143,15 +134,6 @@ in {
 
         # Custom claims policies for OIDC clients
         claims_policies = {
-          sftpgo = {
-            id_token = ["preferred_username" "sftpgo_role"];
-            custom_claims = {
-              sftpgo_role = {};
-            };
-          };
-          # grimmory = {
-          # id_token = ["email" "preferred_username" "name"];
-          # };
           grafana = {
             id_token = ["email" "name" "groups"];
           };
@@ -160,13 +142,6 @@ in {
           };
           headscale = {
             id_token = ["email" "groups"];
-          };
-        };
-
-        # Custom scopes
-        scopes = {
-          sftpgo = {
-            claims = ["sftpgo_role"];
           };
         };
 
@@ -302,23 +277,6 @@ in {
               "https://beszel.cri.su/api/oauth2-redirect"
             ];
             scopes = ["openid" "email" "profile"];
-            userinfo_signed_response_alg = "none";
-            token_endpoint_auth_method = "client_secret_basic";
-          }
-
-          # SFTPGo
-          {
-            client_id = "sftpgo";
-            client_name = "SFTPGo";
-            client_secret = "$pbkdf2-sha512$310000$XoXkhioq02N5hgenTacSNA$LPQx5N2JZpBU8gO.EwHugDZMXk40DGlf9DEK.UswypVpeDFXmHVuY1wQ30b5v8GOrPQJQQGG2.QtITS8MKHdWw";
-            public = false;
-            authorization_policy = "two_factor";
-            claims_policy = "sftpgo";
-            redirect_uris = [
-              "https://sftpgo.cri.su/web/oidc/redirect"
-              "https://sftpgo.cri.su/web/oauth2/redirect"
-            ];
-            scopes = ["openid" "profile" "email" "sftpgo"];
             userinfo_signed_response_alg = "none";
             token_endpoint_auth_method = "client_secret_basic";
           }
