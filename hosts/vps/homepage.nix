@@ -35,14 +35,6 @@
           siteMonitor = "https://uptime.vpn.cri.su";
         };
       }
-      {
-        glances = {
-          href = "https://glances.vpn.cri.su";
-          icon = "glances";
-          description = "vpn.cri.su · tailnet-only";
-          siteMonitor = "https://glances.vpn.cri.su";
-        };
-      }
     ];
 
     Media = [
@@ -138,28 +130,15 @@ in {
       ];
     };
 
-    widgets = [
-      {
-        glances = {
-          href = "https://glances.vpn.cri.su";
-          url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.glances.port}";
-          version = 4;
-          cpu = true;
-          mem = true;
-          cputemp = true;
-          uptime = true;
-          diskUnits = "bytes";
-          expanded = true;
-        };
-      }
-      {
-        unifi_console = {
-          url = "https://192.168.1.1";
-          username = "homepage";
-          password = "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}";
-        };
-      }
-    ];
+    # widgets = [
+    #   {
+    #     unifi_console = {
+    #       url = "https://192.168.1.1";
+    #       username = "homepage";
+    #       password = "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}";
+    #     };
+    #   }
+    # ];
 
     services = map mkGroup (orderedGroups ++ extraGroups);
 

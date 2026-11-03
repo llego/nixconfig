@@ -18,7 +18,6 @@ in {
     ./../../modules/cli-apps.nix
     ./beets.nix
     ./home-automation.nix
-    ./glances.nix
     # ./../../modules/hermes
     ./restic-backup.nix
     ./ups.nix

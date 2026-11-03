@@ -141,12 +141,6 @@
         description = "NUT (UPS monitoring) port";
       };
 
-      glances.port = lib.mkOption {
-        type = lib.types.port;
-        default = 61208;
-        description = "Glances monitoring web UI port";
-      };
-
       signalCli.port = lib.mkOption {
         type = lib.types.port;
         default = 8089;

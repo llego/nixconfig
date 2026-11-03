@@ -148,13 +148,6 @@ in {
             tls.certResolver = "hetzner";
             middlewares = ["tailnet-only"];
           };
-          glances = {
-            rule = "Host(`glances.vpn.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "glances";
-            tls.certResolver = "hetzner";
-            middlewares = ["tailnet-only"];
-          };
           homepage = {
             rule = "Host(`cri.su`)";
             entryPoints = ["websecure"];
@@ -185,11 +178,6 @@ in {
           esphome.loadBalancer.servers = [
             {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.esphome.uiPort}";
-            }
-          ];
-          glances.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.glances.port}";
             }
           ];
           traefik-api.loadBalancer.servers = [
