@@ -5,7 +5,7 @@
       {
         pocket-id = {
           href = "https://id.cri.su";
-          icon = "pocketid";
+          icon = "pocket-id";
           description = "cri.su · pocket id";
           siteMonitor = "https://id.cri.su";
         };
