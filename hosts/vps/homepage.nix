@@ -3,6 +3,14 @@
   homepageGroups = {
     Infra = [
       {
+        pocket-id = {
+          href = "https://id.cri.su";
+          icon = "pocketid";
+          description = "cri.su · pocket id";
+          siteMonitor = "https://id.cri.su";
+        };
+      }
+      {
         headplane = {
           href = "https://headplane.vpn.cri.su/admin/";
           icon = "headscale";

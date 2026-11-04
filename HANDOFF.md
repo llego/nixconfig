@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-11-03 17:57 UTC
+Last updated: 2026-11-04 13:42 UTC
 
 ## Git Commit Signing
 
@@ -38,15 +38,12 @@ OpenCloud Android repeated-login issue: OpenCloud's WebFinger client IDs/scopes 
 
 ### Homelable
 
-Homelable is running from `/mnt/illby/docker/stacks/homelable` on `crisuflix`. The public frontend is `https://homelable.cri.su`; Homelable performs its own Authelia OIDC login with a two-factor client policy, and the client is deployed on the VPS. Live View is enabled with a generated key; obtain its URL from the root-only `.env`, and do not put the key in shared notes.
-
 The backend uses host networking on port `8020` for LAN scanning (`8000` is occupied by Readeck). Frontend and MCP proxy to it through `host.docker.internal`; the custom frontend Nginx config preserves Host and X-Forwarded-Proto. The Compose bridge is pinned to `172.19.0.0/16` and named `br-homelable`. MCP is served at `https://homelable-mcp.vpn.cri.su/mcp/`, protected by the tailnet-only Traefik middleware and an API key; its host port binds only to `100.64.10.1:8021`. Public frontend, Live View, OIDC initiation, unauthenticated MCP rejection, and authenticated MCP initialization were verified.
 
 `hosts/crisuflix/default.nix` uses the existing NixOS firewall interface configuration to allow TCP 8020 only on `br-homelable`; this rule has been deployed. No plaintext credentials were added to tracked files. The Authelia client-secret digest is tracked, while its plaintext and app keys remain in the mode-600 external `.env`.
 
 #### Top 3 Next Actions
 
-- Complete an interactive Authelia 2FA login and verify authenticated app use and Live View in a browser.
 - Configure the intended MCP client with the tailnet URL and `MCP_API_KEY` from the protected `.env`, then verify tool calls.
 - Run a Homelable network scan and confirm expected devices/MAC addresses are discovered.
 
@@ -54,22 +51,14 @@ The backend uses host networking on port `8020` for LAN scanning (`8000` is occu
 
 VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. No immediate follow-up recorded.
 
-### Pocket ID
+### Headscale and Headplane OIDC
 
-Pocket ID is running on the VPS. It listens on loopback port `1411`, with Traefik routing `id.cri.su` to it. Its encryption key is managed by agenix in `secrets/pocket-id-encryption-key.age`.
+`hosts/vps/headscale.nix` now uses Pocket ID (`https://id.cri.su`) for both Headscale and Headplane, sharing client ID `5fc8cf12-7a93-4d30-ae98-b20eddb9d9f3` and an agenix-managed secret. The encrypted client secret is in `secrets/pocket-id-headscale-client-secret.age`; no plaintext credentials were added. The existing Authelia client and secret remain in configuration. Rolling back existing-user login also requires restoring that user's old `provider_identifier` or restoring the database backup.
 
-Homepage native OIDC is configured in `hosts/vps/homepage.nix`, and the Authelia middleware is removed from the Homepage router in `hosts/vps/reverse-proxy.nix`; these changes have not been deployed or verified. `secrets/homepage-oidc-env.age` contains a generated Homepage auth secret, but `HOMEPAGE_OIDC_CLIENT_SECRET` is still a placeholder and must be replaced with the Pocket ID client secret via agenix before deployment. The configured client ID is `homepage`, with expected callback `https://cri.su/api/auth/callback/homepage-oidc`. SMTP settings are managed in the Pocket ID UI. No plaintext secrets were added to tracked files.
+The VPS's existing Headscale user (ID 2, `mail@christiansandberg.fi`) was migrated in place to `https://id.cri.su/64c5f6bc-e8e7-4a61-9039-522b0868d2e7`; no user or node records were recreated. A fresh pre-update SQLite backup is at `/home/llego/.local/share/headscale-backups/headscale-pre-pocket-id-provider-update-20261104T132229Z.sqlite`; it is mode 0600 and passes `PRAGMA integrity_check` (`ok`). The older backup remains at `/home/llego/.local/share/headscale-backups/headscale-pre-pocket-id-oidc-20261104T131544Z.sqlite`.
+
+The first Pocket ID login authenticated but Headplane denied dashboard access because its existing Authelia account was Owner while the new Pocket ID account received the default Member role. Backed up `/var/lib/headplane/hp_persist.db` to `/home/llego/.local/share/headscale-backups/headplane-pre-pocket-id-role-fix-20261104T133454Z.sqlite` (mode 0600, integrity `ok`). Promoted only the Pocket ID account to Admin and transferred the unique Headscale user ID 2 link from the legacy Authelia Owner record; the Owner record remains for rollback. The Pocket ID account now maps to the existing Headscale user. Other Pocket ID users remain at the default Member role and are not granted admin access. User confirmed a fresh Pocket ID sign-in now opens the Headplane dashboard.
 
 #### Top 3 Next Actions
-
-- Replace the Homepage OIDC client-secret placeholder through `agenix -e secrets/homepage-oidc-env.age` and confirm the client ID/callback match Pocket ID.
-- Stage the new files, build/deploy the VPS configuration, and verify Homepage OIDC login.
-- Migrate remaining OIDC clients incrementally; keep Authelia on other routes until a Pocket-ID-compatible ForwardAuth replacement is selected and deployed.
-
-Blocker: Homepage OIDC deployment is pending the real client secret being entered into the agenix file. Full Authelia removal remains deferred pending a ForwardAuth replacement for the other protected routes.
-
-### Headscale DNS
-
-Headscale now advertises only the Control D DoH endpoint `https://dns.controld.com/wrpogws0c1` as its global resolver. The redundant `76.76.2.22` resolver was removed because multiple global resolvers can bypass Control D restrictions. Both the VPS and laptop now report the single Control D resolver; split DNS routes remain unchanged. No tracked secrets were added.
 
 ## Blockers

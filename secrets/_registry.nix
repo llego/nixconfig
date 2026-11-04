@@ -315,5 +315,13 @@ in {
       owner = "headscale";
       group = "headscale";
     };
+
+    pocket-id-headscale-client-secret = {
+      publicKeys = [vps user];
+      hosts = ["vps"];
+      mode = "0400";
+      owner = "headscale";
+      group = "headscale";
+    };
   };
 }
