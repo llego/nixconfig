@@ -104,12 +104,13 @@ in {
   services.homepage-dashboard = {
     enable = true;
     listenPort = net.vps.homepage.port;
-    allowedHosts = "*";
+    allowedHosts = "cri.su";
 
     # The secret files contain HOMEPAGE_VAR_* environment variables used below.
     environmentFiles = [
       config.age.secrets.homepage-unifi-password.path
       config.age.secrets.homepage-gotify-key.path
+      config.age.secrets.homepage-oidc-env.path
     ];
 
     docker.crisuflix = {

@@ -21,6 +21,7 @@
     ./homepage.nix
     ./headscale.nix
     ./authelia-cri.su.nix
+    ./pocketid.nix
     ./christiansandberg-website.nix
     ./gotify.nix
     ./uptime-kuma.nix

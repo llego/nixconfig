@@ -186,6 +186,14 @@ in {
       group = "authelia-cri.su";
     };
 
+    pocket-id-encryption-key = {
+      publicKeys = [vps user];
+      hosts = ["vps"];
+      mode = "0400";
+      owner = "pocket-id";
+      group = "pocket-id";
+    };
+
     gotify-admin-password = {
       publicKeys = [vps user];
       hosts = ["vps"];
@@ -269,6 +277,14 @@ in {
     };
 
     homepage-gotify-key = {
+      publicKeys = [vps user];
+      hosts = ["vps"];
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+
+    homepage-oidc-env = {
       publicKeys = [vps user];
       hosts = ["vps"];
       mode = "0400";

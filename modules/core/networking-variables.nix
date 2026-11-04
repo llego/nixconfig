@@ -48,6 +48,12 @@
         description = "Authelia service port for cri.su domain";
       };
 
+      pocketId.port = lib.mkOption {
+        type = lib.types.port;
+        default = 1411;
+        description = "Pocket ID service port";
+      };
+
       gotify.port = lib.mkOption {
         type = lib.types.port;
         default = 8079;

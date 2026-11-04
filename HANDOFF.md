@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-10-22 10:58 UTC
+Last updated: 2026-11-03 17:57 UTC
 
 ## Git Commit Signing
 
@@ -53,6 +53,20 @@ The backend uses host networking on port `8020` for LAN scanning (`8000` is occu
 ### VPS Reverse Proxy
 
 VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. No immediate follow-up recorded.
+
+### Pocket ID
+
+Pocket ID is running on the VPS. It listens on loopback port `1411`, with Traefik routing `id.cri.su` to it. Its encryption key is managed by agenix in `secrets/pocket-id-encryption-key.age`.
+
+Homepage native OIDC is configured in `hosts/vps/homepage.nix`, and the Authelia middleware is removed from the Homepage router in `hosts/vps/reverse-proxy.nix`; these changes have not been deployed or verified. `secrets/homepage-oidc-env.age` contains a generated Homepage auth secret, but `HOMEPAGE_OIDC_CLIENT_SECRET` is still a placeholder and must be replaced with the Pocket ID client secret via agenix before deployment. The configured client ID is `homepage`, with expected callback `https://cri.su/api/auth/callback/homepage-oidc`. SMTP settings are managed in the Pocket ID UI. No plaintext secrets were added to tracked files.
+
+#### Top 3 Next Actions
+
+- Replace the Homepage OIDC client-secret placeholder through `agenix -e secrets/homepage-oidc-env.age` and confirm the client ID/callback match Pocket ID.
+- Stage the new files, build/deploy the VPS configuration, and verify Homepage OIDC login.
+- Migrate remaining OIDC clients incrementally; keep Authelia on other routes until a Pocket-ID-compatible ForwardAuth replacement is selected and deployed.
+
+Blocker: Homepage OIDC deployment is pending the real client secret being entered into the agenix file. Full Authelia removal remains deferred pending a ForwardAuth replacement for the other protected routes.
 
 ### Headscale DNS
 

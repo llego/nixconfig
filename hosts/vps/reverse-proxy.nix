@@ -153,7 +153,6 @@ in {
             entryPoints = ["websecure"];
             service = "homepage";
             tls.certResolver = "hetzner";
-            middlewares = ["authelia-cri-su"];
           };
           traefik-dashboard = {
             rule = "Host(`traefik.vpn.cri.su`)";
