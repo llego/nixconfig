@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-11-04 13:42 UTC
+Last updated: 2026-11-05 17:08 UTC
 
 ## Git Commit Signing
 
@@ -11,6 +11,18 @@ SSH commit signing is configured in the shared core module for `laptop`, `crisuf
 - Rebuild the remaining hosts so agenix deploys the signing key and Git configuration there.
 
 ## Current State
+
+### Pocket ID Backups
+
+`hosts/vps/pocketid.nix` now declares a daily Restic backup that streams `pocket-id export --path -` into `pocket-id-export.zip`, without stopping Pocket ID or writing a temporary archive. The backup inherits the server's environment files, encryption-key credential and working directory. Its separate encrypted repository targets the dedicated Hetzner bucket at `s3:https://hel1.your-objectstorage.com/vps-pocket-id`, retaining 30 daily and 12 monthly snapshots. The existing Hetzner credentials and Restic password were scoped and re-encrypted for both `crisuflix` and `vps`; agenix recipient checks pass. User created the bucket and deployed the VPS configuration. No plaintext secrets were added to tracked files.
+
+#### Top 3 Next Actions
+
+- Confirm the first scheduled timer run succeeds after the verified manual run.
+- Add backup failure notifications if desired.
+- Test a restore/import in an isolated Pocket ID instance, using the original encryption key; upstream still labels export/import experimental. Keep access to the agenix recovery identity and repository password independent of Pocket ID.
+
+The full VPS system build and `git diff --check` passed. Manual backup on 2026-11-05 succeeded (service result `success`, exit 0), initializing the repository and saving snapshot `974365fa` with a 2.526 MiB export. `restic check --read-data` found no errors. Downloading the export into memory verified all ZIP CRCs and valid `database.json` (37 archive entries, 11 database tables); no plaintext export was saved to disk. Pocket ID remained active. Next timer run was 2026-11-06 04:03 EET. No blockers; a full isolated import/restore test remains outstanding.
 
 ### Home Assistant
 

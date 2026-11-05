@@ -196,16 +196,16 @@ in {
     };
 
     restic-hetzner-password = {
-      publicKeys = [crisuflix user];
-      hosts = ["crisuflix"];
+      publicKeys = [crisuflix vps user];
+      hosts = ["crisuflix" "vps"];
       mode = "0400";
       owner = "root";
       group = "root";
     };
 
     hetzner-s3-credentials = {
-      publicKeys = [crisuflix user];
-      hosts = ["crisuflix"];
+      publicKeys = [crisuflix vps user];
+      hosts = ["crisuflix" "vps"];
       path = "/var/lib/restic/hetzner-s3-credentials";
       mode = "0400";
       owner = "root";
