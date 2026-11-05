@@ -26,7 +26,7 @@
       loopback = lib.mkOption {
         type = lib.types.str;
         default = "127.0.0.1";
-        description = "Loopback address for native services (Authelia, Gotify, etc.)";
+        description = "Loopback address for native services (Gotify, etc.)";
       };
     };
 
@@ -42,12 +42,6 @@
 
     # VPS Service Ports
     vps = {
-      authelia.port = lib.mkOption {
-        type = lib.types.port;
-        default = 9092;
-        description = "Authelia service port for cri.su domain";
-      };
-
       pocketId.port = lib.mkOption {
         type = lib.types.port;
         default = 1411;

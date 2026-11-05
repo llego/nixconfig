@@ -130,62 +130,6 @@ in {
       group = "root";
     };
 
-    "authelia-cri.su-jwt" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-storage" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-session" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-smtp" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-oidc-hmac" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-oidc-private-key" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-openwebui-secret" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
     pocket-id-encryption-key = {
       publicKeys = [vps user];
       hosts = ["vps"];

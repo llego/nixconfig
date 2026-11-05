@@ -9,8 +9,6 @@ SSH commit signing is configured in the shared core module for `laptop`, `crisuf
 ### Top 3 Next Actions
 
 - Rebuild the remaining hosts so agenix deploys the signing key and Git configuration there.
-- Create and push a signed commit, then verify GitHub marks it as verified.
-- Confirm the GitHub account recognizes the first pushed commit as verified.
 
 ## Current State
 
