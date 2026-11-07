@@ -93,6 +93,12 @@
 
     # Crisuflix Service Ports
     crisuflix = {
+      opencode.port = lib.mkOption {
+        type = lib.types.port;
+        default = 49374;
+        description = "OpenCode V2 API and web server port (tailnet only)";
+      };
+
       homeAssistant.port = lib.mkOption {
         type = lib.types.port;
         default = 8123;

@@ -16,6 +16,14 @@ in {
   inherit keys;
 
   secrets = with keys; {
+    opencode-server-env = {
+      publicKeys = [crisuflix user];
+      hosts = ["crisuflix"];
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+
     beszel-env = {
       publicKeys = all;
       hosts = ["laptop" "crisuflix" "vps" "rpi5"];

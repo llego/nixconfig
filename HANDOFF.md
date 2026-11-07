@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-11-07 13:00 UTC
+Last updated: 2026-11-07 16:05 UTC
 
 ## Git Commit Signing
 
@@ -11,6 +11,31 @@ SSH commit signing is configured in the shared core module for `laptop`, `crisuf
 - Rebuild the remaining hosts so agenix deploys the signing key and Git configuration there.
 
 ## Current State
+
+### OpenCode V2 Server
+
+Added `hosts/crisuflix/opencode.nix`: systemd-managed shared server as `llego`,
+using existing config, provider credentials, and sessions. Binds only to the
+crisuflix tailnet IP on TCP 49374 with a readiness wait and tailnet-interface
+firewall opening. Uses supported service commands to persist hostname, port,
+and password, disables OpenTunnel, and registers the foreground process for
+local CLI discovery/pairing. Existing server password encrypted to crisuflix
+and the recovery user in `opencode-server-env.age`; MCP secrets are supplied via
+systemd credentials. No plaintext secrets added to tracked files.
+
+Added VPS Traefik route `https://opencode.vpn.cri.su`, protected by `tailnet-only`
+and the existing centralized public-access guard. Full crisuflix and VPS builds
+passed. Both hosts are deployed; `opencode.service` is active on crisuflix.
+Public-IP HTTPS returns 403. User confirmed successful pairing and use from
+both the Android phone app and web browser. The OpenCode link under Homepage's
+Tools section is also deployed on VPS. See `docs/opencode.md` for activation,
+pairing, and verification. No blockers or plaintext secrets added to tracked files.
+
+#### Top 3 Next Actions
+
+- Verify recovery and client reconnection after a future service/host restart.
+- Confirm unauthenticated API rejection and no LAN access to the backend.
+- Consider a consistent backup of the OpenCode session database and credentials.
 
 ### Shared Arr Docker Network
 

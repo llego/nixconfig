@@ -18,6 +18,7 @@ in {
     ./../../modules/cli-apps.nix
     ./beets.nix
     ./home-automation.nix
+    ./opencode.nix
     # ./../../modules/hermes
     ./restic-backup.nix
     ./ups.nix

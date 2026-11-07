@@ -90,6 +90,14 @@
 
     Tools = [
       {
+        OpenCode = {
+          href = "https://opencode.vpn.cri.su";
+          icon = "opencode";
+          description = "vpn.cri.su · tailnet-only";
+          siteMonitor = "https://opencode.vpn.cri.su";
+        };
+      }
+      {
         "CUPS printing" = {
           href = "http://localhost:631/printers/";
           icon = "cups.png";

@@ -158,6 +158,13 @@ in {
             tls.certResolver = "hetzner";
             middlewares = ["tailnet-only"];
           };
+          opencode = {
+            rule = "Host(`opencode.vpn.cri.su`)";
+            entryPoints = ["websecure"];
+            service = "opencode";
+            tls.certResolver = "hetzner";
+            middlewares = ["tailnet-only"];
+          };
           homepage = {
             rule = "Host(`cri.su`)";
             entryPoints = ["websecure"];
@@ -187,6 +194,11 @@ in {
           esphome.loadBalancer.servers = [
             {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.esphome.uiPort}";
+            }
+          ];
+          opencode.loadBalancer.servers = [
+            {
+              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.opencode.port}";
             }
           ];
           traefik-api.loadBalancer.servers = [

@@ -111,6 +111,13 @@ flowchart TB
   class Redis data
 ```
 
+## OpenCode
+
+OpenCode V2 runs as `llego` on `crisuflix`, sharing the normal user configuration,
+credentials, and sessions. Its API and web UI are served through the VPS at
+`https://opencode.vpn.cri.su`, with tailnet-only routing and built-in pairing
+authentication. See [setup and client pairing](docs/opencode.md).
+
 ## Layout
 
 | Path         | Purpose                     |
