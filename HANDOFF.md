@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-11-07 11:42 UTC
+Last updated: 2026-11-07 13:00 UTC
 
 ## Git Commit Signing
 
@@ -11,6 +11,18 @@ SSH commit signing is configured in the shared core module for `laptop`, `crisuf
 - Rebuild the remaining hosts so agenix deploys the signing key and Git configuration there.
 
 ## Current State
+
+### Shared Arr Docker Network
+
+`hosts/crisuflix/default.nix` now declares `docker-network-arr-stack.service`, a boot-time oneshot ordered after Docker that creates the bridge network `arr-stack` only if missing. Existing networks are left untouched. The full crisuflix system build and `git diff --check` passed. Not deployed; Compose stacks were not changed and Docker was not restarted. No blockers or secrets added to tracked files.
+
+Removed declarative creation of `traefik-public` and `traefik-internal` by removing `docker-network-traefik.service`. This does not delete either existing Docker network or disconnect containers. The final crisuflix system build passed after both removals.
+
+#### Top 3 Next Actions
+
+- Deploy the crisuflix configuration and confirm `arr-stack` exists.
+- Attach the relevant Arr and NZBGet services to the external `arr-stack` network in their Compose stacks.
+- Verify Arr-to-NZBGet connectivity by service name and confirm network/container recovery after a future reboot.
 
 ### Pocket ID Backups
 
