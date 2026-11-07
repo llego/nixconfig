@@ -43,7 +43,7 @@ flowchart TB
   subgraph PublicVPS["☁️ <strong>vps</strong> - public edge"]
     direction TB
     EdgeTraefik["🚦 Traefik <br/> public reverse proxy"]
-    Pocket ID["🔐 Pocket ID<br/>OIDC"]
+    PocketID["🔐 Pocket ID<br/>OIDC"]
     Redis[("🗄️ Redis<br/>Traefik dynamic config")]
   end
 
@@ -59,7 +59,7 @@ flowchart TB
   PublicContainers -->|expose Docker containers by label <code>traefik.instance=public</code>| Kop
   Kop -->|traefik-kop writes routes to redis| Redis
   EdgeTraefik -->|traefik reads redis provider| Redis
-  EdgeTraefik -->|Pocket ID middleware| Pocket ID
+  EdgeTraefik -->|Pocket ID middleware| PocketID
   EdgeTraefik -->|vps traefik proxies to Docker containers on crisuflix| PublicContainers
   EdgeTraefik -->|vps traefik proxies to systemd services on crisuflix| PublicLocalServices
 
@@ -67,7 +67,7 @@ flowchart TB
 
   class PublicUsers,EdgeTraefik,PublicContainers,PublicLocalServices,Kop public
   class HetznerDNS dns
-  class Pocket ID auth
+  class PocketID auth
   class Redis data
 ```
 
