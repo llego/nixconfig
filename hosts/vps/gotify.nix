@@ -5,7 +5,7 @@ in {
     enable = true;
     environment = {
       GOTIFY_SERVER_PORT = net.vps.gotify.port;
-      GOTIFY_SERVER_LISTENADDR = net.hosts.loopback;
+      GOTIFY_SERVER_LISTENADDR = "127.0.0.1";
       GOTIFY_DATABASE_DIALECT = "sqlite3";
       GOTIFY_DATABASE_CONNECTION = "data/gotify.db";
       GOTIFY_DEFAULTUSER_NAME = "admin";
@@ -27,7 +27,7 @@ in {
 
     services.gotify.loadBalancer.servers = [
       {
-        url = "http://${net.hosts.loopback}:${toString net.vps.gotify.port}";
+        url = "http://127.0.0.1:${toString net.vps.gotify.port}";
       }
     ];
   };

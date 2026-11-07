@@ -28,6 +28,8 @@ Notable pieces of software in my infrastructure that bring me joy (some of these
 
 Public `*.cri.su` services terminate at Traefik on `vps`. Selected Docker containers on `crisuflix` are published via [traefik-kop](https://github.com/jittering/traefik-kop) using Docker labels into Redis on `vps`, over the Headscale-managed Tailscale network. The edge Traefik reads those Redis routes and proxies back to `crisuflix` over the tailnet. Private Docker services use `*.vpn.cri.su`: Headscale sends that split-DNS zone to `dnsmasq` on `vps`, which wildcard-resolves it to the VPS tailnet IP, and Traefik routers protect those names with the `tailnet-only` middleware. Pocket ID protects public routes, while private services stay reachable only through Tailscale.
 
+A centralized HTTPS guard also rejects non-tailnet clients for every `*.vpn.cri.su` hostname, including Redis-published routes without a middleware label. Its router priority `1000000` is reserved above all service routers; tailnet clients bypass the guard and use the normal service routes. Keep per-service `tailnet-only` middleware as defense in depth.
+
 ### Public users accessing \*.cri.su
 
 ```mermaid

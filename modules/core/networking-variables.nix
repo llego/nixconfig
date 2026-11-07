@@ -22,12 +22,6 @@
         default = "crisuflix.tailnet.cri.su";
         description = "Crisuflix stable tailnet hostname";
       };
-
-      loopback = lib.mkOption {
-        type = lib.types.str;
-        default = "127.0.0.1";
-        description = "Loopback address for native services (Gotify, etc.)";
-      };
     };
 
     # IP literals for consumers that cannot use hostnames, such as firewall

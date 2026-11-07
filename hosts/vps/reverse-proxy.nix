@@ -121,7 +121,7 @@ in {
 
       providers = {
         redis = {
-          endpoints = ["${net.hosts.loopback}:${toString net.vps.redis.port}"];
+          endpoints = ["127.0.0.1:${toString net.vps.redis.port}"];
           password = "$TRAEFIK_REDIS_PASSWORD";
           rootKey = "traefik";
         };
@@ -135,6 +135,16 @@ in {
     dynamicConfigOptions = {
       http = {
         routers = {
+          # Reserve this priority above service routers, including routes from Redis.
+          # Tailnet requests skip this guard and reach their normal service router.
+          vpn-block-public = {
+            rule = "HostRegexp(`^.+\\.vpn\\.cri\\.su$`) && !ClientIP(`100.64.0.0/10`)";
+            entryPoints = ["websecure"];
+            priority = 1000000;
+            middlewares = ["tailnet-only"];
+            service = "noop@internal";
+            tls = {};
+          };
           homeassistant = {
             rule = "Host(`ha.cri.su`)";
             entryPoints = ["websecure"];
@@ -166,7 +176,7 @@ in {
         services = {
           homepage.loadBalancer.servers = [
             {
-              url = "http://${net.hosts.loopback}:${toString net.vps.homepage.port}";
+              url = "http://127.0.0.1:${toString net.vps.homepage.port}";
             }
           ];
           homeassistant.loadBalancer.servers = [
@@ -181,7 +191,7 @@ in {
           ];
           traefik-api.loadBalancer.servers = [
             {
-              url = "http://${net.hosts.loopback}:${toString net.vps.traefik.port}";
+              url = "http://127.0.0.1:${toString net.vps.traefik.port}";
             }
           ];
         };

@@ -181,14 +181,14 @@ in {
       headscale.loadBalancer = {
         servers = [
           {
-            url = "http://${net.hosts.loopback}:${toString net.vps.headscale.port}";
+            url = "http://127.0.0.1:${toString net.vps.headscale.port}";
           }
         ];
         passHostHeader = true;
       };
       headplane.loadBalancer.servers = [
         {
-          url = "http://${net.hosts.loopback}:${toString net.vps.headplane.port}";
+          url = "http://127.0.0.1:${toString net.vps.headplane.port}";
         }
       ];
     };

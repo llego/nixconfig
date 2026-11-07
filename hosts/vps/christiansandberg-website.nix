@@ -12,7 +12,7 @@
 in {
   services.static-web-server = {
     enable = true;
-    listen = "${net.hosts.loopback}:${toString net.vps.website.port}";
+    listen = "127.0.0.1:${toString net.vps.website.port}";
     root = "${website}";
   };
 
@@ -44,7 +44,7 @@ in {
 
     services.website.loadBalancer.servers = [
       {
-        url = "http://${net.hosts.loopback}:${toString net.vps.website.port}";
+        url = "http://127.0.0.1:${toString net.vps.website.port}";
       }
     ];
   };

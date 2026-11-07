@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-11-05 17:08 UTC
+Last updated: 2026-11-07 11:42 UTC
 
 ## Git Commit Signing
 
@@ -58,6 +58,14 @@ The backend uses host networking on port `8020` for LAN scanning (`8000` is occu
 - Run a Homelable network scan and confirm expected devices/MAC addresses are discovered.
 
 ### VPS Reverse Proxy
+
+Added a centralized `vpn-block-public` HTTPS router in `hosts/vps/reverse-proxy.nix`. It matches `*.vpn.cri.su` requests whose direct client IP is outside `100.64.0.0/10` and returns 403 through the existing `tailnet-only` middleware, using `noop@internal` as the unused service. Priority `1000000` is reserved above service routers, including Redis routes; tailnet clients skip the guard. Existing per-service restrictions remain. The full VPS system build and `git diff --check` passed; not deployed yet. No secrets were added to tracked files. No blockers.
+
+#### Top 3 Next Actions
+
+- Deploy the VPS configuration.
+- Verify private hostnames return 403 through the public VPS IP and remain reachable through the tailnet IP.
+- Confirm public services are unaffected and retain service-router priorities below the guard.
 
 VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. No immediate follow-up recorded.
 
