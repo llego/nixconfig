@@ -45,17 +45,6 @@
       }
     ];
 
-    Media = [
-      {
-        music-assistant = {
-          href = "https://ma.cri.su";
-          icon = "music-assistant";
-          description = "cri.su · app auth";
-          siteMonitor = "http://${net.hosts.crisuflix}:${toString net.crisuflix.musicAssistant.uiPort}";
-        };
-      }
-    ];
-
     "Home automation" = [
       {
         gotify = {
@@ -68,14 +57,6 @@
             url = "https://gotify.vpn.cri.su";
             key = "{{HOMEPAGE_VAR_GOTIFY_KEY}}";
           };
-        };
-      }
-      {
-        homeassistant = {
-          href = "https://ha.cri.su";
-          icon = "home-assistant";
-          description = "cri.su · app auth";
-          siteMonitor = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homeAssistant.port}";
         };
       }
       {

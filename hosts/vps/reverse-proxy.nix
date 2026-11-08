@@ -145,12 +145,6 @@ in {
             service = "noop@internal";
             tls = {};
           };
-          homeassistant = {
-            rule = "Host(`ha.cri.su`)";
-            entryPoints = ["websecure"];
-            service = "homeassistant";
-            tls.certResolver = "hetzner";
-          };
           esphome = {
             rule = "Host(`esphome.vpn.cri.su`)";
             entryPoints = ["websecure"];
@@ -184,11 +178,6 @@ in {
           homepage.loadBalancer.servers = [
             {
               url = "http://127.0.0.1:${toString net.vps.homepage.port}";
-            }
-          ];
-          homeassistant.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homeAssistant.port}";
             }
           ];
           esphome.loadBalancer.servers = [
