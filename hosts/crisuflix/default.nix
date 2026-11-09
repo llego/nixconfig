@@ -18,7 +18,7 @@ in {
     ./../../modules/cli-apps.nix
     ./beets.nix
     ./home-automation.nix
-    ./glances.nix
+    ./opencode.nix
     # ./../../modules/hermes
     ./restic-backup.nix
     ./ups.nix
@@ -170,25 +170,21 @@ in {
     '';
   };
 
-  # Ensure the traefik Docker networks exists before any containers start.
-  # All stacks reference them as external: true, so they must pre-exist.
-  systemd.services.docker-network-traefik = {
-    description = "Create traefik Docker network";
+  # Provision shared external networks after Docker starts. Docker persists them
+  # across reboots; Compose stacks need them before their first `up`.
+  systemd.services.docker-network-arr-stack = {
+    description = "Create shared Arr Docker network";
     after = ["docker.service"];
     requires = ["docker.service"];
     wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = pkgs.lib.getExe (pkgs.writeShellScriptBin "docker-network-traefik" ''
-        ${pkgs.docker}/bin/docker network inspect traefik-internal > /dev/null 2>&1 || \
-          ${pkgs.docker}/bin/docker network create --driver bridge traefik-internal
-
-
-        ${pkgs.docker}/bin/docker network inspect traefik-public > /dev/null 2>&1 || \
-          ${pkgs.docker}/bin/docker network create --driver bridge traefik-public
-      '');
     };
+    script = ''
+      ${pkgs.docker}/bin/docker network inspect arr-stack > /dev/null 2>&1 || \
+        ${pkgs.docker}/bin/docker network create --driver bridge arr-stack
+    '';
   };
   users.users.${username}.extraGroups = ["docker" "apps" "llego" "hermes"];
 

@@ -5,7 +5,7 @@ in {
     enable = true;
     settings = {
       PORT = toString net.vps.uptimeKuma.port;
-      HOST = net.hosts.loopback;
+      HOST = "127.0.0.1";
     };
   };
 
@@ -20,7 +20,7 @@ in {
 
     services.uptime-kuma.loadBalancer.servers = [
       {
-        url = "http://${net.hosts.loopback}:${toString net.vps.uptimeKuma.port}";
+        url = "http://127.0.0.1:${toString net.vps.uptimeKuma.port}";
       }
     ];
   };

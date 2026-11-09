@@ -68,9 +68,11 @@ in {
         '';
       };
       oidc = {
-        issuer = "https://auth.cri.su";
-        client_id = "headscale";
-        client_secret_path = config.age.secrets.headscale-oidc-client-secret.path;
+        # Pocket ID client ID is intentionally shared with Headplane so both
+        # services resolve the same OIDC subject for each user.
+        issuer = "https://id.cri.su";
+        client_id = "5fc8cf12-7a93-4d30-ae98-b20eddb9d9f3";
+        client_secret_path = config.age.secrets.pocket-id-headscale-client-secret.path;
         scope = ["openid" "profile" "email" "groups"];
         pkce = {
           enabled = true;
@@ -139,9 +141,9 @@ in {
         api_key_path = config.age.secrets.headscale-api-key.path;
       };
       oidc = {
-        issuer = "https://auth.cri.su";
-        client_id = "headscale";
-        client_secret_path = config.age.secrets.headscale-oidc-client-secret.path;
+        issuer = "https://id.cri.su";
+        client_id = "5fc8cf12-7a93-4d30-ae98-b20eddb9d9f3";
+        client_secret_path = config.age.secrets.pocket-id-headscale-client-secret.path;
         use_pkce = true;
         token_endpoint_auth_method = "client_secret_basic";
       };
@@ -179,14 +181,14 @@ in {
       headscale.loadBalancer = {
         servers = [
           {
-            url = "http://${net.hosts.loopback}:${toString net.vps.headscale.port}";
+            url = "http://127.0.0.1:${toString net.vps.headscale.port}";
           }
         ];
         passHostHeader = true;
       };
       headplane.loadBalancer.servers = [
         {
-          url = "http://${net.hosts.loopback}:${toString net.vps.headplane.port}";
+          url = "http://127.0.0.1:${toString net.vps.headplane.port}";
         }
       ];
     };

@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-10-22 10:58 UTC
+Last updated: 2026-11-07 16:05 UTC
 
 ## Git Commit Signing
 
@@ -9,10 +9,57 @@ SSH commit signing is configured in the shared core module for `laptop`, `crisuf
 ### Top 3 Next Actions
 
 - Rebuild the remaining hosts so agenix deploys the signing key and Git configuration there.
-- Create and push a signed commit, then verify GitHub marks it as verified.
-- Confirm the GitHub account recognizes the first pushed commit as verified.
 
 ## Current State
+
+### OpenCode V2 Server
+
+Added `hosts/crisuflix/opencode.nix`: systemd-managed shared server as `llego`,
+using existing config, provider credentials, and sessions. Binds only to the
+crisuflix tailnet IP on TCP 49374 with a readiness wait and tailnet-interface
+firewall opening. Uses supported service commands to persist hostname, port,
+and password, disables OpenTunnel, and registers the foreground process for
+local CLI discovery/pairing. Existing server password encrypted to crisuflix
+and the recovery user in `opencode-server-env.age`; MCP secrets are supplied via
+systemd credentials. No plaintext secrets added to tracked files.
+
+Added VPS Traefik route `https://opencode.vpn.cri.su`, protected by `tailnet-only`
+and the existing centralized public-access guard. Full crisuflix and VPS builds
+passed. Both hosts are deployed; `opencode.service` is active on crisuflix.
+Public-IP HTTPS returns 403. User confirmed successful pairing and use from
+both the Android phone app and web browser. The OpenCode link under Homepage's
+Tools section is also deployed on VPS. See `docs/opencode.md` for activation,
+pairing, and verification. No blockers or plaintext secrets added to tracked files.
+
+#### Top 3 Next Actions
+
+- Verify recovery and client reconnection after a future service/host restart.
+- Confirm unauthenticated API rejection and no LAN access to the backend.
+- Consider a consistent backup of the OpenCode session database and credentials.
+
+### Shared Arr Docker Network
+
+`hosts/crisuflix/default.nix` now declares `docker-network-arr-stack.service`, a boot-time oneshot ordered after Docker that creates the bridge network `arr-stack` only if missing. Existing networks are left untouched. The full crisuflix system build and `git diff --check` passed. Not deployed; Compose stacks were not changed and Docker was not restarted. No blockers or secrets added to tracked files.
+
+Removed declarative creation of `traefik-public` and `traefik-internal` by removing `docker-network-traefik.service`. This does not delete either existing Docker network or disconnect containers. The final crisuflix system build passed after both removals.
+
+#### Top 3 Next Actions
+
+- Deploy the crisuflix configuration and confirm `arr-stack` exists.
+- Attach the relevant Arr and NZBGet services to the external `arr-stack` network in their Compose stacks.
+- Verify Arr-to-NZBGet connectivity by service name and confirm network/container recovery after a future reboot.
+
+### Pocket ID Backups
+
+`hosts/vps/pocketid.nix` now declares a daily Restic backup that streams `pocket-id export --path -` into `pocket-id-export.zip`, without stopping Pocket ID or writing a temporary archive. The backup inherits the server's environment files, encryption-key credential and working directory. Its separate encrypted repository targets the dedicated Hetzner bucket at `s3:https://hel1.your-objectstorage.com/vps-pocket-id`, retaining 30 daily and 12 monthly snapshots. The existing Hetzner credentials and Restic password were scoped and re-encrypted for both `crisuflix` and `vps`; agenix recipient checks pass. User created the bucket and deployed the VPS configuration. No plaintext secrets were added to tracked files.
+
+#### Top 3 Next Actions
+
+- Confirm the first scheduled timer run succeeds after the verified manual run.
+- Add backup failure notifications if desired.
+- Test a restore/import in an isolated Pocket ID instance, using the original encryption key; upstream still labels export/import experimental. Keep access to the agenix recovery identity and repository password independent of Pocket ID.
+
+The full VPS system build and `git diff --check` passed. Manual backup on 2026-11-05 succeeded (service result `success`, exit 0), initializing the repository and saving snapshot `974365fa` with a 2.526 MiB export. `restic check --read-data` found no errors. Downloading the export into memory verified all ZIP CRCs and valid `database.json` (37 archive entries, 11 database tables); no plaintext export was saved to disk. Pocket ID remained active. Next timer run was 2026-11-06 04:03 EET. No blockers; a full isolated import/restore test remains outstanding.
 
 ### Home Assistant
 
@@ -38,24 +85,35 @@ OpenCloud Android repeated-login issue: OpenCloud's WebFinger client IDs/scopes 
 
 ### Homelable
 
-Homelable is running from `/mnt/illby/docker/stacks/homelable` on `crisuflix`. The public frontend is `https://homelable.cri.su`; Homelable performs its own Authelia OIDC login with a two-factor client policy, and the client is deployed on the VPS. Live View is enabled with a generated key; obtain its URL from the root-only `.env`, and do not put the key in shared notes.
-
 The backend uses host networking on port `8020` for LAN scanning (`8000` is occupied by Readeck). Frontend and MCP proxy to it through `host.docker.internal`; the custom frontend Nginx config preserves Host and X-Forwarded-Proto. The Compose bridge is pinned to `172.19.0.0/16` and named `br-homelable`. MCP is served at `https://homelable-mcp.vpn.cri.su/mcp/`, protected by the tailnet-only Traefik middleware and an API key; its host port binds only to `100.64.10.1:8021`. Public frontend, Live View, OIDC initiation, unauthenticated MCP rejection, and authenticated MCP initialization were verified.
 
 `hosts/crisuflix/default.nix` uses the existing NixOS firewall interface configuration to allow TCP 8020 only on `br-homelable`; this rule has been deployed. No plaintext credentials were added to tracked files. The Authelia client-secret digest is tracked, while its plaintext and app keys remain in the mode-600 external `.env`.
 
 #### Top 3 Next Actions
 
-- Complete an interactive Authelia 2FA login and verify authenticated app use and Live View in a browser.
 - Configure the intended MCP client with the tailnet URL and `MCP_API_KEY` from the protected `.env`, then verify tool calls.
 - Run a Homelable network scan and confirm expected devices/MAC addresses are discovered.
 
 ### VPS Reverse Proxy
 
+Added a centralized `vpn-block-public` HTTPS router in `hosts/vps/reverse-proxy.nix`. It matches `*.vpn.cri.su` requests whose direct client IP is outside `100.64.0.0/10` and returns 403 through the existing `tailnet-only` middleware, using `noop@internal` as the unused service. Priority `1000000` is reserved above service routers, including Redis routes; tailnet clients skip the guard. Existing per-service restrictions remain. The full VPS system build and `git diff --check` passed; not deployed yet. No secrets were added to tracked files. No blockers.
+
+#### Top 3 Next Actions
+
+- Deploy the VPS configuration.
+- Verify private hostnames return 403 through the public VPS IP and remain reachable through the tailnet IP.
+- Confirm public services are unaffected and retain service-router priorities below the guard.
+
 VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. No immediate follow-up recorded.
 
-### Headscale DNS
+### Headscale and Headplane OIDC
 
-Headscale now advertises only the Control D DoH endpoint `https://dns.controld.com/wrpogws0c1` as its global resolver. The redundant `76.76.2.22` resolver was removed because multiple global resolvers can bypass Control D restrictions. Both the VPS and laptop now report the single Control D resolver; split DNS routes remain unchanged. No tracked secrets were added.
+`hosts/vps/headscale.nix` now uses Pocket ID (`https://id.cri.su`) for both Headscale and Headplane, sharing client ID `5fc8cf12-7a93-4d30-ae98-b20eddb9d9f3` and an agenix-managed secret. The encrypted client secret is in `secrets/pocket-id-headscale-client-secret.age`; no plaintext credentials were added. The existing Authelia client and secret remain in configuration. Rolling back existing-user login also requires restoring that user's old `provider_identifier` or restoring the database backup.
+
+The VPS's existing Headscale user (ID 2, `mail@christiansandberg.fi`) was migrated in place to `https://id.cri.su/64c5f6bc-e8e7-4a61-9039-522b0868d2e7`; no user or node records were recreated. A fresh pre-update SQLite backup is at `/home/llego/.local/share/headscale-backups/headscale-pre-pocket-id-provider-update-20261104T132229Z.sqlite`; it is mode 0600 and passes `PRAGMA integrity_check` (`ok`). The older backup remains at `/home/llego/.local/share/headscale-backups/headscale-pre-pocket-id-oidc-20261104T131544Z.sqlite`.
+
+The first Pocket ID login authenticated but Headplane denied dashboard access because its existing Authelia account was Owner while the new Pocket ID account received the default Member role. Backed up `/var/lib/headplane/hp_persist.db` to `/home/llego/.local/share/headscale-backups/headplane-pre-pocket-id-role-fix-20261104T133454Z.sqlite` (mode 0600, integrity `ok`). Promoted only the Pocket ID account to Admin and transferred the unique Headscale user ID 2 link from the legacy Authelia Owner record; the Owner record remains for rollback. The Pocket ID account now maps to the existing Headscale user. Other Pocket ID users remain at the default Member role and are not granted admin access. User confirmed a fresh Pocket ID sign-in now opens the Headplane dashboard.
+
+#### Top 3 Next Actions
 
 ## Blockers

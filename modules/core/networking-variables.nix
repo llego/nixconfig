@@ -22,12 +22,6 @@
         default = "crisuflix.tailnet.cri.su";
         description = "Crisuflix stable tailnet hostname";
       };
-
-      loopback = lib.mkOption {
-        type = lib.types.str;
-        default = "127.0.0.1";
-        description = "Loopback address for native services (Authelia, Gotify, etc.)";
-      };
     };
 
     # IP literals for consumers that cannot use hostnames, such as firewall
@@ -42,10 +36,10 @@
 
     # VPS Service Ports
     vps = {
-      authelia.port = lib.mkOption {
+      pocketId.port = lib.mkOption {
         type = lib.types.port;
-        default = 9092;
-        description = "Authelia service port for cri.su domain";
+        default = 1411;
+        description = "Pocket ID service port";
       };
 
       gotify.port = lib.mkOption {
@@ -99,6 +93,12 @@
 
     # Crisuflix Service Ports
     crisuflix = {
+      opencode.port = lib.mkOption {
+        type = lib.types.port;
+        default = 49374;
+        description = "OpenCode V2 API and web server port (tailnet only)";
+      };
+
       homeAssistant.port = lib.mkOption {
         type = lib.types.port;
         default = 8123;
@@ -139,12 +139,6 @@
         type = lib.types.port;
         default = 3493;
         description = "NUT (UPS monitoring) port";
-      };
-
-      glances.port = lib.mkOption {
-        type = lib.types.port;
-        default = 61208;
-        description = "Glances monitoring web UI port";
       };
 
       signalCli.port = lib.mkOption {

@@ -16,6 +16,14 @@ in {
   inherit keys;
 
   secrets = with keys; {
+    opencode-server-env = {
+      publicKeys = [crisuflix user];
+      hosts = ["crisuflix"];
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+
     beszel-env = {
       publicKeys = all;
       hosts = ["laptop" "crisuflix" "vps" "rpi5"];
@@ -130,60 +138,12 @@ in {
       group = "root";
     };
 
-    "authelia-cri.su-jwt" = {
+    pocket-id-encryption-key = {
       publicKeys = [vps user];
       hosts = ["vps"];
       mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-storage" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-session" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-smtp" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-oidc-hmac" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-oidc-private-key" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
-    };
-
-    "authelia-cri.su-openwebui-secret" = {
-      publicKeys = [vps user];
-      hosts = ["vps"];
-      mode = "0400";
-      owner = "authelia-cri.su";
-      group = "authelia-cri.su";
+      owner = "pocket-id";
+      group = "pocket-id";
     };
 
     gotify-admin-password = {
@@ -244,16 +204,16 @@ in {
     };
 
     restic-hetzner-password = {
-      publicKeys = [crisuflix user];
-      hosts = ["crisuflix"];
+      publicKeys = [crisuflix vps user];
+      hosts = ["crisuflix" "vps"];
       mode = "0400";
       owner = "root";
       group = "root";
     };
 
     hetzner-s3-credentials = {
-      publicKeys = [crisuflix user];
-      hosts = ["crisuflix"];
+      publicKeys = [crisuflix vps user];
+      hosts = ["crisuflix" "vps"];
       path = "/var/lib/restic/hetzner-s3-credentials";
       mode = "0400";
       owner = "root";
@@ -269,6 +229,14 @@ in {
     };
 
     homepage-gotify-key = {
+      publicKeys = [vps user];
+      hosts = ["vps"];
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+
+    homepage-oidc-env = {
       publicKeys = [vps user];
       hosts = ["vps"];
       mode = "0400";
@@ -293,6 +261,14 @@ in {
     };
 
     headscale-oidc-client-secret = {
+      publicKeys = [vps user];
+      hosts = ["vps"];
+      mode = "0400";
+      owner = "headscale";
+      group = "headscale";
+    };
+
+    pocket-id-headscale-client-secret = {
       publicKeys = [vps user];
       hosts = ["vps"];
       mode = "0400";

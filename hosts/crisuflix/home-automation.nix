@@ -5,77 +5,7 @@
   ...
 }: let
   net = config.networkVars;
-  homeAssistantConfiguration = pkgs.writeText "home-assistant-configuration.yaml" ''
-    # Managed by nixconfig. Mutable Home Assistant config lives in the included files.
-
-    default_config:
-
-    intent:
-
-    frontend:
-      themes: !include_dir_merge_named themes
-
-    homeassistant:
-      customize: !include customizations.yaml
-
-      auth_providers:
-        - type: trusted_networks
-          trusted_networks:
-            - 192.168.1.0/24
-            - 100.64.0.5/32
-            - fd00::/8
-          trusted_users:
-            100.64.0.5: 340b71d871e7480f8f454163a14bd471
-          allow_bypass_login: true
-        - type: homeassistant
-
-    # Keep UI-managed and app-managed config writable under /config.
-    automation: !include automations.yaml
-    script: !include scripts.yaml
-    scene: !include scenes.yaml
-    sensor: !include sensors.yaml
-    media_player: !include universal_media_player.yaml
-    influxdb: !include influxdb.yaml
-    template: !include templates.yaml
-
-    zha:
-      zigpy_config:
-        ota:
-          otau_directory: /config/zigpy_ota
-          extra_providers:
-            - type: ikea
-            - type: salus
-  '';
 in {
-  # Home Assistant OCI Container (Docker backend)
-  virtualisation.oci-containers = {
-    backend = "docker";
-    containers.homeassistant = {
-      image = "ghcr.io/home-assistant/home-assistant:stable";
-      autoStart = true;
-      volumes = [
-        "/mnt/illby/appstorage/homeassistant:/config"
-        # Docker creates an empty lower-layer placeholder at the host path;
-        # the container still reads this read-only Nix store file.
-        "${homeAssistantConfiguration}:/config/configuration.yaml:ro"
-        "/etc/localtime:/etc/localtime:ro"
-      ];
-      environment = {
-        TZ = "Europe/Helsinki";
-      };
-      extraOptions = [
-        "--network=host"
-        "--device=/dev/ttyUSB0:/dev/ttyUSB0"
-        "--cap-add=NET_ADMIN"
-        "--cap-add=NET_RAW"
-      ];
-    };
-  };
-
-  # Music Assistant runs in /mnt/illby/docker/stacks/music-assistant with
-  # host networking and /mnt/illby/appstorage/music-assistant mounted at /data.
-  # Its host firewall rules remain here; ma.cri.su is routed via traefik-kop.
-
   networking.firewall = {
     # Allow Yamaha MusicCast to send UDP push events (position updates, state
     # changes) back to Music Assistant on its ephemeral UDP port. The Yamaha

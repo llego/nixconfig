@@ -3,6 +3,14 @@
   homepageGroups = {
     Infra = [
       {
+        pocket-id = {
+          href = "https://id.cri.su";
+          icon = "pocket-id";
+          description = "cri.su · pocket id";
+          siteMonitor = "https://id.cri.su";
+        };
+      }
+      {
         headplane = {
           href = "https://headplane.vpn.cri.su/admin/";
           icon = "headscale";
@@ -35,25 +43,6 @@
           siteMonitor = "https://uptime.vpn.cri.su";
         };
       }
-      {
-        glances = {
-          href = "https://glances.vpn.cri.su";
-          icon = "glances";
-          description = "vpn.cri.su · tailnet-only";
-          siteMonitor = "https://glances.vpn.cri.su";
-        };
-      }
-    ];
-
-    Media = [
-      {
-        music-assistant = {
-          href = "https://ma.cri.su";
-          icon = "music-assistant";
-          description = "cri.su · app auth";
-          siteMonitor = "http://${net.hosts.crisuflix}:${toString net.crisuflix.musicAssistant.uiPort}";
-        };
-      }
     ];
 
     "Home automation" = [
@@ -71,14 +60,6 @@
         };
       }
       {
-        homeassistant = {
-          href = "https://ha.cri.su";
-          icon = "home-assistant";
-          description = "cri.su · app auth";
-          siteMonitor = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homeAssistant.port}";
-        };
-      }
-      {
         esphome = {
           href = "https://esphome.vpn.cri.su";
           icon = "esphome";
@@ -89,6 +70,14 @@
     ];
 
     Tools = [
+      {
+        OpenCode = {
+          href = "https://opencode.vpn.cri.su";
+          icon = "opencode";
+          description = "vpn.cri.su · tailnet-only";
+          siteMonitor = "https://opencode.vpn.cri.su";
+        };
+      }
       {
         "CUPS printing" = {
           href = "http://localhost:631/printers/";
@@ -112,12 +101,13 @@ in {
   services.homepage-dashboard = {
     enable = true;
     listenPort = net.vps.homepage.port;
-    allowedHosts = "*";
+    allowedHosts = "cri.su";
 
     # The secret files contain HOMEPAGE_VAR_* environment variables used below.
     environmentFiles = [
       config.age.secrets.homepage-unifi-password.path
       config.age.secrets.homepage-gotify-key.path
+      config.age.secrets.homepage-oidc-env.path
     ];
 
     docker.crisuflix = {
@@ -138,28 +128,15 @@ in {
       ];
     };
 
-    widgets = [
-      {
-        glances = {
-          href = "https://glances.vpn.cri.su";
-          url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.glances.port}";
-          version = 4;
-          cpu = true;
-          mem = true;
-          cputemp = true;
-          uptime = true;
-          diskUnits = "bytes";
-          expanded = true;
-        };
-      }
-      {
-        unifi_console = {
-          url = "https://192.168.1.1";
-          username = "homepage";
-          password = "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}";
-        };
-      }
-    ];
+    # widgets = [
+    #   {
+    #     unifi_console = {
+    #       url = "https://192.168.1.1";
+    #       username = "homepage";
+    #       password = "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}";
+    #     };
+    #   }
+    # ];
 
     services = map mkGroup (orderedGroups ++ extraGroups);
 

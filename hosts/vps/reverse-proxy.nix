@@ -121,7 +121,7 @@ in {
 
       providers = {
         redis = {
-          endpoints = ["${net.hosts.loopback}:${toString net.vps.redis.port}"];
+          endpoints = ["127.0.0.1:${toString net.vps.redis.port}"];
           password = "$TRAEFIK_REDIS_PASSWORD";
           rootKey = "traefik";
         };
@@ -135,11 +135,15 @@ in {
     dynamicConfigOptions = {
       http = {
         routers = {
-          homeassistant = {
-            rule = "Host(`ha.cri.su`)";
+          # Reserve this priority above service routers, including routes from Redis.
+          # Tailnet requests skip this guard and reach their normal service router.
+          vpn-block-public = {
+            rule = "HostRegexp(`^.+\\.vpn\\.cri\\.su$`) && !ClientIP(`100.64.0.0/10`)";
             entryPoints = ["websecure"];
-            service = "homeassistant";
-            tls.certResolver = "hetzner";
+            priority = 1000000;
+            middlewares = ["tailnet-only"];
+            service = "noop@internal";
+            tls = {};
           };
           esphome = {
             rule = "Host(`esphome.vpn.cri.su`)";
@@ -148,10 +152,10 @@ in {
             tls.certResolver = "hetzner";
             middlewares = ["tailnet-only"];
           };
-          glances = {
-            rule = "Host(`glances.vpn.cri.su`)";
+          opencode = {
+            rule = "Host(`opencode.vpn.cri.su`)";
             entryPoints = ["websecure"];
-            service = "glances";
+            service = "opencode";
             tls.certResolver = "hetzner";
             middlewares = ["tailnet-only"];
           };
@@ -160,7 +164,6 @@ in {
             entryPoints = ["websecure"];
             service = "homepage";
             tls.certResolver = "hetzner";
-            middlewares = ["authelia-cri-su"];
           };
           traefik-dashboard = {
             rule = "Host(`traefik.vpn.cri.su`)";
@@ -174,12 +177,7 @@ in {
         services = {
           homepage.loadBalancer.servers = [
             {
-              url = "http://${net.hosts.loopback}:${toString net.vps.homepage.port}";
-            }
-          ];
-          homeassistant.loadBalancer.servers = [
-            {
-              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.homeAssistant.port}";
+              url = "http://127.0.0.1:${toString net.vps.homepage.port}";
             }
           ];
           esphome.loadBalancer.servers = [
@@ -187,14 +185,14 @@ in {
               url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.esphome.uiPort}";
             }
           ];
-          glances.loadBalancer.servers = [
+          opencode.loadBalancer.servers = [
             {
-              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.glances.port}";
+              url = "http://${net.hosts.crisuflix}:${toString net.crisuflix.opencode.port}";
             }
           ];
           traefik-api.loadBalancer.servers = [
             {
-              url = "http://${net.hosts.loopback}:${toString net.vps.traefik.port}";
+              url = "http://127.0.0.1:${toString net.vps.traefik.port}";
             }
           ];
         };
