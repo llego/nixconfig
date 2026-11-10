@@ -64,7 +64,10 @@ window-rule {
 window-rule {
     match is-active=false
     draw-border-with-background false
-    opacity 0.800000
+    opacity 0.700000
+    background-effect {
+        blur true
+    }
 }
 window-rule {
     match app-id="foot" is-active=true
