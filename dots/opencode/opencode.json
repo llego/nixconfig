@@ -141,7 +141,8 @@
       "mv *": "ask",
       "cp *": "ask",
       "which *": "allow",
-      "date *": "allow"
+      "date *": "allow",
+      "tail *": "allow"
     }
   }
 }
