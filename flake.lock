@@ -313,6 +313,22 @@
     },
     "nixpkgs_6": {
       "locked": {
+        "lastModified": 1794386569,
+        "narHash": "sha256-x9sADJvoVG0L6RejZB+/BB4YiGZFBZrfTlhF4uBq1tQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "d4f25a3e562008648d45bcf2d70bcc7422cad84e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_7": {
+      "locked": {
         "lastModified": 1736061677,
         "narHash": "sha256-DjkQPnkAfd7eB522PwnkGhOMuT9QVCZspDpJJYyOj60=",
         "owner": "NixOS",
@@ -366,11 +382,29 @@
         "type": "github"
       }
     },
+    "nordend": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_6"
+      },
+      "locked": {
+        "lastModified": 1794730515,
+        "narHash": "sha256-FfLfYfujDXkujFaQ/5HH+ytmi5Roe7VoIZ8uUOQkQ9o=",
+        "owner": "pankaspe",
+        "repo": "nordend-fm",
+        "rev": "2d436311b129ce2431e15c2ae83cec49184e6b01",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pankaspe",
+        "repo": "nordend-fm",
+        "type": "github"
+      }
+    },
     "raspberry-pi-nix": {
       "inputs": {
         "libcamera-src": "libcamera-src",
         "libpisp-src": "libpisp-src",
-        "nixpkgs": "nixpkgs_6",
+        "nixpkgs": "nixpkgs_7",
         "rpi-bluez-firmware-src": "rpi-bluez-firmware-src",
         "rpi-firmware-nonfree-src": "rpi-firmware-nonfree-src",
         "rpi-firmware-src": "rpi-firmware-src",
@@ -406,6 +440,7 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "noctalia": "noctalia",
         "noctalia-greeter": "noctalia-greeter",
+        "nordend": "nordend",
         "raspberry-pi-nix": "raspberry-pi-nix"
       }
     },

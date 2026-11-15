@@ -1,4 +1,10 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
+  nixpkgs.overlays = [inputs.nordend.overlays.default];
+
   # System packages
   environment.systemPackages = with pkgs; [
     ungoogled-chromium
@@ -6,6 +12,7 @@
     vlc
     calibre
     signal-desktop
+    nordend
 
     # Libre Office
     libreoffice

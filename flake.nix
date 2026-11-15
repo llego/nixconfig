@@ -37,6 +37,7 @@
       url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nordend.url = "github:pankaspe/nordend-fm";
     christiansandberg-website = {
       url = "git+ssh://git@github.com/llego/christiansandberg.fi.git";
       flake = false;

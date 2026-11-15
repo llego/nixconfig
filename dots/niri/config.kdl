@@ -97,7 +97,8 @@ spawn-at-startup "gotify-desktop"
 hotkey-overlay { skip-at-startup; }
 binds {
     // Launch programs
-    Alt+F { spawn "nautilus"; }
+    // Alt+F { spawn "nautilus"; }
+    Alt+F { spawn "nordend"; }
     Alt+N { spawn-sh "noctalia msg settings-toggle"; }
     Alt+Return { spawn "foot"; }
     Alt+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
