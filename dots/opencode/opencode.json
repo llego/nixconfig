@@ -12,7 +12,10 @@
       },
       "nixos": {
         "type": "local",
-        "command": ["nix", "run", "github:utensils/mcp-nixos", "--"]
+        "command": ["nix", "run", "github:utensils/mcp-nixos", "--"],
+        "timeout": {
+          "startup": 120000
+        }
       },
       "homelable": {
         "type": "remote",

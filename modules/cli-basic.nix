@@ -17,6 +17,7 @@
     oh-my-posh
     fzf
     dig
+    openssl
   ];
 
   environment.sessionVariables = {
