@@ -64,7 +64,10 @@ window-rule {
 window-rule {
     match is-active=false
     draw-border-with-background false
-    opacity 0.800000
+    opacity 0.700000
+    background-effect {
+        blur true
+    }
 }
 window-rule {
     match app-id="foot" is-active=true
@@ -94,7 +97,8 @@ spawn-at-startup "gotify-desktop"
 hotkey-overlay { skip-at-startup; }
 binds {
     // Launch programs
-    Alt+F { spawn "nautilus"; }
+    // Alt+F { spawn "nautilus"; }
+    Alt+F { spawn "nordend"; }
     Alt+N { spawn-sh "noctalia msg settings-toggle"; }
     Alt+Return { spawn "foot"; }
     Alt+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
