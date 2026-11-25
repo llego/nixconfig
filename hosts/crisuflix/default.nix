@@ -289,6 +289,13 @@ in {
           prefixLength = 24;
         }
       ];
+      # Stable Home ULA for local services, independent of ISP delegation.
+      br0.ipv6.addresses = [
+        {
+          address = "fdad:3928:7958:1::101";
+          prefixLength = 64;
+        }
+      ];
       br1.ipv4.addresses = [
         {
           address = "192.168.3.103";

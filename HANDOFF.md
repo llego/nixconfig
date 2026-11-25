@@ -1,8 +1,26 @@
 # HANDOFF
 
-Last updated: 2026-11-25 10:55 UTC
+Last updated: 2026-11-25 21:07 UTC
 
 ## Current State
+
+### Local Home Assistant Proxy
+
+Adapted and started `/mnt/illby/docker/stacks/traefik` as a local Home HTTPS proxy, with dedicated Docker IPv4 and IPv6 networks and a route for `ha.cri.su` to Home Assistant. Previous Compose files are backed up as `compose.yaml.pre-local-20261125` and `compose.yaml.pre-ipv6-20261125`. UniFi advertises Home ULA `fdad:3928:7958:1::/64`; `crisuflix` statically uses `fdad:3928:7958:1::101` on `br0`. Traefik listens on that address and `192.168.1.101` on ports 80 and 443. Its dashboard at `https://traefik-local.cri.su/dashboard/` is restricted to the Home IPv4 and ULA subnets, without separate authentication. The user approved a Home Assistant restart; existing trusted proxies were preserved and `10.253.252.2/32` added via the HTTP settings API, then the configuration was promoted. The Home-only Control D profile now returns both local addresses; rpi5 resolved and reached HA over both IPv4 and IPv6 with HTTP 200. Rpi5 also reached the dashboard over ULA IPv6 with certificate verification. Public DNS still returned the VPS IPv6 address. Client login/WebSocket behavior and proxy reboot recovery remain unverified. No secrets were added to tracked files.
+
+Home Assistant's Compose stack now adds `traefik.instance=internal`, allowing local Traefik to reuse the existing public route and service labels; the duplicate file-based HA route was removed. Local Traefik's default HTTPS entrypoint and `host.docker.internal` mapping route the host-networked HA container to `10.253.252.1:8123`. Both Compose files have `compose.yaml.pre-ha-labels-20261125` backups. After recreating HA and Traefik, the local dashboard showed the HA route only as `home-assistant@docker`; local IPv4, local IPv6, and public VPS HTTPS returned 200, and the dashboard returned 200 over local IPv6. The user confirmed dashboard access from the laptop. Full HA login/WebSocket and reboot testing remain outstanding.
+
+Jellyfin's Compose stack now also sets `traefik.instance=internal`, and local Traefik is attached to `jellyfin-official_default` to reach the container using its existing route labels. The user created the Home Control D rule for `jellyfin.cri.su`; local A and AAAA resolve to the Home proxy. After recreating Traefik and Jellyfin, the local Docker route selected `172.22.0.2:8096`, and local IPv4, local IPv6, and public VPS HTTPS returned 302; following the local IPv6 redirect returned 200. Certificate issuance and VPS route publication briefly lagged startup but subsequently succeeded. Playback and login remain untested. Compose backups are `traefik/compose.yaml.pre-jellyfin-20261125` and `jellyfin-official/compose.yaml.pre-local-proxy-20261125`. No secrets added to tracked files.
+
+The preferred future structure is a shared `traefik-internal` Docker network: local Traefik joins it once, and each application opts in through its own Compose network attachment and labels, retaining any application-specific networks. Add boot-time creation of `traefik-internal` to `hosts/crisuflix/default.nix` before migrating Jellyfin to the shared network, then explicitly select that network for its local Traefik route and verify local and VPS access. This is planned only; it has not been created or deployed. Containers on the shared network may be able to reach one another directly, so attach only intended services.
+
+#### Top 3 Next Actions
+
+- Add declarative `traefik-internal` network creation to `hosts/crisuflix/default.nix`, then migrate and verify Jellyfin on the shared network.
+- Test Home Assistant login/WebSockets and Jellyfin login/playback locally and from an independently connected away client.
+- Test lab reachability and DNS64 behavior separately if desired; verify proxy, network, and ULA recovery after reboot.
+
+Blockers: Automatic proxy failover remains unimplemented; away-client testing is outstanding.
 
 ### IPv6 Lab NAT64
 
