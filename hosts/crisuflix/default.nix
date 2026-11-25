@@ -19,6 +19,7 @@ in {
     ./beets.nix
     ./home-automation.nix
     ./opencode.nix
+    ./nat64-lab.nix
     # ./../../modules/hermes
     ./restic-backup.nix
     ./ups.nix
@@ -263,6 +264,9 @@ in {
     maxretry = 5;
     bantime = "1h";
   };
+
+  # Accept Home LAN IPv6 router advertisements while forwarding for Tailscale.
+  boot.kernel.sysctl."net.ipv6.conf.br0.accept_ra" = 2;
 
   # Network bridges (matching TrueNAS setup)
   networking = {

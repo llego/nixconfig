@@ -11,6 +11,16 @@ in {
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
+    interfaces.enp1s0.ipv6.addresses = [
+      {
+        address = "2a01:4f9:c010:803e::1";
+        prefixLength = 64;
+      }
+    ];
+    defaultGateway6 = {
+      address = "fe80::1";
+      interface = "enp1s0";
+    };
     firewall = {
       enable = true;
       allowedTCPPorts = [22 80 443];
@@ -29,23 +39,27 @@ in {
     zones = [
       {
         domain = "cri.su";
-        records = [{name = "@";}];
+        records = [
+          {name = "@";}
+          {name = "@"; type = "AAAA"; interface = "enp1s0";}
+          {name = "*"; type = "AAAA"; interface = "enp1s0";}
+        ];
       }
       {
         domain = "christiansandberg.fi";
-        records = [{name = "@";}];
+        records = [{name = "@";} {name = "@"; type = "AAAA"; interface = "enp1s0";}];
       }
       {
         domain = "sandbergs.fi";
-        records = [{name = "@";}];
+        records = [{name = "@";} {name = "@"; type = "AAAA"; interface = "enp1s0";}];
       }
       {
         domain = "crisusandberg.fi";
-        records = [{name = "@";}];
+        records = [{name = "@";} {name = "@"; type = "AAAA"; interface = "enp1s0";}];
       }
       {
         domain = "csandberg.fi";
-        records = [{name = "@";}];
+        records = [{name = "@";} {name = "@"; type = "AAAA"; interface = "enp1s0";}];
       }
     ];
     protections = true;

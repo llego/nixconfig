@@ -1,16 +1,50 @@
 # HANDOFF
 
-Last updated: 2026-11-07 16:05 UTC
-
-## Git Commit Signing
-
-SSH commit signing is configured in the shared core module for `laptop`, `crisuflix`, `vps`, and `rpi5`. A dedicated key is encrypted as `secrets/git-signing-key.age`, and Git signs commits automatically with `/run/agenix/git-signing-key`. The public signing key fingerprint is `SHA256:JP9GsAqW7bAaB7JH57MSA2i8RS3o+M92mq1oiQkvYLw`. A local signed-commit verification test passed, GitHub key ID `1262827`.
-
-### Top 3 Next Actions
-
-- Rebuild the remaining hosts so agenix deploys the signing key and Git configuration there.
+Last updated: 2026-11-25 10:55 UTC
 
 ## Current State
+
+### IPv6 Lab NAT64
+
+Added and deployed `hosts/crisuflix/nat64-lab.nix`: Jool NAT64 in a dedicated network namespace, with host-side nftables boundary filtering and IPv4 masquerading. The boundary is scoped to interfaces and `64:ff9b::/96`, not the ISP-delegated lab prefix. UniFi routes that prefix to crisuflix's Home link-local address and has an Internal → External lab allow before a catch-all NAT64 drop, plus an Untrusted → External NAT64 drop. Trusted Home devices may bypass UniFi via a direct route to crisuflix; this tradeoff is accepted but the bypass has not been tested. After deployment, Winamp and DuckDuckGo returned HTTP 200 via DNS64/NAT64 from the lab laptop with Tailscale up; router-originated NAT64 also returned 200. Normally routed Home requests timed out and the Internal drop counter increased. On IoT Wi-Fi with Tailscale up, a forced NAT64 request timed out and the Untrusted drop counter rose from 2 to 6. Service, Docker and Tailscale were active with no failed units. Initial activation failed because modprobe searched the booted generation; fixed by selecting the current generation's matching module tree. The new file is staged for flake visibility. No secrets added to tracked files.
+
+#### Top 3 Next Actions
+
+- If practical, test the accepted direct Home bypass and external IPv6 exposure.
+- Verify NAT64 service recovery after reboot and UniFi lab-network matching after ISP prefix changes.
+- Test additional lab applications and confirm DNS and filtering behavior when roaming.
+
+Blockers: External exposure and reboot/renumbering recovery remain unverified.
+
+### VPS Native IPv6
+
+Configured Hetzner-assigned `2a01:4f9:c010:803e::1/64` and gateway `fe80::1` on `enp1s0` in `hosts/vps/ddns.nix`. Deployed successfully. Outbound IPv6 HTTPS and direct IPv6 HTTPS to `christiansandberg.fi` returned 200; its IPv4 HTTPS also returned 200. Public IPv6 access to `opencode.vpn.cri.su` returned 403. Core services are active and systemd reports no failed units. Published and configured hetzner_ddns to manage apex AAAA records for `cri.su`, `christiansandberg.fi`, `sandbergs.fi`, `crisusandberg.fi`, and `csandberg.fi`; authoritative DNS and 1.1.1.1 return the address, and DDNS validated all records. Some local negative DNS caches may persist temporarily. No subdomain records changed. No secrets added to tracked files. The running VPS kernel remains 6.18.59; the deployed generation includes 6.18.63 and needs a planned reboot to activate it.
+
+Added and deployed dnsmasq `local=/vpn.cri.su/` in `hosts/vps/headscale.nix`, preventing private non-A DNS queries from leaking upstream. Verified private A returns `100.64.0.4`, AAAA and TXT return no records locally, unrelated public DNS resolves, private OpenCode returns 200 over Tailscale IPv4, and direct public IPv6 returns 403. dnsmasq, Headscale and Traefik are active.
+
+Set and deployed Headscale `dns.override_local_dns = false`. General queries now use each client's local network DNS, with the configured Control D endpoint as fallback; split DNS and MagicDNS remain enabled. On the lab laptop, DNS64/NAT64 reaches Winamp and DuckDuckGo with Tailscale connected; OpenCode, `unifi.home`, and tailnet MagicDNS resolve and OpenCode returns 200. Rpi5 resolves crisuflix MagicDNS. Verify DNS and filtering when roaming; this intentionally changes general DNS behavior tailnet-wide.
+
+Published `*.cri.su` AAAA pointing to the VPS and deployed hetzner_ddns management for the wildcard. Authoritative DNS returns the IPv6 address for both `id.cri.su` and public `opencode.vpn.cri.su`; private dnsmasq still returns only `100.64.0.4` for the latter. Verified public IPv6 `id.cri.su` returns 200, public IPv6 OpenCode returns 403, and tailnet IPv4 OpenCode returns 200. DDNS is active and has validated the wildcard. DNS caches may delay client visibility. No secrets added to tracked files.
+
+#### Top 3 Next Actions
+
+- Verify all apex domains from the IPv6-only laptop once cached DNS answers expire.
+- Verify wildcard DNS and public and private service access from the IPv6-only laptop after caches expire.
+- Plan a VPS reboot for the new kernel and verify IPv4, IPv6, and service recovery afterward.
+
+Blockers: A planned VPS reboot is needed for the new kernel.
+
+### Spliit: Bojvägen Migration
+
+Imported all 1,995 EUR expenses from IHateMoney project `bojvagen` into the user's existing empty Bojvägen Spliit group, preserving its Crisu/Ona participants. Verified every expense through the running app's JSON export: descriptions, amounts, expense/creation dates, payers, and splits match the source. Total €147,607.51; Ona owes Crisu €494.15. IHateMoney's exact balance was €494.145; Spliit apportions whole cents per expense, so imported expense IDs alternate odd-cent tie allocation to prevent cumulative rounding drift while retaining equal splits.
+
+IHateMoney is unchanged. Its consistent SQLite backup passed integrity checking and is stored with a mode-600 migration manifest under `/home/llego/.local/share/ihatemoney-backups/bojvagen-pre-spliit-20261109T095845Z.*`. No Spliit backup was made, per user request. No blockers or secrets added to tracked files; group/participant capability IDs are kept out of this repository.
+
+#### Top 3 Next Actions
+
+- Refresh Spliit and confirm the imported group and balance in the UI.
+- Use Spliit for new expenses; keep IHateMoney available until satisfied with the migration.
+- Include Spliit's database in routine backups if adopting it long-term.
 
 ### OpenCode V2 Server
 
@@ -37,18 +71,6 @@ pairing, and verification. No blockers or plaintext secrets added to tracked fil
 - Confirm unauthenticated API rejection and no LAN access to the backend.
 - Consider a consistent backup of the OpenCode session database and credentials.
 
-### Shared Arr Docker Network
-
-`hosts/crisuflix/default.nix` now declares `docker-network-arr-stack.service`, a boot-time oneshot ordered after Docker that creates the bridge network `arr-stack` only if missing. Existing networks are left untouched. The full crisuflix system build and `git diff --check` passed. Not deployed; Compose stacks were not changed and Docker was not restarted. No blockers or secrets added to tracked files.
-
-Removed declarative creation of `traefik-public` and `traefik-internal` by removing `docker-network-traefik.service`. This does not delete either existing Docker network or disconnect containers. The final crisuflix system build passed after both removals.
-
-#### Top 3 Next Actions
-
-- Deploy the crisuflix configuration and confirm `arr-stack` exists.
-- Attach the relevant Arr and NZBGet services to the external `arr-stack` network in their Compose stacks.
-- Verify Arr-to-NZBGet connectivity by service name and confirm network/container recovery after a future reboot.
-
 ### Pocket ID Backups
 
 `hosts/vps/pocketid.nix` now declares a daily Restic backup that streams `pocket-id export --path -` into `pocket-id-export.zip`, without stopping Pocket ID or writing a temporary archive. The backup inherits the server's environment files, encryption-key credential and working directory. Its separate encrypted repository targets the dedicated Hetzner bucket at `s3:https://hel1.your-objectstorage.com/vps-pocket-id`, retaining 30 daily and 12 monthly snapshots. The existing Hetzner credentials and Restic password were scoped and re-encrypted for both `crisuflix` and `vps`; agenix recipient checks pass. User created the bucket and deployed the VPS configuration. No plaintext secrets were added to tracked files.
@@ -61,39 +83,6 @@ Removed declarative creation of `traefik-public` and `traefik-internal` by remov
 
 The full VPS system build and `git diff --check` passed. Manual backup on 2026-11-05 succeeded (service result `success`, exit 0), initializing the repository and saving snapshot `974365fa` with a 2.526 MiB export. `restic check --read-data` found no errors. Downloading the export into memory verified all ZIP CRCs and valid `database.json` (37 archive entries, 11 database tables); no plaintext export was saved to disk. Pocket ID remained active. Next timer run was 2026-11-06 04:03 EET. No blockers; a full isolated import/restore test remains outstanding.
 
-### Home Assistant
-
-#### Top 3 Next Actions
-
-- Change batteries in the missing Ruuvi tags (`Vardagsrummet`, `Kylskåpet`, `Alvars_rum`), then verify InfluxDB rows and HA sensor recovery.
-
-### Music Assistant
-
-Music Assistant is now running **2.10.4** in Docker Compose at `/mnt/illby/docker/stacks/music-assistant` on `crisuflix`. The container uses host networking with `/mnt/illby/appstorage/music-assistant` bind-mounted at `/data`, preserving the existing ZFS dataset and library. `ma.cri.su` is routed via traefik-kop Docker labels; the static VPS route was removed. Automatic stable updates are handled by Watchtower.
-
-Yamaha MASS (`4C22F3A99400___main`, RX-V6A at `192.168.1.247`) is **discovered and controllable** — actively playing at verification time. The previous "identical name" mDNS error was caused by both UniFi's mDNS Proxy and `crisuflix`'s Avahi reflector forwarding between Home/IoT VLANs. Fixed by disabling the Avahi reflector (`reflector = false`) on `crisuflix`; UniFi's proxy now handles cross-VLAN discovery. Chromecast (Nest Audio, Android TV) discovery works across VLANs through UniFi's proxy.
-
-#### Top 3 Next Actions
-
-- Verify Yamaha standby/wake and long-term reconnection recovery on 2.10.4; consider reducing log level from debug.
-
-### OpenCloud
-
-OpenCloud Android repeated-login issue: OpenCloud's WebFinger client IDs/scopes are set in the Compose stack for web, Android, iOS, and desktop. Authelia remains a separate NixOS-managed OIDC provider and defines `lifespans.custom.opencloud_native` with `refresh_token = "365d"`, used by its OpenCloud Desktop/Android/iOS clients. The OpenCloud web client uses only `grant_types = [ "authorization_code" ]` to avoid Authelia's refresh-token-without-offline-access warning. User successfully logged into the Android app after clearing stale auth state and later verified the Android app stays logged in. No tracked secrets were added.
-
-#### Top 3 Next Actions
-
-### Homelable
-
-The backend uses host networking on port `8020` for LAN scanning (`8000` is occupied by Readeck). Frontend and MCP proxy to it through `host.docker.internal`; the custom frontend Nginx config preserves Host and X-Forwarded-Proto. The Compose bridge is pinned to `172.19.0.0/16` and named `br-homelable`. MCP is served at `https://homelable-mcp.vpn.cri.su/mcp/`, protected by the tailnet-only Traefik middleware and an API key; its host port binds only to `100.64.10.1:8021`. Public frontend, Live View, OIDC initiation, unauthenticated MCP rejection, and authenticated MCP initialization were verified.
-
-`hosts/crisuflix/default.nix` uses the existing NixOS firewall interface configuration to allow TCP 8020 only on `br-homelable`; this rule has been deployed. No plaintext credentials were added to tracked files. The Authelia client-secret digest is tracked, while its plaintext and app keys remain in the mode-600 external `.env`.
-
-#### Top 3 Next Actions
-
-- Configure the intended MCP client with the tailnet URL and `MCP_API_KEY` from the protected `.env`, then verify tool calls.
-- Run a Homelable network scan and confirm expected devices/MAC addresses are discovered.
-
 ### VPS Reverse Proxy
 
 Added a centralized `vpn-block-public` HTTPS router in `hosts/vps/reverse-proxy.nix`. It matches `*.vpn.cri.su` requests whose direct client IP is outside `100.64.0.0/10` and returns 403 through the existing `tailnet-only` middleware, using `noop@internal` as the unused service. Priority `1000000` is reserved above service routers, including Redis routes; tailnet clients skip the guard. Existing per-service restrictions remain. The full VPS system build and `git diff --check` passed; not deployed yet. No secrets were added to tracked files. No blockers.
@@ -105,15 +94,3 @@ Added a centralized `vpn-block-public` HTTPS router in `hosts/vps/reverse-proxy.
 - Confirm public services are unaffected and retain service-router priorities below the guard.
 
 VPS Redis/Traefik startup race fixed and deployed. `hosts/vps/reverse-proxy.nix` now lets `redis-traefik` bind all interfaces with `services.redis.servers.traefik.bind = null`, while Traefik reads the Redis provider through loopback (`127.0.0.1:6379`). This avoids Redis failing to bind before `tailscale0` owns `100.64.0.4`; remote access is still limited by the existing firewall rule that permits only `crisuflix` to reach Redis over Tailscale. No immediate follow-up recorded.
-
-### Headscale and Headplane OIDC
-
-`hosts/vps/headscale.nix` now uses Pocket ID (`https://id.cri.su`) for both Headscale and Headplane, sharing client ID `5fc8cf12-7a93-4d30-ae98-b20eddb9d9f3` and an agenix-managed secret. The encrypted client secret is in `secrets/pocket-id-headscale-client-secret.age`; no plaintext credentials were added. The existing Authelia client and secret remain in configuration. Rolling back existing-user login also requires restoring that user's old `provider_identifier` or restoring the database backup.
-
-The VPS's existing Headscale user (ID 2, `mail@christiansandberg.fi`) was migrated in place to `https://id.cri.su/64c5f6bc-e8e7-4a61-9039-522b0868d2e7`; no user or node records were recreated. A fresh pre-update SQLite backup is at `/home/llego/.local/share/headscale-backups/headscale-pre-pocket-id-provider-update-20261104T132229Z.sqlite`; it is mode 0600 and passes `PRAGMA integrity_check` (`ok`). The older backup remains at `/home/llego/.local/share/headscale-backups/headscale-pre-pocket-id-oidc-20261104T131544Z.sqlite`.
-
-The first Pocket ID login authenticated but Headplane denied dashboard access because its existing Authelia account was Owner while the new Pocket ID account received the default Member role. Backed up `/var/lib/headplane/hp_persist.db` to `/home/llego/.local/share/headscale-backups/headplane-pre-pocket-id-role-fix-20261104T133454Z.sqlite` (mode 0600, integrity `ok`). Promoted only the Pocket ID account to Admin and transferred the unique Headscale user ID 2 link from the legacy Authelia Owner record; the Owner record remains for rollback. The Pocket ID account now maps to the existing Headscale user. Other Pocket ID users remain at the default Member role and are not granted admin access. User confirmed a fresh Pocket ID sign-in now opens the Headplane dashboard.
-
-#### Top 3 Next Actions
-
-## Blockers

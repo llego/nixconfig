@@ -20,6 +20,8 @@ in {
       dns = {
         magic_dns = true;
         base_domain = "tailnet.cri.su";
+        # Keep each network's resolver for public DNS while retaining split DNS.
+        override_local_dns = false;
         search_domains = ["tailnet.cri.su"];
         nameservers = {
           global = [
@@ -93,6 +95,8 @@ in {
       bind-interfaces = true;
       listen-address = net.hosts.vps;
       address = ["/vpn.cri.su/${net.hosts.vps}"];
+      # Keep other query types for private names from leaking to public DNS.
+      local = ["/vpn.cri.su/"];
 
       # Forward anything outside the split zone if a client queries this
       # resolver directly.
