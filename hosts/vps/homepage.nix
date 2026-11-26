@@ -32,6 +32,13 @@
           description = "vpn.cri.su · tailnet-only";
         };
       }
+      {
+        "Traefik Home" = {
+          href = "https://traefik-local.cri.su/dashboard/#/http/routers";
+          icon = "traefik";
+          description = "home lan · local proxy";
+        };
+      }
     ];
 
     Monitoring = [
@@ -184,14 +191,6 @@ in {
               {
                 href = "https://login.tailscale.com/admin/machines";
                 icon = "si-tailscale";
-              }
-            ];
-          }
-          {
-            "Control D" = [
-              {
-                href = "https://controld.com/dashboard/statistics";
-                icon = "mdi-dns";
               }
             ];
           }

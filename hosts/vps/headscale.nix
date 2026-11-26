@@ -25,7 +25,7 @@ in {
         search_domains = ["tailnet.cri.su"];
         nameservers = {
           global = [
-            "https://dns.controld.com/wrpogws0c1"
+            "https://dns.quad9.net/dns-query"
           ];
           split = {
             # Headscale extra_records do not wildcard-match. Route the private
@@ -98,9 +98,8 @@ in {
       # Keep other query types for private names from leaking to public DNS.
       local = ["/vpn.cri.su/"];
 
-      # Forward anything outside the split zone if a client queries this
-      # resolver directly.
-      server = ["76.76.2.22"];
+      # Do not use system resolvers or forward unrelated queries.
+      no-resolv = true;
     };
   };
 

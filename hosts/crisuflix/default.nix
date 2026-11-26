@@ -187,6 +187,20 @@ in {
         ${pkgs.docker}/bin/docker network create --driver bridge arr-stack
     '';
   };
+  systemd.services.docker-network-traefik-home = {
+    description = "Create shared Home Traefik Docker network";
+    after = ["docker.service"];
+    requires = ["docker.service"];
+    wantedBy = ["multi-user.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      ${pkgs.docker}/bin/docker network inspect traefik-home > /dev/null 2>&1 || \
+        ${pkgs.docker}/bin/docker network create --driver bridge traefik-home
+    '';
+  };
   users.users.${username}.extraGroups = ["docker" "apps" "llego" "hermes"];
 
   # Apps user for Docker containers (UID/GID 568)

@@ -28,7 +28,7 @@ Notable pieces of software in my infrastructure that bring me joy (some of these
 
 Traefik on `vps` serves public `*.cri.su` services and tailnet-only `*.vpn.cri.su` services. Docker services on `crisuflix` publish routes through traefik-kop and Redis, with backend traffic carried over Tailscale. Headscale manages the tailnet and private DNS; Pocket ID provides application OIDC sign-in where configured.
 
-An additional local Traefik on `crisuflix` provides Home IPv4 and ULA IPv6 routes for `ha.cri.su` and `jellyfin.cri.su`; local DNS must explicitly direct clients to it. Its dashboard is restricted to the Home IPv4 and ULA subnets. The public VPS routes remain independent.
+An additional local Traefik on `crisuflix` provides Home IPv4 and ULA IPv6 routes for `ha.cri.su` and `jellyfin.cri.su`; local DNS must explicitly direct clients to it. Its dashboard is restricted to the Home IPv4 and ULA subnets. The public VPS routes remain independent. Local Docker routes opt in with `traefik.instance=home_network`; bridge-networked services also join `traefik-home`. Local Traefik selects that network through its Docker provider default, avoiding a per-container network label that would alter traefik-kop's VPS backend selection. Only intended services should join this network because members can reach one another.
 
 ### Public users accessing \*.cri.su
 

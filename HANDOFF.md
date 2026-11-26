@@ -1,26 +1,40 @@
 # HANDOFF
 
-Last updated: 2026-11-25 21:07 UTC
+Last updated: 2026-11-26 09:18 UTC
 
 ## Current State
 
+### DNS: Control D Removal
+
+The user uninstalled ctrld from UniFi. Home uses UniFi DNS with Quad9 DoH and ad blocking; the tested ad domains were blocked, and UniFi reported blocking the harmless BlackSun IPS test. The IPv6 lab uses Cloudflare DNS64 and Jool NAT64; Winamp returned HTTP 200 before the VPS change. Deployed `hosts/vps/headscale.nix` with Quad9 DoH as the global resolver, `override_local_dns = false`, unchanged MagicDNS and split DNS, and dnsmasq `no-resolv` with no upstream. Direct private A queries return `100.64.0.4`, private AAAA/TXT return no records, and unrelated queries are refused. On the Home laptop, ordinary public DNS uses Wi-Fi, private and MagicDNS names resolve, and OpenCode and local HA return 200; rpi5 also resolves private and MagicDNS names and reaches local HA. VPS Headscale, Headplane, dnsmasq and Traefik are active, no units failed, and public HTTPS returned 200. Quad9 is configured but is not forced onto clients while local DNS override is disabled. The user confirmed their phone worked on mobile data with Tailscale on. The Control D Homepage bookmark was removed and deployed. No secrets were added to tracked files.
+
+#### Top 3 Next Actions
+
+- Retest DNS64/NAT64 and private/MagicDNS from a lab client after deployment, and test roaming devices.
+- Verify `traefik-local.cri.su` Home A record, previously observed pointing at the VPS instead of the local proxy.
+- Configure separate roaming ad blocking on phone and laptop as desired; verify it coexists with local and split DNS.
+
+Blockers: No lab client was available for post-deployment testing.
+
 ### Local Home Assistant Proxy
 
-Adapted and started `/mnt/illby/docker/stacks/traefik` as a local Home HTTPS proxy, with dedicated Docker IPv4 and IPv6 networks and a route for `ha.cri.su` to Home Assistant. Previous Compose files are backed up as `compose.yaml.pre-local-20261125` and `compose.yaml.pre-ipv6-20261125`. UniFi advertises Home ULA `fdad:3928:7958:1::/64`; `crisuflix` statically uses `fdad:3928:7958:1::101` on `br0`. Traefik listens on that address and `192.168.1.101` on ports 80 and 443. Its dashboard at `https://traefik-local.cri.su/dashboard/` is restricted to the Home IPv4 and ULA subnets, without separate authentication. The user approved a Home Assistant restart; existing trusted proxies were preserved and `10.253.252.2/32` added via the HTTP settings API, then the configuration was promoted. The Home-only Control D profile now returns both local addresses; rpi5 resolved and reached HA over both IPv4 and IPv6 with HTTP 200. Rpi5 also reached the dashboard over ULA IPv6 with certificate verification. Public DNS still returned the VPS IPv6 address. Client login/WebSocket behavior and proxy reboot recovery remain unverified. No secrets were added to tracked files.
+Adapted and started `/mnt/illby/docker/stacks/traefik` as a local Home HTTPS proxy, with dedicated Docker IPv4 and IPv6 networks and a route for `ha.cri.su` to Home Assistant. Previous Compose files are backed up as `compose.yaml.pre-local-20261125` and `compose.yaml.pre-ipv6-20261125`. UniFi advertises Home ULA `fdad:3928:7958:1::/64`; `crisuflix` statically uses `fdad:3928:7958:1::101` on `br0`. Traefik listens on that address and `192.168.1.101` on ports 80 and 443. Its dashboard at `https://traefik-local.cri.su/dashboard/` is restricted to the Home IPv4 and ULA subnets, without separate authentication. The user approved a Home Assistant restart; existing trusted proxies were preserved and `10.253.252.2/32` added via the HTTP settings API, then the configuration was promoted. Home DNS records are now served by UniFi rather than the former Control D profile; rpi5 reached HA locally with HTTP 200. Rpi5 also previously reached the dashboard over ULA IPv6 with certificate verification. Client login/WebSocket behavior and proxy reboot recovery remain unverified. No secrets were added to tracked files.
 
 Home Assistant's Compose stack now adds `traefik.instance=internal`, allowing local Traefik to reuse the existing public route and service labels; the duplicate file-based HA route was removed. Local Traefik's default HTTPS entrypoint and `host.docker.internal` mapping route the host-networked HA container to `10.253.252.1:8123`. Both Compose files have `compose.yaml.pre-ha-labels-20261125` backups. After recreating HA and Traefik, the local dashboard showed the HA route only as `home-assistant@docker`; local IPv4, local IPv6, and public VPS HTTPS returned 200, and the dashboard returned 200 over local IPv6. The user confirmed dashboard access from the laptop. Full HA login/WebSocket and reboot testing remain outstanding.
 
 Jellyfin's Compose stack now also sets `traefik.instance=internal`, and local Traefik is attached to `jellyfin-official_default` to reach the container using its existing route labels. The user created the Home Control D rule for `jellyfin.cri.su`; local A and AAAA resolve to the Home proxy. After recreating Traefik and Jellyfin, the local Docker route selected `172.22.0.2:8096`, and local IPv4, local IPv6, and public VPS HTTPS returned 302; following the local IPv6 redirect returned 200. Certificate issuance and VPS route publication briefly lagged startup but subsequently succeeded. Playback and login remain untested. Compose backups are `traefik/compose.yaml.pre-jellyfin-20261125` and `jellyfin-official/compose.yaml.pre-local-proxy-20261125`. No secrets added to tracked files.
 
-The preferred future structure is a shared `traefik-internal` Docker network: local Traefik joins it once, and each application opts in through its own Compose network attachment and labels, retaining any application-specific networks. Add boot-time creation of `traefik-internal` to `hosts/crisuflix/default.nix` before migrating Jellyfin to the shared network, then explicitly select that network for its local Traefik route and verify local and VPS access. This is planned only; it has not been created or deployed. Containers on the shared network may be able to reach one another directly, so attach only intended services.
+Deployed the `traefik-home` Docker network creation service in `hosts/crisuflix/default.nix` and migrated Jellyfin and local Traefik to it, retaining Jellyfin's default network and Traefik's dedicated HA network. Local Traefik selects the network via its Docker provider default, not a `traefik.docker.network` container label: traefik-kop treats that label as a request to publish the container IP, which could break the VPS route. The local proxy selected Jellyfin at `192.168.224.2:8096`; local IPv4 and IPv6 HA returned 200, Jellyfin returned 302 and followed to 200 over IPv6, and VPS routes over the tailnet returned HA 200 and Jellyfin 302. No systemd units failed. Compose backups are `traefik/compose.yaml.pre-traefik-home-20261126` and `jellyfin-official/compose.yaml.pre-traefik-home-20261126`. Containers on the shared network may reach one another directly, so attach only intended services.
+
+Aligned the local Traefik provider constraint and Home Assistant and Jellyfin labels to `traefik.instance=home_network`; recreated all three containers. Local and VPS HA returned 200, Jellyfin returned 302, and local Traefik selected HA at `10.253.252.1:8123` and Jellyfin at `192.168.224.2:8096`. No systemd units failed. Pre-label Compose backups are `compose.yaml.pre-home-network-label-20261126` in each of the three stacks. No secrets added to tracked files.
 
 #### Top 3 Next Actions
 
-- Add declarative `traefik-internal` network creation to `hosts/crisuflix/default.nix`, then migrate and verify Jellyfin on the shared network.
 - Test Home Assistant login/WebSockets and Jellyfin login/playback locally and from an independently connected away client.
-- Test lab reachability and DNS64 behavior separately if desired; verify proxy, network, and ULA recovery after reboot.
+- Verify proxy, network, and ULA recovery after a planned reboot; Docker persists the network but first-creation ordering is not a container-start dependency.
+- Test lab reachability and DNS64 behavior separately if desired.
 
-Blockers: Automatic proxy failover remains unimplemented; away-client testing is outstanding.
+Blockers: Automatic proxy failover remains unimplemented; away-client and reboot testing are outstanding. No secrets were added to tracked files.
 
 ### IPv6 Lab NAT64
 
@@ -40,7 +54,7 @@ Configured Hetzner-assigned `2a01:4f9:c010:803e::1/64` and gateway `fe80::1` on 
 
 Added and deployed dnsmasq `local=/vpn.cri.su/` in `hosts/vps/headscale.nix`, preventing private non-A DNS queries from leaking upstream. Verified private A returns `100.64.0.4`, AAAA and TXT return no records locally, unrelated public DNS resolves, private OpenCode returns 200 over Tailscale IPv4, and direct public IPv6 returns 403. dnsmasq, Headscale and Traefik are active.
 
-Set and deployed Headscale `dns.override_local_dns = false`. General queries now use each client's local network DNS, with the configured Control D endpoint as fallback; split DNS and MagicDNS remain enabled. On the lab laptop, DNS64/NAT64 reaches Winamp and DuckDuckGo with Tailscale connected; OpenCode, `unifi.home`, and tailnet MagicDNS resolve and OpenCode returns 200. Rpi5 resolves crisuflix MagicDNS. Verify DNS and filtering when roaming; this intentionally changes general DNS behavior tailnet-wide.
+Set and deployed Headscale `dns.override_local_dns = false`. General queries use each client's local network DNS; the configured global endpoint is now Quad9 DoH, not Control D. Split DNS and MagicDNS remain enabled. Before the latest VPS deployment, the lab laptop reached Winamp via DNS64/NAT64 with Tailscale connected. Verify lab DNS and filtering when roaming.
 
 Published `*.cri.su` AAAA pointing to the VPS and deployed hetzner_ddns management for the wildcard. Authoritative DNS returns the IPv6 address for both `id.cri.su` and public `opencode.vpn.cri.su`; private dnsmasq still returns only `100.64.0.4` for the latter. Verified public IPv6 `id.cri.su` returns 200, public IPv6 OpenCode returns 403, and tailnet IPv4 OpenCode returns 200. DDNS is active and has validated the wildcard. DNS caches may delay client visibility. No secrets added to tracked files.
 
