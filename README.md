@@ -30,6 +30,8 @@ Traefik on `vps` serves public `*.cri.su` services and tailnet-only `*.vpn.cri.s
 
 An additional local Traefik on `crisuflix` provides Home IPv4 and ULA IPv6 routes for `ha.cri.su` and `jellyfin.cri.su`; local DNS must explicitly direct clients to it. Its dashboard is restricted to the Home IPv4 and ULA subnets. The public VPS routes remain independent. Local Docker routes opt in with `traefik.instance=home_network`; bridge-networked services also join `traefik-home`. Local Traefik selects that network through its Docker provider default, avoiding a per-container network label that would alter traefik-kop's VPS backend selection. Only intended services should join this network because members can reach one another.
 
+Local Traefik's ACME DNS checks use a dedicated DNS-over-TLS forwarder on its proxy bridge, avoiding UniFi ad blocking's port-53 redirection. The forwarder forces recursion for lego's propagation checks; Traefik skips direct authoritative checks and waits before checking the recursive resolver.
+
 ### Public users accessing \*.cri.su
 
 ```mermaid

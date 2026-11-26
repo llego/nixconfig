@@ -331,6 +331,8 @@ in {
       allowedTCPPorts = [
         22 # SSH
         5201 # iperf3
+        9200 # OpenCloud
+        9980 # Collabora
         net.crisuflix.jellyfin.port # Jellyfin
         # 45876 # Beszel Agent (opened by services.beszel.agent.openFirewall)
       ];

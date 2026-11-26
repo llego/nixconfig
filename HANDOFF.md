@@ -1,6 +1,6 @@
 # HANDOFF
 
-Last updated: 2026-11-26 09:18 UTC
+Last updated: 2026-11-26 10:55 UTC
 
 ## Current State
 
@@ -28,13 +28,23 @@ Deployed the `traefik-home` Docker network creation service in `hosts/crisuflix/
 
 Aligned the local Traefik provider constraint and Home Assistant and Jellyfin labels to `traefik.instance=home_network`; recreated all three containers. Local and VPS HA returned 200, Jellyfin returned 302, and local Traefik selected HA at `10.253.252.1:8123` and Jellyfin at `192.168.224.2:8096`. No systemd units failed. Pre-label Compose backups are `compose.yaml.pre-home-network-label-20261126` in each of the three stacks. No secrets added to tracked files.
 
+OpenCloud migration is incomplete: added `traefik.instance=home_network` to OpenCloud and Collabora in `/mnt/illby/docker/stacks/opencloud/compose.yaml` and recreated them; backup is `compose.yaml.pre-home-proxy-20261126`. Home DNS resolves both `cloud.cri.su` and `office.cri.su` to local IPv4 and ULA IPv6. At the user's request, deployed TCP 9200 and 9980 in `networking.firewall.allowedTCPPorts` in `hosts/crisuflix/default.nix`; these host-networked ports are open on all interfaces. Both local backends return 200 through Traefik when TLS verification is bypassed; VPS routes returned 200. Let's Encrypt rejected both DNS challenges because it did not find their TXT records, so local trusted HTTPS remains broken. Public DNS reports a 3600-second negative TTL; cached negative answers may be involved but this is unconfirmed. Do not repeatedly retry failed ACME challenges without diagnosing DNS validation and rate limits. No secrets added to tracked files.
+
+UniFi redirects TCP/UDP DNS port 53 from the Home IPv4 and ULA subnets to its own resolver, including queries addressed to external and authoritative servers. A single controlled local Traefik restart at 09:49 UTC showed both challenge TXT records intermittently via Cloudflare DNS-over-HTTPS, while UniFi consistently returned no TXT during 74 seconds of observation. Public answers also fluctuated, indicating inconsistent visibility; caching or propagation is suspected but not proven. Both challenges subsequently failed because Traefik's authoritative nameserver checks timed out without the expected TXT. Existing HA HTTPS remained available. VPS Traefik has both individual and wildcard certificates, and sets a 10-second DNS propagation-check delay. UniFi's NAT DNSFILTER targets the entire Home subnet, ahead of forwarding rules; no persistent per-device exception was identified through SSH. No UniFi firewall or DNS rules were changed. Avoid repeated retries; configure and verify an unintercepted resolver path first.
+
+The user temporarily disabled UniFi intrusion prevention for diagnosis. DNS interception remained active, and one retry at 10:30 UTC failed for both domains: Let's Encrypt reported no TXT record. No new certificates were issued. Intrusion prevention was not re-enabled by the agent; remind the user to restore it. Avoid further attempts until DNS validation is addressed.
+
+The user paused UniFi ad blocking; queries from local Traefik to 1.1.1.1 then returned public DNS rather than local overrides. One subsequent retry successfully issued certificates for `cloud.cri.su` and `office.cri.su`. Verified certificate-valid HTTPS over local IPv4 and IPv6 and through the VPS: OpenCloud and Collabora discovery all returned 200. OpenCloud login and document editing remain untested.
+
+The user re-enabled UniFi ad blocking. Local Traefik now uses a dedicated dnsdist 2.0.12 forwarder on its proxy bridge (`10.253.252.3`), with DNS-over-TLS to Cloudflare, an ACL restricted to Traefik, and forced recursion for lego's non-recursive checks. Traefik uses recursive checks with authoritative checks disabled and a 120-second delay. A Let's Encrypt staging certificate for `acme-test-local.cri.su` issued successfully with ad blocking enabled; the staging resolver and router were removed afterward. Initial CoreDNS testing failed because lego's recursive propagation checks send queries without the recursion-desired bit; dnsdist corrects it. Upgraded dnsdist from 2.0.11 to 2.0.12 to address its security advisory and confirmed the final resolver answers those queries. HA, OpenCloud and Collabora local HTTPS returned 200 after cleanup. Original backup: `traefik/compose.yaml.pre-acme-dns-20261126`. Production certificate renewal and reboot recovery remain untested. Intrusion prevention may still be disabled; the user's choice to re-enable it remains outstanding. No secrets added to tracked files.
+
 #### Top 3 Next Actions
 
-- Test Home Assistant login/WebSockets and Jellyfin login/playback locally and from an independently connected away client.
+- Confirm local Traefik and dnsdist recovery after reboot and monitor a future production certificate renewal; consider re-enabling intrusion prevention.
+- Test Home Assistant login/WebSockets, Jellyfin login/playback, and OpenCloud/Collabora use locally and from an independently connected away client.
 - Verify proxy, network, and ULA recovery after a planned reboot; Docker persists the network but first-creation ordering is not a container-start dependency.
-- Test lab reachability and DNS64 behavior separately if desired.
 
-Blockers: Automatic proxy failover remains unimplemented; away-client and reboot testing are outstanding. No secrets were added to tracked files.
+Blockers: Production certificate renewal and reboot recovery remain untested; automatic proxy failover and away-client testing remain outstanding. No secrets were added to tracked files.
 
 ### IPv6 Lab NAT64
 
